@@ -20,7 +20,9 @@ import {
   CheckCircle2,
   AlertCircle,
   Lightbulb,
+  Sparkles,
 } from "lucide-react";
+import { MCPPlayground } from "@/components/playground/mcp-playground";
 
 interface Step {
   id: number;
@@ -740,6 +742,31 @@ npm init -y`}
             Here&apos;s an example with three tools - a greeter, calculator, and random number generator:
           </p>
           <CodeBlock code={codeBlocks.withMultipleTools} filename="index.js (expanded)" />
+        </CardContent>
+      </Card>
+
+      {/* Interactive Playground */}
+      <Card className="mt-8">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-purple-500" />
+            Try It Yourself
+          </CardTitle>
+          <CardDescription>
+            Experiment with the code in our interactive playground
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-zinc-600 dark:text-zinc-400 mb-4">
+            Modify the code below and use the &quot;Test Tools&quot; tab to simulate tool calls:
+          </p>
+          <MCPPlayground
+            initialCode={codeBlocks.withMultipleTools}
+            height="450px"
+            showToolTester={true}
+            title="MCP Server Playground"
+            description="Edit the code and test your tools"
+          />
         </CardContent>
       </Card>
     </div>

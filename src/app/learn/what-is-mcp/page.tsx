@@ -19,8 +19,10 @@ import {
   Circle,
   Zap,
   Shield,
-  Blocks
+  Blocks,
+  Sparkles,
 } from "lucide-react";
+import { MCPPlayground } from "@/components/playground/mcp-playground";
 
 const architectureLayers = [
   {
@@ -310,6 +312,44 @@ server.tool(
               and a handler function that returns content.
             </p>
           </div>
+        </section>
+
+        {/* Interactive Playground */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <Sparkles className="h-6 w-6" />
+            Try It Live
+          </h2>
+          <p className="text-zinc-600 dark:text-zinc-400 mt-4 mb-6">
+            Experiment with MCP server code right in your browser:
+          </p>
+          <MCPPlayground
+            initialCode={`import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { z } from "zod";
+
+const server = new McpServer({
+  name: "my-first-server",
+  version: "1.0.0",
+});
+
+// Try editing this tool!
+server.tool(
+  "greet",
+  "Say hello to someone",
+  { name: z.string().describe("Name to greet") },
+  async ({ name }) => ({
+    content: [{ type: "text", text: \`Hello, \${name}! 👋\` }],
+  })
+);
+
+const transport = new StdioServerTransport();
+await server.connect(transport);`}
+            height="400px"
+            showToolTester={true}
+            title="Interactive MCP Playground"
+            description="Edit the code and click 'Test Tools' to try calling the tool"
+          />
         </section>
 
         {/* Quiz */}
