@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Trophy } from "lucide-react";
+import { Trophy, Crown, Gamepad2 } from "lucide-react";
 
 export const metadata = {
   title: "Challenges",
@@ -9,6 +9,16 @@ export const metadata = {
 };
 
 const challenges = [
+  {
+    id: "chess",
+    title: "Chess Challenge",
+    description: "Play chess against AI or a friend. Build an MCP chess server!",
+    difficulty: "beginner",
+    points: 100,
+    type: "game",
+    completions: 0,
+    featured: true,
+  },
   {
     id: "hello-world",
     title: "Hello World",
@@ -74,6 +84,7 @@ const difficultyColors = {
 const typeLabels = {
   build: { label: "Build Server", color: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100" },
   use: { label: "Use Tools", color: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100" },
+  game: { label: "Game", color: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100" },
 };
 
 export default function ChallengesPage() {
@@ -99,6 +110,10 @@ export default function ChallengesPage() {
         {/* Filters */}
         <div className="mt-8 flex flex-wrap gap-2">
           <Badge variant="secondary" className="cursor-pointer">All</Badge>
+          <Badge variant="outline" className="cursor-pointer">
+            <Gamepad2 className="h-3 w-3 mr-1" />
+            Games
+          </Badge>
           <Badge variant="outline" className="cursor-pointer">Build Server</Badge>
           <Badge variant="outline" className="cursor-pointer">Use Tools</Badge>
           <Badge variant="outline" className="cursor-pointer">Beginner</Badge>
