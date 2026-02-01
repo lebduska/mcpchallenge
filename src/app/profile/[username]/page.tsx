@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { getRequestContext } from "@cloudflare/next-on-pages";
 import { createDb } from "@/db";
 import { users, userStats, userAchievements, achievements, challengeCompletions } from "@/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, or } from "drizzle-orm";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Target, Star, Calendar, Share2 } from "lucide-react";
@@ -16,14 +16,19 @@ interface PageProps {
   params: Promise<{ username: string }>;
 }
 
+// Helper to find user by username or ID
+async function findUser(db: ReturnType<typeof createDb>, identifier: string) {
+  return db.query.users.findFirst({
+    where: or(eq(users.username, identifier), eq(users.id, identifier)),
+  });
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { username } = await params;
   const { env } = getRequestContext();
   const db = createDb(env.DB);
 
-  const user = await db.query.users.findFirst({
-    where: eq(users.username, username),
-  });
+  const user = await findUser(db, username);
 
   if (!user) {
     return { title: "User Not Found" };
@@ -69,10 +74,8 @@ export default async function ProfilePage({ params }: PageProps) {
   const { env } = getRequestContext();
   const db = createDb(env.DB);
 
-  // Fetch user
-  const user = await db.query.users.findFirst({
-    where: eq(users.username, username),
-  });
+  // Fetch user by username or ID
+  const user = await findUser(db, username);
 
   if (!user) {
     notFound();
