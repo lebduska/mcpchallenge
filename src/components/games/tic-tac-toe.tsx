@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +21,7 @@ type GameStatus = "waiting" | "playing" | "won" | "draw";
 
 interface TicTacToeProps {
   onMoveForMCP?: (position: number, player: string, board: string) => void;
+  onGameComplete?: (result: { winner: "player" | "ai" | "draw"; moves: number }) => void;
 }
 
 // Generate winning combinations for any board size
@@ -204,7 +205,7 @@ function boardToString(board: Board): string {
   return board.map(cell => cell || ".").join("");
 }
 
-export function TicTacToe({ onMoveForMCP }: TicTacToeProps) {
+export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
   const [boardSize, setBoardSize] = useState(3);
   const [board, setBoard] = useState<Board>(Array(9).fill(null));
   const [currentPlayer, setCurrentPlayer] = useState<Player>("X");
@@ -215,6 +216,30 @@ export function TicTacToe({ onMoveForMCP }: TicTacToeProps) {
   const [isThinking, setIsThinking] = useState(false);
   const [playerSymbol, setPlayerSymbol] = useState<Player>("X");
   const [scores, setScores] = useState({ player: 0, ai: 0, draws: 0 });
+  const completionCalledRef = useRef(false);
+
+  // Notify game completion
+  useEffect(() => {
+    if (
+      (gameStatus === "won" || gameStatus === "draw") &&
+      !completionCalledRef.current &&
+      onGameComplete &&
+      gameMode === "vs-ai"
+    ) {
+      completionCalledRef.current = true;
+
+      let result: "player" | "ai" | "draw" = "draw";
+      if (gameStatus === "won") {
+        result = winner === playerSymbol ? "player" : "ai";
+      }
+
+      const moves = board.filter((cell) => cell !== null).length;
+      onGameComplete({ winner: result, moves });
+    }
+    if (gameStatus === "waiting") {
+      completionCalledRef.current = false;
+    }
+  }, [gameStatus, gameMode, winner, playerSymbol, board, onGameComplete]);
 
   // Win length: 3 for 3x3, 5 for larger boards
   const winLength = boardSize === 3 ? 3 : 5;

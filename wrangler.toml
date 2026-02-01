@@ -1,15 +1,14 @@
 name = "mcpchallenge"
-pages_build_output_dir = "out"
-compatibility_date = "2024-01-01"
+compatibility_date = "2024-12-01"
 compatibility_flags = ["nodejs_compat"]
 
-# D1 Database (to be created later)
-# [[d1_databases]]
-# binding = "DB"
-# database_name = "mcpchallenge"
-# database_id = ""
+# D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "mcpchallenge-db"
+database_id = "76ba5514-f20d-495a-a7df-2ff06d394448"
 
-# R2 Storage (to be created later)
+# R2 Storage (for future use - avatars, etc.)
 # [[r2_buckets]]
 # binding = "STORAGE"
 # bucket_name = "mcpchallenge-storage"

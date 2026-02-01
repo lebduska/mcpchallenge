@@ -4,11 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { UserMenu } from "@/components/auth/user-menu";
 
 const navItems = [
   { href: "/learn", label: "Learn" },
   { href: "/playground", label: "Playground" },
   { href: "/challenges", label: "Challenges" },
+  { href: "/achievements", label: "Achievements" },
   { href: "/showcase", label: "Showcase" },
 ];
 
@@ -38,15 +40,7 @@ export function Navbar() {
           ))}
         </nav>
         <div className="ml-auto flex items-center space-x-4">
-          <Button variant="outline" size="sm" asChild>
-            <a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              GitHub
-            </a>
-          </Button>
+          <UserMenu />
         </div>
       </div>
     </header>

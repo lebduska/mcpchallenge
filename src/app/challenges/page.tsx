@@ -29,6 +29,16 @@ const challenges = [
     completions: 0,
   },
   {
+    id: "snake",
+    title: "Snake + MCP Transports",
+    description: "Learn stdio, HTTP+SSE, and WebSocket transports by building a snake AI!",
+    difficulty: "intermediate",
+    points: 150,
+    type: "game",
+    completions: 0,
+    featured: true,
+  },
+  {
     id: "hello-world",
     title: "Hello World",
     description: "Create your first MCP tool that greets users",

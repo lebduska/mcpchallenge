@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,6 +18,17 @@ import {
 } from "lucide-react";
 import { TicTacToe } from "@/components/games/tic-tac-toe";
 import { MCPPlayground } from "@/components/playground/mcp-playground";
+import { useGameCompletion } from "@/hooks/use-game-completion";
+import { AchievementToast } from "@/components/achievements/achievement-toast";
+
+interface Achievement {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  points: number;
+  rarity: string;
+}
 
 const ticTacToeMCPCode = `import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
@@ -144,10 +155,25 @@ await server.connect(transport);`;
 
 export default function TicTacToeChallengePage() {
   const [moveLog, setMoveLog] = useState<Array<{ position: number; player: string; board: string }>>([]);
+  const [unlockedAchievements, setUnlockedAchievements] = useState<Achievement[]>([]);
+  const { submitCompletion } = useGameCompletion("tic-tac-toe");
 
   const handleMoveForMCP = (position: number, player: string, board: string) => {
     setMoveLog(prev => [...prev, { position, player, board }]);
   };
+
+  const handleGameComplete = useCallback(
+    async (result: { winner: "player" | "ai" | "draw"; moves: number }) => {
+      const response = await submitCompletion({
+        winner: result.winner,
+        moves: result.moves,
+      });
+      if (response?.newAchievements && response.newAchievements.length > 0) {
+        setUnlockedAchievements(response.newAchievements);
+      }
+    },
+    [submitCompletion]
+  );
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -186,7 +212,7 @@ export default function TicTacToeChallengePage() {
           </TabsList>
 
           <TabsContent value="play">
-            <TicTacToe onMoveForMCP={handleMoveForMCP} />
+            <TicTacToe onMoveForMCP={handleMoveForMCP} onGameComplete={handleGameComplete} />
 
             {/* Tips */}
             <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -323,6 +349,14 @@ export default function TicTacToeChallengePage() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Achievement notification */}
+      {unlockedAchievements.length > 0 && (
+        <AchievementToast
+          achievements={unlockedAchievements}
+          onClose={() => setUnlockedAchievements([])}
+        />
+      )}
     </div>
   );
 }

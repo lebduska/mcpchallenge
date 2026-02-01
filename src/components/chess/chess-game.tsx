@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { Chess } from "chess.js";
 import { Chessboard } from "react-chessboard";
 import type { PieceDropHandlerArgs } from "react-chessboard";
@@ -22,9 +22,10 @@ type GameStatus = "waiting" | "playing" | "checkmate" | "draw" | "resigned";
 
 interface ChessGameProps {
   onMoveForMCP?: (move: string, fen: string) => void;
+  onGameComplete?: (result: { winner: "player" | "llm" | "draw"; moves: number }) => void;
 }
 
-export function ChessGame({ onMoveForMCP }: ChessGameProps) {
+export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
   const [game, setGame] = useState(new Chess());
   const [gameMode, setGameMode] = useState<GameMode>(null);
   const [gameStatus, setGameStatus] = useState<GameStatus>("waiting");
@@ -32,6 +33,9 @@ export function ChessGame({ onMoveForMCP }: ChessGameProps) {
   const [moveHistory, setMoveHistory] = useState<string[]>([]);
   const [playerColor, setPlayerColor] = useState<"white" | "black">("white");
   const [statusMessage, setStatusMessage] = useState("");
+
+  // Track if completion was called
+  const completionCalledRef = useRef(false);
 
   // Check game state
   const checkGameState = useCallback((currentGame: Chess) => {
@@ -48,6 +52,33 @@ export function ChessGame({ onMoveForMCP }: ChessGameProps) {
       setStatusMessage("");
     }
   }, []);
+
+  // Notify game completion
+  useEffect(() => {
+    if (
+      (gameStatus === "checkmate" || gameStatus === "draw") &&
+      !completionCalledRef.current &&
+      onGameComplete &&
+      gameMode === "vs-llm"
+    ) {
+      completionCalledRef.current = true;
+
+      let winner: "player" | "llm" | "draw" = "draw";
+      if (gameStatus === "checkmate") {
+        // If it's white's turn, black won (and vice versa)
+        const winnerColor = game.turn() === "w" ? "black" : "white";
+        winner = winnerColor === playerColor ? "player" : "llm";
+      }
+
+      onGameComplete({
+        winner,
+        moves: moveHistory.length,
+      });
+    }
+    if (gameStatus === "waiting") {
+      completionCalledRef.current = false;
+    }
+  }, [gameStatus, gameMode, onGameComplete, game, playerColor, moveHistory.length]);
 
   // Make LLM move
   const makeLLMMove = useCallback(async (currentGame: Chess) => {

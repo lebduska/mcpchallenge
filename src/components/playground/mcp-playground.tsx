@@ -309,7 +309,7 @@ export function MCPPlayground({
 
   // Configure Monaco with type stubs for MCP SDK
   const handleEditorWillMount = (monaco: Monaco) => {
-    // Add type definitions for MCP SDK and Zod
+    // Add type definitions for MCP SDK, Zod, and WebSocket
     const mcpTypes = `
       declare module "@modelcontextprotocol/sdk/server/mcp.js" {
         export interface McpServerOptions {
@@ -337,38 +337,95 @@ export function MCPPlayground({
         }
       }
 
+      declare module "@modelcontextprotocol/sdk/server/websocket.js" {
+        export class WebSocketServerTransport {
+          constructor(ws: any);
+        }
+      }
+
+      declare module "@modelcontextprotocol/sdk/server/http-sse.js" {
+        export class HttpSseServerTransport {
+          constructor();
+          handleRequest(body: any): Promise<any>;
+        }
+      }
+
+      declare module "ws" {
+        export class WebSocketServer {
+          constructor(options: { port: number });
+          on(event: "connection", callback: (ws: WebSocket) => void): void;
+        }
+        export interface WebSocket {
+          on(event: string, callback: (...args: any[]) => void): void;
+          send(data: string): void;
+        }
+      }
+
+      declare module "express" {
+        interface Request {
+          body: any;
+        }
+        interface Response {
+          json(data: any): void;
+          setHeader(name: string, value: string): void;
+          write(data: string): void;
+        }
+        interface Express {
+          post(path: string, ...handlers: any[]): void;
+          get(path: string, handler: (req: Request, res: Response) => void): void;
+          listen(port: number, callback?: () => void): void;
+        }
+        function express(): Express;
+        namespace express {
+          function json(): any;
+        }
+        export = express;
+      }
+
       declare module "zod" {
         interface ZodString {
           describe(description: string): ZodString;
           optional(): ZodString;
           default(value: string): ZodString;
+          min(n: number): ZodString;
+          max(n: number): ZodString;
         }
         interface ZodNumber {
           describe(description: string): ZodNumber;
           optional(): ZodNumber;
           default(value: number): ZodNumber;
+          min(n: number): ZodNumber;
+          max(n: number): ZodNumber;
         }
         interface ZodEnum<T> {
           describe(description: string): ZodEnum<T>;
           optional(): ZodEnum<T>;
         }
+        interface ZodBoolean {
+          describe(description: string): ZodBoolean;
+          optional(): ZodBoolean;
+          default(value: boolean): ZodBoolean;
+        }
         export const z: {
           string(): ZodString;
           number(): ZodNumber;
+          boolean(): ZodBoolean;
           enum<T extends readonly string[]>(values: T): ZodEnum<T[number]>;
           object<T>(shape: T): any;
+          array<T>(schema: T): any;
         };
       }
     `;
 
     monaco.languages.typescript.typescriptDefaults.addExtraLib(mcpTypes, "mcp-types.d.ts");
 
-    // Enable semantic validation now that we have type stubs
+    // Enable semantic validation
     monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
       noSemanticValidation: false,
       noSyntaxValidation: false,
     });
 
+    // Compiler options that properly support type aliases and modern TS features
     monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
       target: monaco.languages.typescript.ScriptTarget.ESNext,
       module: monaco.languages.typescript.ModuleKind.ESNext,
@@ -376,8 +433,17 @@ export function MCPPlayground({
       allowNonTsExtensions: true,
       esModuleInterop: true,
       allowJs: true,
-      checkJs: true,
+      checkJs: false, // Don't check JS, only TS
+      strict: false, // More lenient type checking
+      noImplicitAny: false,
+      strictNullChecks: false,
+      skipLibCheck: true,
+      lib: ["esnext", "dom"],
+      jsx: monaco.languages.typescript.JsxEmit.React,
     });
+
+    // Set eager model sync for better type inference
+    monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true);
   };
 
   return (
