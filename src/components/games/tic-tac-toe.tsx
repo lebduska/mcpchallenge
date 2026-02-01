@@ -4,7 +4,6 @@ import { useState, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Slider } from "@/components/ui/slider";
 import {
   RotateCcw,
   Bot,
@@ -396,13 +395,14 @@ export function TicTacToe({ onMoveForMCP }: TicTacToeProps) {
                       {boardSize === 3 ? "3 in a row" : "5 in a row"}
                     </span>
                   </div>
-                  <Slider
-                    value={[boardSize]}
-                    onValueChange={handleBoardSizeChange}
+                  <input
+                    type="range"
                     min={3}
                     max={9}
                     step={1}
-                    className="w-full"
+                    value={boardSize}
+                    onChange={(e) => handleBoardSizeChange([parseInt(e.target.value)])}
+                    className="w-full h-2 bg-zinc-200 rounded-lg appearance-none cursor-pointer dark:bg-zinc-700 accent-zinc-900 dark:accent-zinc-100"
                   />
                   <div className="flex justify-between text-xs text-zinc-400">
                     <span>3x3</span>
