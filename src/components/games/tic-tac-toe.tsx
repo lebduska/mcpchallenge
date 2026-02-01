@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Slider } from "@/components/ui/slider";
 import {
   RotateCcw,
   Bot,
@@ -23,41 +24,86 @@ interface TicTacToeProps {
   onMoveForMCP?: (position: number, player: string, board: string) => void;
 }
 
-const WINNING_COMBINATIONS = [
-  [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
-  [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
-  [0, 4, 8], [2, 4, 6], // Diagonals
-];
+// Generate winning combinations for any board size
+function generateWinningCombinations(size: number, winLength: number): number[][] {
+  const combos: number[][] = [];
 
-function checkWinner(board: Board): { winner: Player; line: number[] | null } {
-  for (const combo of WINNING_COMBINATIONS) {
-    const [a, b, c] = combo;
-    if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-      return { winner: board[a], line: combo };
+  // Rows
+  for (let row = 0; row < size; row++) {
+    for (let col = 0; col <= size - winLength; col++) {
+      const combo = [];
+      for (let i = 0; i < winLength; i++) {
+        combo.push(row * size + col + i);
+      }
+      combos.push(combo);
+    }
+  }
+
+  // Columns
+  for (let col = 0; col < size; col++) {
+    for (let row = 0; row <= size - winLength; row++) {
+      const combo = [];
+      for (let i = 0; i < winLength; i++) {
+        combo.push((row + i) * size + col);
+      }
+      combos.push(combo);
+    }
+  }
+
+  // Diagonals (top-left to bottom-right)
+  for (let row = 0; row <= size - winLength; row++) {
+    for (let col = 0; col <= size - winLength; col++) {
+      const combo = [];
+      for (let i = 0; i < winLength; i++) {
+        combo.push((row + i) * size + col + i);
+      }
+      combos.push(combo);
+    }
+  }
+
+  // Diagonals (top-right to bottom-left)
+  for (let row = 0; row <= size - winLength; row++) {
+    for (let col = winLength - 1; col < size; col++) {
+      const combo = [];
+      for (let i = 0; i < winLength; i++) {
+        combo.push((row + i) * size + col - i);
+      }
+      combos.push(combo);
+    }
+  }
+
+  return combos;
+}
+
+function checkWinner(board: Board, winCombos: number[][]): { winner: Player; line: number[] | null } {
+  for (const combo of winCombos) {
+    const first = board[combo[0]];
+    if (first && combo.every(idx => board[idx] === first)) {
+      return { winner: first, line: combo };
     }
   }
   return { winner: null, line: null };
 }
 
-function isDraw(board: Board): boolean {
-  return board.every(cell => cell !== null) && !checkWinner(board).winner;
+function isDraw(board: Board, winCombos: number[][]): boolean {
+  return board.every(cell => cell !== null) && !checkWinner(board, winCombos).winner;
 }
 
-// Minimax AI
-function minimax(board: Board, isMaximizing: boolean, aiPlayer: Player): number {
+// Minimax AI for 3x3 only
+function minimax(board: Board, isMaximizing: boolean, aiPlayer: Player, winCombos: number[][]): number {
   const humanPlayer = aiPlayer === "X" ? "O" : "X";
-  const { winner } = checkWinner(board);
+  const { winner } = checkWinner(board, winCombos);
 
   if (winner === aiPlayer) return 10;
   if (winner === humanPlayer) return -10;
-  if (isDraw(board)) return 0;
+  if (isDraw(board, winCombos)) return 0;
 
   if (isMaximizing) {
     let bestScore = -Infinity;
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < board.length; i++) {
       if (board[i] === null) {
         board[i] = aiPlayer;
-        const score = minimax(board, false, aiPlayer);
+        const score = minimax(board, false, aiPlayer, winCombos);
         board[i] = null;
         bestScore = Math.max(score, bestScore);
       }
@@ -65,10 +111,10 @@ function minimax(board: Board, isMaximizing: boolean, aiPlayer: Player): number 
     return bestScore;
   } else {
     let bestScore = Infinity;
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < board.length; i++) {
       if (board[i] === null) {
         board[i] = humanPlayer;
-        const score = minimax(board, true, aiPlayer);
+        const score = minimax(board, true, aiPlayer, winCombos);
         board[i] = null;
         bestScore = Math.min(score, bestScore);
       }
@@ -77,14 +123,14 @@ function minimax(board: Board, isMaximizing: boolean, aiPlayer: Player): number 
   }
 }
 
-function getBestMove(board: Board, aiPlayer: Player): number {
+function getBestMove3x3(board: Board, aiPlayer: Player, winCombos: number[][]): number {
   let bestScore = -Infinity;
   let bestMove = -1;
 
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < board.length; i++) {
     if (board[i] === null) {
       board[i] = aiPlayer;
-      const score = minimax(board, false, aiPlayer);
+      const score = minimax(board, false, aiPlayer, winCombos);
       board[i] = null;
       if (score > bestScore) {
         bestScore = score;
@@ -96,11 +142,71 @@ function getBestMove(board: Board, aiPlayer: Player): number {
   return bestMove;
 }
 
+// Heuristic AI for larger boards
+function getBestMoveLarge(board: Board, aiPlayer: Player, size: number, winLength: number, winCombos: number[][]): number {
+  const humanPlayer = aiPlayer === "X" ? "O" : "X";
+
+  // Score each empty cell
+  let bestMove = -1;
+  let bestScore = -Infinity;
+
+  const emptyCells = board.map((cell, idx) => cell === null ? idx : -1).filter(idx => idx !== -1);
+
+  for (const idx of emptyCells) {
+    let score = 0;
+
+    // Check each winning combo that includes this cell
+    for (const combo of winCombos) {
+      if (!combo.includes(idx)) continue;
+
+      const aiCount = combo.filter(i => board[i] === aiPlayer).length;
+      const humanCount = combo.filter(i => board[i] === humanPlayer).length;
+      const emptyCount = combo.filter(i => board[i] === null).length;
+
+      // If combo is blocked, skip
+      if (aiCount > 0 && humanCount > 0) continue;
+
+      // Offensive scoring
+      if (humanCount === 0) {
+        if (aiCount === winLength - 1) score += 10000; // Win!
+        else if (aiCount === winLength - 2) score += 100;
+        else score += aiCount * 10;
+      }
+
+      // Defensive scoring
+      if (aiCount === 0) {
+        if (humanCount === winLength - 1) score += 5000; // Block win
+        else if (humanCount === winLength - 2) score += 50;
+        else score += humanCount * 5;
+      }
+    }
+
+    // Prefer center and near-center positions
+    const row = Math.floor(idx / size);
+    const col = idx % size;
+    const centerDist = Math.abs(row - size / 2) + Math.abs(col - size / 2);
+    score += (size - centerDist) * 2;
+
+    if (score > bestScore) {
+      bestScore = score;
+      bestMove = idx;
+    }
+  }
+
+  // Fallback to random empty cell
+  if (bestMove === -1 && emptyCells.length > 0) {
+    bestMove = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+  }
+
+  return bestMove;
+}
+
 function boardToString(board: Board): string {
   return board.map(cell => cell || ".").join("");
 }
 
 export function TicTacToe({ onMoveForMCP }: TicTacToeProps) {
+  const [boardSize, setBoardSize] = useState(3);
   const [board, setBoard] = useState<Board>(Array(9).fill(null));
   const [currentPlayer, setCurrentPlayer] = useState<Player>("X");
   const [gameMode, setGameMode] = useState<GameMode>(null);
@@ -111,24 +217,35 @@ export function TicTacToe({ onMoveForMCP }: TicTacToeProps) {
   const [playerSymbol, setPlayerSymbol] = useState<Player>("X");
   const [scores, setScores] = useState({ player: 0, ai: 0, draws: 0 });
 
+  // Win length: 3 for 3x3, 5 for larger boards
+  const winLength = boardSize === 3 ? 3 : 5;
+
+  // Memoize winning combinations
+  const winCombos = useMemo(
+    () => generateWinningCombinations(boardSize, winLength),
+    [boardSize, winLength]
+  );
+
   const makeAIMove = useCallback((currentBoard: Board, aiSymbol: Player) => {
     setIsThinking(true);
 
     setTimeout(() => {
-      const move = getBestMove([...currentBoard], aiSymbol);
+      const move = boardSize === 3
+        ? getBestMove3x3([...currentBoard], aiSymbol, winCombos)
+        : getBestMoveLarge([...currentBoard], aiSymbol, boardSize, winLength, winCombos);
 
       if (move !== -1) {
         const newBoard = [...currentBoard];
         newBoard[move] = aiSymbol;
         setBoard(newBoard);
 
-        const { winner: w, line } = checkWinner(newBoard);
+        const { winner: w, line } = checkWinner(newBoard, winCombos);
         if (w) {
           setWinner(w);
           setWinningLine(line);
           setGameStatus("won");
           setScores(prev => ({ ...prev, ai: prev.ai + 1 }));
-        } else if (isDraw(newBoard)) {
+        } else if (isDraw(newBoard, winCombos)) {
           setGameStatus("draw");
           setScores(prev => ({ ...prev, draws: prev.draws + 1 }));
         } else {
@@ -140,7 +257,7 @@ export function TicTacToe({ onMoveForMCP }: TicTacToeProps) {
 
       setIsThinking(false);
     }, 300 + Math.random() * 400);
-  }, [onMoveForMCP]);
+  }, [boardSize, winLength, winCombos, onMoveForMCP]);
 
   const handleCellClick = useCallback((index: number) => {
     if (gameStatus !== "playing" || board[index] || isThinking) return;
@@ -154,7 +271,7 @@ export function TicTacToe({ onMoveForMCP }: TicTacToeProps) {
 
     onMoveForMCP?.(index, currentPlayer!, boardToString(newBoard));
 
-    const { winner: w, line } = checkWinner(newBoard);
+    const { winner: w, line } = checkWinner(newBoard, winCombos);
     if (w) {
       setWinner(w);
       setWinningLine(line);
@@ -162,7 +279,7 @@ export function TicTacToe({ onMoveForMCP }: TicTacToeProps) {
       if (gameMode === "vs-ai") {
         setScores(prev => ({ ...prev, player: prev.player + 1 }));
       }
-    } else if (isDraw(newBoard)) {
+    } else if (isDraw(newBoard, winCombos)) {
       setGameStatus("draw");
       setScores(prev => ({ ...prev, draws: prev.draws + 1 }));
     } else {
@@ -174,10 +291,11 @@ export function TicTacToe({ onMoveForMCP }: TicTacToeProps) {
         makeAIMove(newBoard, nextPlayer);
       }
     }
-  }, [board, currentPlayer, gameMode, gameStatus, isThinking, playerSymbol, makeAIMove, onMoveForMCP]);
+  }, [board, currentPlayer, gameMode, gameStatus, isThinking, playerSymbol, makeAIMove, onMoveForMCP, winCombos]);
 
   const startGame = (mode: GameMode, symbol: Player = "X") => {
-    setBoard(Array(9).fill(null));
+    const newBoard = Array(boardSize * boardSize).fill(null);
+    setBoard(newBoard);
     setCurrentPlayer("X");
     setGameMode(mode);
     setGameStatus("playing");
@@ -187,12 +305,12 @@ export function TicTacToe({ onMoveForMCP }: TicTacToeProps) {
 
     // If playing as O against AI, let AI move first
     if (mode === "vs-ai" && symbol === "O") {
-      makeAIMove(Array(9).fill(null), "X");
+      makeAIMove(newBoard, "X");
     }
   };
 
   const resetGame = () => {
-    setBoard(Array(9).fill(null));
+    setBoard(Array(boardSize * boardSize).fill(null));
     setCurrentPlayer("X");
     setGameMode(null);
     setGameStatus("waiting");
@@ -201,20 +319,35 @@ export function TicTacToe({ onMoveForMCP }: TicTacToeProps) {
   };
 
   const playAgain = () => {
-    setBoard(Array(9).fill(null));
+    const newBoard = Array(boardSize * boardSize).fill(null);
+    setBoard(newBoard);
     setCurrentPlayer("X");
     setGameStatus("playing");
     setWinner(null);
     setWinningLine(null);
 
     if (gameMode === "vs-ai" && playerSymbol === "O") {
-      makeAIMove(Array(9).fill(null), "X");
+      makeAIMove(newBoard, "X");
     }
+  };
+
+  const handleBoardSizeChange = (value: number[]) => {
+    const newSize = value[0];
+    setBoardSize(newSize);
+    setBoard(Array(newSize * newSize).fill(null));
+    setCurrentPlayer("X");
+    setWinner(null);
+    setWinningLine(null);
   };
 
   const renderCell = (index: number) => {
     const value = board[index];
     const isWinningCell = winningLine?.includes(index);
+    const row = Math.floor(index / boardSize);
+    const col = index % boardSize;
+
+    // Adjust icon size based on board size
+    const iconSize = boardSize <= 3 ? "h-12 w-12" : boardSize <= 5 ? "h-8 w-8" : boardSize <= 7 ? "h-6 w-6" : "h-4 w-4";
 
     return (
       <button
@@ -222,23 +355,23 @@ export function TicTacToe({ onMoveForMCP }: TicTacToeProps) {
         onClick={() => handleCellClick(index)}
         disabled={gameStatus !== "playing" || !!value || isThinking}
         className={`
-          aspect-square flex items-center justify-center text-4xl font-bold
-          border-2 border-zinc-300 dark:border-zinc-600
+          aspect-square flex items-center justify-center font-bold
+          border border-zinc-300 dark:border-zinc-600
           transition-all duration-200
           ${!value && gameStatus === "playing" && !isThinking
             ? "hover:bg-zinc-100 dark:hover:bg-zinc-700 cursor-pointer"
             : "cursor-default"
           }
           ${isWinningCell ? "bg-green-100 dark:bg-green-900/30" : "bg-white dark:bg-zinc-800"}
-          ${index < 3 ? "" : "border-t-0"}
-          ${index % 3 === 0 ? "" : "border-l-0"}
+          ${row === 0 ? "" : "border-t-0"}
+          ${col === 0 ? "" : "border-l-0"}
         `}
       >
         {value === "X" && (
-          <X className={`h-12 w-12 ${isWinningCell ? "text-green-600" : "text-blue-500"}`} />
+          <X className={`${iconSize} ${isWinningCell ? "text-green-600" : "text-blue-500"}`} />
         )}
         {value === "O" && (
-          <Circle className={`h-10 w-10 ${isWinningCell ? "text-green-600" : "text-red-500"}`} />
+          <Circle className={`${iconSize} ${isWinningCell ? "text-green-600" : "text-red-500"}`} />
         )}
       </button>
     );
@@ -252,22 +385,45 @@ export function TicTacToe({ onMoveForMCP }: TicTacToeProps) {
           <CardContent className="p-6">
             {gameMode === null ? (
               // Game mode selection
-              <div className="aspect-square max-w-md mx-auto flex flex-col items-center justify-center gap-6 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
+              <div className="max-w-md mx-auto flex flex-col items-center justify-center gap-6 bg-zinc-100 dark:bg-zinc-800 rounded-lg p-8">
                 <h2 className="text-2xl font-bold">Choose Game Mode</h2>
-                <div className="flex flex-col gap-4">
+
+                {/* Board size selector */}
+                <div className="w-full space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>Board Size: <strong>{boardSize}x{boardSize}</strong></span>
+                    <span className="text-zinc-500">
+                      {boardSize === 3 ? "3 in a row" : "5 in a row"}
+                    </span>
+                  </div>
+                  <Slider
+                    value={[boardSize]}
+                    onValueChange={handleBoardSizeChange}
+                    min={3}
+                    max={9}
+                    step={1}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-zinc-400">
+                    <span>3x3</span>
+                    <span>9x9</span>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-4 w-full">
                   <div className="flex gap-2">
                     <Button
                       size="lg"
-                      className="gap-2"
+                      className="gap-2 flex-1"
                       onClick={() => startGame("vs-ai", "X")}
                     >
                       <Bot className="h-5 w-5" />
-                      Play as X (first)
+                      Play as X
                     </Button>
                     <Button
                       size="lg"
                       variant="outline"
-                      className="gap-2"
+                      className="gap-2 flex-1"
                       onClick={() => startGame("vs-ai", "O")}
                     >
                       <Bot className="h-5 w-5" />
@@ -287,9 +443,12 @@ export function TicTacToe({ onMoveForMCP }: TicTacToeProps) {
               </div>
             ) : (
               // Game board
-              <div className="relative max-w-md mx-auto">
-                <div className="grid grid-cols-3">
-                  {Array(9).fill(null).map((_, i) => renderCell(i))}
+              <div className="relative max-w-lg mx-auto">
+                <div
+                  className="grid"
+                  style={{ gridTemplateColumns: `repeat(${boardSize}, 1fr)` }}
+                >
+                  {Array(boardSize * boardSize).fill(null).map((_, i) => renderCell(i))}
                 </div>
 
                 {/* Thinking overlay */}
@@ -349,9 +508,15 @@ export function TicTacToe({ onMoveForMCP }: TicTacToeProps) {
               {gameMode && (
                 <>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-zinc-500">Mode:</span>
+                    <span className="text-sm text-zinc-500">Board:</span>
                     <Badge variant="secondary">
-                      {gameMode === "vs-ai" ? "vs AI" : "2 Players"}
+                      {boardSize}x{boardSize}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-zinc-500">To win:</span>
+                    <Badge variant="outline">
+                      {winLength} in a row
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
