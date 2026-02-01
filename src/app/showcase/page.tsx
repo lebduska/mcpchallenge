@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Star } from "lucide-react";
 
 export const metadata = {
   title: "Showcase",
@@ -100,7 +101,7 @@ export default function ShowcasePage() {
                     {server.category}
                   </Badge>
                   <div className="flex items-center gap-1 text-zinc-500">
-                    <span>⭐</span>
+                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                     <span>{server.stars}</span>
                   </div>
                 </div>

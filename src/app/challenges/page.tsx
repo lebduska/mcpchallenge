@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Trophy } from "lucide-react";
 
 export const metadata = {
   title: "Challenges",
@@ -89,8 +90,8 @@ export default function ChallengesPage() {
             </p>
           </div>
           <Link href="/leaderboard">
-            <Badge variant="outline" className="text-lg px-4 py-2 cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-800">
-              🏆 Leaderboard
+            <Badge variant="outline" className="text-lg px-4 py-2 cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center gap-2">
+              <Trophy className="h-5 w-5" /> Leaderboard
             </Badge>
           </Link>
         </div>

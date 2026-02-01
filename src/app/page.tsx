@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { BookOpen, Wrench, Trophy, Sparkles, Heart } from "lucide-react";
 
 const features = [
   {
@@ -9,28 +10,28 @@ const features = [
     description: "Interactive tutorials and documentation to master the Model Context Protocol",
     href: "/learn",
     badge: "Start Here",
-    icon: "📚",
+    icon: BookOpen,
   },
   {
     title: "Playground",
     description: "Build and test your MCP servers in a live sandbox environment",
     href: "/playground",
     badge: "Interactive",
-    icon: "🛠️",
+    icon: Wrench,
   },
   {
     title: "Challenges",
     description: "Solve problems, build MCP servers, and compete on the leaderboard",
     href: "/challenges",
     badge: "Compete",
-    icon: "🏆",
+    icon: Trophy,
   },
   {
     title: "Showcase",
     description: "Explore community-built MCP servers and get inspired",
     href: "/showcase",
     badge: "Community",
-    icon: "✨",
+    icon: Sparkles,
   },
 ];
 
@@ -96,7 +97,7 @@ server.tool(
               <Card className="h-full transition-all hover:shadow-lg hover:border-zinc-400 dark:hover:border-zinc-600 cursor-pointer">
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <span className="text-4xl">{feature.icon}</span>
+                    <feature.icon className="h-10 w-10 text-zinc-700 dark:text-zinc-300" />
                     <Badge>{feature.badge}</Badge>
                   </div>
                   <CardTitle className="mt-4">{feature.title}</CardTitle>
@@ -133,8 +134,8 @@ server.tool(
       {/* Footer */}
       <footer className="container mx-auto px-4 py-8 border-t border-zinc-200 dark:border-zinc-800">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-zinc-600 dark:text-zinc-400">
-            Built with ❤️ for the MCP community
+          <p className="text-zinc-600 dark:text-zinc-400 flex items-center gap-1">
+            Built with <Heart className="h-4 w-4 text-red-500 fill-red-500" /> for the MCP community
           </p>
           <div className="flex gap-4">
             <a
