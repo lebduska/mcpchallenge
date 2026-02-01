@@ -307,16 +307,76 @@ export function MCPPlayground({
 
   const currentTool = validation?.tools.find((t) => t.name === selectedTool);
 
-  // Configure Monaco: keep syntax validation, disable semantic (types/modules)
+  // Configure Monaco with type stubs for MCP SDK
   const handleEditorWillMount = (monaco: Monaco) => {
+    // Add type definitions for MCP SDK and Zod
+    const mcpTypes = `
+      declare module "@modelcontextprotocol/sdk/server/mcp.js" {
+        export interface McpServerOptions {
+          name: string;
+          version: string;
+        }
+        export interface ToolResult {
+          content: Array<{ type: string; text: string }>;
+        }
+        export class McpServer {
+          constructor(options: McpServerOptions);
+          tool<T extends Record<string, any>>(
+            name: string,
+            description: string,
+            schema: T,
+            handler: (input: any) => Promise<ToolResult>
+          ): void;
+          connect(transport: any): Promise<void>;
+        }
+      }
+
+      declare module "@modelcontextprotocol/sdk/server/stdio.js" {
+        export class StdioServerTransport {
+          constructor();
+        }
+      }
+
+      declare module "zod" {
+        interface ZodString {
+          describe(description: string): ZodString;
+          optional(): ZodString;
+          default(value: string): ZodString;
+        }
+        interface ZodNumber {
+          describe(description: string): ZodNumber;
+          optional(): ZodNumber;
+          default(value: number): ZodNumber;
+        }
+        interface ZodEnum<T> {
+          describe(description: string): ZodEnum<T>;
+          optional(): ZodEnum<T>;
+        }
+        export const z: {
+          string(): ZodString;
+          number(): ZodNumber;
+          enum<T extends readonly string[]>(values: T): ZodEnum<T[number]>;
+          object<T>(shape: T): any;
+        };
+      }
+    `;
+
+    monaco.languages.typescript.typescriptDefaults.addExtraLib(mcpTypes, "mcp-types.d.ts");
+
+    // Enable semantic validation now that we have type stubs
     monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
-      noSemanticValidation: true,  // Disable type errors (Record, imports, etc.)
-      noSyntaxValidation: false,   // Keep syntax errors (missing brackets, etc.)
+      noSemanticValidation: false,
+      noSyntaxValidation: false,
     });
 
-    monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
-      noSemanticValidation: true,
-      noSyntaxValidation: false,
+    monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+      target: monaco.languages.typescript.ScriptTarget.ESNext,
+      module: monaco.languages.typescript.ModuleKind.ESNext,
+      moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+      allowNonTsExtensions: true,
+      esModuleInterop: true,
+      allowJs: true,
+      checkJs: true,
     });
   };
 
