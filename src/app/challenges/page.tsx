@@ -20,6 +20,15 @@ const challenges = [
     featured: true,
   },
   {
+    id: "tic-tac-toe",
+    title: "Tic-Tac-Toe",
+    description: "Classic game with unbeatable minimax AI. Can you force a draw?",
+    difficulty: "beginner",
+    points: 50,
+    type: "game",
+    completions: 0,
+  },
+  {
     id: "hello-world",
     title: "Hello World",
     description: "Create your first MCP tool that greets users",
