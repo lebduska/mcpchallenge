@@ -1,12 +1,10 @@
+"use client";
+
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Crown, Gamepad2 } from "lucide-react";
-
-export const metadata = {
-  title: "Challenges",
-  description: "Test your MCP skills with interactive challenges",
-};
+import { Trophy, Gamepad2, Wrench, Play } from "lucide-react";
 
 const challenges = [
   {
@@ -101,12 +99,26 @@ const difficultyColors = {
 };
 
 const typeLabels = {
-  build: { label: "Build Server", color: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100" },
-  use: { label: "Use Tools", color: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100" },
-  game: { label: "Game", color: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100" },
+  build: { label: "Build Server", color: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100", icon: Wrench },
+  use: { label: "Use Tools", color: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100", icon: Play },
+  game: { label: "Game", color: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100", icon: Gamepad2 },
 };
 
+type FilterType = "all" | "game" | "build" | "use";
+type FilterDifficulty = "all" | "beginner" | "intermediate" | "advanced";
+
 export default function ChallengesPage() {
+  const [typeFilter, setTypeFilter] = useState<FilterType>("all");
+  const [difficultyFilter, setDifficultyFilter] = useState<FilterDifficulty>("all");
+
+  const filteredChallenges = useMemo(() => {
+    return challenges.filter((challenge) => {
+      const matchesType = typeFilter === "all" || challenge.type === typeFilter;
+      const matchesDifficulty = difficultyFilter === "all" || challenge.difficulty === difficultyFilter;
+      return matchesType && matchesDifficulty;
+    });
+  }, [typeFilter, difficultyFilter]);
+
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-4xl mx-auto">
@@ -127,22 +139,85 @@ export default function ChallengesPage() {
         </div>
 
         {/* Filters */}
-        <div className="mt-8 flex flex-wrap gap-2">
-          <Badge variant="secondary" className="cursor-pointer">All</Badge>
-          <Badge variant="outline" className="cursor-pointer">
-            <Gamepad2 className="h-3 w-3 mr-1" />
-            Games
-          </Badge>
-          <Badge variant="outline" className="cursor-pointer">Build Server</Badge>
-          <Badge variant="outline" className="cursor-pointer">Use Tools</Badge>
-          <Badge variant="outline" className="cursor-pointer">Beginner</Badge>
-          <Badge variant="outline" className="cursor-pointer">Intermediate</Badge>
-          <Badge variant="outline" className="cursor-pointer">Advanced</Badge>
+        <div className="mt-8 space-y-3">
+          {/* Type filters */}
+          <div className="flex flex-wrap gap-2">
+            <span className="text-sm text-zinc-500 mr-2 self-center">Type:</span>
+            <Badge
+              variant={typeFilter === "all" ? "default" : "outline"}
+              className="cursor-pointer"
+              onClick={() => setTypeFilter("all")}
+            >
+              All
+            </Badge>
+            <Badge
+              variant={typeFilter === "game" ? "default" : "outline"}
+              className="cursor-pointer"
+              onClick={() => setTypeFilter("game")}
+            >
+              <Gamepad2 className="h-3 w-3 mr-1" />
+              Games
+            </Badge>
+            <Badge
+              variant={typeFilter === "build" ? "default" : "outline"}
+              className="cursor-pointer"
+              onClick={() => setTypeFilter("build")}
+            >
+              <Wrench className="h-3 w-3 mr-1" />
+              Build Server
+            </Badge>
+            <Badge
+              variant={typeFilter === "use" ? "default" : "outline"}
+              className="cursor-pointer"
+              onClick={() => setTypeFilter("use")}
+            >
+              <Play className="h-3 w-3 mr-1" />
+              Use Tools
+            </Badge>
+          </div>
+
+          {/* Difficulty filters */}
+          <div className="flex flex-wrap gap-2">
+            <span className="text-sm text-zinc-500 mr-2 self-center">Difficulty:</span>
+            <Badge
+              variant={difficultyFilter === "all" ? "default" : "outline"}
+              className="cursor-pointer"
+              onClick={() => setDifficultyFilter("all")}
+            >
+              All
+            </Badge>
+            <Badge
+              variant={difficultyFilter === "beginner" ? "default" : "outline"}
+              className={`cursor-pointer ${difficultyFilter === "beginner" ? "" : "hover:bg-green-50 dark:hover:bg-green-950"}`}
+              onClick={() => setDifficultyFilter("beginner")}
+            >
+              Beginner
+            </Badge>
+            <Badge
+              variant={difficultyFilter === "intermediate" ? "default" : "outline"}
+              className={`cursor-pointer ${difficultyFilter === "intermediate" ? "" : "hover:bg-yellow-50 dark:hover:bg-yellow-950"}`}
+              onClick={() => setDifficultyFilter("intermediate")}
+            >
+              Intermediate
+            </Badge>
+            <Badge
+              variant={difficultyFilter === "advanced" ? "default" : "outline"}
+              className={`cursor-pointer ${difficultyFilter === "advanced" ? "" : "hover:bg-red-50 dark:hover:bg-red-950"}`}
+              onClick={() => setDifficultyFilter("advanced")}
+            >
+              Advanced
+            </Badge>
+          </div>
         </div>
 
         {/* Challenge Grid */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-          {challenges.map((challenge) => (
+          {filteredChallenges.length === 0 ? (
+            <div className="col-span-2 text-center py-12 text-zinc-500">
+              No challenges match your filters. Try adjusting the filters above.
+            </div>
+          ) : null}
+          {filteredChallenges.map((challenge) => (
             <Link key={challenge.id} href={`/challenges/${challenge.id}`}>
               <Card className="h-full transition-all hover:shadow-lg hover:border-zinc-400 dark:hover:border-zinc-600 cursor-pointer">
                 <CardHeader>
