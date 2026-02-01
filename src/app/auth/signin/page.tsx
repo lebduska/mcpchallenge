@@ -1,17 +1,30 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useMemo } from "react";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ExternalLink, AlertTriangle } from "lucide-react";
+
+const PROD_DOMAIN = "mcpchallenge.org";
 
 function SignInContent() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
   const error = searchParams.get("error");
+
+  // Check if we're on pages.dev (dev environment)
+  const isDevEnvironment = useMemo(() => {
+    if (typeof window === "undefined") return false;
+    return window.location.hostname.includes("pages.dev");
+  }, []);
+
+  const handleRedirectToProd = () => {
+    const prodSignInUrl = `https://${PROD_DOMAIN}/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}`;
+    window.location.href = prodSignInUrl;
+  };
 
   const providers = [
     // TODO: Uncomment when Google OAuth credentials are configured
@@ -90,19 +103,44 @@ function SignInContent() {
               </div>
             )}
 
-            <div className="space-y-3">
-              {providers.map((provider) => (
+            {isDevEnvironment ? (
+              <div className="space-y-4">
+                <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                  <div className="flex items-start gap-3">
+                    <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
+                    <div>
+                      <p className="font-medium text-amber-800 dark:text-amber-200">
+                        Development Environment
+                      </p>
+                      <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">
+                        You&apos;re on the preview site. Sign in is only available on the production site.
+                      </p>
+                    </div>
+                  </div>
+                </div>
                 <Button
-                  key={provider.id}
-                  variant="outline"
-                  className={`w-full h-12 ${provider.color}`}
-                  onClick={() => signIn(provider.id, { callbackUrl })}
+                  className="w-full h-12"
+                  onClick={handleRedirectToProd}
                 >
-                  {provider.icon}
-                  <span className="ml-3">Continue with {provider.name}</span>
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Continue to {PROD_DOMAIN}
                 </Button>
-              ))}
-            </div>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {providers.map((provider) => (
+                  <Button
+                    key={provider.id}
+                    variant="outline"
+                    className={`w-full h-12 ${provider.color}`}
+                    onClick={() => signIn(provider.id, { callbackUrl })}
+                  >
+                    {provider.icon}
+                    <span className="ml-3">Continue with {provider.name}</span>
+                  </Button>
+                ))}
+              </div>
+            )}
 
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
