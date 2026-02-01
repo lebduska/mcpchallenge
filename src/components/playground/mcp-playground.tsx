@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import Editor from "@monaco-editor/react";
+import Editor, { Monaco } from "@monaco-editor/react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -307,6 +307,30 @@ export function MCPPlayground({
 
   const currentTool = validation?.tools.find((t) => t.name === selectedTool);
 
+  // Configure Monaco to not show module resolution errors
+  const handleEditorWillMount = (monaco: Monaco) => {
+    monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+      target: monaco.languages.typescript.ScriptTarget.ESNext,
+      module: monaco.languages.typescript.ModuleKind.ESNext,
+      moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+      allowNonTsExtensions: true,
+      noEmit: true,
+      esModuleInterop: true,
+      jsx: monaco.languages.typescript.JsxEmit.React,
+      allowJs: true,
+      skipLibCheck: true,
+      // Disable strict checks that would fail without proper type definitions
+      noImplicitAny: false,
+      strictNullChecks: false,
+    });
+
+    // Disable semantic validation (module resolution errors)
+    monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+      noSemanticValidation: true,
+      noSyntaxValidation: false, // Keep syntax validation
+    });
+  };
+
   return (
     <Card className={compact ? "border-0 shadow-none" : ""}>
       {(title || description) && !compact && (
@@ -361,6 +385,7 @@ export function MCPPlayground({
                 value={code}
                 onChange={(value) => setCode(value || "")}
                 theme="vs-dark"
+                beforeMount={handleEditorWillMount}
                 options={{
                   minimap: { enabled: false },
                   fontSize: 14,
