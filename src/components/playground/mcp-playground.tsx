@@ -307,27 +307,18 @@ export function MCPPlayground({
 
   const currentTool = validation?.tools.find((t) => t.name === selectedTool);
 
-  // Configure Monaco to not show module resolution errors
+  // Configure Monaco to disable all TypeScript diagnostics
   const handleEditorWillMount = (monaco: Monaco) => {
-    monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
-      target: monaco.languages.typescript.ScriptTarget.ESNext,
-      module: monaco.languages.typescript.ModuleKind.ESNext,
-      moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
-      allowNonTsExtensions: true,
-      noEmit: true,
-      esModuleInterop: true,
-      jsx: monaco.languages.typescript.JsxEmit.React,
-      allowJs: true,
-      skipLibCheck: true,
-      // Disable strict checks that would fail without proper type definitions
-      noImplicitAny: false,
-      strictNullChecks: false,
-    });
-
-    // Disable semantic validation (module resolution errors)
+    // Disable TypeScript validation completely
     monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
       noSemanticValidation: true,
-      noSyntaxValidation: false, // Keep syntax validation
+      noSyntaxValidation: true,
+    });
+
+    // Also disable for JavaScript
+    monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+      noSemanticValidation: true,
+      noSyntaxValidation: true,
     });
   };
 
