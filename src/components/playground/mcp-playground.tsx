@@ -307,18 +307,16 @@ export function MCPPlayground({
 
   const currentTool = validation?.tools.find((t) => t.name === selectedTool);
 
-  // Configure Monaco to disable all TypeScript diagnostics
+  // Configure Monaco: keep syntax validation, disable semantic (types/modules)
   const handleEditorWillMount = (monaco: Monaco) => {
-    // Disable TypeScript validation completely
     monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
-      noSemanticValidation: true,
-      noSyntaxValidation: true,
+      noSemanticValidation: true,  // Disable type errors (Record, imports, etc.)
+      noSyntaxValidation: false,   // Keep syntax errors (missing brackets, etc.)
     });
 
-    // Also disable for JavaScript
     monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
       noSemanticValidation: true,
-      noSyntaxValidation: true,
+      noSyntaxValidation: false,
     });
   };
 
