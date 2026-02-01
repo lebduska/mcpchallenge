@@ -277,7 +277,7 @@ export default function ChessChallengePage() {
                         <div key={i}>
                           <span className="text-zinc-500">{i + 1}.</span>{" "}
                           <span className="text-green-400">{entry.move}</span>{" "}
-                          <span className="text-zinc-600">// {entry.fen}</span>
+                          <span className="text-zinc-600">{`// ${entry.fen}`}</span>
                         </div>
                       ))}
                     </div>

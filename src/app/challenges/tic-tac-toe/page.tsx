@@ -305,7 +305,7 @@ export default function TicTacToeChallengePage() {
                           <span className="text-blue-400">{entry.player}</span>{" "}
                           <span className="text-zinc-400">→ position</span>{" "}
                           <span className="text-green-400">{entry.position}</span>{" "}
-                          <span className="text-zinc-600">// {entry.board}</span>
+                          <span className="text-zinc-600">{`// ${entry.board}`}</span>
                         </div>
                       ))}
                     </div>

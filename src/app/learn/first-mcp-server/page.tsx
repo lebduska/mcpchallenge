@@ -584,19 +584,19 @@ npm init -y`}
                   </div>
                   <div className="pl-4 flex gap-2">
                     <span className="text-green-500">&quot;greet&quot;</span>
-                    <span className="text-zinc-500">// Tool name (unique identifier)</span>
+                    <span className="text-zinc-500">{"// Tool name (unique identifier)"}</span>
                   </div>
                   <div className="pl-4 flex gap-2">
                     <span className="text-green-500">&quot;Description...&quot;</span>
-                    <span className="text-zinc-500">// What the tool does</span>
+                    <span className="text-zinc-500">{"// What the tool does"}</span>
                   </div>
                   <div className="pl-4 flex gap-2">
                     <span className="text-blue-500">{`{ name: z.string() }`}</span>
-                    <span className="text-zinc-500">// Input schema (Zod)</span>
+                    <span className="text-zinc-500">{"// Input schema (Zod)"}</span>
                   </div>
                   <div className="pl-4 flex gap-2">
                     <span className="text-orange-500">async (input) =&gt; result</span>
-                    <span className="text-zinc-500">// Handler function</span>
+                    <span className="text-zinc-500">{"// Handler function"}</span>
                   </div>
                   <div className="flex gap-2">
                     <span className="text-purple-500">)</span>
