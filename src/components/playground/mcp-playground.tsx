@@ -20,10 +20,19 @@ import {
 } from "lucide-react";
 
 // Tool definition extracted from code
+interface ExtractedParam {
+  name: string;
+  type: "string" | "number" | "boolean" | "enum";
+  enumValues?: string[];
+  description?: string;
+  example?: string;
+}
+
 interface ExtractedTool {
   name: string;
   description: string;
   parameters: string[];
+  paramDetails: ExtractedParam[];
 }
 
 interface ToolCallResult {
@@ -175,25 +184,108 @@ function simulateToolCall(
 function extractTools(code: string): ExtractedTool[] {
   const tools: ExtractedTool[] = [];
 
-  // Match server.tool(...) calls
+  // Match server.tool(...) calls - get everything up to the async handler
   const toolRegex = /server\.tool\(\s*["']([^"']+)["']\s*,\s*["']([^"']+)["']\s*,\s*\{([^}]*)\}/g;
   let match;
 
   while ((match = toolRegex.exec(code)) !== null) {
     const [, name, description, paramsBlock] = match;
 
-    // Extract parameter names from the schema
-    const paramRegex = /(\w+)\s*:/g;
+    // Extract parameter details from the schema
     const parameters: string[] = [];
+    const paramDetails: ExtractedParam[] = [];
+
+    // Match each parameter line: name: z.type().describe("...") etc.
+    const paramLineRegex = /(\w+)\s*:\s*z\.(\w+)\((.*?)\)/g;
     let paramMatch;
-    while ((paramMatch = paramRegex.exec(paramsBlock)) !== null) {
-      parameters.push(paramMatch[1]);
+
+    while ((paramMatch = paramLineRegex.exec(paramsBlock)) !== null) {
+      const [, paramName, zodType, zodArgs] = paramMatch;
+      parameters.push(paramName);
+
+      const param: ExtractedParam = {
+        name: paramName,
+        type: zodType === "number" ? "number" : zodType === "boolean" ? "boolean" : zodType === "enum" ? "enum" : "string",
+        example: "",
+      };
+
+      // Extract enum values
+      if (zodType === "enum") {
+        const enumMatch = zodArgs.match(/\[([^\]]+)\]/);
+        if (enumMatch) {
+          param.enumValues = enumMatch[1].split(",").map(v => v.trim().replace(/["']/g, ""));
+          param.example = param.enumValues[0];
+        }
+      }
+
+      // Extract description from .describe("...")
+      const descMatch = paramsBlock.substring(paramsBlock.indexOf(paramName)).match(/\.describe\(["']([^"']+)["']\)/);
+      if (descMatch) {
+        param.description = descMatch[1];
+      }
+
+      // Generate example based on type and name
+      if (!param.example) {
+        param.example = generateExample(paramName, param.type, param.description);
+      }
+
+      paramDetails.push(param);
     }
 
-    tools.push({ name, description, parameters });
+    tools.push({ name, description, parameters, paramDetails });
   }
 
   return tools;
+}
+
+// Generate sensible example values based on parameter name and type
+function generateExample(name: string, type: string, description?: string): string {
+  const nameLower = name.toLowerCase();
+  const descLower = (description || "").toLowerCase();
+
+  // Number examples
+  if (type === "number") {
+    if (nameLower.includes("lat")) return "50.0875";
+    if (nameLower.includes("long") || nameLower.includes("lng")) return "14.4213";
+    if (nameLower.includes("port")) return "3000";
+    if (nameLower.includes("min")) return "1";
+    if (nameLower.includes("max")) return "100";
+    if (nameLower.includes("position")) return "4";
+    if (nameLower.includes("price")) return "19.99";
+    if (nameLower.includes("qty") || nameLower.includes("quantity")) return "5";
+    if (nameLower === "a") return "10";
+    if (nameLower === "b") return "5";
+    return "42";
+  }
+
+  // Boolean examples
+  if (type === "boolean") {
+    return "true";
+  }
+
+  // String examples based on common names
+  if (nameLower.includes("name")) return "Alice";
+  if (nameLower.includes("city")) return "Prague";
+  if (nameLower.includes("path") || nameLower.includes("file")) return "/tmp/example.txt";
+  if (nameLower.includes("dir")) return "/tmp";
+  if (nameLower.includes("url")) return "https://example.com";
+  if (nameLower.includes("email")) return "user@example.com";
+  if (nameLower.includes("title")) return "My Note";
+  if (nameLower.includes("content") || nameLower.includes("text") || nameLower.includes("message")) return "Hello, World!";
+  if (nameLower.includes("pattern") || nameLower.includes("query") || nameLower.includes("search")) return "TODO";
+  if (nameLower.includes("key")) return "myKey";
+  if (nameLower.includes("value")) return "myValue";
+  if (nameLower.includes("id")) return "item-1";
+  if (nameLower.includes("json")) return '{"name": "test", "value": 123}';
+  if (nameLower.includes("csv")) return "name,price,qty\\nApple,1.5,10\\nBanana,0.75,20";
+  if (nameLower.includes("field")) return "name";
+  if (nameLower.includes("expression")) return "{ name: item.name }";
+  if (nameLower.includes("format")) return "json";
+  if (nameLower.includes("order")) return "asc";
+  if (nameLower.includes("operator")) return "eq";
+
+  // Default
+  return "example";
 }
 
 // Validate MCP code
@@ -528,7 +620,12 @@ export function MCPPlayground({
                           size="sm"
                           onClick={() => {
                             setSelectedTool(tool.name);
-                            setToolInput({});
+                            // Pre-fill with example values
+                            const examples: Record<string, string> = {};
+                            tool.paramDetails.forEach((p) => {
+                              if (p.example) examples[p.name] = p.example;
+                            });
+                            setToolInput(examples);
                           }}
                         >
                           {tool.name}
@@ -550,18 +647,37 @@ export function MCPPlayground({
 
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Parameters</label>
-                      {currentTool.parameters.map((param) => (
-                        <div key={param}>
-                          <label className="text-xs text-zinc-500 block mb-1">{param}</label>
-                          <input
-                            type="text"
-                            value={toolInput[param] || ""}
-                            onChange={(e) =>
-                              setToolInput({ ...toolInput, [param]: e.target.value })
-                            }
-                            placeholder={`Enter ${param}...`}
-                            className="w-full px-3 py-2 text-sm border rounded-md bg-white dark:bg-zinc-900"
-                          />
+                      {currentTool.paramDetails.map((param) => (
+                        <div key={param.name}>
+                          <label className="text-xs text-zinc-500 block mb-1">
+                            {param.name}
+                            {param.description && (
+                              <span className="text-zinc-400 ml-1">- {param.description}</span>
+                            )}
+                          </label>
+                          {param.type === "enum" && param.enumValues ? (
+                            <select
+                              value={toolInput[param.name] || param.example || ""}
+                              onChange={(e) =>
+                                setToolInput({ ...toolInput, [param.name]: e.target.value })
+                              }
+                              className="w-full px-3 py-2 text-sm border rounded-md bg-white dark:bg-zinc-900"
+                            >
+                              {param.enumValues.map((val) => (
+                                <option key={val} value={val}>{val}</option>
+                              ))}
+                            </select>
+                          ) : (
+                            <input
+                              type={param.type === "number" ? "number" : "text"}
+                              value={toolInput[param.name] ?? param.example ?? ""}
+                              onChange={(e) =>
+                                setToolInput({ ...toolInput, [param.name]: e.target.value })
+                              }
+                              placeholder={param.example || `Enter ${param.name}...`}
+                              className="w-full px-3 py-2 text-sm border rounded-md bg-white dark:bg-zinc-900"
+                            />
+                          )}
                         </div>
                       ))}
                     </div>
