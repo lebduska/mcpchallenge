@@ -1,65 +1,161 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+
+const features = [
+  {
+    title: "Learn MCP",
+    description: "Interactive tutorials and documentation to master the Model Context Protocol",
+    href: "/learn",
+    badge: "Start Here",
+    icon: "📚",
+  },
+  {
+    title: "Playground",
+    description: "Build and test your MCP servers in a live sandbox environment",
+    href: "/playground",
+    badge: "Interactive",
+    icon: "🛠️",
+  },
+  {
+    title: "Challenges",
+    description: "Solve problems, build MCP servers, and compete on the leaderboard",
+    href: "/challenges",
+    badge: "Compete",
+    icon: "🏆",
+  },
+  {
+    title: "Showcase",
+    description: "Explore community-built MCP servers and get inspired",
+    href: "/showcase",
+    badge: "Community",
+    icon: "✨",
+  },
+];
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="min-h-screen bg-gradient-to-b from-zinc-50 to-white dark:from-zinc-950 dark:to-zinc-900">
+      {/* Hero Section */}
+      <section className="container mx-auto px-4 py-24 text-center">
+        <Badge variant="secondary" className="mb-4">
+          Open Source MCP Learning Platform
+        </Badge>
+        <h1 className="text-5xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-6xl">
+          MCP Challenge
+        </h1>
+        <p className="mt-6 text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
+          Master the Model Context Protocol. Learn, build, and compete with
+          interactive challenges and a live playground.
+        </p>
+        <div className="mt-10 flex items-center justify-center gap-4">
+          <Button asChild size="lg">
+            <Link href="/learn">Get Started</Link>
+          </Button>
+          <Button variant="outline" size="lg" asChild>
+            <Link href="/playground">Try Playground</Link>
+          </Button>
+        </div>
+      </section>
+
+      {/* What is MCP Section */}
+      <section className="container mx-auto px-4 py-16">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
+            What is MCP?
+          </h2>
+          <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400">
+            The <strong>Model Context Protocol</strong> is an open standard by Anthropic
+            that enables AI assistants to securely access tools, data sources, and services.
+            Think of it as a universal adapter between AI and the world.
           </p>
+          <div className="mt-8 p-6 bg-zinc-100 dark:bg-zinc-800 rounded-lg font-mono text-sm text-left overflow-x-auto">
+            <pre className="text-zinc-800 dark:text-zinc-200">{`// Example MCP Tool
+server.tool(
+  "weather.get",
+  "Get current weather for a city",
+  { city: z.string() },
+  async ({ city }) => {
+    const data = await fetchWeather(city);
+    return { temperature: data.temp, conditions: data.weather };
+  }
+);`}</pre>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* Features Grid */}
+      <section className="container mx-auto px-4 py-16">
+        <h2 className="text-3xl font-bold text-center text-zinc-900 dark:text-zinc-50 mb-12">
+          Start Your Journey
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          {features.map((feature) => (
+            <Link key={feature.href} href={feature.href}>
+              <Card className="h-full transition-all hover:shadow-lg hover:border-zinc-400 dark:hover:border-zinc-600 cursor-pointer">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <span className="text-4xl">{feature.icon}</span>
+                    <Badge>{feature.badge}</Badge>
+                  </div>
+                  <CardTitle className="mt-4">{feature.title}</CardTitle>
+                  <CardDescription>{feature.description}</CardDescription>
+                </CardHeader>
+              </Card>
+            </Link>
+          ))}
         </div>
-      </main>
+      </section>
+
+      {/* Stats Section */}
+      <section className="container mx-auto px-4 py-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto text-center">
+          <div>
+            <div className="text-4xl font-bold text-zinc-900 dark:text-zinc-50">10+</div>
+            <div className="text-zinc-600 dark:text-zinc-400">Challenges</div>
+          </div>
+          <div>
+            <div className="text-4xl font-bold text-zinc-900 dark:text-zinc-50">5</div>
+            <div className="text-zinc-600 dark:text-zinc-400">Tutorials</div>
+          </div>
+          <div>
+            <div className="text-4xl font-bold text-zinc-900 dark:text-zinc-50">∞</div>
+            <div className="text-zinc-600 dark:text-zinc-400">Possibilities</div>
+          </div>
+          <div>
+            <div className="text-4xl font-bold text-zinc-900 dark:text-zinc-50">0</div>
+            <div className="text-zinc-600 dark:text-zinc-400">Cost</div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="container mx-auto px-4 py-8 border-t border-zinc-200 dark:border-zinc-800">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-zinc-600 dark:text-zinc-400">
+            Built with ❤️ for the MCP community
+          </p>
+          <div className="flex gap-4">
+            <a
+              href="https://modelcontextprotocol.io"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+            >
+              MCP Docs
+            </a>
+            <a
+              href="https://github.com/anthropics/anthropic-cookbook/tree/main/misc/model_context_protocol"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+            >
+              GitHub
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
