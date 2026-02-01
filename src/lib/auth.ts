@@ -1,7 +1,6 @@
 import NextAuth from "next-auth";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
-// TODO: Uncomment when OAuth credentials are configured
-// import Google from "next-auth/providers/google";
+import Google from "next-auth/providers/google";
 import GitHub from "next-auth/providers/github";
 // import LinkedIn from "next-auth/providers/linkedin";
 import type { NextAuthConfig } from "next-auth";
@@ -11,11 +10,10 @@ export function createAuthConfig(db: ReturnType<typeof createDb>): NextAuthConfi
   return {
     adapter: DrizzleAdapter(db) as NextAuthConfig["adapter"],
     providers: [
-      // TODO: Uncomment when Google OAuth credentials are configured
-      // Google({
-      //   clientId: process.env.GOOGLE_CLIENT_ID!,
-      //   clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      // }),
+      Google({
+        clientId: process.env.GOOGLE_CLIENT_ID!,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      }),
       GitHub({
         clientId: process.env.GITHUB_CLIENT_ID!,
         clientSecret: process.env.GITHUB_CLIENT_SECRET!,

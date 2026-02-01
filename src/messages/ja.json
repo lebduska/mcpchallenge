@@ -1,0 +1,339 @@
+{
+  "common": {
+    "loading": "読み込み中...",
+    "error": "エラー",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "close": "閉じる",
+    "back": "戻る",
+    "next": "次へ",
+    "submit": "送信",
+    "search": "検索",
+    "language": "言語",
+    "settings": "設定",
+    "profile": "プロフィール",
+    "signIn": "ログイン",
+    "signOut": "ログアウト",
+    "signUp": "新規登録",
+    "learnMore": "詳しく見る",
+    "tryNow": "今すぐ試す",
+    "viewAll": "すべて表示",
+    "share": "共有",
+    "copy": "コピー",
+    "copied": "コピーしました！",
+    "minutes": "分",
+    "points": "ポイント",
+    "level": "レベル",
+    "challenges": "チャレンジ"
+  },
+  "nav": {
+    "home": "ホーム",
+    "learn": "学習",
+    "challenges": "チャレンジ",
+    "playground": "プレイグラウンド",
+    "leaderboard": "リーダーボード",
+    "achievements": "実績",
+    "profile": "プロフィール",
+    "settings": "設定"
+  },
+  "home": {
+    "title": "モデルコンテキストプロトコルをマスター",
+    "badge": "オープンソースMCP学習プラットフォーム",
+    "subtitle": "モデルコンテキストプロトコルをマスター。インタラクティブなチャレンジとライブプレイグラウンドで学び、構築し、競いましょう。",
+    "startLearning": "始める",
+    "tryPlayground": "プレイグラウンドを試す",
+    "whatIsMcp": {
+      "title": "MCPとは？",
+      "description": "モデルコンテキストプロトコルは、AIアシスタントがツール、データソース、サービスに安全にアクセスできるようにするAnthropicのオープンスタンダードです。AIと世界をつなぐユニバーサルアダプターと考えてください。"
+    },
+    "journey": {
+      "title": "旅を始めよう",
+      "features": {
+        "learn": {
+          "title": "MCPを学ぶ",
+          "description": "モデルコンテキストプロトコルをマスターするためのインタラクティブチュートリアルとドキュメント",
+          "badge": "ここから始める"
+        },
+        "playground": {
+          "title": "プレイグラウンド",
+          "description": "ライブサンドボックス環境でMCPサーバーを構築・テスト",
+          "badge": "インタラクティブ"
+        },
+        "challenges": {
+          "title": "チャレンジ",
+          "description": "問題を解決し、MCPサーバーを構築し、リーダーボードで競争",
+          "badge": "競争"
+        },
+        "showcase": {
+          "title": "ショーケース",
+          "description": "コミュニティが構築したMCPサーバーを探索してインスピレーションを得る",
+          "badge": "コミュニティ"
+        }
+      }
+    },
+    "stats": {
+      "challenges": "チャレンジ",
+      "tutorials": "チュートリアル",
+      "possibilities": "可能性",
+      "cost": "コスト"
+    },
+    "footer": {
+      "builtWith": "で構築",
+      "forCommunity": "MCPコミュニティのために"
+    },
+    "features": {
+      "learn": {
+        "title": "MCPを学ぶ",
+        "description": "基礎から高度なトピックまでのインタラクティブチュートリアル"
+      },
+      "challenges": {
+        "title": "チャレンジに挑戦",
+        "description": "実際のMCPサーバーを構築してスキルをテスト"
+      },
+      "compete": {
+        "title": "競争と獲得",
+        "description": "リーダーボードを登り、実績をアンロック"
+      }
+    },
+    "featuredChallenges": "注目のチャレンジ",
+    "recentAchievements": "最近の実績"
+  },
+  "learn": {
+    "title": "MCPを学ぶ",
+    "subtitle": "ステップバイステップのチュートリアルでモデルコンテキストプロトコルをマスター。基礎から始めて高度なトピックまで進みましょう。",
+    "backToLearn": "学習に戻る",
+    "prerequisites": "前提条件",
+    "quickReference": "クイックリファレンス",
+    "keyTakeaways": "重要なポイント",
+    "readyForMore": "もっと挑戦する準備はできましたか？",
+    "tryChallenges": "チャレンジに挑戦",
+    "openPlayground": "プレイグラウンドを開く",
+    "completeTutorial": "チュートリアルを完了",
+    "continueToStep": "ステップ {step} に進む",
+    "difficulty": {
+      "beginner": "初級",
+      "intermediate": "中級",
+      "advanced": "上級"
+    },
+    "tutorials": {
+      "whatIsMcp": {
+        "title": "MCPとは？",
+        "description": "モデルコンテキストプロトコルの紹介とその重要性"
+      },
+      "firstServer": {
+        "title": "最初のMCPサーバー",
+        "description": "TypeScriptでゼロからシンプルなMCPサーバーを構築"
+      },
+      "mcpTools": {
+        "title": "MCPツールの作成",
+        "description": "強力なツールの定義と実装方法を学ぶ"
+      },
+      "mcpResources": {
+        "title": "MCPリソースとプロンプト",
+        "description": "リソースとプロンプトを通じてデータとテンプレートを公開"
+      },
+      "mcpTransports": {
+        "title": "トランスポートプロトコル",
+        "description": "stdio、HTTP、WebSocketトランスポートを理解"
+      }
+    }
+  },
+  "challenges": {
+    "title": "チャレンジ",
+    "subtitle": "インタラクティブなチャレンジでMCPスキルをテスト。実用的なソリューションを構築してポイントを獲得！",
+    "leaderboard": "リーダーボード",
+    "completions": "完了数",
+    "filters": {
+      "all": "すべて",
+      "games": "ゲーム",
+      "build": "構築",
+      "useTools": "ツールを使用",
+      "beginner": "初級",
+      "intermediate": "中級",
+      "advanced": "上級"
+    },
+    "types": {
+      "build": "サーバー構築",
+      "use": "ツールを使用",
+      "game": "ゲーム"
+    },
+    "difficulty": {
+      "beginner": "初級",
+      "intermediate": "中級",
+      "advanced": "上級"
+    },
+    "items": {
+      "chess": {
+        "title": "チェスチャレンジ",
+        "description": "AIまたは友達と対戦。MCPチェスサーバーを構築しよう！"
+      },
+      "tictactoe": {
+        "title": "三目並べ",
+        "description": "無敵のミニマックスAIを持つクラシックゲーム。引き分けにできますか？"
+      },
+      "snake": {
+        "title": "スネーク + MCPトランスポート",
+        "description": "スネークAIを構築してstdio、HTTP+SSE、WebSocketトランスポートを学ぼう！"
+      },
+      "helloWorld": {
+        "title": "Hello World",
+        "description": "ユーザーに挨拶する最初のMCPツールを作成"
+      },
+      "calculator": {
+        "title": "計算機ツール",
+        "description": "基本的な数学演算を持つ計算機ツールを構築"
+      },
+      "fileReader": {
+        "title": "ファイルリーダー",
+        "description": "files.readツールを使用して特定のコンテンツを見つける"
+      },
+      "weatherApi": {
+        "title": "天気API統合",
+        "description": "実際の天気データを取得するMCPサーバーを作成"
+      },
+      "multiTool": {
+        "title": "マルチツールサーバー",
+        "description": "5つ以上の相互接続されたツールを持つサーバーを構築"
+      },
+      "dataPipeline": {
+        "title": "データパイプライン",
+        "description": "複数のMCPツールを連鎖させてデータを処理・変換"
+      }
+    },
+    "comingSoon": {
+      "title": "さらなるチャレンジが近日公開",
+      "description": "新しいチャレンジに取り組んでいます。貢献したいですか？",
+      "submitIdea": "チャレンジアイデアを提出"
+    }
+  },
+  "playground": {
+    "title": "MCPプレイグラウンド",
+    "subtitle": "ブラウザでMCPサーバーを試す。セットアップ不要！",
+    "runCode": "コード実行",
+    "stopCode": "停止",
+    "clearOutput": "出力をクリア",
+    "output": "出力",
+    "tools": "ツール",
+    "testTool": "ツールをテスト",
+    "noTools": "利用可能なツールがありません",
+    "serverRunning": "サーバー実行中",
+    "serverStopped": "サーバー停止",
+    "tryInPlayground": "プレイグラウンドで試す",
+    "noSetupRequired": "ローカルセットアップ不要！すべてのコード例をインタラクティブプレイグラウンドで直接テストできます。"
+  },
+  "achievements": {
+    "title": "実績",
+    "subtitle": "チャレンジを完了してマイルストーンに到達し、実績をアンロック",
+    "unlocked": "アンロック済み",
+    "locked": "ロック中",
+    "unlockedAt": "アンロック日時",
+    "progress": "進捗",
+    "rarity": {
+      "common": "コモン",
+      "rare": "レア",
+      "epic": "エピック",
+      "legendary": "レジェンダリー"
+    },
+    "share": {
+      "title": "実績を共有",
+      "description": "ソーシャルメディアで実績を共有"
+    }
+  },
+  "leaderboard": {
+    "title": "リーダーボード",
+    "subtitle": "ポイントと実績でランク付けされたトップMCP開発者",
+    "rank": "順位",
+    "player": "プレイヤー",
+    "points": "ポイント",
+    "level": "レベル",
+    "achievements": "実績",
+    "challenges": "チャレンジ",
+    "you": "あなた"
+  },
+  "profile": {
+    "title": "プロフィール",
+    "editProfile": "プロフィール編集",
+    "achievements": "実績",
+    "achievementsUnlocked": "{count} 個の実績をアンロック",
+    "recentActivity": "最近のアクティビティ",
+    "latestCompletions": "最近完了したチャレンジ",
+    "noAchievements": "まだ実績がありません。チャレンジを完了しましょう！",
+    "noCompletions": "まだ完了したチャレンジがありません。",
+    "gettingStarted": {
+      "title": "はじめに",
+      "welcome": "MCPチャレンジへようこそ！",
+      "description": "チャレンジを完了してポイントを獲得し、実績をアンロックしましょう。",
+      "step1": "MCPの基礎を学ぶ",
+      "step2": "最初のMCPサーバーを構築",
+      "step3": "ゲームチャレンジに挑戦"
+    },
+    "stats": {
+      "totalPoints": "合計ポイント",
+      "level": "レベル",
+      "challengesCompleted": "完了したチャレンジ",
+      "achievementsUnlocked": "アンロックした実績",
+      "currentStreak": "現在の連続記録",
+      "longestStreak": "最長連続記録"
+    }
+  },
+  "settings": {
+    "title": "設定",
+    "account": "アカウント",
+    "preferences": "環境設定",
+    "language": "言語",
+    "theme": "テーマ",
+    "notifications": "通知",
+    "deleteAccount": "アカウント削除",
+    "themes": {
+      "light": "ライト",
+      "dark": "ダーク",
+      "system": "システム"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "ログイン",
+      "subtitle": "ログインして進捗を追跡し、リーダーボードで競いましょう",
+      "withGithub": "GitHubで続ける",
+      "withGoogle": "Googleで続ける",
+      "withEmail": "メールアドレスで続ける",
+      "noAccount": "アカウントをお持ちでないですか？",
+      "createAccount": "新規作成"
+    },
+    "signUp": {
+      "title": "アカウント作成",
+      "subtitle": "MCPチャレンジに参加して学習を始めましょう",
+      "hasAccount": "既にアカウントをお持ちですか？",
+      "signIn": "ログイン"
+    },
+    "error": {
+      "title": "認証エラー",
+      "description": "ログイン中に問題が発生しました。",
+      "tryAgain": "再試行",
+      "backHome": "ホームに戻る"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "ページが見つかりません",
+      "description": "お探しのページは存在しません。",
+      "backHome": "ホームに戻る"
+    },
+    "serverError": {
+      "title": "サーバーエラー",
+      "description": "問題が発生しました。後でもう一度お試しください。"
+    }
+  },
+  "footer": {
+    "description": "インタラクティブなチャレンジでモデルコンテキストプロトコルを学び、マスターしましょう。",
+    "links": {
+      "learn": "学習",
+      "challenges": "チャレンジ",
+      "playground": "プレイグラウンド",
+      "github": "GitHub",
+      "twitter": "Twitter",
+      "discord": "Discord"
+    },
+    "copyright": "© {year} MCP チャレンジ。All rights reserved."
+  }
+}

@@ -1,0 +1,339 @@
+{
+  "common": {
+    "loading": "Đang tải...",
+    "error": "Lỗi",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "close": "Đóng",
+    "back": "Quay lại",
+    "next": "Tiếp theo",
+    "submit": "Gửi",
+    "search": "Tìm kiếm",
+    "language": "Ngôn ngữ",
+    "settings": "Cài đặt",
+    "profile": "Hồ sơ",
+    "signIn": "Đăng nhập",
+    "signOut": "Đăng xuất",
+    "signUp": "Đăng ký",
+    "learnMore": "Tìm hiểu thêm",
+    "tryNow": "Thử ngay",
+    "viewAll": "Xem tất cả",
+    "share": "Chia sẻ",
+    "copy": "Sao chép",
+    "copied": "Đã sao chép!",
+    "minutes": "phút",
+    "points": "điểm",
+    "level": "Cấp độ",
+    "challenges": "thử thách"
+  },
+  "nav": {
+    "home": "Trang chủ",
+    "learn": "Học tập",
+    "challenges": "Thử thách",
+    "playground": "Sân chơi",
+    "leaderboard": "Bảng xếp hạng",
+    "achievements": "Thành tích",
+    "profile": "Hồ sơ",
+    "settings": "Cài đặt"
+  },
+  "home": {
+    "title": "Làm chủ Model Context Protocol",
+    "badge": "Nền tảng học MCP mã nguồn mở",
+    "subtitle": "Làm chủ Model Context Protocol. Học, xây dựng và cạnh tranh với các thử thách tương tác và sân chơi trực tiếp.",
+    "startLearning": "Bắt đầu",
+    "tryPlayground": "Thử sân chơi",
+    "whatIsMcp": {
+      "title": "MCP là gì?",
+      "description": "Model Context Protocol là tiêu chuẩn mở của Anthropic cho phép trợ lý AI truy cập an toàn vào các công cụ, nguồn dữ liệu và dịch vụ. Hãy coi nó như một bộ chuyển đổi phổ quát giữa AI và thế giới."
+    },
+    "journey": {
+      "title": "Bắt đầu hành trình của bạn",
+      "features": {
+        "learn": {
+          "title": "Học MCP",
+          "description": "Hướng dẫn tương tác và tài liệu để làm chủ Model Context Protocol",
+          "badge": "Bắt đầu tại đây"
+        },
+        "playground": {
+          "title": "Sân chơi",
+          "description": "Xây dựng và kiểm tra máy chủ MCP của bạn trong môi trường sandbox trực tiếp",
+          "badge": "Tương tác"
+        },
+        "challenges": {
+          "title": "Thử thách",
+          "description": "Giải quyết vấn đề, xây dựng máy chủ MCP và cạnh tranh trên bảng xếp hạng",
+          "badge": "Cạnh tranh"
+        },
+        "showcase": {
+          "title": "Trưng bày",
+          "description": "Khám phá các máy chủ MCP do cộng đồng xây dựng và lấy cảm hứng",
+          "badge": "Cộng đồng"
+        }
+      }
+    },
+    "stats": {
+      "challenges": "Thử thách",
+      "tutorials": "Hướng dẫn",
+      "possibilities": "Khả năng",
+      "cost": "Chi phí"
+    },
+    "footer": {
+      "builtWith": "Được xây dựng với",
+      "forCommunity": "cho cộng đồng MCP"
+    },
+    "features": {
+      "learn": {
+        "title": "Học MCP",
+        "description": "Hướng dẫn tương tác từ cơ bản đến nâng cao"
+      },
+      "challenges": {
+        "title": "Hoàn thành thử thách",
+        "description": "Xây dựng MCP server thực tế và kiểm tra kỹ năng"
+      },
+      "compete": {
+        "title": "Cạnh tranh & Đạt thành tích",
+        "description": "Leo bảng xếp hạng và mở khóa thành tích"
+      }
+    },
+    "featuredChallenges": "Thử thách nổi bật",
+    "recentAchievements": "Thành tích gần đây"
+  },
+  "learn": {
+    "title": "Học MCP",
+    "subtitle": "Làm chủ Model Context Protocol với hướng dẫn từng bước. Bắt đầu từ cơ bản và tiến tới các chủ đề nâng cao.",
+    "backToLearn": "Quay lại học tập",
+    "prerequisites": "Yêu cầu trước",
+    "quickReference": "Tài liệu tham khảo",
+    "keyTakeaways": "Điểm chính",
+    "readyForMore": "Sẵn sàng tiếp tục?",
+    "tryChallenges": "Thử thách",
+    "openPlayground": "Mở sân chơi",
+    "completeTutorial": "Hoàn thành hướng dẫn",
+    "continueToStep": "Tiếp tục bước {step}",
+    "difficulty": {
+      "beginner": "cơ bản",
+      "intermediate": "trung cấp",
+      "advanced": "nâng cao"
+    },
+    "tutorials": {
+      "whatIsMcp": {
+        "title": "MCP là gì?",
+        "description": "Giới thiệu về Model Context Protocol và tại sao nó quan trọng"
+      },
+      "firstServer": {
+        "title": "MCP Server đầu tiên",
+        "description": "Xây dựng MCP server đơn giản từ đầu với TypeScript"
+      },
+      "mcpTools": {
+        "title": "Tạo công cụ MCP",
+        "description": "Học cách định nghĩa và triển khai các công cụ mạnh mẽ"
+      },
+      "mcpResources": {
+        "title": "MCP Resources & Prompts",
+        "description": "Cung cấp dữ liệu và template thông qua resources và prompts"
+      },
+      "mcpTransports": {
+        "title": "Giao thức truyền tải",
+        "description": "Hiểu về stdio, HTTP và WebSocket transports"
+      }
+    }
+  },
+  "challenges": {
+    "title": "Thử thách",
+    "subtitle": "Kiểm tra kỹ năng MCP với các thử thách tương tác. Xây dựng giải pháp hoạt động và kiếm điểm!",
+    "leaderboard": "Bảng xếp hạng",
+    "completions": "hoàn thành",
+    "filters": {
+      "all": "Tất cả",
+      "games": "Trò chơi",
+      "build": "Xây dựng",
+      "useTools": "Sử dụng công cụ",
+      "beginner": "Cơ bản",
+      "intermediate": "Trung cấp",
+      "advanced": "Nâng cao"
+    },
+    "types": {
+      "build": "Xây dựng Server",
+      "use": "Sử dụng công cụ",
+      "game": "Trò chơi"
+    },
+    "difficulty": {
+      "beginner": "cơ bản",
+      "intermediate": "trung cấp",
+      "advanced": "nâng cao"
+    },
+    "items": {
+      "chess": {
+        "title": "Thử thách cờ vua",
+        "description": "Chơi cờ vua với AI hoặc bạn bè. Xây dựng MCP server chơi cờ vua!"
+      },
+      "tictactoe": {
+        "title": "Tic-Tac-Toe",
+        "description": "Trò chơi cổ điển với AI minimax bất bại. Bạn có thể tạo trận hòa không?"
+      },
+      "snake": {
+        "title": "Rắn săn mồi + MCP Transports",
+        "description": "Học stdio, HTTP+SSE và WebSocket transports bằng cách xây dựng AI rắn săn mồi!"
+      },
+      "helloWorld": {
+        "title": "Hello World",
+        "description": "Tạo công cụ MCP đầu tiên để chào người dùng"
+      },
+      "calculator": {
+        "title": "Công cụ máy tính",
+        "description": "Xây dựng công cụ máy tính với các phép toán cơ bản"
+      },
+      "fileReader": {
+        "title": "Đọc tệp",
+        "description": "Sử dụng công cụ files.read để tìm nội dung cụ thể"
+      },
+      "weatherApi": {
+        "title": "Tích hợp API thời tiết",
+        "description": "Tạo MCP server lấy dữ liệu thời tiết thực tế"
+      },
+      "multiTool": {
+        "title": "Server đa công cụ",
+        "description": "Xây dựng server với 5+ công cụ kết nối với nhau"
+      },
+      "dataPipeline": {
+        "title": "Quy trình dữ liệu",
+        "description": "Kết nối nhiều công cụ MCP để xử lý và chuyển đổi dữ liệu"
+      }
+    },
+    "comingSoon": {
+      "title": "Sẽ có thêm thử thách sớm",
+      "description": "Chúng tôi đang làm việc trên các thử thách mới. Bạn muốn đóng góp?",
+      "submitIdea": "Gửi ý tưởng thử thách"
+    }
+  },
+  "playground": {
+    "title": "Sân chơi MCP",
+    "subtitle": "Thử nghiệm MCP server trong trình duyệt. Không cần cài đặt!",
+    "runCode": "Chạy code",
+    "stopCode": "Dừng",
+    "clearOutput": "Xóa kết quả",
+    "output": "Kết quả",
+    "tools": "Công cụ",
+    "testTool": "Kiểm tra công cụ",
+    "noTools": "Không có công cụ nào",
+    "serverRunning": "Server đang chạy",
+    "serverStopped": "Server đã dừng",
+    "tryInPlayground": "Thử trong sân chơi",
+    "noSetupRequired": "Không cần cài đặt! Bạn có thể kiểm tra tất cả các ví dụ code trực tiếp trong sân chơi tương tác."
+  },
+  "achievements": {
+    "title": "Thành tích",
+    "subtitle": "Mở khóa thành tích bằng cách hoàn thành thử thách và đạt mốc quan trọng",
+    "unlocked": "Đã mở khóa",
+    "locked": "Đã khóa",
+    "unlockedAt": "Mở khóa lúc",
+    "progress": "Tiến độ",
+    "rarity": {
+      "common": "Phổ biến",
+      "rare": "Hiếm",
+      "epic": "Sử thi",
+      "legendary": "Huyền thoại"
+    },
+    "share": {
+      "title": "Chia sẻ thành tích",
+      "description": "Chia sẻ thành tích của bạn trên mạng xã hội"
+    }
+  },
+  "leaderboard": {
+    "title": "Bảng xếp hạng",
+    "subtitle": "Top lập trình viên MCP xếp hạng theo điểm và thành tích",
+    "rank": "Hạng",
+    "player": "Người chơi",
+    "points": "Điểm",
+    "level": "Cấp độ",
+    "achievements": "Thành tích",
+    "challenges": "Thử thách",
+    "you": "Bạn"
+  },
+  "profile": {
+    "title": "Hồ sơ",
+    "editProfile": "Chỉnh sửa hồ sơ",
+    "achievements": "Thành tích",
+    "achievementsUnlocked": "{count} thành tích đã mở khóa",
+    "recentActivity": "Hoạt động gần đây",
+    "latestCompletions": "Thử thách hoàn thành gần đây",
+    "noAchievements": "Chưa có thành tích. Bắt đầu hoàn thành thử thách!",
+    "noCompletions": "Chưa hoàn thành thử thách nào.",
+    "gettingStarted": {
+      "title": "Bắt đầu",
+      "welcome": "Chào mừng đến với MCP Challenge!",
+      "description": "Hoàn thành thử thách để kiếm điểm và mở khóa thành tích.",
+      "step1": "Học cơ bản về MCP",
+      "step2": "Xây dựng MCP server đầu tiên",
+      "step3": "Thử thử thách game"
+    },
+    "stats": {
+      "totalPoints": "Tổng điểm",
+      "level": "Cấp độ",
+      "challengesCompleted": "Thử thách đã hoàn thành",
+      "achievementsUnlocked": "Thành tích đã mở khóa",
+      "currentStreak": "Chuỗi hiện tại",
+      "longestStreak": "Chuỗi dài nhất"
+    }
+  },
+  "settings": {
+    "title": "Cài đặt",
+    "account": "Tài khoản",
+    "preferences": "Tùy chọn",
+    "language": "Ngôn ngữ",
+    "theme": "Giao diện",
+    "notifications": "Thông báo",
+    "deleteAccount": "Xóa tài khoản",
+    "themes": {
+      "light": "Sáng",
+      "dark": "Tối",
+      "system": "Hệ thống"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Đăng nhập",
+      "subtitle": "Đăng nhập để theo dõi tiến độ và cạnh tranh trên bảng xếp hạng",
+      "withGithub": "Tiếp tục với GitHub",
+      "withGoogle": "Tiếp tục với Google",
+      "withEmail": "Tiếp tục với Email",
+      "noAccount": "Chưa có tài khoản?",
+      "createAccount": "Tạo tài khoản"
+    },
+    "signUp": {
+      "title": "Tạo tài khoản",
+      "subtitle": "Tham gia MCP Challenge và bắt đầu học",
+      "hasAccount": "Đã có tài khoản?",
+      "signIn": "Đăng nhập"
+    },
+    "error": {
+      "title": "Lỗi xác thực",
+      "description": "Có vấn đề khi đăng nhập.",
+      "tryAgain": "Thử lại",
+      "backHome": "Về trang chủ"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Không tìm thấy trang",
+      "description": "Trang bạn đang tìm kiếm không tồn tại.",
+      "backHome": "Về trang chủ"
+    },
+    "serverError": {
+      "title": "Lỗi server",
+      "description": "Đã xảy ra lỗi. Vui lòng thử lại sau."
+    }
+  },
+  "footer": {
+    "description": "Học và làm chủ Model Context Protocol qua các thử thách tương tác.",
+    "links": {
+      "learn": "Học tập",
+      "challenges": "Thử thách",
+      "playground": "Sân chơi",
+      "github": "GitHub",
+      "twitter": "Twitter",
+      "discord": "Discord"
+    },
+    "copyright": "© {year} MCP Challenge. Bảo lưu mọi quyền."
+  }
+}

@@ -1,0 +1,339 @@
+{
+  "common": {
+    "loading": "Se încarcă...",
+    "error": "Eroare",
+    "save": "Salvează",
+    "cancel": "Anulează",
+    "close": "Închide",
+    "back": "Înapoi",
+    "next": "Următorul",
+    "submit": "Trimite",
+    "search": "Căutare",
+    "language": "Limbă",
+    "settings": "Setări",
+    "profile": "Profil",
+    "signIn": "Autentificare",
+    "signOut": "Deconectare",
+    "signUp": "Înregistrare",
+    "learnMore": "Află mai multe",
+    "tryNow": "Încearcă acum",
+    "viewAll": "Vezi tot",
+    "share": "Distribuie",
+    "copy": "Copiază",
+    "copied": "Copiat!",
+    "minutes": "min",
+    "points": "puncte",
+    "level": "Nivel",
+    "challenges": "provocări"
+  },
+  "nav": {
+    "home": "Acasă",
+    "learn": "Învață",
+    "challenges": "Provocări",
+    "playground": "Teren de joacă",
+    "leaderboard": "Clasament",
+    "achievements": "Realizări",
+    "profile": "Profil",
+    "settings": "Setări"
+  },
+  "home": {
+    "title": "Stăpânește Model Context Protocol",
+    "badge": "Platformă Open Source de Învățare MCP",
+    "subtitle": "Stăpânește Model Context Protocol. Învață, construiește și concurează cu provocări interactive și un teren de joacă live.",
+    "startLearning": "Începe acum",
+    "tryPlayground": "Încearcă terenul de joacă",
+    "whatIsMcp": {
+      "title": "Ce este MCP?",
+      "description": "Model Context Protocol este un standard deschis de la Anthropic care permite asistenților AI să acceseze în siguranță instrumente, surse de date și servicii. Gândește-te la el ca la un adaptor universal între AI și lume."
+    },
+    "journey": {
+      "title": "Începe-ți călătoria",
+      "features": {
+        "learn": {
+          "title": "Învață MCP",
+          "description": "Tutoriale interactive și documentație pentru a stăpâni Model Context Protocol",
+          "badge": "Începe aici"
+        },
+        "playground": {
+          "title": "Teren de joacă",
+          "description": "Construiește și testează serverele tale MCP într-un mediu sandbox live",
+          "badge": "Interactiv"
+        },
+        "challenges": {
+          "title": "Provocări",
+          "description": "Rezolvă probleme, construiește servere MCP și concurează în clasament",
+          "badge": "Concurează"
+        },
+        "showcase": {
+          "title": "Galerie",
+          "description": "Explorează serverele MCP create de comunitate și inspiră-te",
+          "badge": "Comunitate"
+        }
+      }
+    },
+    "stats": {
+      "challenges": "Provocări",
+      "tutorials": "Tutoriale",
+      "possibilities": "Posibilități",
+      "cost": "Cost"
+    },
+    "footer": {
+      "builtWith": "Construit cu",
+      "forCommunity": "pentru comunitatea MCP"
+    },
+    "features": {
+      "learn": {
+        "title": "Învață MCP",
+        "description": "Tutoriale interactive de la noțiuni de bază la subiecte avansate"
+      },
+      "challenges": {
+        "title": "Rezolvă provocări",
+        "description": "Construiește servere MCP reale și testează-ți abilitățile"
+      },
+      "compete": {
+        "title": "Concurează și câștigă",
+        "description": "Urcă în clasament și deblochează realizări"
+      }
+    },
+    "featuredChallenges": "Provocări recomandate",
+    "recentAchievements": "Realizări recente"
+  },
+  "learn": {
+    "title": "Învață MCP",
+    "subtitle": "Stăpânește Model Context Protocol cu tutorialele noastre pas cu pas. Începe cu noțiunile de bază și avansează către subiecte complexe.",
+    "backToLearn": "Înapoi la învățare",
+    "prerequisites": "Cerințe prealabile",
+    "quickReference": "Referință rapidă",
+    "keyTakeaways": "Idei principale",
+    "readyForMore": "Pregătit pentru mai mult?",
+    "tryChallenges": "Încearcă provocările",
+    "openPlayground": "Deschide terenul de joacă",
+    "completeTutorial": "Finalizează tutorialul",
+    "continueToStep": "Continuă la pasul {step}",
+    "difficulty": {
+      "beginner": "începător",
+      "intermediate": "intermediar",
+      "advanced": "avansat"
+    },
+    "tutorials": {
+      "whatIsMcp": {
+        "title": "Ce este MCP?",
+        "description": "Introducere în Model Context Protocol și de ce contează"
+      },
+      "firstServer": {
+        "title": "Primul tău server MCP",
+        "description": "Construiește un server MCP simplu de la zero cu TypeScript"
+      },
+      "mcpTools": {
+        "title": "Crearea instrumentelor MCP",
+        "description": "Învață cum să definești și să implementezi instrumente puternice"
+      },
+      "mcpResources": {
+        "title": "Resurse și prompturi MCP",
+        "description": "Expune date și șabloane prin resurse și prompturi"
+      },
+      "mcpTransports": {
+        "title": "Protocoale de transport",
+        "description": "Înțelege transporturile stdio, HTTP și WebSocket"
+      }
+    }
+  },
+  "challenges": {
+    "title": "Provocări",
+    "subtitle": "Testează-ți abilitățile MCP cu provocări interactive. Construiește soluții funcționale și câștigă puncte!",
+    "leaderboard": "Clasament",
+    "completions": "finalizări",
+    "filters": {
+      "all": "Toate",
+      "games": "Jocuri",
+      "build": "Construiește",
+      "useTools": "Folosește Instrumente",
+      "beginner": "Începător",
+      "intermediate": "Intermediar",
+      "advanced": "Avansat"
+    },
+    "types": {
+      "build": "Construiește Server",
+      "use": "Folosește Instrumente",
+      "game": "Joc"
+    },
+    "difficulty": {
+      "beginner": "începător",
+      "intermediate": "intermediar",
+      "advanced": "avansat"
+    },
+    "items": {
+      "chess": {
+        "title": "Provocarea de șah",
+        "description": "Joacă șah împotriva AI sau a unui prieten. Construiește un server MCP de șah!"
+      },
+      "tictactoe": {
+        "title": "X și 0",
+        "description": "Joc clasic cu AI minimax de neînvins. Poți forța o remiză?"
+      },
+      "snake": {
+        "title": "Snake + Protocoale de Transport MCP",
+        "description": "Învață transporturile stdio, HTTP+SSE și WebSocket construind un AI pentru Snake!"
+      },
+      "helloWorld": {
+        "title": "Hello World",
+        "description": "Creează primul tău instrument MCP care salută utilizatorii"
+      },
+      "calculator": {
+        "title": "Instrument Calculator",
+        "description": "Construiește un instrument calculator cu operații matematice de bază"
+      },
+      "fileReader": {
+        "title": "Cititor de Fișiere",
+        "description": "Folosește instrumentul files.read pentru a găsi conținut specific"
+      },
+      "weatherApi": {
+        "title": "Integrare API Meteo",
+        "description": "Creează un server MCP care preia date meteo reale"
+      },
+      "multiTool": {
+        "title": "Server Multi-Instrument",
+        "description": "Construiește un server cu 5+ instrumente interconectate"
+      },
+      "dataPipeline": {
+        "title": "Pipeline de Date",
+        "description": "Înlănțuie mai multe instrumente MCP pentru a procesa și transforma date"
+      }
+    },
+    "comingSoon": {
+      "title": "Mai multe provocări în curând",
+      "description": "Lucrăm la provocări noi. Vrei să contribui?",
+      "submitIdea": "Propune o idee de provocare"
+    }
+  },
+  "playground": {
+    "title": "Teren de joacă MCP",
+    "subtitle": "Experimentează cu servere MCP direct în browser. Nu necesită configurare!",
+    "runCode": "Rulează codul",
+    "stopCode": "Oprește",
+    "clearOutput": "Șterge output-ul",
+    "output": "Output",
+    "tools": "Instrumente",
+    "testTool": "Instrument de test",
+    "noTools": "Nu există instrumente disponibile",
+    "serverRunning": "Server pornit",
+    "serverStopped": "Server oprit",
+    "tryInPlayground": "Încearcă în terenul de joacă",
+    "noSetupRequired": "Nu necesită configurare locală! Poți testa toate exemplele de cod direct în terenul nostru de joacă interactiv."
+  },
+  "achievements": {
+    "title": "Realizări",
+    "subtitle": "Deblochează realizări prin finalizarea provocărilor și atingerea obiectivelor",
+    "unlocked": "Deblocat",
+    "locked": "Blocat",
+    "unlockedAt": "Deblocat la",
+    "progress": "Progres",
+    "rarity": {
+      "common": "Comun",
+      "rare": "Rar",
+      "epic": "Epic",
+      "legendary": "Legendar"
+    },
+    "share": {
+      "title": "Distribuie realizarea",
+      "description": "Distribuie realizarea ta pe rețelele sociale"
+    }
+  },
+  "leaderboard": {
+    "title": "Clasament",
+    "subtitle": "Cei mai buni dezvoltatori MCP clasificați după puncte și realizări",
+    "rank": "Loc",
+    "player": "Jucător",
+    "points": "Puncte",
+    "level": "Nivel",
+    "achievements": "Realizări",
+    "challenges": "Provocări",
+    "you": "Tu"
+  },
+  "profile": {
+    "title": "Profil",
+    "editProfile": "Editează profilul",
+    "achievements": "Realizări",
+    "achievementsUnlocked": "{count} realizări deblocate",
+    "recentActivity": "Activitate recentă",
+    "latestCompletions": "Cele mai recente provocări finalizate",
+    "noAchievements": "Încă nu ai realizări. Începe să finalizezi provocări!",
+    "noCompletions": "Încă nu ai finalizat nicio provocare.",
+    "gettingStarted": {
+      "title": "Cum să începi",
+      "welcome": "Bun venit la MCP Challenge!",
+      "description": "Finalizează provocări pentru a câștiga puncte și debloca realizări.",
+      "step1": "Învață elementele de bază MCP",
+      "step2": "Construiește primul tău server MCP",
+      "step3": "Încearcă provocările de jocuri"
+    },
+    "stats": {
+      "totalPoints": "Total puncte",
+      "level": "Nivel",
+      "challengesCompleted": "Provocări finalizate",
+      "achievementsUnlocked": "Realizări deblocate",
+      "currentStreak": "Seria curentă",
+      "longestStreak": "Cea mai lungă serie"
+    }
+  },
+  "settings": {
+    "title": "Setări",
+    "account": "Cont",
+    "preferences": "Preferințe",
+    "language": "Limbă",
+    "theme": "Temă",
+    "notifications": "Notificări",
+    "deleteAccount": "Șterge contul",
+    "themes": {
+      "light": "Luminoasă",
+      "dark": "Întunecată",
+      "system": "Sistem"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Autentificare",
+      "subtitle": "Autentifică-te pentru a-ți urmări progresul și a concura în clasament",
+      "withGithub": "Continuă cu GitHub",
+      "withGoogle": "Continuă cu Google",
+      "withEmail": "Continuă cu Email",
+      "noAccount": "Nu ai cont?",
+      "createAccount": "Creează unul"
+    },
+    "signUp": {
+      "title": "Creare cont",
+      "subtitle": "Alătură-te MCP Challenge și începe să înveți",
+      "hasAccount": "Ai deja cont?",
+      "signIn": "Autentifică-te"
+    },
+    "error": {
+      "title": "Eroare de autentificare",
+      "description": "A apărut o problemă la autentificarea ta.",
+      "tryAgain": "Încearcă din nou",
+      "backHome": "Înapoi acasă"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Pagina nu a fost găsită",
+      "description": "Pagina pe care o cauți nu există.",
+      "backHome": "Înapoi acasă"
+    },
+    "serverError": {
+      "title": "Eroare de server",
+      "description": "Ceva nu a mers bine. Te rugăm să încerci din nou mai târziu."
+    }
+  },
+  "footer": {
+    "description": "Învață și stăpânește Model Context Protocol prin provocări interactive.",
+    "links": {
+      "learn": "Învață",
+      "challenges": "Provocări",
+      "playground": "Teren de joacă",
+      "github": "GitHub",
+      "twitter": "Twitter",
+      "discord": "Discord"
+    },
+    "copyright": "© {year} MCP Challenge. Toate drepturile rezervate."
+  }
+}

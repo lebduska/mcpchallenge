@@ -1,0 +1,489 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "search": "Search",
+    "language": "Language",
+    "settings": "Settings",
+    "profile": "Profile",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "signUp": "Sign Up",
+    "learnMore": "Learn More",
+    "tryNow": "Try Now",
+    "viewAll": "View All",
+    "share": "Share",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "minutes": "min",
+    "points": "points",
+    "level": "Level",
+    "challenges": "challenges"
+  },
+  "nav": {
+    "home": "Home",
+    "learn": "Learn",
+    "challenges": "Challenges",
+    "playground": "Playground",
+    "leaderboard": "Leaderboard",
+    "achievements": "Achievements",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "home": {
+    "title": "Master the Model Context Protocol",
+    "badge": "Open Source MCP Learning Platform",
+    "subtitle": "Master the Model Context Protocol. Learn, build, and compete with interactive challenges and a live playground.",
+    "startLearning": "Get Started",
+    "tryPlayground": "Try Playground",
+    "whatIsMcp": {
+      "title": "What is MCP?",
+      "description": "The Model Context Protocol is an open standard by Anthropic that enables AI assistants to securely access tools, data sources, and services. Think of it as a universal adapter between AI and the world."
+    },
+    "journey": {
+      "title": "Start Your Journey",
+      "features": {
+        "learn": {
+          "title": "Learn MCP",
+          "description": "Interactive tutorials and documentation to master the Model Context Protocol",
+          "badge": "Start Here"
+        },
+        "playground": {
+          "title": "Playground",
+          "description": "Build and test your MCP servers in a live sandbox environment",
+          "badge": "Interactive"
+        },
+        "challenges": {
+          "title": "Challenges",
+          "description": "Solve problems, build MCP servers, and compete on the leaderboard",
+          "badge": "Compete"
+        },
+        "showcase": {
+          "title": "Showcase",
+          "description": "Explore community-built MCP servers and get inspired",
+          "badge": "Community"
+        }
+      }
+    },
+    "stats": {
+      "challenges": "Challenges",
+      "tutorials": "Tutorials",
+      "possibilities": "Possibilities",
+      "cost": "Cost"
+    },
+    "footer": {
+      "builtWith": "Built with",
+      "forCommunity": "for the MCP community"
+    },
+    "features": {
+      "learn": {
+        "title": "Learn MCP",
+        "description": "Interactive tutorials from basics to advanced topics"
+      },
+      "challenges": {
+        "title": "Complete Challenges",
+        "description": "Build real MCP servers and test your skills"
+      },
+      "compete": {
+        "title": "Compete & Earn",
+        "description": "Climb the leaderboard and unlock achievements"
+      }
+    },
+    "featuredChallenges": "Featured Challenges",
+    "recentAchievements": "Recent Achievements"
+  },
+  "learn": {
+    "title": "Learn MCP",
+    "subtitle": "Master the Model Context Protocol with our step-by-step tutorials. Start from the basics and work your way up to advanced topics.",
+    "backToLearn": "Back to Learn",
+    "prerequisites": "Prerequisites",
+    "quickReference": "Quick Reference",
+    "keyTakeaways": "Key Takeaways",
+    "readyForMore": "Ready for More?",
+    "tryChallenges": "Try Challenges",
+    "openPlayground": "Open Playground",
+    "completeTutorial": "Complete Tutorial",
+    "continueToStep": "Continue to Step {step}",
+    "difficulty": {
+      "beginner": "beginner",
+      "intermediate": "intermediate",
+      "advanced": "advanced"
+    },
+    "tutorials": {
+      "whatIsMcp": {
+        "title": "What is MCP?",
+        "description": "Introduction to the Model Context Protocol and why it matters"
+      },
+      "firstServer": {
+        "title": "Your First MCP Server",
+        "description": "Build a simple MCP server from scratch with TypeScript"
+      },
+      "mcpTools": {
+        "title": "Creating MCP Tools",
+        "description": "Learn how to define and implement powerful tools"
+      },
+      "mcpResources": {
+        "title": "MCP Resources & Prompts",
+        "description": "Expose data and templates through resources and prompts"
+      },
+      "mcpTransports": {
+        "title": "Transport Protocols",
+        "description": "Understand stdio, HTTP, and WebSocket transports"
+      }
+    }
+  },
+  "challenges": {
+    "title": "Challenges",
+    "subtitle": "Test your MCP skills with interactive challenges. Build working solutions and earn points!",
+    "leaderboard": "Leaderboard",
+    "completions": "completions",
+    "filters": {
+      "all": "All",
+      "games": "Games",
+      "build": "Build",
+      "useTools": "Use Tools",
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    },
+    "types": {
+      "build": "Build Server",
+      "use": "Use Tools",
+      "game": "Game"
+    },
+    "difficulty": {
+      "beginner": "beginner",
+      "intermediate": "intermediate",
+      "advanced": "advanced"
+    },
+    "items": {
+      "chess": {
+        "title": "Chess Challenge",
+        "description": "Play chess against AI or a friend. Build an MCP chess server!"
+      },
+      "tictactoe": {
+        "title": "Tic-Tac-Toe",
+        "description": "Classic game with unbeatable minimax AI. Can you force a draw?"
+      },
+      "snake": {
+        "title": "Snake + MCP Transports",
+        "description": "Learn stdio, HTTP+SSE, and WebSocket transports by building a snake AI!"
+      },
+      "helloWorld": {
+        "title": "Hello World",
+        "description": "Create your first MCP tool that greets users"
+      },
+      "calculator": {
+        "title": "Calculator Tool",
+        "description": "Build a calculator tool with basic math operations"
+      },
+      "fileReader": {
+        "title": "File Reader",
+        "description": "Use the files.read tool to find specific content"
+      },
+      "weatherApi": {
+        "title": "Weather API Integration",
+        "description": "Create an MCP server that fetches real weather data"
+      },
+      "multiTool": {
+        "title": "Multi-Tool Server",
+        "description": "Build a server with 5+ interconnected tools"
+      },
+      "dataPipeline": {
+        "title": "Data Pipeline",
+        "description": "Chain multiple MCP tools to process and transform data"
+      }
+    },
+    "comingSoon": {
+      "title": "More Challenges Coming Soon",
+      "description": "We're working on new challenges. Want to contribute?",
+      "submitIdea": "Submit a challenge idea"
+    }
+  },
+  "playground": {
+    "title": "MCP Playground",
+    "subtitle": "Experiment with MCP servers in your browser. No setup required!",
+    "runCode": "Run Code",
+    "stopCode": "Stop",
+    "clearOutput": "Clear Output",
+    "output": "Output",
+    "tools": "Tools",
+    "testTool": "Test Tool",
+    "noTools": "No tools available",
+    "serverRunning": "Server running",
+    "serverStopped": "Server stopped",
+    "tryInPlayground": "Try It in the Playground",
+    "noSetupRequired": "No local setup required! You can test all the code examples directly in our interactive playground."
+  },
+  "achievements": {
+    "title": "Achievements",
+    "subtitle": "Unlock achievements by completing challenges and reaching milestones",
+    "unlocked": "Unlocked",
+    "locked": "Locked",
+    "unlockedAt": "Unlocked at",
+    "progress": "Progress",
+    "rarity": {
+      "common": "Common",
+      "rare": "Rare",
+      "epic": "Epic",
+      "legendary": "Legendary"
+    },
+    "share": {
+      "title": "Share Achievement",
+      "description": "Share your achievement on social media"
+    }
+  },
+  "leaderboard": {
+    "title": "Leaderboard",
+    "subtitle": "Top MCP developers ranked by points and achievements",
+    "rank": "Rank",
+    "player": "Player",
+    "points": "Points",
+    "level": "Level",
+    "achievements": "Achievements",
+    "challenges": "Challenges",
+    "you": "You"
+  },
+  "profile": {
+    "title": "Profile",
+    "editProfile": "Edit Profile",
+    "achievements": "Achievements",
+    "achievementsUnlocked": "{count} achievements unlocked",
+    "recentActivity": "Recent Activity",
+    "latestCompletions": "Latest challenge completions",
+    "noAchievements": "No achievements yet. Start completing challenges!",
+    "noCompletions": "No completed challenges yet.",
+    "gettingStarted": {
+      "title": "Getting Started",
+      "welcome": "Welcome to MCP Challenge!",
+      "description": "Complete challenges to earn points and unlock achievements.",
+      "step1": "Learn MCP basics",
+      "step2": "Build your first MCP server",
+      "step3": "Try game challenges"
+    },
+    "stats": {
+      "totalPoints": "Total Points",
+      "level": "Level",
+      "challengesCompleted": "Challenges Completed",
+      "achievementsUnlocked": "Achievements Unlocked",
+      "currentStreak": "Current Streak",
+      "longestStreak": "Longest Streak"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "account": "Account",
+    "preferences": "Preferences",
+    "language": "Language",
+    "theme": "Theme",
+    "notifications": "Notifications",
+    "deleteAccount": "Delete Account",
+    "themes": {
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Sign In",
+      "subtitle": "Sign in to track your progress and compete on the leaderboard",
+      "withGithub": "Continue with GitHub",
+      "withGoogle": "Continue with Google",
+      "withEmail": "Continue with Email",
+      "noAccount": "Don't have an account?",
+      "createAccount": "Create one"
+    },
+    "signUp": {
+      "title": "Create Account",
+      "subtitle": "Join MCP Challenge and start learning",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in"
+    },
+    "error": {
+      "title": "Authentication Error",
+      "description": "There was a problem signing you in.",
+      "tryAgain": "Try Again",
+      "backHome": "Back to Home"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Page Not Found",
+      "description": "The page you're looking for doesn't exist.",
+      "backHome": "Back to Home"
+    },
+    "serverError": {
+      "title": "Server Error",
+      "description": "Something went wrong. Please try again later."
+    }
+  },
+  "footer": {
+    "description": "Learn and master the Model Context Protocol through interactive challenges.",
+    "links": {
+      "learn": "Learn",
+      "challenges": "Challenges",
+      "playground": "Playground",
+      "github": "GitHub",
+      "twitter": "Twitter",
+      "discord": "Discord"
+    },
+    "copyright": "© {year} MCP Challenge. All rights reserved."
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated",
+    "intro": "Your privacy is important to us. This policy explains how MCP Challenge collects, uses, and protects your personal information.",
+    "overview": {
+      "title": "Overview",
+      "description": "MCP Challenge is an educational platform for learning the Model Context Protocol. We collect minimal data necessary to provide our services and improve your learning experience. We do not sell your personal information to third parties."
+    },
+    "sections": {
+      "dataCollection": {
+        "title": "What Data We Collect",
+        "description": "We collect the following types of information:",
+        "items": {
+          "personalInfo": {
+            "title": "Account Information",
+            "description": "When you sign in via GitHub OAuth, we collect your email address, username, and profile picture from your GitHub account."
+          },
+          "authInfo": {
+            "title": "Authentication Data",
+            "description": "We store session tokens and authentication credentials to keep you signed in securely."
+          },
+          "gameData": {
+            "title": "Game & Challenge Data",
+            "description": "We track your game scores, challenge completions, achievements earned, and learning progress to provide personalized features and leaderboards."
+          },
+          "analyticsData": {
+            "title": "Usage Analytics",
+            "description": "We use Google Analytics to collect anonymous usage data including pages visited, time spent on site, browser type, and general location (country/city level)."
+          }
+        }
+      },
+      "cookies": {
+        "title": "How We Use Cookies",
+        "description": "We use cookies and similar technologies for the following purposes:",
+        "items": {
+          "essential": {
+            "title": "Essential Cookies",
+            "description": "Session cookies required for authentication and core functionality. These cookies are necessary for the site to work properly."
+          },
+          "analytics": {
+            "title": "Analytics Cookies",
+            "description": "Google Analytics cookies (if you accept) help us understand how users interact with our platform to improve user experience."
+          },
+          "preferences": {
+            "title": "Preference Cookies",
+            "description": "Cookies that remember your language selection, theme preferences, and cookie consent choices."
+          }
+        }
+      },
+      "dataUsage": {
+        "title": "How We Use Your Data",
+        "description": "We use your personal data for the following purposes:",
+        "items": {
+          "authentication": {
+            "title": "Authentication & Account Management",
+            "description": "To create and manage your account, authenticate your identity, and provide secure access to our platform."
+          },
+          "gamification": {
+            "title": "Gamification Features",
+            "description": "To track your progress, display leaderboards, award achievements, and personalize your learning experience."
+          },
+          "improvement": {
+            "title": "Service Improvement",
+            "description": "To analyze usage patterns, identify bugs, improve our content, and develop new features based on user behavior."
+          },
+          "communication": {
+            "title": "Communication",
+            "description": "To send important updates about your account, respond to your inquiries, and notify you of changes to our services (if you opt-in)."
+          }
+        }
+      },
+      "thirdParty": {
+        "title": "Third-Party Services",
+        "description": "We use the following third-party services:",
+        "items": {
+          "github": {
+            "title": "GitHub OAuth",
+            "description": "We use GitHub for secure authentication. GitHub may collect data according to their privacy policy when you sign in. We receive only the basic profile information you authorize."
+          },
+          "googleAnalytics": {
+            "title": "Google Analytics (GA4)",
+            "description": "Google Analytics ID: G-FM35KECLVH. We use this to track anonymous usage statistics. Google may use this data according to their privacy policy. You can opt-out through our cookie consent banner."
+          },
+          "cloudflare": {
+            "title": "Cloudflare",
+            "description": "Our infrastructure is hosted on Cloudflare Pages and uses Cloudflare Workers. Cloudflare may collect connection data for security and performance purposes according to their privacy policy."
+          }
+        }
+      },
+      "dataRetention": {
+        "title": "Data Retention",
+        "description": "We retain your data as follows:",
+        "items": {
+          "accountData": {
+            "title": "Account & Profile Data",
+            "description": "Stored indefinitely while your account is active. You can request deletion at any time by contacting us."
+          },
+          "analytics": {
+            "title": "Analytics Data",
+            "description": "Google Analytics data is retained for 26 months according to Google's data retention policies. We have configured GA4 to use the shortest retention period available."
+          },
+          "deletion": {
+            "title": "After Account Deletion",
+            "description": "When you delete your account, we remove all personally identifiable information within 30 days. Anonymized statistics may be retained for historical purposes."
+          }
+        }
+      },
+      "userRights": {
+        "title": "Your Rights (GDPR)",
+        "description": "Under GDPR and similar privacy laws, you have the following rights:",
+        "items": {
+          "access": {
+            "title": "Right to Access",
+            "description": "You can request a copy of all personal data we hold about you."
+          },
+          "rectification": {
+            "title": "Right to Rectification",
+            "description": "You can request corrections to any inaccurate or incomplete personal data."
+          },
+          "erasure": {
+            "title": "Right to Erasure",
+            "description": "You can request deletion of your personal data ('right to be forgotten'), subject to legal obligations."
+          },
+          "portability": {
+            "title": "Right to Data Portability",
+            "description": "You can request your data in a structured, commonly used, machine-readable format."
+          },
+          "objection": {
+            "title": "Right to Object",
+            "description": "You can object to certain types of data processing, including direct marketing and analytics."
+          }
+        }
+      },
+      "security": {
+        "title": "Data Security",
+        "description": "How we protect your information:",
+        "content": "We implement industry-standard security measures to protect your data including encryption in transit (HTTPS/TLS), secure authentication via OAuth 2.0, encrypted database storage, regular security audits, and access controls limiting employee data access. However, no method of transmission over the internet is 100% secure, and we cannot guarantee absolute security."
+      },
+      "contact": {
+        "title": "Contact Us",
+        "description": "Questions about this privacy policy?",
+        "content": "If you have questions about this Privacy Policy, want to exercise your rights, or report a data concern, please contact us:"
+      },
+      "changes": {
+        "title": "Changes to This Policy",
+        "content": "We may update this Privacy Policy from time to time. We will notify users of significant changes by posting a notice on our website or sending an email to registered users. Your continued use of MCP Challenge after changes constitutes acceptance of the updated policy."
+      }
+    },
+    "footer": "By using MCP Challenge, you agree to this Privacy Policy. If you do not agree, please discontinue use of our services."
+  }
+}

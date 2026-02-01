@@ -1,0 +1,339 @@
+{
+  "common": {
+    "loading": "Caricamento...",
+    "error": "Errore",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "close": "Chiudi",
+    "back": "Indietro",
+    "next": "Successivo",
+    "submit": "Invia",
+    "search": "Cerca",
+    "language": "Lingua",
+    "settings": "Impostazioni",
+    "profile": "Profilo",
+    "signIn": "Accedi",
+    "signOut": "Esci",
+    "signUp": "Registrati",
+    "learnMore": "Scopri di più",
+    "tryNow": "Prova ora",
+    "viewAll": "Vedi tutto",
+    "share": "Condividi",
+    "copy": "Copia",
+    "copied": "Copiato!",
+    "minutes": "min",
+    "points": "punti",
+    "level": "Livello",
+    "challenges": "sfide"
+  },
+  "nav": {
+    "home": "Home",
+    "learn": "Impara",
+    "challenges": "Sfide",
+    "playground": "Playground",
+    "leaderboard": "Classifica",
+    "achievements": "Obiettivi",
+    "profile": "Profilo",
+    "settings": "Impostazioni"
+  },
+  "home": {
+    "title": "Padroneggia il Model Context Protocol",
+    "badge": "Piattaforma Open Source per Imparare MCP",
+    "subtitle": "Padroneggia il Model Context Protocol. Impara, costruisci e competi con sfide interattive e un playground dal vivo.",
+    "startLearning": "Inizia",
+    "tryPlayground": "Prova il Playground",
+    "whatIsMcp": {
+      "title": "Cos'è MCP?",
+      "description": "Il Model Context Protocol è uno standard aperto di Anthropic che consente agli assistenti AI di accedere in modo sicuro a strumenti, fonti di dati e servizi. Pensalo come un adattatore universale tra l'AI e il mondo."
+    },
+    "journey": {
+      "title": "Inizia il Tuo Viaggio",
+      "features": {
+        "learn": {
+          "title": "Impara MCP",
+          "description": "Tutorial interattivi e documentazione per padroneggiare il Model Context Protocol",
+          "badge": "Inizia Qui"
+        },
+        "playground": {
+          "title": "Playground",
+          "description": "Costruisci e testa i tuoi server MCP in un ambiente sandbox dal vivo",
+          "badge": "Interattivo"
+        },
+        "challenges": {
+          "title": "Sfide",
+          "description": "Risolvi problemi, costruisci server MCP e competi nella classifica",
+          "badge": "Competi"
+        },
+        "showcase": {
+          "title": "Vetrina",
+          "description": "Esplora i server MCP costruiti dalla comunità e lasciati ispirare",
+          "badge": "Comunità"
+        }
+      }
+    },
+    "stats": {
+      "challenges": "Sfide",
+      "tutorials": "Tutorial",
+      "possibilities": "Possibilità",
+      "cost": "Costo"
+    },
+    "footer": {
+      "builtWith": "Costruito con",
+      "forCommunity": "per la comunità MCP"
+    },
+    "features": {
+      "learn": {
+        "title": "Impara MCP",
+        "description": "Tutorial interattivi dalle basi agli argomenti avanzati"
+      },
+      "challenges": {
+        "title": "Completa le Sfide",
+        "description": "Costruisci veri server MCP e metti alla prova le tue abilità"
+      },
+      "compete": {
+        "title": "Competi e Vinci",
+        "description": "Scala la classifica e sblocca obiettivi"
+      }
+    },
+    "featuredChallenges": "Sfide in Evidenza",
+    "recentAchievements": "Obiettivi Recenti"
+  },
+  "learn": {
+    "title": "Impara MCP",
+    "subtitle": "Padroneggia il Protocollo di Contesto del Modello con i nostri tutorial passo dopo passo. Inizia dalle basi e avanza verso argomenti avanzati.",
+    "backToLearn": "Torna a Impara",
+    "prerequisites": "Prerequisiti",
+    "quickReference": "Riferimento rapido",
+    "keyTakeaways": "Punti chiave",
+    "readyForMore": "Pronto per altro?",
+    "tryChallenges": "Prova le Sfide",
+    "openPlayground": "Apri il Playground",
+    "completeTutorial": "Completa il Tutorial",
+    "continueToStep": "Continua al Passaggio {step}",
+    "difficulty": {
+      "beginner": "principiante",
+      "intermediate": "intermedio",
+      "advanced": "avanzato"
+    },
+    "tutorials": {
+      "whatIsMcp": {
+        "title": "Cos'è MCP?",
+        "description": "Introduzione al Protocollo di Contesto del Modello e perché è importante"
+      },
+      "firstServer": {
+        "title": "Il Tuo Primo Server MCP",
+        "description": "Costruisci un semplice server MCP da zero con TypeScript"
+      },
+      "mcpTools": {
+        "title": "Creare Strumenti MCP",
+        "description": "Impara a definire e implementare strumenti potenti"
+      },
+      "mcpResources": {
+        "title": "Risorse e Prompt MCP",
+        "description": "Esponi dati e template attraverso risorse e prompt"
+      },
+      "mcpTransports": {
+        "title": "Protocolli di Trasporto",
+        "description": "Comprendi i trasporti stdio, HTTP e WebSocket"
+      }
+    }
+  },
+  "challenges": {
+    "title": "Sfide",
+    "subtitle": "Metti alla prova le tue abilità MCP con sfide interattive. Costruisci soluzioni funzionanti e guadagna punti!",
+    "leaderboard": "Classifica",
+    "completions": "completamenti",
+    "filters": {
+      "all": "Tutte",
+      "games": "Giochi",
+      "build": "Costruisci",
+      "useTools": "Usa Strumenti",
+      "beginner": "Principiante",
+      "intermediate": "Intermedio",
+      "advanced": "Avanzato"
+    },
+    "types": {
+      "build": "Costruisci Server",
+      "use": "Usa Strumenti",
+      "game": "Gioco"
+    },
+    "difficulty": {
+      "beginner": "principiante",
+      "intermediate": "intermedio",
+      "advanced": "avanzato"
+    },
+    "items": {
+      "chess": {
+        "title": "Sfida degli Scacchi",
+        "description": "Gioca a scacchi contro l'IA o un amico. Costruisci un server MCP per gli scacchi!"
+      },
+      "tictactoe": {
+        "title": "Tris",
+        "description": "Gioco classico con IA minimax imbattibile. Puoi forzare un pareggio?"
+      },
+      "snake": {
+        "title": "Serpente + MCP Transports",
+        "description": "Impara i transport stdio, HTTP+SSE e WebSocket costruendo un'IA per il serpente!"
+      },
+      "helloWorld": {
+        "title": "Hello World",
+        "description": "Crea il tuo primo strumento MCP che saluta gli utenti"
+      },
+      "calculator": {
+        "title": "Strumento Calcolatrice",
+        "description": "Costruisci uno strumento calcolatrice con operazioni matematiche di base"
+      },
+      "fileReader": {
+        "title": "Lettore di File",
+        "description": "Usa lo strumento files.read per trovare contenuti specifici"
+      },
+      "weatherApi": {
+        "title": "Integrazione API Meteo",
+        "description": "Crea un server MCP che recupera dati meteo reali"
+      },
+      "multiTool": {
+        "title": "Server Multi-Strumento",
+        "description": "Costruisci un server con 5+ strumenti interconnessi"
+      },
+      "dataPipeline": {
+        "title": "Pipeline di Dati",
+        "description": "Collega più strumenti MCP per elaborare e trasformare i dati"
+      }
+    },
+    "comingSoon": {
+      "title": "Altre Sfide in Arrivo",
+      "description": "Stiamo lavorando a nuove sfide. Vuoi contribuire?",
+      "submitIdea": "Invia un'idea per una sfida"
+    }
+  },
+  "playground": {
+    "title": "Playground MCP",
+    "subtitle": "Sperimenta con i server MCP nel tuo browser. Nessuna configurazione necessaria!",
+    "runCode": "Esegui Codice",
+    "stopCode": "Ferma",
+    "clearOutput": "Cancella Output",
+    "output": "Output",
+    "tools": "Strumenti",
+    "testTool": "Testa Strumento",
+    "noTools": "Nessuno strumento disponibile",
+    "serverRunning": "Server in esecuzione",
+    "serverStopped": "Server fermato",
+    "tryInPlayground": "Provalo nel Playground",
+    "noSetupRequired": "Nessuna configurazione locale necessaria! Puoi testare tutti gli esempi di codice direttamente nel nostro playground interattivo."
+  },
+  "achievements": {
+    "title": "Obiettivi",
+    "subtitle": "Sblocca obiettivi completando sfide e raggiungendo traguardi",
+    "unlocked": "Sbloccato",
+    "locked": "Bloccato",
+    "unlockedAt": "Sbloccato il",
+    "progress": "Progresso",
+    "rarity": {
+      "common": "Comune",
+      "rare": "Raro",
+      "epic": "Epico",
+      "legendary": "Leggendario"
+    },
+    "share": {
+      "title": "Condividi Obiettivo",
+      "description": "Condividi il tuo obiettivo sui social media"
+    }
+  },
+  "leaderboard": {
+    "title": "Classifica",
+    "subtitle": "I migliori sviluppatori MCP classificati per punti e obiettivi",
+    "rank": "Posizione",
+    "player": "Giocatore",
+    "points": "Punti",
+    "level": "Livello",
+    "achievements": "Obiettivi",
+    "challenges": "Sfide",
+    "you": "Tu"
+  },
+  "profile": {
+    "title": "Profilo",
+    "editProfile": "Modifica Profilo",
+    "achievements": "Obiettivi",
+    "achievementsUnlocked": "{count} obiettivi sbloccati",
+    "recentActivity": "Attività Recente",
+    "latestCompletions": "Ultime sfide completate",
+    "noAchievements": "Nessun obiettivo ancora. Inizia a completare le sfide!",
+    "noCompletions": "Nessuna sfida completata ancora.",
+    "gettingStarted": {
+      "title": "Per Iniziare",
+      "welcome": "Benvenuto su MCP Challenge!",
+      "description": "Completa le sfide per guadagnare punti e sbloccare obiettivi.",
+      "step1": "Impara le basi di MCP",
+      "step2": "Costruisci il tuo primo server MCP",
+      "step3": "Prova le sfide dei giochi"
+    },
+    "stats": {
+      "totalPoints": "Punti Totali",
+      "level": "Livello",
+      "challengesCompleted": "Sfide Completate",
+      "achievementsUnlocked": "Obiettivi Sbloccati",
+      "currentStreak": "Serie Attuale",
+      "longestStreak": "Serie Più Lunga"
+    }
+  },
+  "settings": {
+    "title": "Impostazioni",
+    "account": "Account",
+    "preferences": "Preferenze",
+    "language": "Lingua",
+    "theme": "Tema",
+    "notifications": "Notifiche",
+    "deleteAccount": "Elimina Account",
+    "themes": {
+      "light": "Chiaro",
+      "dark": "Scuro",
+      "system": "Sistema"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Accedi",
+      "subtitle": "Accedi per tracciare i tuoi progressi e competere nella classifica",
+      "withGithub": "Continua con GitHub",
+      "withGoogle": "Continua con Google",
+      "withEmail": "Continua con Email",
+      "noAccount": "Non hai un account?",
+      "createAccount": "Creane uno"
+    },
+    "signUp": {
+      "title": "Crea Account",
+      "subtitle": "Unisciti a MCP Challenge e inizia a imparare",
+      "hasAccount": "Hai già un account?",
+      "signIn": "Accedi"
+    },
+    "error": {
+      "title": "Errore di Autenticazione",
+      "description": "Si è verificato un problema durante l'accesso.",
+      "tryAgain": "Riprova",
+      "backHome": "Torna alla Home"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Pagina Non Trovata",
+      "description": "La pagina che stai cercando non esiste.",
+      "backHome": "Torna alla Home"
+    },
+    "serverError": {
+      "title": "Errore del Server",
+      "description": "Qualcosa è andato storto. Riprova più tardi."
+    }
+  },
+  "footer": {
+    "description": "Impara e padroneggia il Protocollo di Contesto del Modello attraverso sfide interattive.",
+    "links": {
+      "learn": "Impara",
+      "challenges": "Sfide",
+      "playground": "Playground",
+      "github": "GitHub",
+      "twitter": "Twitter",
+      "discord": "Discord"
+    },
+    "copyright": "© {year} MCP Challenge. Tutti i diritti riservati."
+  }
+}

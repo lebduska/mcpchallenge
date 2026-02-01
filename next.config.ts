@@ -1,7 +1,15 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
+import { setupDevPlatform } from "@cloudflare/next-on-pages/next-dev";
+
+const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
+
+// Setup Cloudflare dev platform for local development
+if (process.env.NODE_ENV === "development") {
+  setupDevPlatform();
+}
 
 const nextConfig: NextConfig = {
-  // SSR mode for Cloudflare Pages (removed: output: "export")
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "avatars.githubusercontent.com" },
@@ -11,4 +19,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

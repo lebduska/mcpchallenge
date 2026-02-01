@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
+import Google from "next-auth/providers/google";
 import type { NextAuthConfig } from "next-auth";
 import { getRequestContext } from "@cloudflare/next-on-pages";
 import { createDb } from "@/db";
@@ -12,6 +13,8 @@ export const runtime = "edge";
 interface CloudflareEnv {
   GITHUB_CLIENT_ID: string;
   GITHUB_CLIENT_SECRET: string;
+  GOOGLE_CLIENT_ID: string;
+  GOOGLE_CLIENT_SECRET: string;
   AUTH_SECRET: string;
   DB: D1Database;
 }
@@ -23,6 +26,10 @@ function getAuth() {
 
   const config: NextAuthConfig = {
     providers: [
+      Google({
+        clientId: cfEnv.GOOGLE_CLIENT_ID,
+        clientSecret: cfEnv.GOOGLE_CLIENT_SECRET,
+      }),
       GitHub({
         clientId: cfEnv.GITHUB_CLIENT_ID,
         clientSecret: cfEnv.GITHUB_CLIENT_SECRET,
@@ -49,12 +56,15 @@ function getAuth() {
         if (!existingUser) {
           // Create new user
           const userId = crypto.randomUUID();
+          // Generate username from profile (GitHub uses login, Google uses email prefix)
+          const username = (profile?.login as string) ||
+            user.email.split("@")[0].replace(/[^a-zA-Z0-9]/g, "");
           await db.insert(users).values({
             id: userId,
             email: user.email,
             name: user.name || null,
             image: user.image || null,
-            username: profile?.login as string || null,
+            username,
           });
           // Create user stats
           await db.insert(userStats).values({

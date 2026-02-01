@@ -1,0 +1,339 @@
+{
+  "common": {
+    "loading": "Laden...",
+    "error": "Fout",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "close": "Sluiten",
+    "back": "Terug",
+    "next": "Volgende",
+    "submit": "Verzenden",
+    "search": "Zoeken",
+    "language": "Taal",
+    "settings": "Instellingen",
+    "profile": "Profiel",
+    "signIn": "Inloggen",
+    "signOut": "Uitloggen",
+    "signUp": "Registreren",
+    "learnMore": "Meer informatie",
+    "tryNow": "Nu proberen",
+    "viewAll": "Alles bekijken",
+    "share": "Delen",
+    "copy": "Kopiëren",
+    "copied": "Gekopieerd!",
+    "minutes": "min",
+    "points": "punten",
+    "level": "Level",
+    "challenges": "challenges"
+  },
+  "nav": {
+    "home": "Home",
+    "learn": "Leren",
+    "challenges": "Challenges",
+    "playground": "Playground",
+    "leaderboard": "Klassement",
+    "achievements": "Prestaties",
+    "profile": "Profiel",
+    "settings": "Instellingen"
+  },
+  "home": {
+    "title": "Beheers het Model Context Protocol",
+    "badge": "Open Source MCP Leerplatform",
+    "subtitle": "Beheers het Model Context Protocol. Leer, bouw en strijd met interactieve challenges en een live playground.",
+    "startLearning": "Aan de slag",
+    "tryPlayground": "Probeer Playground",
+    "whatIsMcp": {
+      "title": "Wat is MCP?",
+      "description": "Het Model Context Protocol is een open standaard van Anthropic waarmee AI-assistenten veilig toegang krijgen tot tools, databronnen en services. Zie het als een universele adapter tussen AI en de wereld."
+    },
+    "journey": {
+      "title": "Begin Je Reis",
+      "features": {
+        "learn": {
+          "title": "Leer MCP",
+          "description": "Interactieve tutorials en documentatie om het Model Context Protocol te beheersen",
+          "badge": "Start Hier"
+        },
+        "playground": {
+          "title": "Playground",
+          "description": "Bouw en test je MCP-servers in een live sandbox-omgeving",
+          "badge": "Interactief"
+        },
+        "challenges": {
+          "title": "Challenges",
+          "description": "Los problemen op, bouw MCP-servers en strijd in het klassement",
+          "badge": "Strijd"
+        },
+        "showcase": {
+          "title": "Showcase",
+          "description": "Ontdek door de community gebouwde MCP-servers en laat je inspireren",
+          "badge": "Community"
+        }
+      }
+    },
+    "stats": {
+      "challenges": "Challenges",
+      "tutorials": "Tutorials",
+      "possibilities": "Mogelijkheden",
+      "cost": "Kosten"
+    },
+    "footer": {
+      "builtWith": "Gebouwd met",
+      "forCommunity": "voor de MCP-community"
+    },
+    "features": {
+      "learn": {
+        "title": "Leer MCP",
+        "description": "Interactieve tutorials van basis tot gevorderd"
+      },
+      "challenges": {
+        "title": "Voltooi Challenges",
+        "description": "Bouw echte MCP-servers en test je vaardigheden"
+      },
+      "compete": {
+        "title": "Strijd & Verdien",
+        "description": "Klim in het klassement en ontgrendel prestaties"
+      }
+    },
+    "featuredChallenges": "Uitgelichte Challenges",
+    "recentAchievements": "Recente Prestaties"
+  },
+  "learn": {
+    "title": "Leer MCP",
+    "subtitle": "Beheers het Model Context Protocol met onze stapsgewijze tutorials. Begin bij de basis en werk naar gevorderde onderwerpen.",
+    "backToLearn": "Terug naar Leren",
+    "prerequisites": "Vereisten",
+    "quickReference": "Snelle Referentie",
+    "keyTakeaways": "Belangrijkste Punten",
+    "readyForMore": "Klaar voor meer?",
+    "tryChallenges": "Probeer Challenges",
+    "openPlayground": "Open Playground",
+    "completeTutorial": "Voltooi Tutorial",
+    "continueToStep": "Ga door naar Stap {step}",
+    "difficulty": {
+      "beginner": "beginner",
+      "intermediate": "gevorderd",
+      "advanced": "expert"
+    },
+    "tutorials": {
+      "whatIsMcp": {
+        "title": "Wat is MCP?",
+        "description": "Introductie tot het Model Context Protocol en waarom het belangrijk is"
+      },
+      "firstServer": {
+        "title": "Je Eerste MCP-Server",
+        "description": "Bouw een eenvoudige MCP-server vanaf nul met TypeScript"
+      },
+      "mcpTools": {
+        "title": "MCP-Tools Maken",
+        "description": "Leer krachtige tools te definiëren en implementeren"
+      },
+      "mcpResources": {
+        "title": "MCP-Resources & Prompts",
+        "description": "Maak data en templates beschikbaar via resources en prompts"
+      },
+      "mcpTransports": {
+        "title": "Transportprotocollen",
+        "description": "Begrijp stdio-, HTTP- en WebSocket-transporten"
+      }
+    }
+  },
+  "challenges": {
+    "title": "Challenges",
+    "subtitle": "Test je MCP-vaardigheden met interactieve challenges. Bouw werkende oplossingen en verdien punten!",
+    "leaderboard": "Klassement",
+    "completions": "voltooiingen",
+    "filters": {
+      "all": "Alle",
+      "games": "Games",
+      "build": "Bouwen",
+      "useTools": "Tools Gebruiken",
+      "beginner": "Beginner",
+      "intermediate": "Gevorderd",
+      "advanced": "Expert"
+    },
+    "types": {
+      "build": "Server Bouwen",
+      "use": "Tools Gebruiken",
+      "game": "Game"
+    },
+    "difficulty": {
+      "beginner": "beginner",
+      "intermediate": "gevorderd",
+      "advanced": "expert"
+    },
+    "items": {
+      "chess": {
+        "title": "Schaak-Challenge",
+        "description": "Speel schaak tegen AI of een vriend. Bouw een MCP-schaakserver!"
+      },
+      "tictactoe": {
+        "title": "Boter-Kaas-Eieren",
+        "description": "Klassieke game met onverslaanbare minimax AI. Kun je een gelijkspel forceren?"
+      },
+      "snake": {
+        "title": "Snake + MCP-Transporten",
+        "description": "Leer stdio-, HTTP+SSE- en WebSocket-transporten door een snake-AI te bouwen!"
+      },
+      "helloWorld": {
+        "title": "Hello World",
+        "description": "Maak je eerste MCP-tool die gebruikers begroet"
+      },
+      "calculator": {
+        "title": "Rekenmachine-Tool",
+        "description": "Bouw een rekenmachine-tool met basale wiskundige operaties"
+      },
+      "fileReader": {
+        "title": "Bestandslezer",
+        "description": "Gebruik de files.read-tool om specifieke content te vinden"
+      },
+      "weatherApi": {
+        "title": "Weer-API-Integratie",
+        "description": "Maak een MCP-server die echte weerdata ophaalt"
+      },
+      "multiTool": {
+        "title": "Multi-Tool-Server",
+        "description": "Bouw een server met 5+ onderling verbonden tools"
+      },
+      "dataPipeline": {
+        "title": "Data-Pipeline",
+        "description": "Koppel meerdere MCP-tools om data te verwerken en transformeren"
+      }
+    },
+    "comingSoon": {
+      "title": "Meer Challenges Binnenkort",
+      "description": "We werken aan nieuwe challenges. Wil je bijdragen?",
+      "submitIdea": "Dien een challenge-idee in"
+    }
+  },
+  "playground": {
+    "title": "MCP Playground",
+    "subtitle": "Experimenteer met MCP-servers in je browser. Geen setup nodig!",
+    "runCode": "Code Uitvoeren",
+    "stopCode": "Stoppen",
+    "clearOutput": "Output Wissen",
+    "output": "Output",
+    "tools": "Tools",
+    "testTool": "Test Tool",
+    "noTools": "Geen tools beschikbaar",
+    "serverRunning": "Server actief",
+    "serverStopped": "Server gestopt",
+    "tryInPlayground": "Probeer het in de Playground",
+    "noSetupRequired": "Geen lokale setup nodig! Je kunt alle codevoorbeelden direct testen in onze interactieve playground."
+  },
+  "achievements": {
+    "title": "Prestaties",
+    "subtitle": "Ontgrendel prestaties door challenges te voltooien en mijlpalen te bereiken",
+    "unlocked": "Ontgrendeld",
+    "locked": "Vergrendeld",
+    "unlockedAt": "Ontgrendeld op",
+    "progress": "Voortgang",
+    "rarity": {
+      "common": "Gewoon",
+      "rare": "Zeldzaam",
+      "epic": "Episch",
+      "legendary": "Legendarisch"
+    },
+    "share": {
+      "title": "Prestatie Delen",
+      "description": "Deel je prestatie op sociale media"
+    }
+  },
+  "leaderboard": {
+    "title": "Klassement",
+    "subtitle": "Top MCP-ontwikkelaars gerangschikt op punten en prestaties",
+    "rank": "Rang",
+    "player": "Speler",
+    "points": "Punten",
+    "level": "Level",
+    "achievements": "Prestaties",
+    "challenges": "Challenges",
+    "you": "Jij"
+  },
+  "profile": {
+    "title": "Profiel",
+    "editProfile": "Profiel Bewerken",
+    "achievements": "Prestaties",
+    "achievementsUnlocked": "{count} prestaties ontgrendeld",
+    "recentActivity": "Recente Activiteit",
+    "latestCompletions": "Laatst voltooide challenges",
+    "noAchievements": "Nog geen prestaties. Begin met het voltooien van challenges!",
+    "noCompletions": "Nog geen voltooide challenges.",
+    "gettingStarted": {
+      "title": "Aan de Slag",
+      "welcome": "Welkom bij MCP Challenge!",
+      "description": "Voltooi challenges om punten te verdienen en prestaties te ontgrendelen.",
+      "step1": "Leer MCP-basics",
+      "step2": "Bouw je eerste MCP-server",
+      "step3": "Probeer game-challenges"
+    },
+    "stats": {
+      "totalPoints": "Totaal Punten",
+      "level": "Level",
+      "challengesCompleted": "Voltooide Challenges",
+      "achievementsUnlocked": "Ontgrendelde Prestaties",
+      "currentStreak": "Huidige Streak",
+      "longestStreak": "Langste Streak"
+    }
+  },
+  "settings": {
+    "title": "Instellingen",
+    "account": "Account",
+    "preferences": "Voorkeuren",
+    "language": "Taal",
+    "theme": "Thema",
+    "notifications": "Meldingen",
+    "deleteAccount": "Account Verwijderen",
+    "themes": {
+      "light": "Licht",
+      "dark": "Donker",
+      "system": "Systeem"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Inloggen",
+      "subtitle": "Log in om je voortgang bij te houden en te strijden in het klassement",
+      "withGithub": "Doorgaan met GitHub",
+      "withGoogle": "Doorgaan met Google",
+      "withEmail": "Doorgaan met E-mail",
+      "noAccount": "Nog geen account?",
+      "createAccount": "Maak er een"
+    },
+    "signUp": {
+      "title": "Account Aanmaken",
+      "subtitle": "Word lid van MCP Challenge en begin met leren",
+      "hasAccount": "Al een account?",
+      "signIn": "Inloggen"
+    },
+    "error": {
+      "title": "Authenticatiefout",
+      "description": "Er was een probleem bij het inloggen.",
+      "tryAgain": "Probeer Opnieuw",
+      "backHome": "Terug naar Home"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Pagina Niet Gevonden",
+      "description": "De pagina die je zoekt bestaat niet.",
+      "backHome": "Terug naar Home"
+    },
+    "serverError": {
+      "title": "Serverfout",
+      "description": "Er ging iets mis. Probeer het later opnieuw."
+    }
+  },
+  "footer": {
+    "description": "Leer en beheers het Model Context Protocol via interactieve challenges.",
+    "links": {
+      "learn": "Leren",
+      "challenges": "Challenges",
+      "playground": "Playground",
+      "github": "GitHub",
+      "twitter": "Twitter",
+      "discord": "Discord"
+    },
+    "copyright": "© {year} MCP Challenge. Alle rechten voorbehouden."
+  }
+}

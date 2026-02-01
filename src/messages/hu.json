@@ -1,0 +1,339 @@
+{
+  "common": {
+    "loading": "Betöltés...",
+    "error": "Hiba",
+    "save": "Mentés",
+    "cancel": "Mégse",
+    "close": "Bezárás",
+    "back": "Vissza",
+    "next": "Következő",
+    "submit": "Küldés",
+    "search": "Keresés",
+    "language": "Nyelv",
+    "settings": "Beállítások",
+    "profile": "Profil",
+    "signIn": "Bejelentkezés",
+    "signOut": "Kijelentkezés",
+    "signUp": "Regisztráció",
+    "learnMore": "Tudj meg többet",
+    "tryNow": "Próbáld ki most",
+    "viewAll": "Összes megtekintése",
+    "share": "Megosztás",
+    "copy": "Másolás",
+    "copied": "Másolva!",
+    "minutes": "perc",
+    "points": "pont",
+    "level": "Szint",
+    "challenges": "kihívás"
+  },
+  "nav": {
+    "home": "Főoldal",
+    "learn": "Tanulás",
+    "challenges": "Kihívások",
+    "playground": "Játszótér",
+    "leaderboard": "Ranglista",
+    "achievements": "Eredmények",
+    "profile": "Profil",
+    "settings": "Beállítások"
+  },
+  "home": {
+    "title": "Sajátítsd el a Model Context Protocolt",
+    "badge": "Nyílt forráskódú MCP tanulási platform",
+    "subtitle": "Sajátítsd el a Model Context Protocolt. Tanulj, építs és versenyezz interaktív kihívásokkal és élő játszótérrel.",
+    "startLearning": "Kezdés",
+    "tryPlayground": "Játszótér kipróbálása",
+    "whatIsMcp": {
+      "title": "Mi az MCP?",
+      "description": "A Model Context Protocol az Anthropic nyílt szabványa, amely lehetővé teszi az AI asszisztensek számára az eszközök, adatforrások és szolgáltatások biztonságos elérését. Gondolj rá úgy, mint egy univerzális adapterre az AI és a világ között."
+    },
+    "journey": {
+      "title": "Kezdd el az utazást",
+      "features": {
+        "learn": {
+          "title": "Tanuld meg az MCP-t",
+          "description": "Interaktív oktatóanyagok és dokumentáció a Model Context Protocol elsajátításához",
+          "badge": "Kezdd itt"
+        },
+        "playground": {
+          "title": "Játszótér",
+          "description": "Építsd és teszteld MCP szervereidet élő sandbox környezetben",
+          "badge": "Interaktív"
+        },
+        "challenges": {
+          "title": "Kihívások",
+          "description": "Oldj meg problémákat, építs MCP szervereket és versenyezz a ranglistán",
+          "badge": "Versenyezz"
+        },
+        "showcase": {
+          "title": "Vitrin",
+          "description": "Fedezd fel a közösség által épített MCP szervereket és inspirálódj",
+          "badge": "Közösség"
+        }
+      }
+    },
+    "stats": {
+      "challenges": "Kihívások",
+      "tutorials": "Oktatóanyagok",
+      "possibilities": "Lehetőségek",
+      "cost": "Költség"
+    },
+    "footer": {
+      "builtWith": "Készült",
+      "forCommunity": "az MCP közösség számára"
+    },
+    "features": {
+      "learn": {
+        "title": "Tanuld meg az MCP-t",
+        "description": "Interaktív oktatóanyagok az alapoktól a haladó témákig"
+      },
+      "challenges": {
+        "title": "Teljesíts kihívásokat",
+        "description": "Építs valódi MCP szervereket és teszteld a képességeidet"
+      },
+      "compete": {
+        "title": "Versenyezz és szerezz",
+        "description": "Mássz fel a ranglistán és nyiss ki eredményeket"
+      }
+    },
+    "featuredChallenges": "Kiemelt kihívások",
+    "recentAchievements": "Legutóbbi eredmények"
+  },
+  "learn": {
+    "title": "MCP tanulás",
+    "subtitle": "Sajátítsd el a Model Context Protocolt lépésről lépésre haladó oktatóanyagainkkal. Kezdd az alapokkal és haladj a haladó témák felé.",
+    "backToLearn": "Vissza a tanuláshoz",
+    "prerequisites": "Előfeltételek",
+    "quickReference": "Gyors referencia",
+    "keyTakeaways": "Kulcsfontosságú pontok",
+    "readyForMore": "Készen állsz többre?",
+    "tryChallenges": "Próbáld ki a kihívásokat",
+    "openPlayground": "Játszótér megnyitása",
+    "completeTutorial": "Oktatóanyag befejezése",
+    "continueToStep": "Folytatás a(z) {step}. lépéssel",
+    "difficulty": {
+      "beginner": "kezdő",
+      "intermediate": "középhaladó",
+      "advanced": "haladó"
+    },
+    "tutorials": {
+      "whatIsMcp": {
+        "title": "Mi az az MCP?",
+        "description": "Bevezetés a Model Context Protocolba és miért fontos"
+      },
+      "firstServer": {
+        "title": "Az első MCP szervered",
+        "description": "Építs egy egyszerű MCP szervert a semmiből TypeScripttel"
+      },
+      "mcpTools": {
+        "title": "MCP eszközök létrehozása",
+        "description": "Tanuld meg, hogyan definiálj és implementálj hatékony eszközöket"
+      },
+      "mcpResources": {
+        "title": "MCP erőforrások és promptok",
+        "description": "Tegyél közzé adatokat és sablonokat erőforrások és promptok révén"
+      },
+      "mcpTransports": {
+        "title": "Átviteli protokollok",
+        "description": "Értsd meg a stdio, HTTP és WebSocket átviteli módokat"
+      }
+    }
+  },
+  "challenges": {
+    "title": "Kihívások",
+    "subtitle": "Teszteld az MCP képességeidet interaktív kihívásokkal. Építs működő megoldásokat és szerezz pontokat!",
+    "leaderboard": "Ranglista",
+    "completions": "teljesítések",
+    "filters": {
+      "all": "Összes",
+      "games": "Játékok",
+      "build": "Építés",
+      "useTools": "Eszközök használata",
+      "beginner": "Kezdő",
+      "intermediate": "Középhaladó",
+      "advanced": "Haladó"
+    },
+    "types": {
+      "build": "Szerver építése",
+      "use": "Eszközök használata",
+      "game": "Játék"
+    },
+    "difficulty": {
+      "beginner": "kezdő",
+      "intermediate": "középhaladó",
+      "advanced": "haladó"
+    },
+    "items": {
+      "chess": {
+        "title": "Sakk kihívás",
+        "description": "Játssz sakkot AI ellen vagy egy baráttal. Építs egy MCP sakk szervert!"
+      },
+      "tictactoe": {
+        "title": "Tic-Tac-Toe",
+        "description": "Klasszikus játék verhetetlen minimax AI-jal. Tudsz döntetlent kierőszakolni?"
+      },
+      "snake": {
+        "title": "Kígyó + MCP átvitelek",
+        "description": "Tanuld meg a stdio, HTTP+SSE és WebSocket átviteleket egy kígyó AI építésével!"
+      },
+      "helloWorld": {
+        "title": "Hello World",
+        "description": "Hozd létre az első MCP eszközödet, amely üdvözli a felhasználókat"
+      },
+      "calculator": {
+        "title": "Számológép eszköz",
+        "description": "Építs egy számológép eszközt alapvető matematikai műveletekkel"
+      },
+      "fileReader": {
+        "title": "Fájl olvasó",
+        "description": "Használd a files.read eszközt konkrét tartalom megtalálásához"
+      },
+      "weatherApi": {
+        "title": "Időjárás API integráció",
+        "description": "Hozz létre egy MCP szervert, amely valós időjárási adatokat kér le"
+      },
+      "multiTool": {
+        "title": "Többeszközös szerver",
+        "description": "Építs egy szervert 5+ összekapcsolt eszközzel"
+      },
+      "dataPipeline": {
+        "title": "Adat feldolgozó csővezeték",
+        "description": "Láncolj össze több MCP eszközt adatok feldolgozásához és átalakításához"
+      }
+    },
+    "comingSoon": {
+      "title": "Hamarosan további kihívások",
+      "description": "Új kihívásokon dolgozunk. Szeretnél hozzájárulni?",
+      "submitIdea": "Javasolj egy kihívás ötletet"
+    }
+  },
+  "playground": {
+    "title": "MCP Játszótér",
+    "subtitle": "Kísérletezz MCP szerverekkel közvetlenül a böngésződben. Nincs szükség telepítésre!",
+    "runCode": "Kód futtatása",
+    "stopCode": "Leállítás",
+    "clearOutput": "Kimenet törlése",
+    "output": "Kimenet",
+    "tools": "Eszközök",
+    "testTool": "Teszt eszköz",
+    "noTools": "Nincsenek elérhető eszközök",
+    "serverRunning": "Szerver fut",
+    "serverStopped": "Szerver leállt",
+    "tryInPlayground": "Próbáld ki a játszótéren",
+    "noSetupRequired": "Nincs szükség helyi telepítésre! Az összes kódpéldát közvetlenül tesztelheted az interaktív játszóterünkön."
+  },
+  "achievements": {
+    "title": "Eredmények",
+    "subtitle": "Nyiss ki eredményeket kihívások teljesítésével és mérföldkövek elérésével",
+    "unlocked": "Feloldva",
+    "locked": "Lezárva",
+    "unlockedAt": "Feloldva ekkor",
+    "progress": "Haladás",
+    "rarity": {
+      "common": "Közönséges",
+      "rare": "Ritka",
+      "epic": "Epikus",
+      "legendary": "Legendás"
+    },
+    "share": {
+      "title": "Eredmény megosztása",
+      "description": "Oszd meg az eredményedet a közösségi médiában"
+    }
+  },
+  "leaderboard": {
+    "title": "Ranglista",
+    "subtitle": "A legjobb MCP fejlesztők pontok és eredmények alapján rangsorolva",
+    "rank": "Helyezés",
+    "player": "Játékos",
+    "points": "Pontok",
+    "level": "Szint",
+    "achievements": "Eredmények",
+    "challenges": "Kihívások",
+    "you": "Te"
+  },
+  "profile": {
+    "title": "Profil",
+    "editProfile": "Profil szerkesztése",
+    "achievements": "Eredmények",
+    "achievementsUnlocked": "{count} eredmény feloldva",
+    "recentActivity": "Legutóbbi tevékenység",
+    "latestCompletions": "Legutóbbi teljesített kihívások",
+    "noAchievements": "Még nincsenek eredményeid. Kezdj el kihívásokat teljesíteni!",
+    "noCompletions": "Még nincsenek teljesített kihívásaid.",
+    "gettingStarted": {
+      "title": "Első lépések",
+      "welcome": "Üdvözlünk az MCP Challenge-ben!",
+      "description": "Teljesíts kihívásokat, hogy pontokat szerezz és eredményeket nyiss ki.",
+      "step1": "Tanuld meg az MCP alapjait",
+      "step2": "Építsd meg az első MCP szerveredet",
+      "step3": "Próbáld ki a játék kihívásokat"
+    },
+    "stats": {
+      "totalPoints": "Összesen pontok",
+      "level": "Szint",
+      "challengesCompleted": "Teljesített kihívások",
+      "achievementsUnlocked": "Feloldott eredmények",
+      "currentStreak": "Jelenlegi sorozat",
+      "longestStreak": "Leghosszabb sorozat"
+    }
+  },
+  "settings": {
+    "title": "Beállítások",
+    "account": "Fiók",
+    "preferences": "Beállítások",
+    "language": "Nyelv",
+    "theme": "Téma",
+    "notifications": "Értesítések",
+    "deleteAccount": "Fiók törlése",
+    "themes": {
+      "light": "Világos",
+      "dark": "Sötét",
+      "system": "Rendszer"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Bejelentkezés",
+      "subtitle": "Jelentkezz be, hogy nyomon kövesd a haladásodat és versenyezz a ranglistán",
+      "withGithub": "Folytatás GitHub-bal",
+      "withGoogle": "Folytatás Google-lel",
+      "withEmail": "Folytatás Email-lel",
+      "noAccount": "Nincs fiókod?",
+      "createAccount": "Hozz létre egyet"
+    },
+    "signUp": {
+      "title": "Fiók létrehozása",
+      "subtitle": "Csatlakozz az MCP Challenge-hez és kezdj el tanulni",
+      "hasAccount": "Már van fiókod?",
+      "signIn": "Jelentkezz be"
+    },
+    "error": {
+      "title": "Hitelesítési hiba",
+      "description": "Probléma merült fel a bejelentkezés során.",
+      "tryAgain": "Próbáld újra",
+      "backHome": "Vissza a főoldalra"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Az oldal nem található",
+      "description": "A keresett oldal nem létezik.",
+      "backHome": "Vissza a főoldalra"
+    },
+    "serverError": {
+      "title": "Szerverhiba",
+      "description": "Valami hiba történt. Kérjük, próbáld újra később."
+    }
+  },
+  "footer": {
+    "description": "Tanuld meg és sajátítsd el a Model Context Protocolt interaktív kihívások révén.",
+    "links": {
+      "learn": "Tanulás",
+      "challenges": "Kihívások",
+      "playground": "Játszótér",
+      "github": "GitHub",
+      "twitter": "Twitter",
+      "discord": "Discord"
+    },
+    "copyright": "© {year} MCP Challenge. Minden jog fenntartva."
+  }
+}

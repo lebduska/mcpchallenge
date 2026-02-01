@@ -1,0 +1,339 @@
+{
+  "common": {
+    "loading": "Yükleniyor...",
+    "error": "Hata",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "close": "Kapat",
+    "back": "Geri",
+    "next": "İleri",
+    "submit": "Gönder",
+    "search": "Ara",
+    "language": "Dil",
+    "settings": "Ayarlar",
+    "profile": "Profil",
+    "signIn": "Giriş Yap",
+    "signOut": "Çıkış Yap",
+    "signUp": "Kayıt Ol",
+    "learnMore": "Daha Fazla",
+    "tryNow": "Şimdi Dene",
+    "viewAll": "Tümünü Gör",
+    "share": "Paylaş",
+    "copy": "Kopyala",
+    "copied": "Kopyalandı!",
+    "minutes": "dk",
+    "points": "puan",
+    "level": "Seviye",
+    "challenges": "görev"
+  },
+  "nav": {
+    "home": "Ana Sayfa",
+    "learn": "Öğren",
+    "challenges": "Görevler",
+    "playground": "Oyun Alanı",
+    "leaderboard": "Lider Tablosu",
+    "achievements": "Başarımlar",
+    "profile": "Profil",
+    "settings": "Ayarlar"
+  },
+  "home": {
+    "title": "Model Context Protocol'de Ustalaşın",
+    "badge": "Açık Kaynak MCP Öğrenme Platformu",
+    "subtitle": "Model Context Protocol'de ustalaşın. Etkileşimli görevler ve canlı oyun alanı ile öğrenin, geliştirin ve yarışın.",
+    "startLearning": "Başlayın",
+    "tryPlayground": "Oyun Alanını Dene",
+    "whatIsMcp": {
+      "title": "MCP Nedir?",
+      "description": "Model Context Protocol, AI asistanlarının araçlara, veri kaynaklarına ve hizmetlere güvenli bir şekilde erişmesini sağlayan Anthropic'in açık standardıdır. Bunu AI ile dünya arasında evrensel bir adaptör olarak düşünün."
+    },
+    "journey": {
+      "title": "Yolculuğunuza Başlayın",
+      "features": {
+        "learn": {
+          "title": "MCP Öğren",
+          "description": "Model Context Protocol'de ustalaşmak için etkileşimli eğitimler ve belgeler",
+          "badge": "Buradan Başla"
+        },
+        "playground": {
+          "title": "Oyun Alanı",
+          "description": "Canlı sandbox ortamında MCP sunucularınızı geliştirin ve test edin",
+          "badge": "Etkileşimli"
+        },
+        "challenges": {
+          "title": "Görevler",
+          "description": "Problemleri çözün, MCP sunucuları geliştirin ve lider tablosunda yarışın",
+          "badge": "Yarış"
+        },
+        "showcase": {
+          "title": "Vitrin",
+          "description": "Topluluk tarafından oluşturulan MCP sunucularını keşfedin ve ilham alın",
+          "badge": "Topluluk"
+        }
+      }
+    },
+    "stats": {
+      "challenges": "Görevler",
+      "tutorials": "Eğitimler",
+      "possibilities": "Olasılıklar",
+      "cost": "Maliyet"
+    },
+    "footer": {
+      "builtWith": "İle geliştirildi",
+      "forCommunity": "MCP topluluğu için"
+    },
+    "features": {
+      "learn": {
+        "title": "MCP Öğren",
+        "description": "Temellerden ileri seviyeye etkileşimli eğitimler"
+      },
+      "challenges": {
+        "title": "Görevleri Tamamla",
+        "description": "Gerçek MCP sunucuları geliştir ve yeteneklerini test et"
+      },
+      "compete": {
+        "title": "Yarış & Kazan",
+        "description": "Lider tablosunda yüksel ve başarımların kilidini aç"
+      }
+    },
+    "featuredChallenges": "Öne Çıkan Görevler",
+    "recentAchievements": "Son Başarımlar"
+  },
+  "learn": {
+    "title": "MCP Öğren",
+    "subtitle": "Adım adım eğitimlerimizle Model Context Protocol'ü öğrenin. Temellerden başlayarak ileri seviye konulara ilerleyin.",
+    "backToLearn": "Öğrenmeye Dön",
+    "prerequisites": "Ön Koşullar",
+    "quickReference": "Hızlı Referans",
+    "keyTakeaways": "Önemli Noktalar",
+    "readyForMore": "Daha Fazlası İçin Hazır mısın?",
+    "tryChallenges": "Görevleri Dene",
+    "openPlayground": "Oyun Alanını Aç",
+    "completeTutorial": "Eğitimi Tamamla",
+    "continueToStep": "{step}. Adıma Devam Et",
+    "difficulty": {
+      "beginner": "başlangıç",
+      "intermediate": "orta",
+      "advanced": "ileri"
+    },
+    "tutorials": {
+      "whatIsMcp": {
+        "title": "MCP Nedir?",
+        "description": "Model Context Protocol'e giriş ve önemi"
+      },
+      "firstServer": {
+        "title": "İlk MCP Sunucunuz",
+        "description": "TypeScript ile sıfırdan basit bir MCP sunucusu geliştirin"
+      },
+      "mcpTools": {
+        "title": "MCP Araçları Oluşturma",
+        "description": "Güçlü araçları nasıl tanımlayıp uygulayacağınızı öğrenin"
+      },
+      "mcpResources": {
+        "title": "MCP Kaynakları ve Promptları",
+        "description": "Kaynaklar ve promptlar aracılığıyla veri ve şablonları paylaşın"
+      },
+      "mcpTransports": {
+        "title": "Taşıma Protokolleri",
+        "description": "stdio, HTTP ve WebSocket taşımalarını anlayın"
+      }
+    }
+  },
+  "challenges": {
+    "title": "Görevler",
+    "subtitle": "MCP yeteneklerinizi etkileşimli görevlerle test edin. Çalışan çözümler geliştirin ve puan kazanın!",
+    "leaderboard": "Lider Tablosu",
+    "completions": "tamamlama",
+    "filters": {
+      "all": "Tümü",
+      "games": "Oyunlar",
+      "build": "Geliştir",
+      "useTools": "Araç Kullan",
+      "beginner": "Başlangıç",
+      "intermediate": "Orta",
+      "advanced": "İleri"
+    },
+    "types": {
+      "build": "Sunucu Geliştir",
+      "use": "Araç Kullan",
+      "game": "Oyun"
+    },
+    "difficulty": {
+      "beginner": "başlangıç",
+      "intermediate": "orta",
+      "advanced": "ileri"
+    },
+    "items": {
+      "chess": {
+        "title": "Satranç Görevi",
+        "description": "AI veya bir arkadaşınıza karşı satranç oynayın. Bir MCP satranç sunucusu geliştirin!"
+      },
+      "tictactoe": {
+        "title": "Tic-Tac-Toe",
+        "description": "Yenilmez minimax AI'lı klasik oyun. Berabere zorlar mısınız?"
+      },
+      "snake": {
+        "title": "Yılan + MCP Taşımaları",
+        "description": "Bir yılan AI'sı geliştirerek stdio, HTTP+SSE ve WebSocket taşımalarını öğrenin!"
+      },
+      "helloWorld": {
+        "title": "Merhaba Dünya",
+        "description": "Kullanıcıları selamlayan ilk MCP aracınızı oluşturun"
+      },
+      "calculator": {
+        "title": "Hesap Makinesi Aracı",
+        "description": "Temel matematik işlemleri olan bir hesap makinesi aracı geliştirin"
+      },
+      "fileReader": {
+        "title": "Dosya Okuyucu",
+        "description": "Belirli içeriği bulmak için files.read aracını kullanın"
+      },
+      "weatherApi": {
+        "title": "Hava Durumu API Entegrasyonu",
+        "description": "Gerçek hava durumu verilerini getiren bir MCP sunucusu oluşturun"
+      },
+      "multiTool": {
+        "title": "Çoklu Araç Sunucusu",
+        "description": "5+ birbirine bağlı araçla bir sunucu geliştirin"
+      },
+      "dataPipeline": {
+        "title": "Veri Ardışık Düzeni",
+        "description": "Verileri işlemek ve dönüştürmek için birden fazla MCP aracını zincirleyin"
+      }
+    },
+    "comingSoon": {
+      "title": "Yakında Daha Fazla Görev Geliyor",
+      "description": "Yeni görevler üzerinde çalışıyoruz. Katkıda bulunmak ister misiniz?",
+      "submitIdea": "Görev fikri gönderin"
+    }
+  },
+  "playground": {
+    "title": "MCP Oyun Alanı",
+    "subtitle": "Tarayıcınızda MCP sunucularını deneyin. Kurulum gerektirmez!",
+    "runCode": "Kodu Çalıştır",
+    "stopCode": "Durdur",
+    "clearOutput": "Çıktıyı Temizle",
+    "output": "Çıktı",
+    "tools": "Araçlar",
+    "testTool": "Aracı Test Et",
+    "noTools": "Araç yok",
+    "serverRunning": "Sunucu çalışıyor",
+    "serverStopped": "Sunucu durduruldu",
+    "tryInPlayground": "Oyun Alanında Dene",
+    "noSetupRequired": "Yerel kurulum gerektirmez! Tüm kod örneklerini doğrudan etkileşimli oyun alanımızda test edebilirsiniz."
+  },
+  "achievements": {
+    "title": "Başarımlar",
+    "subtitle": "Görevleri tamamlayarak ve kilometre taşlarına ulaşarak başarımların kilidini açın",
+    "unlocked": "Kilidi Açıldı",
+    "locked": "Kilitli",
+    "unlockedAt": "Kilit açılma zamanı",
+    "progress": "İlerleme",
+    "rarity": {
+      "common": "Yaygın",
+      "rare": "Nadir",
+      "epic": "Epik",
+      "legendary": "Efsanevi"
+    },
+    "share": {
+      "title": "Başarımı Paylaş",
+      "description": "Başarımınızı sosyal medyada paylaşın"
+    }
+  },
+  "leaderboard": {
+    "title": "Lider Tablosu",
+    "subtitle": "En iyi MCP geliştiricileri puan ve başarımlara göre sıralandı",
+    "rank": "Sıra",
+    "player": "Oyuncu",
+    "points": "Puan",
+    "level": "Seviye",
+    "achievements": "Başarımlar",
+    "challenges": "Görevler",
+    "you": "Sen"
+  },
+  "profile": {
+    "title": "Profil",
+    "editProfile": "Profili Düzenle",
+    "achievements": "Başarımlar",
+    "achievementsUnlocked": "{count} başarımın kilidi açıldı",
+    "recentActivity": "Son Aktivite",
+    "latestCompletions": "Son tamamlanan görevler",
+    "noAchievements": "Henüz başarım yok. Görevleri tamamlamaya başlayın!",
+    "noCompletions": "Henüz tamamlanmış görev yok.",
+    "gettingStarted": {
+      "title": "Başlarken",
+      "welcome": "MCP Challenge'a Hoş Geldiniz!",
+      "description": "Puan kazanmak ve başarımların kilidini açmak için görevleri tamamlayın.",
+      "step1": "MCP temellerini öğrenin",
+      "step2": "İlk MCP sunucunuzu geliştirin",
+      "step3": "Oyun görevlerini deneyin"
+    },
+    "stats": {
+      "totalPoints": "Toplam Puan",
+      "level": "Seviye",
+      "challengesCompleted": "Tamamlanan Görevler",
+      "achievementsUnlocked": "Kilidi Açılan Başarımlar",
+      "currentStreak": "Mevcut Seri",
+      "longestStreak": "En Uzun Seri"
+    }
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "account": "Hesap",
+    "preferences": "Tercihler",
+    "language": "Dil",
+    "theme": "Tema",
+    "notifications": "Bildirimler",
+    "deleteAccount": "Hesabı Sil",
+    "themes": {
+      "light": "Açık",
+      "dark": "Koyu",
+      "system": "Sistem"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Giriş Yap",
+      "subtitle": "İlerlemenizi takip etmek ve lider tablosunda yarışmak için giriş yapın",
+      "withGithub": "GitHub ile Devam Et",
+      "withGoogle": "Google ile Devam Et",
+      "withEmail": "E-posta ile Devam Et",
+      "noAccount": "Hesabınız yok mu?",
+      "createAccount": "Hesap oluştur"
+    },
+    "signUp": {
+      "title": "Hesap Oluştur",
+      "subtitle": "MCP Challenge'a katılın ve öğrenmeye başlayın",
+      "hasAccount": "Zaten hesabınız var mı?",
+      "signIn": "Giriş yap"
+    },
+    "error": {
+      "title": "Kimlik Doğrulama Hatası",
+      "description": "Giriş yaparken bir sorun oluştu.",
+      "tryAgain": "Tekrar Dene",
+      "backHome": "Ana Sayfaya Dön"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Sayfa Bulunamadı",
+      "description": "Aradığınız sayfa mevcut değil.",
+      "backHome": "Ana Sayfaya Dön"
+    },
+    "serverError": {
+      "title": "Sunucu Hatası",
+      "description": "Bir şeyler yanlış gitti. Lütfen daha sonra tekrar deneyin."
+    }
+  },
+  "footer": {
+    "description": "Etkileşimli görevlerle Model Context Protocol'ü öğrenin ve ustalaşın.",
+    "links": {
+      "learn": "Öğren",
+      "challenges": "Görevler",
+      "playground": "Oyun Alanı",
+      "github": "GitHub",
+      "twitter": "Twitter",
+      "discord": "Discord"
+    },
+    "copyright": "© {year} MCP Challenge. Tüm hakları saklıdır."
+  }
+}

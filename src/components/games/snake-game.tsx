@@ -17,6 +17,7 @@ import {
   Trophy,
   Eye,
 } from "lucide-react";
+import { useGameCompletion } from "@/lib/game-completion";
 
 type Direction = "up" | "down" | "left" | "right";
 type Position = { x: number; y: number };
@@ -65,6 +66,9 @@ export function SnakeGame({ onStateChange, onGameComplete, gridSize = 15 }: Snak
   const [highScore, setHighScore] = useState(0);
   const [speed, setSpeed] = useState(150);
   const gameLoopRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Game completion hook
+  const { submitCompletion, isAuthenticated } = useGameCompletion("snake");
 
   // Calculate what's in each direction
   const look = useCallback((): LookResult => {
@@ -162,14 +166,23 @@ export function SnakeGame({ onStateChange, onGameComplete, gridSize = 15 }: Snak
   // Notify game completion
   const completionCalledRef = useRef(false);
   useEffect(() => {
-    if (gameStatus === "gameover" && !completionCalledRef.current && onGameComplete) {
+    if (gameStatus === "gameover" && !completionCalledRef.current) {
       completionCalledRef.current = true;
-      onGameComplete({ score });
+
+      // Call the onGameComplete callback if provided
+      if (onGameComplete) {
+        onGameComplete({ score });
+      }
+
+      // Submit to database if authenticated
+      if (isAuthenticated) {
+        submitCompletion({ score });
+      }
     }
     if (gameStatus === "waiting") {
       completionCalledRef.current = false;
     }
-  }, [gameStatus, score, onGameComplete]);
+  }, [gameStatus, score, onGameComplete, isAuthenticated, submitCompletion]);
 
   // Keyboard controls
   useEffect(() => {

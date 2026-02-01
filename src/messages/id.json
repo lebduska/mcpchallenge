@@ -1,0 +1,339 @@
+{
+  "common": {
+    "loading": "Memuat...",
+    "error": "Kesalahan",
+    "save": "Simpan",
+    "cancel": "Batal",
+    "close": "Tutup",
+    "back": "Kembali",
+    "next": "Selanjutnya",
+    "submit": "Kirim",
+    "search": "Cari",
+    "language": "Bahasa",
+    "settings": "Pengaturan",
+    "profile": "Profil",
+    "signIn": "Masuk",
+    "signOut": "Keluar",
+    "signUp": "Daftar",
+    "learnMore": "Pelajari Lebih Lanjut",
+    "tryNow": "Coba Sekarang",
+    "viewAll": "Lihat Semua",
+    "share": "Bagikan",
+    "copy": "Salin",
+    "copied": "Tersalin!",
+    "minutes": "mnt",
+    "points": "poin",
+    "level": "Level",
+    "challenges": "tantangan"
+  },
+  "nav": {
+    "home": "Beranda",
+    "learn": "Belajar",
+    "challenges": "Tantangan",
+    "playground": "Playground",
+    "leaderboard": "Papan Peringkat",
+    "achievements": "Pencapaian",
+    "profile": "Profil",
+    "settings": "Pengaturan"
+  },
+  "home": {
+    "title": "Kuasai Model Context Protocol",
+    "badge": "Platform Pembelajaran MCP Open Source",
+    "subtitle": "Kuasai Model Context Protocol. Belajar, bangun, dan bersaing dengan tantangan interaktif dan playground langsung.",
+    "startLearning": "Mulai",
+    "tryPlayground": "Coba Playground",
+    "whatIsMcp": {
+      "title": "Apa itu MCP?",
+      "description": "Model Context Protocol adalah standar terbuka dari Anthropic yang memungkinkan asisten AI mengakses alat, sumber data, dan layanan secara aman. Anggap saja sebagai adaptor universal antara AI dan dunia."
+    },
+    "journey": {
+      "title": "Mulai Perjalanan Anda",
+      "features": {
+        "learn": {
+          "title": "Belajar MCP",
+          "description": "Tutorial interaktif dan dokumentasi untuk menguasai Model Context Protocol",
+          "badge": "Mulai Di Sini"
+        },
+        "playground": {
+          "title": "Playground",
+          "description": "Bangun dan uji server MCP Anda di lingkungan sandbox langsung",
+          "badge": "Interaktif"
+        },
+        "challenges": {
+          "title": "Tantangan",
+          "description": "Selesaikan masalah, bangun server MCP, dan bersaing di papan peringkat",
+          "badge": "Bersaing"
+        },
+        "showcase": {
+          "title": "Galeri",
+          "description": "Jelajahi server MCP buatan komunitas dan dapatkan inspirasi",
+          "badge": "Komunitas"
+        }
+      }
+    },
+    "stats": {
+      "challenges": "Tantangan",
+      "tutorials": "Tutorial",
+      "possibilities": "Kemungkinan",
+      "cost": "Biaya"
+    },
+    "footer": {
+      "builtWith": "Dibangun dengan",
+      "forCommunity": "untuk komunitas MCP"
+    },
+    "features": {
+      "learn": {
+        "title": "Belajar MCP",
+        "description": "Tutorial interaktif dari dasar hingga topik lanjutan"
+      },
+      "challenges": {
+        "title": "Selesaikan Tantangan",
+        "description": "Bangun server MCP nyata dan uji kemampuan Anda"
+      },
+      "compete": {
+        "title": "Bersaing & Raih",
+        "description": "Naiki papan peringkat dan buka pencapaian"
+      }
+    },
+    "featuredChallenges": "Tantangan Unggulan",
+    "recentAchievements": "Pencapaian Terbaru"
+  },
+  "learn": {
+    "title": "Belajar MCP",
+    "subtitle": "Kuasai Model Context Protocol dengan tutorial langkah demi langkah. Mulai dari dasar dan tingkatkan ke topik lanjutan.",
+    "backToLearn": "Kembali ke Belajar",
+    "prerequisites": "Prasyarat",
+    "quickReference": "Referensi Cepat",
+    "keyTakeaways": "Poin Utama",
+    "readyForMore": "Siap untuk Lebih?",
+    "tryChallenges": "Coba Tantangan",
+    "openPlayground": "Buka Playground",
+    "completeTutorial": "Selesaikan Tutorial",
+    "continueToStep": "Lanjutkan ke Langkah {step}",
+    "difficulty": {
+      "beginner": "pemula",
+      "intermediate": "menengah",
+      "advanced": "lanjutan"
+    },
+    "tutorials": {
+      "whatIsMcp": {
+        "title": "Apa itu MCP?",
+        "description": "Pengenalan Model Context Protocol dan mengapa itu penting"
+      },
+      "firstServer": {
+        "title": "Server MCP Pertama Anda",
+        "description": "Bangun server MCP sederhana dari awal dengan TypeScript"
+      },
+      "mcpTools": {
+        "title": "Membuat Alat MCP",
+        "description": "Pelajari cara mendefinisikan dan mengimplementasikan alat yang powerful"
+      },
+      "mcpResources": {
+        "title": "MCP Resources & Prompts",
+        "description": "Tampilkan data dan template melalui resources dan prompts"
+      },
+      "mcpTransports": {
+        "title": "Protokol Transport",
+        "description": "Memahami stdio, HTTP, dan transport WebSocket"
+      }
+    }
+  },
+  "challenges": {
+    "title": "Tantangan",
+    "subtitle": "Uji kemampuan MCP Anda dengan tantangan interaktif. Bangun solusi yang bekerja dan raih poin!",
+    "leaderboard": "Papan Peringkat",
+    "completions": "penyelesaian",
+    "filters": {
+      "all": "Semua",
+      "games": "Game",
+      "build": "Bangun",
+      "useTools": "Gunakan Alat",
+      "beginner": "Pemula",
+      "intermediate": "Menengah",
+      "advanced": "Lanjutan"
+    },
+    "types": {
+      "build": "Bangun Server",
+      "use": "Gunakan Alat",
+      "game": "Game"
+    },
+    "difficulty": {
+      "beginner": "pemula",
+      "intermediate": "menengah",
+      "advanced": "lanjutan"
+    },
+    "items": {
+      "chess": {
+        "title": "Tantangan Catur",
+        "description": "Main catur melawan AI atau teman. Bangun server catur MCP!"
+      },
+      "tictactoe": {
+        "title": "Tic-Tac-Toe",
+        "description": "Game klasik dengan AI minimax yang tak terkalahkan. Bisakah kamu memaksa seri?"
+      },
+      "snake": {
+        "title": "Snake + Transport MCP",
+        "description": "Pelajari transport stdio, HTTP+SSE, dan WebSocket dengan membangun AI snake!"
+      },
+      "helloWorld": {
+        "title": "Hello World",
+        "description": "Buat alat MCP pertama Anda yang menyapa pengguna"
+      },
+      "calculator": {
+        "title": "Alat Kalkulator",
+        "description": "Bangun alat kalkulator dengan operasi matematika dasar"
+      },
+      "fileReader": {
+        "title": "Pembaca File",
+        "description": "Gunakan alat files.read untuk menemukan konten spesifik"
+      },
+      "weatherApi": {
+        "title": "Integrasi API Cuaca",
+        "description": "Buat server MCP yang mengambil data cuaca nyata"
+      },
+      "multiTool": {
+        "title": "Server Multi-Alat",
+        "description": "Bangun server dengan 5+ alat yang saling terhubung"
+      },
+      "dataPipeline": {
+        "title": "Pipeline Data",
+        "description": "Gabungkan beberapa alat MCP untuk memproses dan mentransformasi data"
+      }
+    },
+    "comingSoon": {
+      "title": "Lebih Banyak Tantangan Segera Hadir",
+      "description": "Kami sedang mengerjakan tantangan baru. Ingin berkontribusi?",
+      "submitIdea": "Kirim ide tantangan"
+    }
+  },
+  "playground": {
+    "title": "Playground MCP",
+    "subtitle": "Eksperimen dengan server MCP di browser Anda. Tanpa perlu setup!",
+    "runCode": "Jalankan Kode",
+    "stopCode": "Berhenti",
+    "clearOutput": "Hapus Output",
+    "output": "Output",
+    "tools": "Alat",
+    "testTool": "Uji Alat",
+    "noTools": "Tidak ada alat tersedia",
+    "serverRunning": "Server berjalan",
+    "serverStopped": "Server berhenti",
+    "tryInPlayground": "Coba di Playground",
+    "noSetupRequired": "Tanpa perlu setup lokal! Anda dapat menguji semua contoh kode langsung di playground interaktif kami."
+  },
+  "achievements": {
+    "title": "Pencapaian",
+    "subtitle": "Buka pencapaian dengan menyelesaikan tantangan dan mencapai milestone",
+    "unlocked": "Terbuka",
+    "locked": "Terkunci",
+    "unlockedAt": "Dibuka pada",
+    "progress": "Progres",
+    "rarity": {
+      "common": "Umum",
+      "rare": "Langka",
+      "epic": "Epik",
+      "legendary": "Legendaris"
+    },
+    "share": {
+      "title": "Bagikan Pencapaian",
+      "description": "Bagikan pencapaian Anda di media sosial"
+    }
+  },
+  "leaderboard": {
+    "title": "Papan Peringkat",
+    "subtitle": "Developer MCP teratas berdasarkan poin dan pencapaian",
+    "rank": "Peringkat",
+    "player": "Pemain",
+    "points": "Poin",
+    "level": "Level",
+    "achievements": "Pencapaian",
+    "challenges": "Tantangan",
+    "you": "Anda"
+  },
+  "profile": {
+    "title": "Profil",
+    "editProfile": "Edit Profil",
+    "achievements": "Pencapaian",
+    "achievementsUnlocked": "{count} pencapaian terbuka",
+    "recentActivity": "Aktivitas Terbaru",
+    "latestCompletions": "Penyelesaian tantangan terbaru",
+    "noAchievements": "Belum ada pencapaian. Mulai selesaikan tantangan!",
+    "noCompletions": "Belum ada tantangan yang diselesaikan.",
+    "gettingStarted": {
+      "title": "Memulai",
+      "welcome": "Selamat datang di MCP Challenge!",
+      "description": "Selesaikan tantangan untuk mendapatkan poin dan membuka pencapaian.",
+      "step1": "Pelajari dasar-dasar MCP",
+      "step2": "Bangun server MCP pertama Anda",
+      "step3": "Coba tantangan game"
+    },
+    "stats": {
+      "totalPoints": "Total Poin",
+      "level": "Level",
+      "challengesCompleted": "Tantangan Diselesaikan",
+      "achievementsUnlocked": "Pencapaian Terbuka",
+      "currentStreak": "Streak Saat Ini",
+      "longestStreak": "Streak Terpanjang"
+    }
+  },
+  "settings": {
+    "title": "Pengaturan",
+    "account": "Akun",
+    "preferences": "Preferensi",
+    "language": "Bahasa",
+    "theme": "Tema",
+    "notifications": "Notifikasi",
+    "deleteAccount": "Hapus Akun",
+    "themes": {
+      "light": "Terang",
+      "dark": "Gelap",
+      "system": "Sistem"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Masuk",
+      "subtitle": "Masuk untuk melacak progres Anda dan bersaing di papan peringkat",
+      "withGithub": "Lanjutkan dengan GitHub",
+      "withGoogle": "Lanjutkan dengan Google",
+      "withEmail": "Lanjutkan dengan Email",
+      "noAccount": "Belum punya akun?",
+      "createAccount": "Buat akun"
+    },
+    "signUp": {
+      "title": "Buat Akun",
+      "subtitle": "Bergabung dengan MCP Challenge dan mulai belajar",
+      "hasAccount": "Sudah punya akun?",
+      "signIn": "Masuk"
+    },
+    "error": {
+      "title": "Kesalahan Autentikasi",
+      "description": "Ada masalah saat masuk.",
+      "tryAgain": "Coba Lagi",
+      "backHome": "Kembali ke Beranda"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Halaman Tidak Ditemukan",
+      "description": "Halaman yang Anda cari tidak ada.",
+      "backHome": "Kembali ke Beranda"
+    },
+    "serverError": {
+      "title": "Kesalahan Server",
+      "description": "Terjadi kesalahan. Silakan coba lagi nanti."
+    }
+  },
+  "footer": {
+    "description": "Belajar dan kuasai Model Context Protocol melalui tantangan interaktif.",
+    "links": {
+      "learn": "Belajar",
+      "challenges": "Tantangan",
+      "playground": "Playground",
+      "github": "GitHub",
+      "twitter": "Twitter",
+      "discord": "Discord"
+    },
+    "copyright": "© {year} MCP Challenge. Hak cipta dilindungi."
+  }
+}

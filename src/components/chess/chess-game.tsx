@@ -25,6 +25,7 @@ import {
   Cpu,
 } from "lucide-react";
 import { useStockfish, type Difficulty } from "@/hooks/use-stockfish";
+import { useGameCompletion } from "@/lib/game-completion";
 
 type GameMode = "vs-ai" | "vs-player" | null;
 type GameStatus = "waiting" | "playing" | "checkmate" | "draw" | "resigned";
@@ -55,6 +56,9 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
   // Track if completion was called
   const completionCalledRef = useRef(false);
 
+  // Game completion hook
+  const { submitCompletion, isAuthenticated } = useGameCompletion("chess");
+
   // Check game state
   const checkGameState = useCallback((currentGame: Chess) => {
     if (currentGame.isCheckmate()) {
@@ -76,7 +80,6 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
     if (
       (gameStatus === "checkmate" || gameStatus === "draw") &&
       !completionCalledRef.current &&
-      onGameComplete &&
       gameMode === "vs-ai"
     ) {
       completionCalledRef.current = true;
@@ -88,15 +91,26 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
         winner = winnerColor === playerColor ? "player" : "llm";
       }
 
-      onGameComplete({
-        winner,
-        moves: moveHistory.length,
-      });
+      // Call the onGameComplete callback if provided
+      if (onGameComplete) {
+        onGameComplete({
+          winner,
+          moves: moveHistory.length,
+        });
+      }
+
+      // Submit to database if authenticated
+      if (isAuthenticated) {
+        submitCompletion({
+          winner,
+          moves: moveHistory.length,
+        });
+      }
     }
     if (gameStatus === "waiting") {
       completionCalledRef.current = false;
     }
-  }, [gameStatus, gameMode, onGameComplete, game, playerColor, moveHistory.length]);
+  }, [gameStatus, gameMode, onGameComplete, game, playerColor, moveHistory.length, isAuthenticated, submitCompletion]);
 
   // Make AI move using Stockfish
   const makeAIMove = useCallback(async (currentGame: Chess) => {

@@ -1,0 +1,339 @@
+{
+  "common": {
+    "loading": "加载中...",
+    "error": "错误",
+    "save": "保存",
+    "cancel": "取消",
+    "close": "关闭",
+    "back": "返回",
+    "next": "下一步",
+    "submit": "提交",
+    "search": "搜索",
+    "language": "语言",
+    "settings": "设置",
+    "profile": "个人资料",
+    "signIn": "登录",
+    "signOut": "退出登录",
+    "signUp": "注册",
+    "learnMore": "了解更多",
+    "tryNow": "立即尝试",
+    "viewAll": "查看全部",
+    "share": "分享",
+    "copy": "复制",
+    "copied": "已复制！",
+    "minutes": "分钟",
+    "points": "积分",
+    "level": "等级",
+    "challenges": "挑战"
+  },
+  "nav": {
+    "home": "首页",
+    "learn": "学习",
+    "challenges": "挑战",
+    "playground": "练习场",
+    "leaderboard": "排行榜",
+    "achievements": "成就",
+    "profile": "个人资料",
+    "settings": "设置"
+  },
+  "home": {
+    "title": "掌握模型上下文协议",
+    "badge": "开源 MCP 学习平台",
+    "subtitle": "掌握模型上下文协议。通过互动挑战和实时练习场学习、构建和竞争。",
+    "startLearning": "开始学习",
+    "tryPlayground": "尝试练习场",
+    "whatIsMcp": {
+      "title": "什么是 MCP？",
+      "description": "模型上下文协议是 Anthropic 推出的开放标准，使 AI 助手能够安全地访问工具、数据源和服务。可以将其视为 AI 与世界之间的通用适配器。"
+    },
+    "journey": {
+      "title": "开始你的旅程",
+      "features": {
+        "learn": {
+          "title": "学习 MCP",
+          "description": "掌握模型上下文协议的互动教程和文档",
+          "badge": "从这里开始"
+        },
+        "playground": {
+          "title": "练习场",
+          "description": "在实时沙盒环境中构建和测试你的 MCP 服务器",
+          "badge": "互动"
+        },
+        "challenges": {
+          "title": "挑战",
+          "description": "解决问题，构建 MCP 服务器，在排行榜上竞争",
+          "badge": "竞技"
+        },
+        "showcase": {
+          "title": "展示",
+          "description": "探索社区构建的 MCP 服务器并获取灵感",
+          "badge": "社区"
+        }
+      }
+    },
+    "stats": {
+      "challenges": "挑战",
+      "tutorials": "教程",
+      "possibilities": "无限可能",
+      "cost": "费用"
+    },
+    "footer": {
+      "builtWith": "用",
+      "forCommunity": "为 MCP 社区构建"
+    },
+    "features": {
+      "learn": {
+        "title": "学习 MCP",
+        "description": "从基础到高级的互动教程"
+      },
+      "challenges": {
+        "title": "完成挑战",
+        "description": "构建真实的 MCP 服务器并测试你的技能"
+      },
+      "compete": {
+        "title": "竞争与赚取",
+        "description": "攀登排行榜并解锁成就"
+      }
+    },
+    "featuredChallenges": "精选挑战",
+    "recentAchievements": "最近的成就"
+  },
+  "learn": {
+    "title": "学习 MCP",
+    "subtitle": "通过我们的分步教程掌握模型上下文协议。从基础开始，逐步进阶到高级主题。",
+    "backToLearn": "返回学习",
+    "prerequisites": "前置要求",
+    "quickReference": "快速参考",
+    "keyTakeaways": "重点总结",
+    "readyForMore": "准备好更多挑战了吗？",
+    "tryChallenges": "尝试挑战",
+    "openPlayground": "打开练习场",
+    "completeTutorial": "完成教程",
+    "continueToStep": "继续到第 {step} 步",
+    "difficulty": {
+      "beginner": "初级",
+      "intermediate": "中级",
+      "advanced": "高级"
+    },
+    "tutorials": {
+      "whatIsMcp": {
+        "title": "什么是 MCP？",
+        "description": "介绍模型上下文协议及其重要性"
+      },
+      "firstServer": {
+        "title": "你的第一个 MCP 服务器",
+        "description": "使用 TypeScript 从零开始构建一个简单的 MCP 服务器"
+      },
+      "mcpTools": {
+        "title": "创建 MCP 工具",
+        "description": "学习如何定义和实现强大的工具"
+      },
+      "mcpResources": {
+        "title": "MCP 资源和提示",
+        "description": "通过资源和提示公开数据和模板"
+      },
+      "mcpTransports": {
+        "title": "传输协议",
+        "description": "理解 stdio、HTTP 和 WebSocket 传输"
+      }
+    }
+  },
+  "challenges": {
+    "title": "挑战",
+    "subtitle": "通过互动挑战测试你的 MCP 技能。构建可行的解决方案并赚取积分！",
+    "leaderboard": "排行榜",
+    "completions": "完成次数",
+    "filters": {
+      "all": "全部",
+      "games": "游戏",
+      "build": "构建",
+      "useTools": "使用工具",
+      "beginner": "初级",
+      "intermediate": "中级",
+      "advanced": "高级"
+    },
+    "types": {
+      "build": "构建服务器",
+      "use": "使用工具",
+      "game": "游戏"
+    },
+    "difficulty": {
+      "beginner": "初级",
+      "intermediate": "中级",
+      "advanced": "高级"
+    },
+    "items": {
+      "chess": {
+        "title": "国际象棋挑战",
+        "description": "与 AI 或朋友下棋。构建一个 MCP 国际象棋服务器！"
+      },
+      "tictactoe": {
+        "title": "井字棋",
+        "description": "经典游戏配备无敌的极小化极大算法 AI。你能逼平吗？"
+      },
+      "snake": {
+        "title": "贪吃蛇 + MCP 传输",
+        "description": "通过构建贪吃蛇 AI 学习 stdio、HTTP+SSE 和 WebSocket 传输！"
+      },
+      "helloWorld": {
+        "title": "Hello World",
+        "description": "创建你的第一个 MCP 工具来问候用户"
+      },
+      "calculator": {
+        "title": "计算器工具",
+        "description": "构建一个具有基本数学运算的计算器工具"
+      },
+      "fileReader": {
+        "title": "文件读取器",
+        "description": "使用 files.read 工具查找特定内容"
+      },
+      "weatherApi": {
+        "title": "天气 API 集成",
+        "description": "创建一个获取真实天气数据的 MCP 服务器"
+      },
+      "multiTool": {
+        "title": "多工具服务器",
+        "description": "构建一个拥有 5 个以上互连工具的服务器"
+      },
+      "dataPipeline": {
+        "title": "数据管道",
+        "description": "串联多个 MCP 工具来处理和转换数据"
+      }
+    },
+    "comingSoon": {
+      "title": "更多挑战即将推出",
+      "description": "我们正在开发新的挑战。想要贡献吗？",
+      "submitIdea": "提交挑战想法"
+    }
+  },
+  "playground": {
+    "title": "MCP 练习场",
+    "subtitle": "在浏览器中体验 MCP 服务器。无需设置！",
+    "runCode": "运行代码",
+    "stopCode": "停止",
+    "clearOutput": "清除输出",
+    "output": "输出",
+    "tools": "工具",
+    "testTool": "测试工具",
+    "noTools": "没有可用的工具",
+    "serverRunning": "服务器运行中",
+    "serverStopped": "服务器已停止",
+    "tryInPlayground": "在练习场中尝试",
+    "noSetupRequired": "无需本地设置！你可以直接在我们的互动练习场中测试所有代码示例。"
+  },
+  "achievements": {
+    "title": "成就",
+    "subtitle": "通过完成挑战和达到里程碑来解锁成就",
+    "unlocked": "已解锁",
+    "locked": "已锁定",
+    "unlockedAt": "解锁时间",
+    "progress": "进度",
+    "rarity": {
+      "common": "普通",
+      "rare": "稀有",
+      "epic": "史诗",
+      "legendary": "传说"
+    },
+    "share": {
+      "title": "分享成就",
+      "description": "在社交媒体上分享你的成就"
+    }
+  },
+  "leaderboard": {
+    "title": "排行榜",
+    "subtitle": "按积分和成就排名的顶尖 MCP 开发者",
+    "rank": "排名",
+    "player": "玩家",
+    "points": "积分",
+    "level": "等级",
+    "achievements": "成就",
+    "challenges": "挑战",
+    "you": "你"
+  },
+  "profile": {
+    "title": "个人资料",
+    "editProfile": "编辑资料",
+    "achievements": "成就",
+    "achievementsUnlocked": "已解锁 {count} 个成就",
+    "recentActivity": "最近活动",
+    "latestCompletions": "最新完成的挑战",
+    "noAchievements": "还没有成就。开始完成挑战吧！",
+    "noCompletions": "还没有完成的挑战。",
+    "gettingStarted": {
+      "title": "入门指南",
+      "welcome": "欢迎来到 MCP 挑战！",
+      "description": "完成挑战以赚取积分并解锁成就。",
+      "step1": "学习 MCP 基础知识",
+      "step2": "构建你的第一个 MCP 服务器",
+      "step3": "尝试游戏挑战"
+    },
+    "stats": {
+      "totalPoints": "总积分",
+      "level": "等级",
+      "challengesCompleted": "已完成的挑战",
+      "achievementsUnlocked": "已解锁的成就",
+      "currentStreak": "当前连续记录",
+      "longestStreak": "最长连续记录"
+    }
+  },
+  "settings": {
+    "title": "设置",
+    "account": "账户",
+    "preferences": "偏好设置",
+    "language": "语言",
+    "theme": "主题",
+    "notifications": "通知",
+    "deleteAccount": "删除账户",
+    "themes": {
+      "light": "浅色",
+      "dark": "深色",
+      "system": "系统"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "登录",
+      "subtitle": "登录以跟踪你的进度并在排行榜上竞争",
+      "withGithub": "使用 GitHub 继续",
+      "withGoogle": "使用 Google 继续",
+      "withEmail": "使用电子邮件继续",
+      "noAccount": "还没有账户？",
+      "createAccount": "创建一个"
+    },
+    "signUp": {
+      "title": "创建账户",
+      "subtitle": "加入 MCP 挑战并开始学习",
+      "hasAccount": "已有账户？",
+      "signIn": "登录"
+    },
+    "error": {
+      "title": "认证错误",
+      "description": "登录时出现问题。",
+      "tryAgain": "重试",
+      "backHome": "返回首页"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "页面未找到",
+      "description": "你正在查找的页面不存在。",
+      "backHome": "返回首页"
+    },
+    "serverError": {
+      "title": "服务器错误",
+      "description": "出了点问题。请稍后再试。"
+    }
+  },
+  "footer": {
+    "description": "通过互动挑战学习并掌握模型上下文协议。",
+    "links": {
+      "learn": "学习",
+      "challenges": "挑战",
+      "playground": "练习场",
+      "github": "GitHub",
+      "twitter": "Twitter",
+      "discord": "Discord"
+    },
+    "copyright": "© {year} MCP 挑战。保留所有权利。"
+  }
+}

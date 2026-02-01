@@ -1,0 +1,339 @@
+{
+  "common": {
+    "loading": "Φόρτωση...",
+    "error": "Σφάλμα",
+    "save": "Αποθήκευση",
+    "cancel": "Ακύρωση",
+    "close": "Κλείσιμο",
+    "back": "Πίσω",
+    "next": "Επόμενο",
+    "submit": "Υποβολή",
+    "search": "Αναζήτηση",
+    "language": "Γλώσσα",
+    "settings": "Ρυθμίσεις",
+    "profile": "Προφίλ",
+    "signIn": "Σύνδεση",
+    "signOut": "Αποσύνδεση",
+    "signUp": "Εγγραφή",
+    "learnMore": "Μάθετε περισσότερα",
+    "tryNow": "Δοκιμάστε τώρα",
+    "viewAll": "Προβολή όλων",
+    "share": "Κοινοποίηση",
+    "copy": "Αντιγραφή",
+    "copied": "Αντιγράφηκε!",
+    "minutes": "λεπτά",
+    "points": "πόντοι",
+    "level": "Επίπεδο",
+    "challenges": "προκλήσεις"
+  },
+  "nav": {
+    "home": "Αρχική",
+    "learn": "Μάθηση",
+    "challenges": "Προκλήσεις",
+    "playground": "Playground",
+    "leaderboard": "Πίνακας κατάταξης",
+    "achievements": "Επιτεύγματα",
+    "profile": "Προφίλ",
+    "settings": "Ρυθμίσεις"
+  },
+  "home": {
+    "title": "Κυριαρχήστε το Model Context Protocol",
+    "badge": "Πλατφόρμα Ανοιχτού Κώδικα για Εκμάθηση MCP",
+    "subtitle": "Κυριαρχήστε το Model Context Protocol. Μάθετε, δημιουργήστε και ανταγωνιστείτε με διαδραστικές προκλήσεις και ένα ζωντανό playground.",
+    "startLearning": "Ξεκινήστε",
+    "tryPlayground": "Δοκιμάστε το Playground",
+    "whatIsMcp": {
+      "title": "Τι είναι το MCP;",
+      "description": "Το Model Context Protocol είναι ένα ανοιχτό πρότυπο από την Anthropic που επιτρέπει στους βοηθούς AI να έχουν ασφαλή πρόσβαση σε εργαλεία, πηγές δεδομένων και υπηρεσίες. Σκεφτείτε το ως έναν καθολικό προσαρμογέα μεταξύ AI και κόσμου."
+    },
+    "journey": {
+      "title": "Ξεκινήστε το Ταξίδι σας",
+      "features": {
+        "learn": {
+          "title": "Μάθετε MCP",
+          "description": "Διαδραστικά tutorials και τεκμηρίωση για να κυριαρχήσετε το Model Context Protocol",
+          "badge": "Ξεκινήστε Εδώ"
+        },
+        "playground": {
+          "title": "Playground",
+          "description": "Δημιουργήστε και δοκιμάστε τους MCP servers σας σε ένα ζωντανό περιβάλλον sandbox",
+          "badge": "Διαδραστικό"
+        },
+        "challenges": {
+          "title": "Προκλήσεις",
+          "description": "Λύστε προβλήματα, δημιουργήστε MCP servers και ανταγωνιστείτε στον πίνακα κατάταξης",
+          "badge": "Ανταγωνιστείτε"
+        },
+        "showcase": {
+          "title": "Βιτρίνα",
+          "description": "Εξερευνήστε MCP servers που δημιούργησε η κοινότητα και εμπνευστείτε",
+          "badge": "Κοινότητα"
+        }
+      }
+    },
+    "stats": {
+      "challenges": "Προκλήσεις",
+      "tutorials": "Tutorials",
+      "possibilities": "Δυνατότητες",
+      "cost": "Κόστος"
+    },
+    "footer": {
+      "builtWith": "Κατασκευασμένο με",
+      "forCommunity": "για την κοινότητα MCP"
+    },
+    "features": {
+      "learn": {
+        "title": "Μάθετε MCP",
+        "description": "Διαδραστικά tutorials από βασικά έως προχωρημένα θέματα"
+      },
+      "challenges": {
+        "title": "Ολοκληρώστε Προκλήσεις",
+        "description": "Δημιουργήστε πραγματικούς MCP servers και δοκιμάστε τις δεξιότητές σας"
+      },
+      "compete": {
+        "title": "Ανταγωνιστείτε & Κερδίστε",
+        "description": "Ανεβείτε στον πίνακα κατάταξης και ξεκλειδώστε επιτεύγματα"
+      }
+    },
+    "featuredChallenges": "Προτεινόμενες Προκλήσεις",
+    "recentAchievements": "Πρόσφατα Επιτεύγματα"
+  },
+  "learn": {
+    "title": "Μάθετε MCP",
+    "subtitle": "Κυριαρχήστε το Model Context Protocol με τα βήμα-προς-βήμα tutorials μας. Ξεκινήστε από τα βασικά και προχωρήστε σε προχωρημένα θέματα.",
+    "backToLearn": "Επιστροφή στη Μάθηση",
+    "prerequisites": "Προαπαιτούμενα",
+    "quickReference": "Γρήγορη Αναφορά",
+    "keyTakeaways": "Βασικά Σημεία",
+    "readyForMore": "Έτοιμοι για περισσότερα;",
+    "tryChallenges": "Δοκιμάστε Προκλήσεις",
+    "openPlayground": "Άνοιγμα Playground",
+    "completeTutorial": "Ολοκλήρωση Tutorial",
+    "continueToStep": "Συνεχίστε στο Βήμα {step}",
+    "difficulty": {
+      "beginner": "αρχάριος",
+      "intermediate": "μεσαίος",
+      "advanced": "προχωρημένος"
+    },
+    "tutorials": {
+      "whatIsMcp": {
+        "title": "Τι είναι το MCP;",
+        "description": "Εισαγωγή στο Model Context Protocol και γιατί είναι σημαντικό"
+      },
+      "firstServer": {
+        "title": "Ο Πρώτος σας MCP Server",
+        "description": "Δημιουργήστε έναν απλό MCP server από το μηδέν με TypeScript"
+      },
+      "mcpTools": {
+        "title": "Δημιουργία Εργαλείων MCP",
+        "description": "Μάθετε πώς να ορίζετε και να υλοποιείτε ισχυρά εργαλεία"
+      },
+      "mcpResources": {
+        "title": "MCP Resources & Prompts",
+        "description": "Εκθέστε δεδομένα και templates μέσω resources και prompts"
+      },
+      "mcpTransports": {
+        "title": "Πρωτόκολλα Μεταφοράς",
+        "description": "Κατανοήστε τα stdio, HTTP και WebSocket transports"
+      }
+    }
+  },
+  "challenges": {
+    "title": "Προκλήσεις",
+    "subtitle": "Δοκιμάστε τις δεξιότητές σας στο MCP με διαδραστικές προκλήσεις. Δημιουργήστε λειτουργικές λύσεις και κερδίστε πόντους!",
+    "leaderboard": "Πίνακας Κατάταξης",
+    "completions": "ολοκληρώσεις",
+    "filters": {
+      "all": "Όλες",
+      "games": "Παιχνίδια",
+      "build": "Δημιουργία",
+      "useTools": "Χρήση Εργαλείων",
+      "beginner": "Αρχάριος",
+      "intermediate": "Μεσαίος",
+      "advanced": "Προχωρημένος"
+    },
+    "types": {
+      "build": "Δημιουργία Server",
+      "use": "Χρήση Εργαλείων",
+      "game": "Παιχνίδι"
+    },
+    "difficulty": {
+      "beginner": "αρχάριος",
+      "intermediate": "μεσαίος",
+      "advanced": "προχωρημένος"
+    },
+    "items": {
+      "chess": {
+        "title": "Πρόκληση Σκακιού",
+        "description": "Παίξτε σκάκι εναντίον AI ή φίλου. Δημιουργήστε έναν MCP server σκακιού!"
+      },
+      "tictactoe": {
+        "title": "Τρίλιζα",
+        "description": "Κλασικό παιχνίδι με αήττητο AI minimax. Μπορείτε να επιβάλετε ισοπαλία;"
+      },
+      "snake": {
+        "title": "Snake + Μεταφορές MCP",
+        "description": "Μάθετε τις μεταφορές stdio, HTTP+SSE και WebSocket δημιουργώντας ένα AI snake!"
+      },
+      "helloWorld": {
+        "title": "Hello World",
+        "description": "Δημιουργήστε το πρώτο σας εργαλείο MCP που χαιρετά τους χρήστες"
+      },
+      "calculator": {
+        "title": "Εργαλείο Αριθμομηχανής",
+        "description": "Δημιουργήστε ένα εργαλείο αριθμομηχανής με βασικές μαθηματικές πράξεις"
+      },
+      "fileReader": {
+        "title": "Αναγνώστης Αρχείων",
+        "description": "Χρησιμοποιήστε το εργαλείο files.read για να βρείτε συγκεκριμένο περιεχόμενο"
+      },
+      "weatherApi": {
+        "title": "Ενσωμάτωση API Καιρού",
+        "description": "Δημιουργήστε έναν MCP server που ανακτά πραγματικά δεδομένα καιρού"
+      },
+      "multiTool": {
+        "title": "Server Πολλαπλών Εργαλείων",
+        "description": "Δημιουργήστε έναν server με 5+ διασυνδεδεμένα εργαλεία"
+      },
+      "dataPipeline": {
+        "title": "Αγωγός Δεδομένων",
+        "description": "Συνδέστε πολλαπλά εργαλεία MCP για επεξεργασία και μετασχηματισμό δεδομένων"
+      }
+    },
+    "comingSoon": {
+      "title": "Περισσότερες Προκλήσεις Σύντομα",
+      "description": "Εργαζόμαστε σε νέες προκλήσεις. Θέλετε να συνεισφέρετε;",
+      "submitIdea": "Υποβάλετε μια ιδέα πρόκλησης"
+    }
+  },
+  "playground": {
+    "title": "MCP Playground",
+    "subtitle": "Πειραματιστείτε με MCP servers στον browser σας. Δεν απαιτείται εγκατάσταση!",
+    "runCode": "Εκτέλεση Κώδικα",
+    "stopCode": "Διακοπή",
+    "clearOutput": "Καθαρισμός Εξόδου",
+    "output": "Έξοδος",
+    "tools": "Εργαλεία",
+    "testTool": "Δοκιμή Εργαλείου",
+    "noTools": "Δεν υπάρχουν διαθέσιμα εργαλεία",
+    "serverRunning": "Ο server εκτελείται",
+    "serverStopped": "Ο server διακόπηκε",
+    "tryInPlayground": "Δοκιμάστε το στο Playground",
+    "noSetupRequired": "Δεν απαιτείται τοπική εγκατάσταση! Μπορείτε να δοκιμάσετε όλα τα παραδείγματα κώδικα απευθείας στο διαδραστικό μας playground."
+  },
+  "achievements": {
+    "title": "Επιτεύγματα",
+    "subtitle": "Ξεκλειδώστε επιτεύγματα ολοκληρώνοντας προκλήσεις και φτάνοντας ορόσημα",
+    "unlocked": "Ξεκλειδωμένο",
+    "locked": "Κλειδωμένο",
+    "unlockedAt": "Ξεκλειδώθηκε στις",
+    "progress": "Πρόοδος",
+    "rarity": {
+      "common": "Κοινό",
+      "rare": "Σπάνιο",
+      "epic": "Επικό",
+      "legendary": "Θρυλικό"
+    },
+    "share": {
+      "title": "Κοινοποίηση Επιτεύγματος",
+      "description": "Κοινοποιήστε το επίτευγμά σας στα social media"
+    }
+  },
+  "leaderboard": {
+    "title": "Πίνακας Κατάταξης",
+    "subtitle": "Κορυφαίοι MCP developers κατατεταγμένοι με βάση πόντους και επιτεύγματα",
+    "rank": "Κατάταξη",
+    "player": "Παίκτης",
+    "points": "Πόντοι",
+    "level": "Επίπεδο",
+    "achievements": "Επιτεύγματα",
+    "challenges": "Προκλήσεις",
+    "you": "Εσείς"
+  },
+  "profile": {
+    "title": "Προφίλ",
+    "editProfile": "Επεξεργασία Προφίλ",
+    "achievements": "Επιτεύγματα",
+    "achievementsUnlocked": "{count} επιτεύγματα ξεκλειδωμένα",
+    "recentActivity": "Πρόσφατη Δραστηριότητα",
+    "latestCompletions": "Τελευταίες ολοκληρωμένες προκλήσεις",
+    "noAchievements": "Δεν υπάρχουν επιτεύγματα ακόμα. Ξεκινήστε να ολοκληρώνετε προκλήσεις!",
+    "noCompletions": "Δεν έχουν ολοκληρωθεί προκλήσεις ακόμα.",
+    "gettingStarted": {
+      "title": "Ξεκινώντας",
+      "welcome": "Καλώς ήρθατε στο MCP Challenge!",
+      "description": "Ολοκληρώστε προκλήσεις για να κερδίσετε πόντους και να ξεκλειδώσετε επιτεύγματα.",
+      "step1": "Μάθετε τα βασικά του MCP",
+      "step2": "Δημιουργήστε τον πρώτο σας MCP server",
+      "step3": "Δοκιμάστε προκλήσεις παιχνιδιών"
+    },
+    "stats": {
+      "totalPoints": "Συνολικοί Πόντοι",
+      "level": "Επίπεδο",
+      "challengesCompleted": "Ολοκληρωμένες Προκλήσεις",
+      "achievementsUnlocked": "Ξεκλειδωμένα Επιτεύγματα",
+      "currentStreak": "Τρέχουσα Σειρά",
+      "longestStreak": "Μεγαλύτερη Σειρά"
+    }
+  },
+  "settings": {
+    "title": "Ρυθμίσεις",
+    "account": "Λογαριασμός",
+    "preferences": "Προτιμήσεις",
+    "language": "Γλώσσα",
+    "theme": "Θέμα",
+    "notifications": "Ειδοποιήσεις",
+    "deleteAccount": "Διαγραφή Λογαριασμού",
+    "themes": {
+      "light": "Ανοιχτό",
+      "dark": "Σκούρο",
+      "system": "Σύστημα"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Σύνδεση",
+      "subtitle": "Συνδεθείτε για να παρακολουθείτε την πρόοδό σας και να ανταγωνιστείτε στον πίνακα κατάταξης",
+      "withGithub": "Συνέχεια με GitHub",
+      "withGoogle": "Συνέχεια με Google",
+      "withEmail": "Συνέχεια με Email",
+      "noAccount": "Δεν έχετε λογαριασμό;",
+      "createAccount": "Δημιουργήστε έναν"
+    },
+    "signUp": {
+      "title": "Δημιουργία Λογαριασμού",
+      "subtitle": "Εγγραφείτε στο MCP Challenge και ξεκινήστε τη μάθηση",
+      "hasAccount": "Έχετε ήδη λογαριασμό;",
+      "signIn": "Συνδεθείτε"
+    },
+    "error": {
+      "title": "Σφάλμα Αυθεντικοποίησης",
+      "description": "Υπήρξε πρόβλημα με τη σύνδεσή σας.",
+      "tryAgain": "Δοκιμάστε Ξανά",
+      "backHome": "Επιστροφή στην Αρχική"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Η Σελίδα δεν Βρέθηκε",
+      "description": "Η σελίδα που αναζητάτε δεν υπάρχει.",
+      "backHome": "Επιστροφή στην Αρχική"
+    },
+    "serverError": {
+      "title": "Σφάλμα Server",
+      "description": "Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά αργότερα."
+    }
+  },
+  "footer": {
+    "description": "Μάθετε και κυριαρχήστε το Model Context Protocol μέσω διαδραστικών προκλήσεων.",
+    "links": {
+      "learn": "Μάθηση",
+      "challenges": "Προκλήσεις",
+      "playground": "Playground",
+      "github": "GitHub",
+      "twitter": "Twitter",
+      "discord": "Discord"
+    },
+    "copyright": "© {year} MCP Challenge. Όλα τα δικαιώματα κατοχυρωμένα."
+  }
+}

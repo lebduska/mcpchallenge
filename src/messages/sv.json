@@ -1,0 +1,339 @@
+{
+  "common": {
+    "loading": "Laddar...",
+    "error": "Fel",
+    "save": "Spara",
+    "cancel": "Avbryt",
+    "close": "Stäng",
+    "back": "Tillbaka",
+    "next": "Nästa",
+    "submit": "Skicka",
+    "search": "Sök",
+    "language": "Språk",
+    "settings": "Inställningar",
+    "profile": "Profil",
+    "signIn": "Logga in",
+    "signOut": "Logga ut",
+    "signUp": "Registrera",
+    "learnMore": "Läs mer",
+    "tryNow": "Prova nu",
+    "viewAll": "Visa alla",
+    "share": "Dela",
+    "copy": "Kopiera",
+    "copied": "Kopierat!",
+    "minutes": "min",
+    "points": "poäng",
+    "level": "Nivå",
+    "challenges": "utmaningar"
+  },
+  "nav": {
+    "home": "Hem",
+    "learn": "Lär dig",
+    "challenges": "Utmaningar",
+    "playground": "Playground",
+    "leaderboard": "Topplista",
+    "achievements": "Prestationer",
+    "profile": "Profil",
+    "settings": "Inställningar"
+  },
+  "home": {
+    "title": "Bemästra Model Context Protocol",
+    "badge": "Open Source MCP-lärplattform",
+    "subtitle": "Bemästra Model Context Protocol. Lär dig, bygg och tävla med interaktiva utmaningar och en live playground.",
+    "startLearning": "Kom igång",
+    "tryPlayground": "Prova Playground",
+    "whatIsMcp": {
+      "title": "Vad är MCP?",
+      "description": "Model Context Protocol är en öppen standard från Anthropic som gör det möjligt för AI-assistenter att säkert komma åt verktyg, datakällor och tjänster. Tänk på det som en universell adapter mellan AI och världen."
+    },
+    "journey": {
+      "title": "Börja din resa",
+      "features": {
+        "learn": {
+          "title": "Lär dig MCP",
+          "description": "Interaktiva tutorials och dokumentation för att bemästra Model Context Protocol",
+          "badge": "Börja här"
+        },
+        "playground": {
+          "title": "Playground",
+          "description": "Bygg och testa dina MCP-servrar i en live sandbox-miljö",
+          "badge": "Interaktiv"
+        },
+        "challenges": {
+          "title": "Utmaningar",
+          "description": "Lös problem, bygg MCP-servrar och tävla på topplistan",
+          "badge": "Tävla"
+        },
+        "showcase": {
+          "title": "Utställning",
+          "description": "Utforska community-byggda MCP-servrar och bli inspirerad",
+          "badge": "Community"
+        }
+      }
+    },
+    "stats": {
+      "challenges": "Utmaningar",
+      "tutorials": "Tutorials",
+      "possibilities": "Möjligheter",
+      "cost": "Kostnad"
+    },
+    "footer": {
+      "builtWith": "Byggd med",
+      "forCommunity": "för MCP-communityn"
+    },
+    "features": {
+      "learn": {
+        "title": "Lär dig MCP",
+        "description": "Interaktiva tutorials från grunder till avancerade ämnen"
+      },
+      "challenges": {
+        "title": "Genomför Utmaningar",
+        "description": "Bygg riktiga MCP-servrar och testa dina färdigheter"
+      },
+      "compete": {
+        "title": "Tävla & Tjäna",
+        "description": "Klättra på topplistan och lås upp prestationer"
+      }
+    },
+    "featuredChallenges": "Utvalda Utmaningar",
+    "recentAchievements": "Senaste Prestationer"
+  },
+  "learn": {
+    "title": "Lär dig MCP",
+    "subtitle": "Bemästra Model Context Protocol med våra steg-för-steg-tutorials. Börja med grunderna och arbeta dig upp till avancerade ämnen.",
+    "backToLearn": "Tillbaka till Lär dig",
+    "prerequisites": "Förkunskaper",
+    "quickReference": "Snabbreferens",
+    "keyTakeaways": "Viktiga Lärdomar",
+    "readyForMore": "Redo för mer?",
+    "tryChallenges": "Prova Utmaningar",
+    "openPlayground": "Öppna Playground",
+    "completeTutorial": "Slutför Tutorial",
+    "continueToStep": "Fortsätt till Steg {step}",
+    "difficulty": {
+      "beginner": "nybörjare",
+      "intermediate": "medel",
+      "advanced": "avancerad"
+    },
+    "tutorials": {
+      "whatIsMcp": {
+        "title": "Vad är MCP?",
+        "description": "Introduktion till Model Context Protocol och varför det spelar roll"
+      },
+      "firstServer": {
+        "title": "Din Första MCP-Server",
+        "description": "Bygg en enkel MCP-server från grunden med TypeScript"
+      },
+      "mcpTools": {
+        "title": "Skapa MCP-Verktyg",
+        "description": "Lär dig definiera och implementera kraftfulla verktyg"
+      },
+      "mcpResources": {
+        "title": "MCP-Resurser & Prompter",
+        "description": "Exponera data och mallar genom resurser och prompter"
+      },
+      "mcpTransports": {
+        "title": "Transportprotokoll",
+        "description": "Förstå stdio-, HTTP- och WebSocket-transporter"
+      }
+    }
+  },
+  "challenges": {
+    "title": "Utmaningar",
+    "subtitle": "Testa dina MCP-kunskaper med interaktiva utmaningar. Bygg fungerande lösningar och tjäna poäng!",
+    "leaderboard": "Topplista",
+    "completions": "slutföranden",
+    "filters": {
+      "all": "Alla",
+      "games": "Spel",
+      "build": "Bygg",
+      "useTools": "Använd Verktyg",
+      "beginner": "Nybörjare",
+      "intermediate": "Medel",
+      "advanced": "Avancerad"
+    },
+    "types": {
+      "build": "Bygg Server",
+      "use": "Använd Verktyg",
+      "game": "Spel"
+    },
+    "difficulty": {
+      "beginner": "nybörjare",
+      "intermediate": "medel",
+      "advanced": "avancerad"
+    },
+    "items": {
+      "chess": {
+        "title": "Schack-Utmaning",
+        "description": "Spela schack mot AI eller en vän. Bygg en MCP-schackserver!"
+      },
+      "tictactoe": {
+        "title": "Tre-i-Rad",
+        "description": "Klassiskt spel med oslagbar minimax AI. Kan du tvinga fram oavgjort?"
+      },
+      "snake": {
+        "title": "Snake + MCP-Transporter",
+        "description": "Lär dig stdio, HTTP+SSE och WebSocket-transporter genom att bygga en snake AI!"
+      },
+      "helloWorld": {
+        "title": "Hello World",
+        "description": "Skapa ditt första MCP-verktyg som hälsar användare"
+      },
+      "calculator": {
+        "title": "Kalkylatorverktyg",
+        "description": "Bygg ett kalkylatorverktyg med grundläggande matematiska operationer"
+      },
+      "fileReader": {
+        "title": "Filläsare",
+        "description": "Använd files.read-verktyget för att hitta specifikt innehåll"
+      },
+      "weatherApi": {
+        "title": "Väder API-Integration",
+        "description": "Skapa en MCP-server som hämtar verklig väderdata"
+      },
+      "multiTool": {
+        "title": "Flerverktygsserver",
+        "description": "Bygg en server med 5+ sammankopplade verktyg"
+      },
+      "dataPipeline": {
+        "title": "Datapipeline",
+        "description": "Kedja ihop flera MCP-verktyg för att bearbeta och transformera data"
+      }
+    },
+    "comingSoon": {
+      "title": "Fler utmaningar kommer snart",
+      "description": "Vi arbetar på nya utmaningar. Vill du bidra?",
+      "submitIdea": "Skicka in en utmaningsidé"
+    }
+  },
+  "playground": {
+    "title": "MCP Playground",
+    "subtitle": "Experimentera med MCP-servrar i din webbläsare. Ingen setup krävs!",
+    "runCode": "Kör Kod",
+    "stopCode": "Stoppa",
+    "clearOutput": "Rensa Utdata",
+    "output": "Utdata",
+    "tools": "Verktyg",
+    "testTool": "Testa Verktyg",
+    "noTools": "Inga verktyg tillgängliga",
+    "serverRunning": "Server körs",
+    "serverStopped": "Server stoppad",
+    "tryInPlayground": "Prova i Playground",
+    "noSetupRequired": "Ingen lokal setup krävs! Du kan testa alla kodexempel direkt i vår interaktiva playground."
+  },
+  "achievements": {
+    "title": "Prestationer",
+    "subtitle": "Lås upp prestationer genom att slutföra utmaningar och nå milstolpar",
+    "unlocked": "Upplåst",
+    "locked": "Låst",
+    "unlockedAt": "Upplåst den",
+    "progress": "Framsteg",
+    "rarity": {
+      "common": "Vanlig",
+      "rare": "Sällsynt",
+      "epic": "Episk",
+      "legendary": "Legendarisk"
+    },
+    "share": {
+      "title": "Dela Prestation",
+      "description": "Dela din prestation på sociala medier"
+    }
+  },
+  "leaderboard": {
+    "title": "Topplista",
+    "subtitle": "Topp MCP-utvecklare rankade efter poäng och prestationer",
+    "rank": "Rang",
+    "player": "Spelare",
+    "points": "Poäng",
+    "level": "Nivå",
+    "achievements": "Prestationer",
+    "challenges": "Utmaningar",
+    "you": "Du"
+  },
+  "profile": {
+    "title": "Profil",
+    "editProfile": "Redigera Profil",
+    "achievements": "Prestationer",
+    "achievementsUnlocked": "{count} prestationer upplåsta",
+    "recentActivity": "Senaste Aktivitet",
+    "latestCompletions": "Senast slutförda utmaningar",
+    "noAchievements": "Inga prestationer än. Börja slutföra utmaningar!",
+    "noCompletions": "Inga slutförda utmaningar än.",
+    "gettingStarted": {
+      "title": "Kom Igång",
+      "welcome": "Välkommen till MCP Challenge!",
+      "description": "Slutför utmaningar för att tjäna poäng och låsa upp prestationer.",
+      "step1": "Lär dig MCP-grunder",
+      "step2": "Bygg din första MCP-server",
+      "step3": "Prova spelutmaningar"
+    },
+    "stats": {
+      "totalPoints": "Totala Poäng",
+      "level": "Nivå",
+      "challengesCompleted": "Slutförda Utmaningar",
+      "achievementsUnlocked": "Upplåsta Prestationer",
+      "currentStreak": "Nuvarande Streak",
+      "longestStreak": "Längsta Streak"
+    }
+  },
+  "settings": {
+    "title": "Inställningar",
+    "account": "Konto",
+    "preferences": "Preferenser",
+    "language": "Språk",
+    "theme": "Tema",
+    "notifications": "Notiser",
+    "deleteAccount": "Ta Bort Konto",
+    "themes": {
+      "light": "Ljust",
+      "dark": "Mörkt",
+      "system": "System"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Logga In",
+      "subtitle": "Logga in för att spåra dina framsteg och tävla på topplistan",
+      "withGithub": "Fortsätt med GitHub",
+      "withGoogle": "Fortsätt med Google",
+      "withEmail": "Fortsätt med E-post",
+      "noAccount": "Har du inget konto?",
+      "createAccount": "Skapa ett"
+    },
+    "signUp": {
+      "title": "Skapa Konto",
+      "subtitle": "Gå med i MCP Challenge och börja lära dig",
+      "hasAccount": "Har du redan ett konto?",
+      "signIn": "Logga in"
+    },
+    "error": {
+      "title": "Autentiseringsfel",
+      "description": "Det uppstod ett problem när du skulle logga in.",
+      "tryAgain": "Försök Igen",
+      "backHome": "Tillbaka till Hem"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Sidan Hittades Inte",
+      "description": "Sidan du letar efter finns inte.",
+      "backHome": "Tillbaka till Hem"
+    },
+    "serverError": {
+      "title": "Serverfel",
+      "description": "Något gick fel. Försök igen senare."
+    }
+  },
+  "footer": {
+    "description": "Lär dig och bemästra Model Context Protocol genom interaktiva utmaningar.",
+    "links": {
+      "learn": "Lär dig",
+      "challenges": "Utmaningar",
+      "playground": "Playground",
+      "github": "GitHub",
+      "twitter": "Twitter",
+      "discord": "Discord"
+    },
+    "copyright": "© {year} MCP Challenge. Alla rättigheter reserverade."
+  }
+}

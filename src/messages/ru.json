@@ -1,0 +1,339 @@
+{
+  "common": {
+    "loading": "Загрузка...",
+    "error": "Ошибка",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "close": "Закрыть",
+    "back": "Назад",
+    "next": "Далее",
+    "submit": "Отправить",
+    "search": "Поиск",
+    "language": "Язык",
+    "settings": "Настройки",
+    "profile": "Профиль",
+    "signIn": "Войти",
+    "signOut": "Выйти",
+    "signUp": "Регистрация",
+    "learnMore": "Узнать больше",
+    "tryNow": "Попробовать",
+    "viewAll": "Показать все",
+    "share": "Поделиться",
+    "copy": "Копировать",
+    "copied": "Скопировано!",
+    "minutes": "мин",
+    "points": "очков",
+    "level": "Уровень",
+    "challenges": "задач"
+  },
+  "nav": {
+    "home": "Главная",
+    "learn": "Обучение",
+    "challenges": "Задачи",
+    "playground": "Песочница",
+    "leaderboard": "Рейтинг",
+    "achievements": "Достижения",
+    "profile": "Профиль",
+    "settings": "Настройки"
+  },
+  "home": {
+    "title": "Освойте Model Context Protocol",
+    "badge": "Открытая платформа для изучения MCP",
+    "subtitle": "Освойте Model Context Protocol. Изучайте, создавайте и соревнуйтесь с интерактивными задачами и живой песочницей.",
+    "startLearning": "Начать",
+    "tryPlayground": "Открыть песочницу",
+    "whatIsMcp": {
+      "title": "Что такое MCP?",
+      "description": "Model Context Protocol — это открытый стандарт от Anthropic, который позволяет AI-ассистентам безопасно получать доступ к инструментам, источникам данных и сервисам. Думайте о нём как об универсальном адаптере между AI и миром."
+    },
+    "journey": {
+      "title": "Начните своё путешествие",
+      "features": {
+        "learn": {
+          "title": "Изучайте MCP",
+          "description": "Интерактивные уроки и документация для освоения Model Context Protocol",
+          "badge": "Начните здесь"
+        },
+        "playground": {
+          "title": "Песочница",
+          "description": "Создавайте и тестируйте свои MCP-серверы в живой среде",
+          "badge": "Интерактив"
+        },
+        "challenges": {
+          "title": "Задачи",
+          "description": "Решайте задачи, создавайте MCP-серверы и соревнуйтесь в рейтинге",
+          "badge": "Соревнуйтесь"
+        },
+        "showcase": {
+          "title": "Витрина",
+          "description": "Исследуйте MCP-серверы, созданные сообществом, и вдохновляйтесь",
+          "badge": "Сообщество"
+        }
+      }
+    },
+    "stats": {
+      "challenges": "Задачи",
+      "tutorials": "Уроки",
+      "possibilities": "Возможности",
+      "cost": "Стоимость"
+    },
+    "footer": {
+      "builtWith": "Создано с",
+      "forCommunity": "для сообщества MCP"
+    },
+    "features": {
+      "learn": {
+        "title": "Изучайте MCP",
+        "description": "Интерактивные уроки от базовых до продвинутых тем"
+      },
+      "challenges": {
+        "title": "Решайте задачи",
+        "description": "Создавайте настоящие MCP-серверы и проверяйте свои навыки"
+      },
+      "compete": {
+        "title": "Соревнуйтесь и зарабатывайте",
+        "description": "Поднимайтесь в рейтинге и открывайте достижения"
+      }
+    },
+    "featuredChallenges": "Избранные задачи",
+    "recentAchievements": "Последние достижения"
+  },
+  "learn": {
+    "title": "Обучение MCP",
+    "subtitle": "Освойте Model Context Protocol с нашими пошаговыми уроками. Начните с основ и двигайтесь к продвинутым темам.",
+    "backToLearn": "Вернуться к обучению",
+    "prerequisites": "Требования",
+    "quickReference": "Справочник",
+    "keyTakeaways": "Ключевые моменты",
+    "readyForMore": "Готовы к большему?",
+    "tryChallenges": "Попробуйте задачи",
+    "openPlayground": "Открыть песочницу",
+    "completeTutorial": "Завершить урок",
+    "continueToStep": "Перейти к шагу {step}",
+    "difficulty": {
+      "beginner": "начальный",
+      "intermediate": "средний",
+      "advanced": "продвинутый"
+    },
+    "tutorials": {
+      "whatIsMcp": {
+        "title": "Что такое MCP?",
+        "description": "Введение в Model Context Protocol и почему это важно"
+      },
+      "firstServer": {
+        "title": "Ваш первый MCP-сервер",
+        "description": "Создайте простой MCP-сервер с нуля на TypeScript"
+      },
+      "mcpTools": {
+        "title": "Создание MCP-инструментов",
+        "description": "Научитесь определять и реализовывать мощные инструменты"
+      },
+      "mcpResources": {
+        "title": "Ресурсы и промпты MCP",
+        "description": "Предоставляйте данные и шаблоны через ресурсы и промпты"
+      },
+      "mcpTransports": {
+        "title": "Транспортные протоколы",
+        "description": "Разберитесь в stdio, HTTP и WebSocket транспортах"
+      }
+    }
+  },
+  "challenges": {
+    "title": "Задачи",
+    "subtitle": "Проверьте свои навыки MCP интерактивными задачами. Создавайте работающие решения и зарабатывайте очки!",
+    "leaderboard": "Рейтинг",
+    "completions": "завершений",
+    "filters": {
+      "all": "Все",
+      "games": "Игры",
+      "build": "Создать",
+      "useTools": "Использовать инструменты",
+      "beginner": "Начальный",
+      "intermediate": "Средний",
+      "advanced": "Продвинутый"
+    },
+    "types": {
+      "build": "Создать сервер",
+      "use": "Использовать инструменты",
+      "game": "Игра"
+    },
+    "difficulty": {
+      "beginner": "начальный",
+      "intermediate": "средний",
+      "advanced": "продвинутый"
+    },
+    "items": {
+      "chess": {
+        "title": "Шахматная задача",
+        "description": "Играйте в шахматы против AI или друга. Создайте MCP шахматный сервер!"
+      },
+      "tictactoe": {
+        "title": "Крестики-нолики",
+        "description": "Классическая игра с непобедимым minimax AI. Сможете ли вы сыграть в ничью?"
+      },
+      "snake": {
+        "title": "Змейка + MCP транспорты",
+        "description": "Изучите stdio, HTTP+SSE и WebSocket транспорты, создав AI для змейки!"
+      },
+      "helloWorld": {
+        "title": "Hello World",
+        "description": "Создайте свой первый MCP инструмент, который приветствует пользователей"
+      },
+      "calculator": {
+        "title": "Инструмент калькулятор",
+        "description": "Создайте калькулятор с базовыми математическими операциями"
+      },
+      "fileReader": {
+        "title": "Читатель файлов",
+        "description": "Используйте инструмент files.read для поиска определенного контента"
+      },
+      "weatherApi": {
+        "title": "Интеграция с Weather API",
+        "description": "Создайте MCP-сервер, который получает реальные данные о погоде"
+      },
+      "multiTool": {
+        "title": "Мульти-инструментальный сервер",
+        "description": "Создайте сервер с 5+ взаимосвязанными инструментами"
+      },
+      "dataPipeline": {
+        "title": "Конвейер данных",
+        "description": "Объедините несколько MCP инструментов для обработки и преобразования данных"
+      }
+    },
+    "comingSoon": {
+      "title": "Скоро новые задачи",
+      "description": "Мы работаем над новыми задачами. Хотите внести свой вклад?",
+      "submitIdea": "Предложить идею задачи"
+    }
+  },
+  "playground": {
+    "title": "MCP Песочница",
+    "subtitle": "Экспериментируйте с MCP-серверами прямо в браузере. Установка не требуется!",
+    "runCode": "Запустить код",
+    "stopCode": "Остановить",
+    "clearOutput": "Очистить вывод",
+    "output": "Вывод",
+    "tools": "Инструменты",
+    "testTool": "Тестовый инструмент",
+    "noTools": "Инструменты отсутствуют",
+    "serverRunning": "Сервер запущен",
+    "serverStopped": "Сервер остановлен",
+    "tryInPlayground": "Попробуйте в песочнице",
+    "noSetupRequired": "Локальная установка не требуется! Вы можете тестировать все примеры кода прямо в нашей интерактивной песочнице."
+  },
+  "achievements": {
+    "title": "Достижения",
+    "subtitle": "Открывайте достижения, выполняя задачи и достигая целей",
+    "unlocked": "Открыто",
+    "locked": "Заблокировано",
+    "unlockedAt": "Открыто в",
+    "progress": "Прогресс",
+    "rarity": {
+      "common": "Обычное",
+      "rare": "Редкое",
+      "epic": "Эпическое",
+      "legendary": "Легендарное"
+    },
+    "share": {
+      "title": "Поделиться достижением",
+      "description": "Поделитесь своим достижением в социальных сетях"
+    }
+  },
+  "leaderboard": {
+    "title": "Рейтинг",
+    "subtitle": "Лучшие MCP-разработчики по очкам и достижениям",
+    "rank": "Место",
+    "player": "Игрок",
+    "points": "Очки",
+    "level": "Уровень",
+    "achievements": "Достижения",
+    "challenges": "Задачи",
+    "you": "Вы"
+  },
+  "profile": {
+    "title": "Профиль",
+    "editProfile": "Редактировать профиль",
+    "achievements": "Достижения",
+    "achievementsUnlocked": "Открыто достижений: {count}",
+    "recentActivity": "Последняя активность",
+    "latestCompletions": "Последние выполненные задачи",
+    "noAchievements": "Пока нет достижений. Начните выполнять задачи!",
+    "noCompletions": "Пока нет выполненных задач.",
+    "gettingStarted": {
+      "title": "Начало работы",
+      "welcome": "Добро пожаловать в MCP Challenge!",
+      "description": "Выполняйте задачи, чтобы зарабатывать очки и открывать достижения.",
+      "step1": "Изучите основы MCP",
+      "step2": "Создайте свой первый MCP-сервер",
+      "step3": "Попробуйте игровые задачи"
+    },
+    "stats": {
+      "totalPoints": "Всего очков",
+      "level": "Уровень",
+      "challengesCompleted": "Задач выполнено",
+      "achievementsUnlocked": "Достижений открыто",
+      "currentStreak": "Текущая серия",
+      "longestStreak": "Лучшая серия"
+    }
+  },
+  "settings": {
+    "title": "Настройки",
+    "account": "Аккаунт",
+    "preferences": "Предпочтения",
+    "language": "Язык",
+    "theme": "Тема",
+    "notifications": "Уведомления",
+    "deleteAccount": "Удалить аккаунт",
+    "themes": {
+      "light": "Светлая",
+      "dark": "Темная",
+      "system": "Системная"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Вход",
+      "subtitle": "Войдите, чтобы отслеживать прогресс и соревноваться в рейтинге",
+      "withGithub": "Продолжить через GitHub",
+      "withGoogle": "Продолжить через Google",
+      "withEmail": "Продолжить через Email",
+      "noAccount": "Нет аккаунта?",
+      "createAccount": "Создать"
+    },
+    "signUp": {
+      "title": "Создание аккаунта",
+      "subtitle": "Присоединяйтесь к MCP Challenge и начните обучение",
+      "hasAccount": "Уже есть аккаунт?",
+      "signIn": "Войти"
+    },
+    "error": {
+      "title": "Ошибка аутентификации",
+      "description": "Возникла проблема при входе.",
+      "tryAgain": "Попробовать снова",
+      "backHome": "На главную"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Страница не найдена",
+      "description": "Страница, которую вы ищете, не существует.",
+      "backHome": "На главную"
+    },
+    "serverError": {
+      "title": "Ошибка сервера",
+      "description": "Что-то пошло не так. Пожалуйста, попробуйте позже."
+    }
+  },
+  "footer": {
+    "description": "Изучайте и осваивайте Model Context Protocol через интерактивные задачи.",
+    "links": {
+      "learn": "Обучение",
+      "challenges": "Задачи",
+      "playground": "Песочница",
+      "github": "GitHub",
+      "twitter": "Twitter",
+      "discord": "Discord"
+    },
+    "copyright": "© {year} MCP Challenge. Все права защищены."
+  }
+}

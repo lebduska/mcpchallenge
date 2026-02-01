@@ -1,0 +1,339 @@
+{
+  "common": {
+    "loading": "กำลังโหลด...",
+    "error": "ข้อผิดพลาด",
+    "save": "บันทึก",
+    "cancel": "ยกเลิก",
+    "close": "ปิด",
+    "back": "กลับ",
+    "next": "ถัดไป",
+    "submit": "ส่ง",
+    "search": "ค้นหา",
+    "language": "ภาษา",
+    "settings": "การตั้งค่า",
+    "profile": "โปรไฟล์",
+    "signIn": "เข้าสู่ระบบ",
+    "signOut": "ออกจากระบบ",
+    "signUp": "สมัครสมาชิก",
+    "learnMore": "เรียนรู้เพิ่มเติม",
+    "tryNow": "ลองตอนนี้",
+    "viewAll": "ดูทั้งหมด",
+    "share": "แชร์",
+    "copy": "คัดลอก",
+    "copied": "คัดลอกแล้ว!",
+    "minutes": "นาที",
+    "points": "คะแนน",
+    "level": "ระดับ",
+    "challenges": "ภารกิจ"
+  },
+  "nav": {
+    "home": "หน้าแรก",
+    "learn": "เรียนรู้",
+    "challenges": "ภารกิจ",
+    "playground": "พื้นที่ทดลอง",
+    "leaderboard": "อันดับผู้นำ",
+    "achievements": "ความสำเร็จ",
+    "profile": "โปรไฟล์",
+    "settings": "การตั้งค่า"
+  },
+  "home": {
+    "title": "เชี่ยวชาญ Model Context Protocol",
+    "badge": "แพลตฟอร์มเรียนรู้ MCP แบบโอเพนซอร์ส",
+    "subtitle": "เชี่ยวชาญ Model Context Protocol เรียนรู้ สร้าง และแข่งขันด้วยภารกิจเชิงโต้ตอบและพื้นที่ทดลองแบบสด",
+    "startLearning": "เริ่มต้น",
+    "tryPlayground": "ทดลองใช้พื้นที่ทดลอง",
+    "whatIsMcp": {
+      "title": "MCP คืออะไร?",
+      "description": "Model Context Protocol เป็นมาตรฐานเปิดจาก Anthropic ที่ช่วยให้ผู้ช่วย AI เข้าถึงเครื่องมือ แหล่งข้อมูล และบริการได้อย่างปลอดภัย ลองนึกภาพว่ามันเป็นอะแดปเตอร์สากลระหว่าง AI กับโลก"
+    },
+    "journey": {
+      "title": "เริ่มต้นการเดินทางของคุณ",
+      "features": {
+        "learn": {
+          "title": "เรียนรู้ MCP",
+          "description": "บทเรียนเชิงโต้ตอบและเอกสารเพื่อเชี่ยวชาญ Model Context Protocol",
+          "badge": "เริ่มต้นที่นี่"
+        },
+        "playground": {
+          "title": "พื้นที่ทดลอง",
+          "description": "สร้างและทดสอบเซิร์ฟเวอร์ MCP ของคุณในสภาพแวดล้อม sandbox แบบสด",
+          "badge": "โต้ตอบ"
+        },
+        "challenges": {
+          "title": "ภารกิจ",
+          "description": "แก้ปัญหา สร้างเซิร์ฟเวอร์ MCP และแข่งขันในอันดับผู้นำ",
+          "badge": "แข่งขัน"
+        },
+        "showcase": {
+          "title": "โชว์เคส",
+          "description": "สำรวจเซิร์ฟเวอร์ MCP ที่สร้างโดยชุมชนและรับแรงบันดาลใจ",
+          "badge": "ชุมชน"
+        }
+      }
+    },
+    "stats": {
+      "challenges": "ภารกิจ",
+      "tutorials": "บทเรียน",
+      "possibilities": "ความเป็นไปได้",
+      "cost": "ค่าใช้จ่าย"
+    },
+    "footer": {
+      "builtWith": "สร้างด้วย",
+      "forCommunity": "สำหรับชุมชน MCP"
+    },
+    "features": {
+      "learn": {
+        "title": "เรียนรู้ MCP",
+        "description": "บทเรียนเชิงโต้ตอบจากพื้นฐานถึงหัวข้อขั้นสูง"
+      },
+      "challenges": {
+        "title": "ทำภารกิจให้เสร็จ",
+        "description": "สร้างเซิร์ฟเวอร์ MCP จริงและทดสอบทักษะของคุณ"
+      },
+      "compete": {
+        "title": "แข่งขันและรับรางวัล",
+        "description": "ปีนขึ้นอันดับผู้นำและปลดล็อกความสำเร็จ"
+      }
+    },
+    "featuredChallenges": "ภารกิจแนะนำ",
+    "recentAchievements": "ความสำเร็จล่าสุด"
+  },
+  "learn": {
+    "title": "เรียนรู้ MCP",
+    "subtitle": "เชี่ยวชาญ Model Context Protocol ด้วยบทเรียนแบบขั้นตอน เริ่มจากพื้นฐานและก้าวไปสู่หัวข้อขั้นสูง",
+    "backToLearn": "กลับไปยังหน้าเรียนรู้",
+    "prerequisites": "ข้อกำหนดเบื้องต้น",
+    "quickReference": "คู่มืออ้างอิงด่วน",
+    "keyTakeaways": "ประเด็นสำคัญ",
+    "readyForMore": "พร้อมสำหรับเนื้อหาเพิ่มเติมหรือยัง?",
+    "tryChallenges": "ลองภารกิจ",
+    "openPlayground": "เปิดพื้นที่ทดลอง",
+    "completeTutorial": "เสร็จสิ้นบทเรียน",
+    "continueToStep": "ดำเนินการต่อไปที่ขั้นตอน {step}",
+    "difficulty": {
+      "beginner": "เริ่มต้น",
+      "intermediate": "ปานกลาง",
+      "advanced": "ขั้นสูง"
+    },
+    "tutorials": {
+      "whatIsMcp": {
+        "title": "MCP คืออะไร?",
+        "description": "ความรู้เบื้องต้นเกี่ยวกับ Model Context Protocol และเหตุผลที่มันสำคัญ"
+      },
+      "firstServer": {
+        "title": "เซิร์ฟเวอร์ MCP แรกของคุณ",
+        "description": "สร้างเซิร์ฟเวอร์ MCP แบบง่ายตั้งแต่เริ่มต้นด้วย TypeScript"
+      },
+      "mcpTools": {
+        "title": "การสร้างเครื่องมือ MCP",
+        "description": "เรียนรู้วิธีกำหนดและสร้างเครื่องมือที่ทรงพลัง"
+      },
+      "mcpResources": {
+        "title": "ทรัพยากรและพรอมต์ของ MCP",
+        "description": "เปิดเผยข้อมูลและเทมเพลตผ่านทรัพยากรและพรอมต์"
+      },
+      "mcpTransports": {
+        "title": "โปรโตคอลการส่งข้อมูล",
+        "description": "ทำความเข้าใจ stdio, HTTP และ WebSocket transports"
+      }
+    }
+  },
+  "challenges": {
+    "title": "ภารกิจ",
+    "subtitle": "ทดสอบทักษะ MCP ของคุณด้วยภารกิจเชิงโต้ตอบ สร้างโซลูชันที่ใช้งานได้จริงและรับคะแนน!",
+    "leaderboard": "อันดับผู้นำ",
+    "completions": "การทำให้สำเร็จ",
+    "filters": {
+      "all": "ทั้งหมด",
+      "games": "เกม",
+      "build": "สร้าง",
+      "useTools": "ใช้เครื่องมือ",
+      "beginner": "เริ่มต้น",
+      "intermediate": "ปานกลาง",
+      "advanced": "ขั้นสูง"
+    },
+    "types": {
+      "build": "สร้างเซิร์ฟเวอร์",
+      "use": "ใช้เครื่องมือ",
+      "game": "เกม"
+    },
+    "difficulty": {
+      "beginner": "เริ่มต้น",
+      "intermediate": "ปานกลาง",
+      "advanced": "ขั้นสูง"
+    },
+    "items": {
+      "chess": {
+        "title": "ภารกิจหมากรุก",
+        "description": "เล่นหมากรุกกับ AI หรือเพื่อน สร้างเซิร์ฟเวอร์ MCP หมากรุก!"
+      },
+      "tictactoe": {
+        "title": "เกม XO",
+        "description": "เกมคลาสสิกพร้อม AI minimax ที่ไม่มีใครเอาชนะได้ คุณบังคับให้เสมอได้ไหม?"
+      },
+      "snake": {
+        "title": "งู + MCP Transports",
+        "description": "เรียนรู้ stdio, HTTP+SSE และ WebSocket transports โดยการสร้าง AI งู!"
+      },
+      "helloWorld": {
+        "title": "Hello World",
+        "description": "สร้างเครื่องมือ MCP แรกของคุณที่ทักทายผู้ใช้"
+      },
+      "calculator": {
+        "title": "เครื่องมือเครื่องคิดเลข",
+        "description": "สร้างเครื่องมือเครื่องคิดเลขพร้อมการคำนวณทางคณิตศาสตร์พื้นฐาน"
+      },
+      "fileReader": {
+        "title": "ตัวอ่านไฟล์",
+        "description": "ใช้เครื่องมือ files.read เพื่อค้นหาเนื้อหาเฉพาะ"
+      },
+      "weatherApi": {
+        "title": "การผสานรวม API สภาพอากาศ",
+        "description": "สร้างเซิร์ฟเวอร์ MCP ที่ดึงข้อมูลสภาพอากาศจริง"
+      },
+      "multiTool": {
+        "title": "เซิร์ฟเวอร์หลายเครื่องมือ",
+        "description": "สร้างเซิร์ฟเวอร์ที่มีเครื่องมือเชื่อมต่อกัน 5+ ตัว"
+      },
+      "dataPipeline": {
+        "title": "ไปป์ไลน์ข้อมูล",
+        "description": "เชื่อมต่อเครื่องมือ MCP หลายตัวเพื่อประมวลผลและแปลงข้อมูล"
+      }
+    },
+    "comingSoon": {
+      "title": "ภารกิจเพิ่มเติมกำลังจะมา",
+      "description": "เรากำลังทำงานกับภารกิจใหม่ คุณต้องการมีส่วนร่วมหรือไม่?",
+      "submitIdea": "ส่งไอเดียภารกิจ"
+    }
+  },
+  "playground": {
+    "title": "พื้นที่ทดลอง MCP",
+    "subtitle": "ทดลองใช้เซิร์ฟเวอร์ MCP ในเบราว์เซอร์ของคุณ ไม่ต้องติดตั้งอะไรเลย!",
+    "runCode": "รันโค้ด",
+    "stopCode": "หยุด",
+    "clearOutput": "ล้างผลลัพธ์",
+    "output": "ผลลัพธ์",
+    "tools": "เครื่องมือ",
+    "testTool": "ทดสอบเครื่องมือ",
+    "noTools": "ไม่มีเครื่องมือที่ใช้ได้",
+    "serverRunning": "เซิร์ฟเวอร์กำลังทำงาน",
+    "serverStopped": "เซิร์ฟเวอร์หยุดแล้ว",
+    "tryInPlayground": "ลองในพื้นที่ทดลอง",
+    "noSetupRequired": "ไม่ต้องติดตั้งในเครื่อง! คุณสามารถทดสอบตัวอย่างโค้ดทั้งหมดได้โดยตรงในพื้นที่ทดลองแบบโต้ตอบของเรา"
+  },
+  "achievements": {
+    "title": "ความสำเร็จ",
+    "subtitle": "ปลดล็อกความสำเร็จโดยการทำภารกิจให้เสร็จและบรรลุเป้าหมาย",
+    "unlocked": "ปลดล็อกแล้ว",
+    "locked": "ล็อกอยู่",
+    "unlockedAt": "ปลดล็อกเมื่อ",
+    "progress": "ความคืบหน้า",
+    "rarity": {
+      "common": "ธรรมดา",
+      "rare": "หายาก",
+      "epic": "เอพิค",
+      "legendary": "ตำนาน"
+    },
+    "share": {
+      "title": "แชร์ความสำเร็จ",
+      "description": "แชร์ความสำเร็จของคุณบนโซเชียลมีเดีย"
+    }
+  },
+  "leaderboard": {
+    "title": "อันดับผู้นำ",
+    "subtitle": "นักพัฒนา MCP ชั้นนำที่จัดอันดับตามคะแนนและความสำเร็จ",
+    "rank": "อันดับ",
+    "player": "ผู้เล่น",
+    "points": "คะแนน",
+    "level": "ระดับ",
+    "achievements": "ความสำเร็จ",
+    "challenges": "ภารกิจ",
+    "you": "คุณ"
+  },
+  "profile": {
+    "title": "โปรไฟล์",
+    "editProfile": "แก้ไขโปรไฟล์",
+    "achievements": "ความสำเร็จ",
+    "achievementsUnlocked": "ปลดล็อกความสำเร็จ {count} รายการ",
+    "recentActivity": "กิจกรรมล่าสุด",
+    "latestCompletions": "ภารกิจที่เสร็จสิ้นล่าสุด",
+    "noAchievements": "ยังไม่มีความสำเร็จ เริ่มทำภารกิจให้เสร็จกันเลย!",
+    "noCompletions": "ยังไม่มีภารกิจที่เสร็จสิ้น",
+    "gettingStarted": {
+      "title": "เริ่มต้นใช้งาน",
+      "welcome": "ยินดีต้อนรับสู่ MCP Challenge!",
+      "description": "ทำภารกิจให้เสร็จเพื่อรับคะแนนและปลดล็อกความสำเร็จ",
+      "step1": "เรียนรู้พื้นฐาน MCP",
+      "step2": "สร้างเซิร์ฟเวอร์ MCP แรกของคุณ",
+      "step3": "ลองภารกิจเกม"
+    },
+    "stats": {
+      "totalPoints": "คะแนนรวม",
+      "level": "ระดับ",
+      "challengesCompleted": "ภารกิจที่เสร็จสิ้น",
+      "achievementsUnlocked": "ความสำเร็จที่ปลดล็อก",
+      "currentStreak": "สถิติต่อเนื่องปัจจุบัน",
+      "longestStreak": "สถิติต่อเนื่องที่ยาวที่สุด"
+    }
+  },
+  "settings": {
+    "title": "การตั้งค่า",
+    "account": "บัญชี",
+    "preferences": "ค่ากำหนดส่วนบุคคล",
+    "language": "ภาษา",
+    "theme": "ธีม",
+    "notifications": "การแจ้งเตือน",
+    "deleteAccount": "ลบบัญชี",
+    "themes": {
+      "light": "สว่าง",
+      "dark": "มืด",
+      "system": "ระบบ"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "เข้าสู่ระบบ",
+      "subtitle": "เข้าสู่ระบบเพื่อติดตามความคืบหน้าและแข่งขันในอันดับผู้นำ",
+      "withGithub": "ดำเนินการต่อด้วย GitHub",
+      "withGoogle": "ดำเนินการต่อด้วย Google",
+      "withEmail": "ดำเนินการต่อด้วยอีเมล",
+      "noAccount": "ยังไม่มีบัญชี?",
+      "createAccount": "สร้างบัญชี"
+    },
+    "signUp": {
+      "title": "สร้างบัญชี",
+      "subtitle": "เข้าร่วม MCP Challenge และเริ่มเรียนรู้",
+      "hasAccount": "มีบัญชีอยู่แล้ว?",
+      "signIn": "เข้าสู่ระบบ"
+    },
+    "error": {
+      "title": "ข้อผิดพลาดในการยืนยันตัวตน",
+      "description": "เกิดปัญหาในการเข้าสู่ระบบ",
+      "tryAgain": "ลองอีกครั้ง",
+      "backHome": "กลับไปยังหน้าแรก"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "ไม่พบหน้า",
+      "description": "ไม่มีหน้าที่คุณกำลังค้นหา",
+      "backHome": "กลับไปยังหน้าแรก"
+    },
+    "serverError": {
+      "title": "ข้อผิดพลาดของเซิร์ฟเวอร์",
+      "description": "เกิดข้อผิดพลาดบางอย่าง โปรดลองอีกครั้งในภายหลัง"
+    }
+  },
+  "footer": {
+    "description": "เรียนรู้และเชี่ยวชาญ Model Context Protocol ผ่านภารกิจเชิงโต้ตอบ",
+    "links": {
+      "learn": "เรียนรู้",
+      "challenges": "ภารกิจ",
+      "playground": "พื้นที่ทดลอง",
+      "github": "GitHub",
+      "twitter": "Twitter",
+      "discord": "Discord"
+    },
+    "copyright": "© {year} MCP Challenge สงวนลิขสิทธิ์"
+  }
+}

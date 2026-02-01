@@ -1,0 +1,339 @@
+{
+  "common": {
+    "loading": "جارٍ التحميل...",
+    "error": "خطأ",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "close": "إغلاق",
+    "back": "رجوع",
+    "next": "التالي",
+    "submit": "إرسال",
+    "search": "بحث",
+    "language": "اللغة",
+    "settings": "الإعدادات",
+    "profile": "الملف الشخصي",
+    "signIn": "تسجيل الدخول",
+    "signOut": "تسجيل الخروج",
+    "signUp": "إنشاء حساب",
+    "learnMore": "معرفة المزيد",
+    "tryNow": "جرب الآن",
+    "viewAll": "عرض الكل",
+    "share": "مشاركة",
+    "copy": "نسخ",
+    "copied": "تم النسخ!",
+    "minutes": "دقيقة",
+    "points": "نقاط",
+    "level": "المستوى",
+    "challenges": "تحديات"
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "learn": "تعلم",
+    "challenges": "التحديات",
+    "playground": "ساحة التجربة",
+    "leaderboard": "لوحة المتصدرين",
+    "achievements": "الإنجازات",
+    "profile": "الملف الشخصي",
+    "settings": "الإعدادات"
+  },
+  "home": {
+    "title": "أتقن بروتوكول سياق النموذج",
+    "badge": "منصة تعلم MCP مفتوحة المصدر",
+    "subtitle": "أتقن بروتوكول سياق النموذج. تعلم وابنِ وتنافس من خلال التحديات التفاعلية وساحة التجربة المباشرة.",
+    "startLearning": "ابدأ الآن",
+    "tryPlayground": "جرب ساحة التجربة",
+    "whatIsMcp": {
+      "title": "ما هو MCP؟",
+      "description": "بروتوكول سياق النموذج هو معيار مفتوح من Anthropic يمكّن مساعدي الذكاء الاصطناعي من الوصول بشكل آمن إلى الأدوات ومصادر البيانات والخدمات. فكر فيه كمحول عالمي بين الذكاء الاصطناعي والعالم."
+    },
+    "journey": {
+      "title": "ابدأ رحلتك",
+      "features": {
+        "learn": {
+          "title": "تعلم MCP",
+          "description": "دروس تفاعلية ووثائق لإتقان بروتوكول سياق النموذج",
+          "badge": "ابدأ من هنا"
+        },
+        "playground": {
+          "title": "ساحة التجربة",
+          "description": "ابنِ واختبر خوادم MCP الخاصة بك في بيئة sandbox مباشرة",
+          "badge": "تفاعلي"
+        },
+        "challenges": {
+          "title": "التحديات",
+          "description": "حل المشكلات، ابنِ خوادم MCP، وتنافس على لوحة المتصدرين",
+          "badge": "تنافس"
+        },
+        "showcase": {
+          "title": "المعرض",
+          "description": "استكشف خوادم MCP التي بناها المجتمع واستلهم منها",
+          "badge": "المجتمع"
+        }
+      }
+    },
+    "stats": {
+      "challenges": "التحديات",
+      "tutorials": "الدروس",
+      "possibilities": "الإمكانيات",
+      "cost": "التكلفة"
+    },
+    "footer": {
+      "builtWith": "بُني بـ",
+      "forCommunity": "لمجتمع MCP"
+    },
+    "features": {
+      "learn": {
+        "title": "تعلم MCP",
+        "description": "دروس تفاعلية من الأساسيات إلى المواضيع المتقدمة"
+      },
+      "challenges": {
+        "title": "أكمل التحديات",
+        "description": "قم ببناء خوادم MCP حقيقية واختبر مهاراتك"
+      },
+      "compete": {
+        "title": "تنافس واكسب",
+        "description": "تسلق لوحة المتصدرين وافتح الإنجازات"
+      }
+    },
+    "featuredChallenges": "التحديات المميزة",
+    "recentAchievements": "الإنجازات الأخيرة"
+  },
+  "learn": {
+    "title": "تعلم MCP",
+    "subtitle": "أتقن بروتوكول سياق النموذج من خلال دروسنا خطوة بخطوة. ابدأ من الأساسيات وتقدم إلى المواضيع المتقدمة.",
+    "backToLearn": "العودة إلى التعلم",
+    "prerequisites": "المتطلبات الأساسية",
+    "quickReference": "مرجع سريع",
+    "keyTakeaways": "النقاط الرئيسية",
+    "readyForMore": "مستعد للمزيد؟",
+    "tryChallenges": "جرب التحديات",
+    "openPlayground": "افتح ساحة التجربة",
+    "completeTutorial": "أكمل الدرس",
+    "continueToStep": "المتابعة إلى الخطوة {step}",
+    "difficulty": {
+      "beginner": "مبتدئ",
+      "intermediate": "متوسط",
+      "advanced": "متقدم"
+    },
+    "tutorials": {
+      "whatIsMcp": {
+        "title": "ما هو MCP؟",
+        "description": "مقدمة عن بروتوكول سياق النموذج ولماذا هو مهم"
+      },
+      "firstServer": {
+        "title": "خادم MCP الأول الخاص بك",
+        "description": "قم ببناء خادم MCP بسيط من الصفر باستخدام TypeScript"
+      },
+      "mcpTools": {
+        "title": "إنشاء أدوات MCP",
+        "description": "تعلم كيفية تعريف وتنفيذ أدوات قوية"
+      },
+      "mcpResources": {
+        "title": "موارد ومطالبات MCP",
+        "description": "اعرض البيانات والقوالب من خلال الموارد والمطالبات"
+      },
+      "mcpTransports": {
+        "title": "بروتوكولات النقل",
+        "description": "فهم نقل stdio و HTTP و WebSocket"
+      }
+    }
+  },
+  "challenges": {
+    "title": "التحديات",
+    "subtitle": "اختبر مهاراتك في MCP من خلال التحديات التفاعلية. قم ببناء حلول عملية واكسب النقاط!",
+    "leaderboard": "لوحة المتصدرين",
+    "completions": "الإكمالات",
+    "filters": {
+      "all": "الكل",
+      "games": "الألعاب",
+      "build": "بناء",
+      "useTools": "استخدام الأدوات",
+      "beginner": "مبتدئ",
+      "intermediate": "متوسط",
+      "advanced": "متقدم"
+    },
+    "types": {
+      "build": "بناء خادم",
+      "use": "استخدام الأدوات",
+      "game": "لعبة"
+    },
+    "difficulty": {
+      "beginner": "مبتدئ",
+      "intermediate": "متوسط",
+      "advanced": "متقدم"
+    },
+    "items": {
+      "chess": {
+        "title": "تحدي الشطرنج",
+        "description": "العب الشطرنج ضد الذكاء الاصطناعي أو صديق. قم ببناء خادم شطرنج MCP!"
+      },
+      "tictactoe": {
+        "title": "تيك تاك تو",
+        "description": "لعبة كلاسيكية مع ذكاء اصطناعي لا يُقهر بخوارزمية minimax. هل يمكنك فرض التعادل؟"
+      },
+      "snake": {
+        "title": "الثعبان + نقل MCP",
+        "description": "تعلم نقل stdio و HTTP+SSE و WebSocket من خلال بناء ذكاء اصطناعي للثعبان!"
+      },
+      "helloWorld": {
+        "title": "Hello World",
+        "description": "أنشئ أول أداة MCP الخاصة بك لتحية المستخدمين"
+      },
+      "calculator": {
+        "title": "أداة الآلة الحاسبة",
+        "description": "قم ببناء أداة آلة حاسبة مع العمليات الحسابية الأساسية"
+      },
+      "fileReader": {
+        "title": "قارئ الملفات",
+        "description": "استخدم أداة files.read للعثور على محتوى محدد"
+      },
+      "weatherApi": {
+        "title": "تكامل API الطقس",
+        "description": "أنشئ خادم MCP يجلب بيانات الطقس الفعلية"
+      },
+      "multiTool": {
+        "title": "خادم متعدد الأدوات",
+        "description": "قم ببناء خادم بأكثر من 5 أدوات مترابطة"
+      },
+      "dataPipeline": {
+        "title": "خط أنابيب البيانات",
+        "description": "اربط عدة أدوات MCP لمعالجة البيانات وتحويلها"
+      }
+    },
+    "comingSoon": {
+      "title": "المزيد من التحديات قريبًا",
+      "description": "نحن نعمل على تحديات جديدة. هل تريد المساهمة؟",
+      "submitIdea": "أرسل فكرة تحدي"
+    }
+  },
+  "playground": {
+    "title": "ساحة تجربة MCP",
+    "subtitle": "جرب خوادم MCP في متصفحك. لا يتطلب إعدادًا!",
+    "runCode": "تشغيل الكود",
+    "stopCode": "إيقاف",
+    "clearOutput": "مسح المخرجات",
+    "output": "المخرجات",
+    "tools": "الأدوات",
+    "testTool": "اختبر الأداة",
+    "noTools": "لا توجد أدوات متاحة",
+    "serverRunning": "الخادم قيد التشغيل",
+    "serverStopped": "تم إيقاف الخادم",
+    "tryInPlayground": "جربه في ساحة التجربة",
+    "noSetupRequired": "لا حاجة للإعداد المحلي! يمكنك اختبار جميع أمثلة الكود مباشرة في ساحة التجربة التفاعلية الخاصة بنا."
+  },
+  "achievements": {
+    "title": "الإنجازات",
+    "subtitle": "افتح الإنجازات من خلال إكمال التحديات والوصول إلى المعالم",
+    "unlocked": "مفتوح",
+    "locked": "مقفل",
+    "unlockedAt": "تم فتحه في",
+    "progress": "التقدم",
+    "rarity": {
+      "common": "عادي",
+      "rare": "نادر",
+      "epic": "ملحمي",
+      "legendary": "أسطوري"
+    },
+    "share": {
+      "title": "شارك الإنجاز",
+      "description": "شارك إنجازك على وسائل التواصل الاجتماعي"
+    }
+  },
+  "leaderboard": {
+    "title": "لوحة المتصدرين",
+    "subtitle": "أفضل مطوري MCP مرتبين حسب النقاط والإنجازات",
+    "rank": "الترتيب",
+    "player": "اللاعب",
+    "points": "النقاط",
+    "level": "المستوى",
+    "achievements": "الإنجازات",
+    "challenges": "التحديات",
+    "you": "أنت"
+  },
+  "profile": {
+    "title": "الملف الشخصي",
+    "editProfile": "تعديل الملف الشخصي",
+    "achievements": "الإنجازات",
+    "achievementsUnlocked": "{count} إنجاز مفتوح",
+    "recentActivity": "النشاط الأخير",
+    "latestCompletions": "آخر التحديات المكتملة",
+    "noAchievements": "لا توجد إنجازات بعد. ابدأ بإكمال التحديات!",
+    "noCompletions": "لا توجد تحديات مكتملة بعد.",
+    "gettingStarted": {
+      "title": "البدء",
+      "welcome": "مرحبًا بك في تحدي MCP!",
+      "description": "أكمل التحديات لكسب النقاط وفتح الإنجازات.",
+      "step1": "تعلم أساسيات MCP",
+      "step2": "قم ببناء خادم MCP الأول الخاص بك",
+      "step3": "جرب تحديات الألعاب"
+    },
+    "stats": {
+      "totalPoints": "إجمالي النقاط",
+      "level": "المستوى",
+      "challengesCompleted": "التحديات المكتملة",
+      "achievementsUnlocked": "الإنجازات المفتوحة",
+      "currentStreak": "السلسلة الحالية",
+      "longestStreak": "أطول سلسلة"
+    }
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "account": "الحساب",
+    "preferences": "التفضيلات",
+    "language": "اللغة",
+    "theme": "المظهر",
+    "notifications": "الإشعارات",
+    "deleteAccount": "حذف الحساب",
+    "themes": {
+      "light": "فاتح",
+      "dark": "داكن",
+      "system": "النظام"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "تسجيل الدخول",
+      "subtitle": "سجل الدخول لتتبع تقدمك والتنافس على لوحة المتصدرين",
+      "withGithub": "المتابعة مع GitHub",
+      "withGoogle": "المتابعة مع Google",
+      "withEmail": "المتابعة مع البريد الإلكتروني",
+      "noAccount": "ليس لديك حساب؟",
+      "createAccount": "أنشئ واحدًا"
+    },
+    "signUp": {
+      "title": "إنشاء حساب",
+      "subtitle": "انضم إلى تحدي MCP وابدأ التعلم",
+      "hasAccount": "هل لديك حساب بالفعل؟",
+      "signIn": "تسجيل الدخول"
+    },
+    "error": {
+      "title": "خطأ في المصادقة",
+      "description": "حدثت مشكلة أثناء تسجيل دخولك.",
+      "tryAgain": "حاول مرة أخرى",
+      "backHome": "العودة إلى الرئيسية"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "الصفحة غير موجودة",
+      "description": "الصفحة التي تبحث عنها غير موجودة.",
+      "backHome": "العودة إلى الرئيسية"
+    },
+    "serverError": {
+      "title": "خطأ في الخادم",
+      "description": "حدث خطأ ما. يرجى المحاولة مرة أخرى لاحقًا."
+    }
+  },
+  "footer": {
+    "description": "تعلم وأتقن بروتوكول سياق النموذج من خلال التحديات التفاعلية.",
+    "links": {
+      "learn": "تعلم",
+      "challenges": "التحديات",
+      "playground": "ساحة التجربة",
+      "github": "GitHub",
+      "twitter": "Twitter",
+      "discord": "Discord"
+    },
+    "copyright": "© {year} تحدي MCP. جميع الحقوق محفوظة."
+  }
+}

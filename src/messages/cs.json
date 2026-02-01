@@ -1,0 +1,339 @@
+{
+  "common": {
+    "loading": "Načítání...",
+    "error": "Chyba",
+    "save": "Uložit",
+    "cancel": "Zrušit",
+    "close": "Zavřít",
+    "back": "Zpět",
+    "next": "Další",
+    "submit": "Odeslat",
+    "search": "Hledat",
+    "language": "Jazyk",
+    "settings": "Nastavení",
+    "profile": "Profil",
+    "signIn": "Přihlásit se",
+    "signOut": "Odhlásit se",
+    "signUp": "Registrovat se",
+    "learnMore": "Zjistit více",
+    "tryNow": "Vyzkoušet",
+    "viewAll": "Zobrazit vše",
+    "share": "Sdílet",
+    "copy": "Kopírovat",
+    "copied": "Zkopírováno!",
+    "minutes": "min",
+    "points": "body",
+    "level": "Úroveň",
+    "challenges": "výzvy"
+  },
+  "nav": {
+    "home": "Domů",
+    "learn": "Učení",
+    "challenges": "Výzvy",
+    "playground": "Hřiště",
+    "leaderboard": "Žebříček",
+    "achievements": "Úspěchy",
+    "profile": "Profil",
+    "settings": "Nastavení"
+  },
+  "home": {
+    "title": "Ovládněte Model Context Protocol",
+    "badge": "Open Source vzdělávací platforma MCP",
+    "subtitle": "Ovládněte Model Context Protocol. Učte se, tvořte a soutěžte s interaktivními výzvami a živým hřištěm.",
+    "startLearning": "Začít",
+    "tryPlayground": "Vyzkoušet hřiště",
+    "whatIsMcp": {
+      "title": "Co je MCP?",
+      "description": "Model Context Protocol je otevřený standard od Anthropic, který umožňuje AI asistentům bezpečně přistupovat k nástrojům, datovým zdrojům a službám. Představte si ho jako univerzální adaptér mezi AI a světem."
+    },
+    "journey": {
+      "title": "Začněte svou cestu",
+      "features": {
+        "learn": {
+          "title": "Naučte se MCP",
+          "description": "Interaktivní tutoriály a dokumentace pro zvládnutí Model Context Protocol",
+          "badge": "Začněte zde"
+        },
+        "playground": {
+          "title": "Hřiště",
+          "description": "Vytvářejte a testujte své MCP servery v živém sandboxu",
+          "badge": "Interaktivní"
+        },
+        "challenges": {
+          "title": "Výzvy",
+          "description": "Řešte problémy, vytvářejte MCP servery a soutěžte na žebříčku",
+          "badge": "Soutěžte"
+        },
+        "showcase": {
+          "title": "Galerie",
+          "description": "Prozkoumejte MCP servery vytvořené komunitou a inspirujte se",
+          "badge": "Komunita"
+        }
+      }
+    },
+    "stats": {
+      "challenges": "Výzev",
+      "tutorials": "Tutoriálů",
+      "possibilities": "Možností",
+      "cost": "Náklady"
+    },
+    "footer": {
+      "builtWith": "Vytvořeno s",
+      "forCommunity": "pro MCP komunitu"
+    },
+    "features": {
+      "learn": {
+        "title": "Naučte se MCP",
+        "description": "Interaktivní tutoriály od základů po pokročilá témata"
+      },
+      "challenges": {
+        "title": "Splňte výzvy",
+        "description": "Vytvořte skutečné MCP servery a otestujte své schopnosti"
+      },
+      "compete": {
+        "title": "Soutěžte a získávejte",
+        "description": "Stoupejte na žebříčku a odemykejte úspěchy"
+      }
+    },
+    "featuredChallenges": "Doporučené výzvy",
+    "recentAchievements": "Poslední úspěchy"
+  },
+  "learn": {
+    "title": "Učení MCP",
+    "subtitle": "Ovládněte Model Context Protocol s našimi podrobnými tutoriály. Začněte od základů a postupujte k pokročilým tématům.",
+    "backToLearn": "Zpět na učení",
+    "prerequisites": "Předpoklady",
+    "quickReference": "Rychlý přehled",
+    "keyTakeaways": "Klíčové poznatky",
+    "readyForMore": "Připraveni na více?",
+    "tryChallenges": "Vyzkoušet výzvy",
+    "openPlayground": "Otevřít hřiště",
+    "completeTutorial": "Dokončit tutoriál",
+    "continueToStep": "Pokračovat ke kroku {step}",
+    "difficulty": {
+      "beginner": "začátečník",
+      "intermediate": "středně pokročilý",
+      "advanced": "pokročilý"
+    },
+    "tutorials": {
+      "whatIsMcp": {
+        "title": "Co je MCP?",
+        "description": "Úvod do Model Context Protocol a proč je důležitý"
+      },
+      "firstServer": {
+        "title": "Váš první MCP server",
+        "description": "Vytvořte jednoduchý MCP server od začátku v TypeScriptu"
+      },
+      "mcpTools": {
+        "title": "Tvorba MCP nástrojů",
+        "description": "Naučte se definovat a implementovat výkonné nástroje"
+      },
+      "mcpResources": {
+        "title": "MCP Resources a Prompty",
+        "description": "Vystavte data a šablony pomocí resources a promptů"
+      },
+      "mcpTransports": {
+        "title": "Transportní protokoly",
+        "description": "Porozumějte stdio, HTTP a WebSocket transportům"
+      }
+    }
+  },
+  "challenges": {
+    "title": "Výzvy",
+    "subtitle": "Otestujte své MCP dovednosti s interaktivními výzvami. Vytvořte funkční řešení a získejte body!",
+    "leaderboard": "Žebříček",
+    "completions": "dokončení",
+    "filters": {
+      "all": "Vše",
+      "games": "Hry",
+      "build": "Sestavit",
+      "useTools": "Použít nástroje",
+      "beginner": "Začátečník",
+      "intermediate": "Středně pokročilý",
+      "advanced": "Pokročilý"
+    },
+    "types": {
+      "build": "Sestavit server",
+      "use": "Použít nástroje",
+      "game": "Hra"
+    },
+    "difficulty": {
+      "beginner": "začátečník",
+      "intermediate": "středně pokročilý",
+      "advanced": "pokročilý"
+    },
+    "items": {
+      "chess": {
+        "title": "Šachová výzva",
+        "description": "Hrajte šachy proti AI nebo příteli. Vytvořte MCP šachový server!"
+      },
+      "tictactoe": {
+        "title": "Piškvorky",
+        "description": "Klasická hra s neporazitelnou minimax AI. Dokážete vynutit remízu?"
+      },
+      "snake": {
+        "title": "Had + MCP Transporty",
+        "description": "Naučte se stdio, HTTP+SSE a WebSocket transporty stavbou hadí AI!"
+      },
+      "helloWorld": {
+        "title": "Hello World",
+        "description": "Vytvořte svůj první MCP nástroj, který zdraví uživatele"
+      },
+      "calculator": {
+        "title": "Kalkulačka",
+        "description": "Vytvořte kalkulačku se základními matematickými operacemi"
+      },
+      "fileReader": {
+        "title": "Čtečka souborů",
+        "description": "Použijte nástroj files.read k nalezení specifického obsahu"
+      },
+      "weatherApi": {
+        "title": "Integrace Weather API",
+        "description": "Vytvořte MCP server, který získává skutečná data o počasí"
+      },
+      "multiTool": {
+        "title": "Multi-nástrojový server",
+        "description": "Vytvořte server s 5+ propojenými nástroji"
+      },
+      "dataPipeline": {
+        "title": "Datová pipeline",
+        "description": "Propojte více MCP nástrojů pro zpracování a transformaci dat"
+      }
+    },
+    "comingSoon": {
+      "title": "Další výzvy již brzy",
+      "description": "Pracujeme na nových výzvách. Chcete přispět?",
+      "submitIdea": "Navrhnout výzvu"
+    }
+  },
+  "playground": {
+    "title": "MCP Hřiště",
+    "subtitle": "Experimentujte s MCP servery ve vašem prohlížeči. Není třeba nic instalovat!",
+    "runCode": "Spustit kód",
+    "stopCode": "Zastavit",
+    "clearOutput": "Vymazat výstup",
+    "output": "Výstup",
+    "tools": "Nástroje",
+    "testTool": "Testovat nástroj",
+    "noTools": "Žádné nástroje nejsou k dispozici",
+    "serverRunning": "Server běží",
+    "serverStopped": "Server zastaven",
+    "tryInPlayground": "Vyzkoušejte v hřišti",
+    "noSetupRequired": "Není potřeba lokální instalace! Všechny ukázky kódu můžete testovat přímo v našem interaktivním hřišti."
+  },
+  "achievements": {
+    "title": "Úspěchy",
+    "subtitle": "Odemykejte úspěchy splněním výzev a dosažením milníků",
+    "unlocked": "Odemčeno",
+    "locked": "Zamčeno",
+    "unlockedAt": "Odemčeno v",
+    "progress": "Postup",
+    "rarity": {
+      "common": "Běžný",
+      "rare": "Vzácný",
+      "epic": "Epický",
+      "legendary": "Legendární"
+    },
+    "share": {
+      "title": "Sdílet úspěch",
+      "description": "Sdílejte svůj úspěch na sociálních sítích"
+    }
+  },
+  "leaderboard": {
+    "title": "Žebříček",
+    "subtitle": "Nejlepší MCP vývojáři seřazení podle bodů a úspěchů",
+    "rank": "Pořadí",
+    "player": "Hráč",
+    "points": "Body",
+    "level": "Úroveň",
+    "achievements": "Úspěchy",
+    "challenges": "Výzvy",
+    "you": "Vy"
+  },
+  "profile": {
+    "title": "Profil",
+    "editProfile": "Upravit profil",
+    "achievements": "Úspěchy",
+    "achievementsUnlocked": "{count} odemčených úspěchů",
+    "recentActivity": "Nedávná aktivita",
+    "latestCompletions": "Poslední dokončené výzvy",
+    "noAchievements": "Zatím žádné úspěchy. Začněte plnit výzvy!",
+    "noCompletions": "Zatím žádné dokončené výzvy.",
+    "gettingStarted": {
+      "title": "Začínáme",
+      "welcome": "Vítejte v MCP Challenge!",
+      "description": "Plňte výzvy, získávejte body a odemykejte úspěchy.",
+      "step1": "Naučte se základy MCP",
+      "step2": "Vytvořte svůj první MCP server",
+      "step3": "Vyzkoušejte herní výzvy"
+    },
+    "stats": {
+      "totalPoints": "Celkem bodů",
+      "level": "Úroveň",
+      "challengesCompleted": "Dokončené výzvy",
+      "achievementsUnlocked": "Odemčené úspěchy",
+      "currentStreak": "Aktuální série",
+      "longestStreak": "Nejdelší série"
+    }
+  },
+  "settings": {
+    "title": "Nastavení",
+    "account": "Účet",
+    "preferences": "Předvolby",
+    "language": "Jazyk",
+    "theme": "Vzhled",
+    "notifications": "Oznámení",
+    "deleteAccount": "Smazat účet",
+    "themes": {
+      "light": "Světlý",
+      "dark": "Tmavý",
+      "system": "Systémový"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Přihlášení",
+      "subtitle": "Přihlaste se pro sledování postupu a soutěž na žebříčku",
+      "withGithub": "Pokračovat přes GitHub",
+      "withGoogle": "Pokračovat přes Google",
+      "withEmail": "Pokračovat přes email",
+      "noAccount": "Nemáte účet?",
+      "createAccount": "Vytvořte si ho"
+    },
+    "signUp": {
+      "title": "Vytvoření účtu",
+      "subtitle": "Připojte se k MCP Challenge a začněte se učit",
+      "hasAccount": "Již máte účet?",
+      "signIn": "Přihlaste se"
+    },
+    "error": {
+      "title": "Chyba přihlášení",
+      "description": "Při přihlašování došlo k problému.",
+      "tryAgain": "Zkusit znovu",
+      "backHome": "Zpět domů"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Stránka nenalezena",
+      "description": "Stránka, kterou hledáte, neexistuje.",
+      "backHome": "Zpět domů"
+    },
+    "serverError": {
+      "title": "Chyba serveru",
+      "description": "Něco se pokazilo. Zkuste to prosím později."
+    }
+  },
+  "footer": {
+    "description": "Naučte se a ovládněte Model Context Protocol pomocí interaktivních výzev.",
+    "links": {
+      "learn": "Učení",
+      "challenges": "Výzvy",
+      "playground": "Hřiště",
+      "github": "GitHub",
+      "twitter": "Twitter",
+      "discord": "Discord"
+    },
+    "copyright": "© {year} MCP Challenge. Všechna práva vyhrazena."
+  }
+}

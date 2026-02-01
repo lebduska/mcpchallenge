@@ -13,6 +13,7 @@ import {
   Circle,
   X,
 } from "lucide-react";
+import { useGameCompletion } from "@/lib/game-completion";
 
 type Player = "X" | "O" | null;
 type Board = Player[];
@@ -218,12 +219,14 @@ export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
   const [scores, setScores] = useState({ player: 0, ai: 0, draws: 0 });
   const completionCalledRef = useRef(false);
 
+  // Game completion hook
+  const { submitCompletion, isAuthenticated } = useGameCompletion("tic-tac-toe");
+
   // Notify game completion
   useEffect(() => {
     if (
       (gameStatus === "won" || gameStatus === "draw") &&
       !completionCalledRef.current &&
-      onGameComplete &&
       gameMode === "vs-ai"
     ) {
       completionCalledRef.current = true;
@@ -234,15 +237,24 @@ export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
       }
 
       const moves = board.filter((cell) => cell !== null).length;
-      onGameComplete({ winner: result, moves });
+
+      // Call the onGameComplete callback if provided
+      if (onGameComplete) {
+        onGameComplete({ winner: result, moves });
+      }
+
+      // Submit to database if authenticated
+      if (isAuthenticated) {
+        submitCompletion({ winner: result, moves });
+      }
     }
     if (gameStatus === "waiting") {
       completionCalledRef.current = false;
     }
-  }, [gameStatus, gameMode, winner, playerSymbol, board, onGameComplete]);
+  }, [gameStatus, gameMode, winner, playerSymbol, board, onGameComplete, isAuthenticated, submitCompletion]);
 
-  // Win length: 3 for 3x3, 5 for larger boards
-  const winLength = boardSize === 3 ? 3 : 5;
+  // Win length: min(boardSize, 5) - ensures you can actually win
+  const winLength = Math.min(boardSize, 5);
 
   // Memoize winning combinations
   const winCombos = useMemo(
@@ -417,7 +429,7 @@ export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
                   <div className="flex justify-between text-sm">
                     <span>Board Size: <strong>{boardSize}x{boardSize}</strong></span>
                     <span className="text-zinc-500">
-                      {boardSize === 3 ? "3 in a row" : "5 in a row"}
+                      {Math.min(boardSize, 5)} in a row
                     </span>
                   </div>
                   <input

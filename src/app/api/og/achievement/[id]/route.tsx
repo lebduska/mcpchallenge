@@ -6,11 +6,11 @@ import { eq } from "drizzle-orm";
 
 export const runtime = "edge";
 
-const rarityColors: Record<string, { bg: string; border: string; text: string }> = {
-  common: { bg: "#f4f4f5", border: "#a1a1aa", text: "#3f3f46" },
-  rare: { bg: "#dbeafe", border: "#3b82f6", text: "#1d4ed8" },
-  epic: { bg: "#f3e8ff", border: "#a855f7", text: "#7c3aed" },
-  legendary: { bg: "#fef3c7", border: "#f59e0b", text: "#b45309" },
+const rarityColors: Record<string, { bg: string; border: string; text: string; glow: string }> = {
+  common: { bg: "#27272a", border: "#71717a", text: "#e4e4e7", glow: "#71717a40" },
+  rare: { bg: "#1e293b", border: "#3b82f6", text: "#93c5fd", glow: "#3b82f680" },
+  epic: { bg: "#2e1065", border: "#a855f7", text: "#d8b4fe", glow: "#a855f780" },
+  legendary: { bg: "#451a03", border: "#f59e0b", text: "#fbbf24", glow: "#f59e0b80" },
 };
 
 export async function GET(
@@ -41,28 +41,57 @@ export async function GET(
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #18181b 0%, #27272a 100%)",
-          fontFamily: "system-ui, sans-serif",
+          background: "linear-gradient(135deg, #09090b 0%, #18181b 50%, #27272a 100%)",
+          fontFamily: "system-ui, -apple-system, sans-serif",
+          position: "relative",
         }}
       >
+        {/* Decorative background elements */}
+        <div
+          style={{
+            position: "absolute",
+            top: "-100px",
+            right: "-100px",
+            width: "400px",
+            height: "400px",
+            borderRadius: "50%",
+            background: `radial-gradient(circle, ${colors.glow} 0%, transparent 70%)`,
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            bottom: "-150px",
+            left: "-150px",
+            width: "500px",
+            height: "500px",
+            borderRadius: "50%",
+            background: `radial-gradient(circle, ${colors.glow} 0%, transparent 70%)`,
+          }}
+        />
+
         {/* Card */}
         <div
           style={{
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            padding: "48px 64px",
-            borderRadius: "24px",
+            padding: "56px 72px",
+            borderRadius: "32px",
             background: colors.bg,
             border: `4px solid ${colors.border}`,
-            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+            boxShadow: `0 0 60px ${colors.glow}, 0 25px 50px -12px rgba(0, 0, 0, 0.8)`,
+            position: "relative",
+            zIndex: 1,
+            maxWidth: "900px",
           }}
         >
           {/* Icon */}
           <div
             style={{
-              fontSize: "96px",
-              marginBottom: "16px",
+              fontSize: "120px",
+              marginBottom: "24px",
+              filter: `drop-shadow(0 0 20px ${colors.glow})`,
             }}
           >
             {achievement.icon}
@@ -71,11 +100,13 @@ export async function GET(
           {/* Title */}
           <div
             style={{
-              fontSize: "48px",
+              fontSize: "56px",
               fontWeight: "bold",
               color: colors.text,
-              marginBottom: "8px",
+              marginBottom: "16px",
               textAlign: "center",
+              lineHeight: 1.1,
+              textShadow: `0 2px 10px ${colors.glow}`,
             }}
           >
             {achievement.name}
@@ -84,11 +115,12 @@ export async function GET(
           {/* Description */}
           <div
             style={{
-              fontSize: "24px",
-              color: "#71717a",
-              marginBottom: "24px",
+              fontSize: "28px",
+              color: "#a1a1aa",
+              marginBottom: "32px",
               textAlign: "center",
-              maxWidth: "500px",
+              maxWidth: "700px",
+              lineHeight: 1.3,
             }}
           >
             {achievement.description}
@@ -98,30 +130,36 @@ export async function GET(
           <div
             style={{
               display: "flex",
-              gap: "16px",
+              gap: "20px",
               alignItems: "center",
             }}
           >
             <div
               style={{
-                padding: "8px 24px",
+                padding: "12px 32px",
                 borderRadius: "9999px",
                 background: colors.border,
                 color: "white",
-                fontSize: "20px",
-                fontWeight: "600",
+                fontSize: "24px",
+                fontWeight: "700",
                 textTransform: "uppercase",
+                letterSpacing: "1px",
+                boxShadow: `0 0 20px ${colors.glow}`,
               }}
             >
               {achievement.rarity}
             </div>
             <div
               style={{
-                fontSize: "24px",
+                fontSize: "32px",
                 fontWeight: "bold",
-                color: "#f59e0b",
+                color: "#fbbf24",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
               }}
             >
+              <span style={{ fontSize: "28px" }}>🏆</span>
               +{achievement.points} pts
             </div>
           </div>
@@ -130,16 +168,36 @@ export async function GET(
         {/* Footer */}
         <div
           style={{
-            marginTop: "32px",
+            marginTop: "40px",
             display: "flex",
             alignItems: "center",
-            gap: "12px",
+            gap: "16px",
+            position: "relative",
+            zIndex: 1,
           }}
         >
           <div
             style={{
+              fontSize: "32px",
+              fontWeight: "600",
+              color: "#71717a",
+              letterSpacing: "0.5px",
+            }}
+          >
+            MCP Challenge
+          </div>
+          <div
+            style={{
+              width: "6px",
+              height: "6px",
+              borderRadius: "50%",
+              background: "#71717a",
+            }}
+          />
+          <div
+            style={{
               fontSize: "28px",
-              color: "#a1a1aa",
+              color: "#52525b",
             }}
           >
             mcpchallenge.org

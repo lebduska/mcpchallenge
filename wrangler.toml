@@ -8,6 +8,7 @@ pages_build_output_dir = ".vercel/output/static"
 binding = "DB"
 database_name = "mcpchallenge-db"
 database_id = "76ba5514-f20d-495a-a7df-2ff06d394448"
+migrations_dir = "drizzle/migrations"
 
 # R2 Storage (for future use - avatars, etc.)
 # [[r2_buckets]]
@@ -16,3 +17,4 @@ database_id = "76ba5514-f20d-495a-a7df-2ff06d394448"
 
 [vars]
 ENVIRONMENT = "production"
+NEXT_PUBLIC_GA_MEASUREMENT_ID = "G-FM35KECLVH"

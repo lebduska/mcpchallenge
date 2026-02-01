@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Navbar } from "@/components/navbar";
-import { AuthProvider } from "@/components/auth/auth-provider";
+import { ThemeProvider } from "@/components/theme-provider";
+import { GoogleAnalytics, CookieConsent } from "@/components/analytics";
+import { WebsiteStructuredData, OrganizationStructuredData } from "@/components/seo";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,25 +16,85 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://mcpchallenge.org"),
   title: {
     default: "MCP Challenge - Learn & Master the Model Context Protocol",
     template: "%s | MCP Challenge",
   },
   description:
     "Interactive platform to learn, build, and compete with the Model Context Protocol (MCP). Tutorials, playground, and challenges for developers.",
-  keywords: ["MCP", "Model Context Protocol", "AI", "Anthropic", "Claude", "Tools", "LLM"],
+  keywords: [
+    "MCP",
+    "Model Context Protocol",
+    "AI",
+    "Anthropic",
+    "Claude",
+    "Tools",
+    "LLM",
+    "AI Development",
+    "Machine Learning",
+    "Developer Tools",
+    "API Integration",
+    "Tutorial",
+    "Learn MCP",
+    "MCP Server",
+    "AI Assistant",
+  ],
   authors: [{ name: "MCP Challenge" }],
+  creator: "MCP Challenge",
+  publisher: "MCP Challenge",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   openGraph: {
-    title: "MCP Challenge",
-    description: "Master the Model Context Protocol with interactive tutorials and challenges",
+    title: "MCP Challenge - Master the Model Context Protocol",
+    description:
+      "Learn, build, and compete with interactive MCP challenges. Free tutorials, playground, and achievements for developers.",
     url: "https://mcpchallenge.org",
     siteName: "MCP Challenge",
+    locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "/og-image.svg",
+        width: 1200,
+        height: 630,
+        alt: "MCP Challenge - Learn the Model Context Protocol",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "MCP Challenge",
-    description: "Master the Model Context Protocol with interactive tutorials and challenges",
+    title: "MCP Challenge - Master the Model Context Protocol",
+    description:
+      "Learn, build, and compete with interactive MCP challenges. Free tutorials, playground, and achievements.",
+    images: ["/og-image.svg"],
+    creator: "@mcpchallenge",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: "https://mcpchallenge.org",
+    languages: {
+      "en-US": "https://mcpchallenge.org",
+      "cs-CZ": "https://mcpchallenge.org/cs",
+      "de-DE": "https://mcpchallenge.org/de",
+      "es-ES": "https://mcpchallenge.org/es",
+      "fr-FR": "https://mcpchallenge.org/fr",
+      "ja-JP": "https://mcpchallenge.org/ja",
+      "zh-CN": "https://mcpchallenge.org/zh",
+    },
   },
 };
 
@@ -43,14 +104,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-white dark:bg-zinc-950`}
       >
-        <AuthProvider>
-          <Navbar />
-          <main>{children}</main>
-        </AuthProvider>
+        <WebsiteStructuredData />
+        <OrganizationStructuredData />
+        <GoogleAnalytics />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <CookieConsent />
+        </ThemeProvider>
       </body>
     </html>
   );

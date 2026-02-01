@@ -1,0 +1,339 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "back": "Retour",
+    "next": "Suivant",
+    "submit": "Soumettre",
+    "search": "Rechercher",
+    "language": "Langue",
+    "settings": "Paramètres",
+    "profile": "Profil",
+    "signIn": "Se connecter",
+    "signOut": "Se déconnecter",
+    "signUp": "S'inscrire",
+    "learnMore": "En savoir plus",
+    "tryNow": "Essayer maintenant",
+    "viewAll": "Voir tout",
+    "share": "Partager",
+    "copy": "Copier",
+    "copied": "Copié !",
+    "minutes": "min",
+    "points": "points",
+    "level": "Niveau",
+    "challenges": "défis"
+  },
+  "nav": {
+    "home": "Accueil",
+    "learn": "Apprendre",
+    "challenges": "Défis",
+    "playground": "Playground",
+    "leaderboard": "Classement",
+    "achievements": "Succès",
+    "profile": "Profil",
+    "settings": "Paramètres"
+  },
+  "home": {
+    "title": "Maîtrisez le Protocole de Contexte de Modèle",
+    "badge": "Plateforme d'Apprentissage MCP Open Source",
+    "subtitle": "Maîtrisez le Protocole de Contexte de Modèle. Apprenez, construisez et compétitionnez avec des défis interactifs et un playground en direct.",
+    "startLearning": "Commencer",
+    "tryPlayground": "Essayer le Playground",
+    "whatIsMcp": {
+      "title": "Qu'est-ce que MCP ?",
+      "description": "Le Protocole de Contexte de Modèle est un standard ouvert d'Anthropic qui permet aux assistants IA d'accéder de manière sécurisée aux outils, sources de données et services. Pensez-y comme un adaptateur universel entre l'IA et le monde."
+    },
+    "journey": {
+      "title": "Commencez Votre Voyage",
+      "features": {
+        "learn": {
+          "title": "Apprendre MCP",
+          "description": "Tutoriels interactifs et documentation pour maîtriser le Protocole de Contexte de Modèle",
+          "badge": "Commencez Ici"
+        },
+        "playground": {
+          "title": "Playground",
+          "description": "Construisez et testez vos serveurs MCP dans un environnement sandbox en direct",
+          "badge": "Interactif"
+        },
+        "challenges": {
+          "title": "Défis",
+          "description": "Résolvez des problèmes, construisez des serveurs MCP et compétitionnez dans le classement",
+          "badge": "Compétition"
+        },
+        "showcase": {
+          "title": "Vitrine",
+          "description": "Explorez les serveurs MCP créés par la communauté et inspirez-vous",
+          "badge": "Communauté"
+        }
+      }
+    },
+    "stats": {
+      "challenges": "Défis",
+      "tutorials": "Tutoriels",
+      "possibilities": "Possibilités",
+      "cost": "Coût"
+    },
+    "footer": {
+      "builtWith": "Construit avec",
+      "forCommunity": "pour la communauté MCP"
+    },
+    "features": {
+      "learn": {
+        "title": "Apprendre MCP",
+        "description": "Tutoriels interactifs des bases aux sujets avancés"
+      },
+      "challenges": {
+        "title": "Relever des Défis",
+        "description": "Construisez de vrais serveurs MCP et testez vos compétences"
+      },
+      "compete": {
+        "title": "Compétitionner et Gagner",
+        "description": "Grimpez dans le classement et débloquez des succès"
+      }
+    },
+    "featuredChallenges": "Défis en Vedette",
+    "recentAchievements": "Succès Récents"
+  },
+  "learn": {
+    "title": "Apprendre MCP",
+    "subtitle": "Maîtrisez le Protocole de Contexte de Modèle avec nos tutoriels pas à pas. Commencez par les bases et progressez vers des sujets avancés.",
+    "backToLearn": "Retour à Apprendre",
+    "prerequisites": "Prérequis",
+    "quickReference": "Référence rapide",
+    "keyTakeaways": "Points clés",
+    "readyForMore": "Prêt pour plus ?",
+    "tryChallenges": "Essayer les Défis",
+    "openPlayground": "Ouvrir le Playground",
+    "completeTutorial": "Terminer le Tutoriel",
+    "continueToStep": "Continuer à l'Étape {step}",
+    "difficulty": {
+      "beginner": "débutant",
+      "intermediate": "intermédiaire",
+      "advanced": "avancé"
+    },
+    "tutorials": {
+      "whatIsMcp": {
+        "title": "Qu'est-ce que MCP ?",
+        "description": "Introduction au Protocole de Contexte de Modèle et pourquoi c'est important"
+      },
+      "firstServer": {
+        "title": "Votre Premier Serveur MCP",
+        "description": "Construisez un serveur MCP simple de zéro avec TypeScript"
+      },
+      "mcpTools": {
+        "title": "Créer des Outils MCP",
+        "description": "Apprenez à définir et implémenter des outils puissants"
+      },
+      "mcpResources": {
+        "title": "Ressources et Prompts MCP",
+        "description": "Exposez des données et des modèles via des ressources et des prompts"
+      },
+      "mcpTransports": {
+        "title": "Protocoles de Transport",
+        "description": "Comprenez les transports stdio, HTTP et WebSocket"
+      }
+    }
+  },
+  "challenges": {
+    "title": "Défis",
+    "subtitle": "Testez vos compétences MCP avec des défis interactifs. Construisez des solutions fonctionnelles et gagnez des points !",
+    "leaderboard": "Classement",
+    "completions": "complétions",
+    "filters": {
+      "all": "Tous",
+      "games": "Jeux",
+      "build": "Construire",
+      "useTools": "Utiliser les Outils",
+      "beginner": "Débutant",
+      "intermediate": "Intermédiaire",
+      "advanced": "Avancé"
+    },
+    "types": {
+      "build": "Construire un Serveur",
+      "use": "Utiliser les Outils",
+      "game": "Jeu"
+    },
+    "difficulty": {
+      "beginner": "débutant",
+      "intermediate": "intermédiaire",
+      "advanced": "avancé"
+    },
+    "items": {
+      "chess": {
+        "title": "Défi d'Échecs",
+        "description": "Jouez aux échecs contre une IA ou un ami. Construisez un serveur d'échecs MCP !"
+      },
+      "tictactoe": {
+        "title": "Morpion",
+        "description": "Jeu classique avec IA minimax imbattable. Pouvez-vous forcer un match nul ?"
+      },
+      "snake": {
+        "title": "Serpent + Transports MCP",
+        "description": "Apprenez les transports stdio, HTTP+SSE et WebSocket en construisant une IA de serpent !"
+      },
+      "helloWorld": {
+        "title": "Hello World",
+        "description": "Créez votre premier outil MCP qui salue les utilisateurs"
+      },
+      "calculator": {
+        "title": "Outil Calculatrice",
+        "description": "Construisez un outil calculatrice avec des opérations mathématiques de base"
+      },
+      "fileReader": {
+        "title": "Lecteur de Fichiers",
+        "description": "Utilisez l'outil files.read pour trouver un contenu spécifique"
+      },
+      "weatherApi": {
+        "title": "Intégration API Météo",
+        "description": "Créez un serveur MCP qui récupère des données météorologiques réelles"
+      },
+      "multiTool": {
+        "title": "Serveur Multi-Outils",
+        "description": "Construisez un serveur avec plus de 5 outils interconnectés"
+      },
+      "dataPipeline": {
+        "title": "Pipeline de Données",
+        "description": "Chaînez plusieurs outils MCP pour traiter et transformer des données"
+      }
+    },
+    "comingSoon": {
+      "title": "Plus de Défis Bientôt",
+      "description": "Nous travaillons sur de nouveaux défis. Vous voulez contribuer ?",
+      "submitIdea": "Soumettre une idée de défi"
+    }
+  },
+  "playground": {
+    "title": "Playground MCP",
+    "subtitle": "Expérimentez avec des serveurs MCP dans votre navigateur. Aucune configuration requise !",
+    "runCode": "Exécuter le Code",
+    "stopCode": "Arrêter",
+    "clearOutput": "Effacer la Sortie",
+    "output": "Sortie",
+    "tools": "Outils",
+    "testTool": "Tester l'Outil",
+    "noTools": "Aucun outil disponible",
+    "serverRunning": "Serveur en cours d'exécution",
+    "serverStopped": "Serveur arrêté",
+    "tryInPlayground": "Essayez dans le Playground",
+    "noSetupRequired": "Aucune configuration locale requise ! Vous pouvez tester tous les exemples de code directement dans notre playground interactif."
+  },
+  "achievements": {
+    "title": "Succès",
+    "subtitle": "Débloquez des succès en complétant des défis et en atteignant des jalons",
+    "unlocked": "Débloqué",
+    "locked": "Verrouillé",
+    "unlockedAt": "Débloqué le",
+    "progress": "Progression",
+    "rarity": {
+      "common": "Commun",
+      "rare": "Rare",
+      "epic": "Épique",
+      "legendary": "Légendaire"
+    },
+    "share": {
+      "title": "Partager le Succès",
+      "description": "Partagez votre succès sur les réseaux sociaux"
+    }
+  },
+  "leaderboard": {
+    "title": "Classement",
+    "subtitle": "Les meilleurs développeurs MCP classés par points et succès",
+    "rank": "Rang",
+    "player": "Joueur",
+    "points": "Points",
+    "level": "Niveau",
+    "achievements": "Succès",
+    "challenges": "Défis",
+    "you": "Vous"
+  },
+  "profile": {
+    "title": "Profil",
+    "editProfile": "Modifier le Profil",
+    "achievements": "Succès",
+    "achievementsUnlocked": "{count} succès débloqués",
+    "recentActivity": "Activité Récente",
+    "latestCompletions": "Derniers défis complétés",
+    "noAchievements": "Aucun succès pour le moment. Commencez à compléter des défis !",
+    "noCompletions": "Aucun défi complété pour le moment.",
+    "gettingStarted": {
+      "title": "Premiers Pas",
+      "welcome": "Bienvenue sur MCP Challenge !",
+      "description": "Complétez des défis pour gagner des points et débloquer des succès.",
+      "step1": "Apprenez les bases de MCP",
+      "step2": "Construisez votre premier serveur MCP",
+      "step3": "Essayez les défis de jeux"
+    },
+    "stats": {
+      "totalPoints": "Points Totaux",
+      "level": "Niveau",
+      "challengesCompleted": "Défis Complétés",
+      "achievementsUnlocked": "Succès Débloqués",
+      "currentStreak": "Série Actuelle",
+      "longestStreak": "Plus Longue Série"
+    }
+  },
+  "settings": {
+    "title": "Paramètres",
+    "account": "Compte",
+    "preferences": "Préférences",
+    "language": "Langue",
+    "theme": "Thème",
+    "notifications": "Notifications",
+    "deleteAccount": "Supprimer le Compte",
+    "themes": {
+      "light": "Clair",
+      "dark": "Sombre",
+      "system": "Système"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Se connecter",
+      "subtitle": "Connectez-vous pour suivre votre progression et compétitionner dans le classement",
+      "withGithub": "Continuer avec GitHub",
+      "withGoogle": "Continuer avec Google",
+      "withEmail": "Continuer avec Email",
+      "noAccount": "Vous n'avez pas de compte ?",
+      "createAccount": "En créer un"
+    },
+    "signUp": {
+      "title": "Créer un Compte",
+      "subtitle": "Rejoignez MCP Challenge et commencez à apprendre",
+      "hasAccount": "Vous avez déjà un compte ?",
+      "signIn": "Se connecter"
+    },
+    "error": {
+      "title": "Erreur d'Authentification",
+      "description": "Un problème est survenu lors de la connexion.",
+      "tryAgain": "Réessayer",
+      "backHome": "Retour à l'Accueil"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Page Non Trouvée",
+      "description": "La page que vous recherchez n'existe pas.",
+      "backHome": "Retour à l'Accueil"
+    },
+    "serverError": {
+      "title": "Erreur du Serveur",
+      "description": "Une erreur s'est produite. Veuillez réessayer plus tard."
+    }
+  },
+  "footer": {
+    "description": "Apprenez et maîtrisez le Protocole de Contexte de Modèle à travers des défis interactifs.",
+    "links": {
+      "learn": "Apprendre",
+      "challenges": "Défis",
+      "playground": "Playground",
+      "github": "GitHub",
+      "twitter": "Twitter",
+      "discord": "Discord"
+    },
+    "copyright": "© {year} MCP Challenge. Tous droits réservés."
+  }
+}

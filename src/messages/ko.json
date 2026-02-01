@@ -1,0 +1,339 @@
+{
+  "common": {
+    "loading": "로딩 중...",
+    "error": "오류",
+    "save": "저장",
+    "cancel": "취소",
+    "close": "닫기",
+    "back": "뒤로",
+    "next": "다음",
+    "submit": "제출",
+    "search": "검색",
+    "language": "언어",
+    "settings": "설정",
+    "profile": "프로필",
+    "signIn": "로그인",
+    "signOut": "로그아웃",
+    "signUp": "회원가입",
+    "learnMore": "더 알아보기",
+    "tryNow": "지금 시도하기",
+    "viewAll": "전체 보기",
+    "share": "공유",
+    "copy": "복사",
+    "copied": "복사됨!",
+    "minutes": "분",
+    "points": "포인트",
+    "level": "레벨",
+    "challenges": "챌린지"
+  },
+  "nav": {
+    "home": "홈",
+    "learn": "학습",
+    "challenges": "챌린지",
+    "playground": "플레이그라운드",
+    "leaderboard": "리더보드",
+    "achievements": "업적",
+    "profile": "프로필",
+    "settings": "설정"
+  },
+  "home": {
+    "title": "모델 컨텍스트 프로토콜 마스터하기",
+    "badge": "오픈 소스 MCP 학습 플랫폼",
+    "subtitle": "모델 컨텍스트 프로토콜을 마스터하세요. 인터랙티브 챌린지와 라이브 플레이그라운드로 학습하고, 구축하고, 경쟁하세요.",
+    "startLearning": "시작하기",
+    "tryPlayground": "플레이그라운드 체험",
+    "whatIsMcp": {
+      "title": "MCP란 무엇인가요?",
+      "description": "모델 컨텍스트 프로토콜은 AI 어시스턴트가 도구, 데이터 소스 및 서비스에 안전하게 액세스할 수 있도록 하는 Anthropic의 오픈 표준입니다. AI와 세상을 연결하는 범용 어댑터라고 생각하세요."
+    },
+    "journey": {
+      "title": "여정을 시작하세요",
+      "features": {
+        "learn": {
+          "title": "MCP 학습",
+          "description": "모델 컨텍스트 프로토콜을 마스터하기 위한 인터랙티브 튜토리얼 및 문서",
+          "badge": "여기서 시작"
+        },
+        "playground": {
+          "title": "플레이그라운드",
+          "description": "라이브 샌드박스 환경에서 MCP 서버를 구축하고 테스트하세요",
+          "badge": "인터랙티브"
+        },
+        "challenges": {
+          "title": "챌린지",
+          "description": "문제를 해결하고, MCP 서버를 구축하고, 리더보드에서 경쟁하세요",
+          "badge": "경쟁"
+        },
+        "showcase": {
+          "title": "쇼케이스",
+          "description": "커뮤니티가 만든 MCP 서버를 탐색하고 영감을 받으세요",
+          "badge": "커뮤니티"
+        }
+      }
+    },
+    "stats": {
+      "challenges": "챌린지",
+      "tutorials": "튜토리얼",
+      "possibilities": "가능성",
+      "cost": "비용"
+    },
+    "footer": {
+      "builtWith": "다음으로 제작됨",
+      "forCommunity": "MCP 커뮤니티를 위해"
+    },
+    "features": {
+      "learn": {
+        "title": "MCP 학습",
+        "description": "기초부터 고급까지 인터랙티브 튜토리얼"
+      },
+      "challenges": {
+        "title": "챌린지 완료",
+        "description": "실제 MCP 서버를 구축하고 실력을 테스트"
+      },
+      "compete": {
+        "title": "경쟁 및 획득",
+        "description": "리더보드를 올라가고 업적을 잠금 해제"
+      }
+    },
+    "featuredChallenges": "주요 챌린지",
+    "recentAchievements": "최근 업적"
+  },
+  "learn": {
+    "title": "MCP 학습",
+    "subtitle": "단계별 튜토리얼로 모델 컨텍스트 프로토콜을 마스터하세요. 기초부터 시작하여 고급 주제까지 나아가세요.",
+    "backToLearn": "학습으로 돌아가기",
+    "prerequisites": "사전 요구사항",
+    "quickReference": "빠른 참조",
+    "keyTakeaways": "핵심 요점",
+    "readyForMore": "더 많은 것을 준비하셨나요?",
+    "tryChallenges": "챌린지 시도하기",
+    "openPlayground": "플레이그라운드 열기",
+    "completeTutorial": "튜토리얼 완료",
+    "continueToStep": "{step}단계로 계속",
+    "difficulty": {
+      "beginner": "초급",
+      "intermediate": "중급",
+      "advanced": "고급"
+    },
+    "tutorials": {
+      "whatIsMcp": {
+        "title": "MCP란 무엇인가?",
+        "description": "모델 컨텍스트 프로토콜 소개 및 그 중요성"
+      },
+      "firstServer": {
+        "title": "첫 번째 MCP 서버",
+        "description": "TypeScript로 처음부터 간단한 MCP 서버 구축"
+      },
+      "mcpTools": {
+        "title": "MCP 도구 만들기",
+        "description": "강력한 도구를 정의하고 구현하는 방법 학습"
+      },
+      "mcpResources": {
+        "title": "MCP 리소스 및 프롬프트",
+        "description": "리소스와 프롬프트를 통해 데이터와 템플릿 노출"
+      },
+      "mcpTransports": {
+        "title": "전송 프로토콜",
+        "description": "stdio, HTTP, WebSocket 전송 이해"
+      }
+    }
+  },
+  "challenges": {
+    "title": "챌린지",
+    "subtitle": "인터랙티브 챌린지로 MCP 실력을 테스트하세요. 실용적인 솔루션을 구축하고 포인트를 획득하세요!",
+    "leaderboard": "리더보드",
+    "completions": "완료",
+    "filters": {
+      "all": "전체",
+      "games": "게임",
+      "build": "구축",
+      "useTools": "도구 사용",
+      "beginner": "초급",
+      "intermediate": "중급",
+      "advanced": "고급"
+    },
+    "types": {
+      "build": "서버 구축",
+      "use": "도구 사용",
+      "game": "게임"
+    },
+    "difficulty": {
+      "beginner": "초급",
+      "intermediate": "중급",
+      "advanced": "고급"
+    },
+    "items": {
+      "chess": {
+        "title": "체스 챌린지",
+        "description": "AI 또는 친구와 체스를 두세요. MCP 체스 서버를 구축하세요!"
+      },
+      "tictactoe": {
+        "title": "틱택토",
+        "description": "무적의 미니맥스 AI가 있는 고전 게임. 무승부를 만들 수 있나요?"
+      },
+      "snake": {
+        "title": "스네이크 + MCP 전송",
+        "description": "스네이크 AI를 구축하여 stdio, HTTP+SSE 및 WebSocket 전송을 학습하세요!"
+      },
+      "helloWorld": {
+        "title": "Hello World",
+        "description": "사용자를 환영하는 첫 번째 MCP 도구를 만드세요"
+      },
+      "calculator": {
+        "title": "계산기 도구",
+        "description": "기본 수학 연산이 있는 계산기 도구를 구축하세요"
+      },
+      "fileReader": {
+        "title": "파일 리더",
+        "description": "files.read 도구를 사용하여 특정 콘텐츠를 찾으세요"
+      },
+      "weatherApi": {
+        "title": "날씨 API 통합",
+        "description": "실제 날씨 데이터를 가져오는 MCP 서버를 만드세요"
+      },
+      "multiTool": {
+        "title": "멀티 도구 서버",
+        "description": "5개 이상의 상호 연결된 도구가 있는 서버를 구축하세요"
+      },
+      "dataPipeline": {
+        "title": "데이터 파이프라인",
+        "description": "여러 MCP 도구를 연결하여 데이터를 처리하고 변환하세요"
+      }
+    },
+    "comingSoon": {
+      "title": "더 많은 챌린지가 곧 제공됩니다",
+      "description": "새로운 챌린지를 작업 중입니다. 기여하고 싶으신가요?",
+      "submitIdea": "챌린지 아이디어 제출"
+    }
+  },
+  "playground": {
+    "title": "MCP 플레이그라운드",
+    "subtitle": "브라우저에서 MCP 서버를 실험하세요. 설정이 필요 없습니다!",
+    "runCode": "코드 실행",
+    "stopCode": "중지",
+    "clearOutput": "출력 지우기",
+    "output": "출력",
+    "tools": "도구",
+    "testTool": "도구 테스트",
+    "noTools": "사용 가능한 도구 없음",
+    "serverRunning": "서버 실행 중",
+    "serverStopped": "서버 중지됨",
+    "tryInPlayground": "플레이그라운드에서 시도하기",
+    "noSetupRequired": "로컬 설정이 필요 없습니다! 인터랙티브 플레이그라운드에서 모든 코드 예제를 직접 테스트할 수 있습니다."
+  },
+  "achievements": {
+    "title": "업적",
+    "subtitle": "챌린지를 완료하고 마일스톤에 도달하여 업적을 잠금 해제하세요",
+    "unlocked": "잠금 해제됨",
+    "locked": "잠김",
+    "unlockedAt": "잠금 해제 시간",
+    "progress": "진행",
+    "rarity": {
+      "common": "일반",
+      "rare": "희귀",
+      "epic": "영웅",
+      "legendary": "전설"
+    },
+    "share": {
+      "title": "업적 공유",
+      "description": "소셜 미디어에서 업적을 공유하세요"
+    }
+  },
+  "leaderboard": {
+    "title": "리더보드",
+    "subtitle": "포인트와 업적으로 순위가 매겨진 최고의 MCP 개발자",
+    "rank": "순위",
+    "player": "플레이어",
+    "points": "포인트",
+    "level": "레벨",
+    "achievements": "업적",
+    "challenges": "챌린지",
+    "you": "나"
+  },
+  "profile": {
+    "title": "프로필",
+    "editProfile": "프로필 편집",
+    "achievements": "업적",
+    "achievementsUnlocked": "{count}개의 업적 잠금 해제",
+    "recentActivity": "최근 활동",
+    "latestCompletions": "최근 완료한 챌린지",
+    "noAchievements": "아직 업적이 없습니다. 챌린지를 완료하세요!",
+    "noCompletions": "아직 완료한 챌린지가 없습니다.",
+    "gettingStarted": {
+      "title": "시작하기",
+      "welcome": "MCP 챌린지에 오신 것을 환영합니다!",
+      "description": "챌린지를 완료하여 포인트를 획득하고 업적을 잠금 해제하세요.",
+      "step1": "MCP 기초 학습",
+      "step2": "첫 번째 MCP 서버 구축",
+      "step3": "게임 챌린지 시도"
+    },
+    "stats": {
+      "totalPoints": "총 포인트",
+      "level": "레벨",
+      "challengesCompleted": "완료한 챌린지",
+      "achievementsUnlocked": "잠금 해제한 업적",
+      "currentStreak": "현재 연속 기록",
+      "longestStreak": "최장 연속 기록"
+    }
+  },
+  "settings": {
+    "title": "설정",
+    "account": "계정",
+    "preferences": "환경설정",
+    "language": "언어",
+    "theme": "테마",
+    "notifications": "알림",
+    "deleteAccount": "계정 삭제",
+    "themes": {
+      "light": "라이트",
+      "dark": "다크",
+      "system": "시스템"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "로그인",
+      "subtitle": "로그인하여 진행 상황을 추적하고 리더보드에서 경쟁하세요",
+      "withGithub": "GitHub로 계속",
+      "withGoogle": "Google로 계속",
+      "withEmail": "이메일로 계속",
+      "noAccount": "계정이 없으신가요?",
+      "createAccount": "만들기"
+    },
+    "signUp": {
+      "title": "계정 만들기",
+      "subtitle": "MCP 챌린지에 가입하고 학습을 시작하세요",
+      "hasAccount": "이미 계정이 있으신가요?",
+      "signIn": "로그인"
+    },
+    "error": {
+      "title": "인증 오류",
+      "description": "로그인하는 중에 문제가 발생했습니다.",
+      "tryAgain": "다시 시도",
+      "backHome": "홈으로 돌아가기"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "페이지를 찾을 수 없음",
+      "description": "찾으시는 페이지가 존재하지 않습니다.",
+      "backHome": "홈으로 돌아가기"
+    },
+    "serverError": {
+      "title": "서버 오류",
+      "description": "문제가 발생했습니다. 나중에 다시 시도해주세요."
+    }
+  },
+  "footer": {
+    "description": "인터랙티브 챌린지를 통해 모델 컨텍스트 프로토콜을 학습하고 마스터하세요.",
+    "links": {
+      "learn": "학습",
+      "challenges": "챌린지",
+      "playground": "플레이그라운드",
+      "github": "GitHub",
+      "twitter": "Twitter",
+      "discord": "Discord"
+    },
+    "copyright": "© {year} MCP 챌린지. All rights reserved."
+  }
+}
