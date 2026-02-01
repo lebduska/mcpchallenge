@@ -8,6 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   RotateCcw,
   Flag,
   Bot,
@@ -15,9 +22,11 @@ import {
   Loader2,
   Trophy,
   Swords,
+  Cpu,
 } from "lucide-react";
+import { useStockfish, type Difficulty } from "@/hooks/use-stockfish";
 
-type GameMode = "vs-llm" | "vs-player" | null;
+type GameMode = "vs-ai" | "vs-player" | null;
 type GameStatus = "waiting" | "playing" | "checkmate" | "draw" | "resigned";
 
 interface ChessGameProps {
@@ -29,10 +38,19 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
   const [game, setGame] = useState(new Chess());
   const [gameMode, setGameMode] = useState<GameMode>(null);
   const [gameStatus, setGameStatus] = useState<GameStatus>("waiting");
-  const [isThinking, setIsThinking] = useState(false);
   const [moveHistory, setMoveHistory] = useState<string[]>([]);
   const [playerColor, setPlayerColor] = useState<"white" | "black">("white");
   const [statusMessage, setStatusMessage] = useState("");
+
+  // Stockfish engine
+  const {
+    isReady: stockfishReady,
+    isThinking,
+    getBestMove,
+    difficulty,
+    setDifficulty,
+    error: stockfishError
+  } = useStockfish();
 
   // Track if completion was called
   const completionCalledRef = useRef(false);
@@ -59,7 +77,7 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
       (gameStatus === "checkmate" || gameStatus === "draw") &&
       !completionCalledRef.current &&
       onGameComplete &&
-      gameMode === "vs-llm"
+      gameMode === "vs-ai"
     ) {
       completionCalledRef.current = true;
 
@@ -80,48 +98,45 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
     }
   }, [gameStatus, gameMode, onGameComplete, game, playerColor, moveHistory.length]);
 
-  // Make LLM move
-  const makeLLMMove = useCallback(async (currentGame: Chess) => {
+  // Make AI move using Stockfish
+  const makeAIMove = useCallback(async (currentGame: Chess) => {
     if (currentGame.isGameOver()) return;
-
-    setIsThinking(true);
+    if (!stockfishReady) {
+      console.warn("Stockfish not ready yet");
+      return;
+    }
 
     try {
-      // Get all legal moves
-      const moves = currentGame.moves();
+      // Get best move from Stockfish (returns UCI format like "e2e4")
+      const bestMoveUCI = await getBestMove(currentGame.fen());
 
-      // For now, use a simple random move (we'll add real LLM later)
-      // This simulates an API call delay
-      await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000));
-
-      // Simple heuristic: prefer captures and checks
-      const captureMoves = moves.filter(m => m.includes("x"));
-      const checkMoves = moves.filter(m => m.includes("+"));
-
-      let selectedMove: string;
-      if (checkMoves.length > 0 && Math.random() > 0.3) {
-        selectedMove = checkMoves[Math.floor(Math.random() * checkMoves.length)];
-      } else if (captureMoves.length > 0 && Math.random() > 0.5) {
-        selectedMove = captureMoves[Math.floor(Math.random() * captureMoves.length)];
-      } else {
-        selectedMove = moves[Math.floor(Math.random() * moves.length)];
+      if (!bestMoveUCI) {
+        console.error("No move returned from Stockfish");
+        return;
       }
 
+      // Convert UCI to move object
+      const from = bestMoveUCI.slice(0, 2);
+      const to = bestMoveUCI.slice(2, 4);
+      const promotion = bestMoveUCI.length > 4 ? bestMoveUCI[4] : undefined;
+
       const gameCopy = new Chess(currentGame.fen());
-      const result = gameCopy.move(selectedMove);
+      const result = gameCopy.move({
+        from,
+        to,
+        promotion,
+      });
 
       if (result) {
         setGame(gameCopy);
-        setMoveHistory(prev => [...prev, selectedMove]);
+        setMoveHistory(prev => [...prev, result.san]);
         checkGameState(gameCopy);
-        onMoveForMCP?.(selectedMove, gameCopy.fen());
+        onMoveForMCP?.(result.san, gameCopy.fen());
       }
     } catch (error) {
-      console.error("LLM move error:", error);
-    } finally {
-      setIsThinking(false);
+      console.error("AI move error:", error);
     }
-  }, [checkGameState, onMoveForMCP]);
+  }, [checkGameState, onMoveForMCP, getBestMove, stockfishReady]);
 
   // Handle player move
   const onDrop = useCallback(
@@ -130,8 +145,8 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
       if (isThinking) return false;
       if (!targetSquare) return false;
 
-      // In vs-llm mode, only allow moves on player's turn
-      if (gameMode === "vs-llm") {
+      // In vs-ai mode, only allow moves on player's turn
+      if (gameMode === "vs-ai") {
         const isWhiteTurn = game.turn() === "w";
         if ((playerColor === "white" && !isWhiteTurn) ||
             (playerColor === "black" && isWhiteTurn)) {
@@ -163,14 +178,14 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
         checkGameState(gameCopy);
         onMoveForMCP?.(result.san, gameCopy.fen());
 
-        // If playing against LLM and it's now LLM's turn
-        if (gameMode === "vs-llm" && !gameCopy.isGameOver()) {
-          const isLLMTurn =
+        // If playing against AI and it's now AI's turn
+        if (gameMode === "vs-ai" && !gameCopy.isGameOver()) {
+          const isAITurn =
             (playerColor === "white" && gameCopy.turn() === "b") ||
             (playerColor === "black" && gameCopy.turn() === "w");
 
-          if (isLLMTurn) {
-            setTimeout(() => makeLLMMove(gameCopy), 300);
+          if (isAITurn) {
+            setTimeout(() => makeAIMove(gameCopy), 300);
           }
         }
 
@@ -179,7 +194,7 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
         return false;
       }
     },
-    [game, gameMode, gameStatus, isThinking, playerColor, checkGameState, makeLLMMove, onMoveForMCP]
+    [game, gameMode, gameStatus, isThinking, playerColor, checkGameState, makeAIMove, onMoveForMCP]
   );
 
   // Start new game
@@ -192,9 +207,9 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
     setPlayerColor(color);
     setStatusMessage("");
 
-    // If playing as black against LLM, let LLM move first
-    if (mode === "vs-llm" && color === "black") {
-      setTimeout(() => makeLLMMove(newGame), 500);
+    // If playing as black against AI, let AI move first
+    if (mode === "vs-ai" && color === "black") {
+      setTimeout(() => makeAIMove(newGame), 500);
     }
   };
 
@@ -222,13 +237,43 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
           <CardContent className="p-4">
             {gameMode === null ? (
               // Game mode selection
-              <div className="aspect-square flex flex-col items-center justify-center gap-6 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
+              <div className="aspect-square flex flex-col items-center justify-center gap-6 bg-zinc-100 dark:bg-zinc-800 rounded-lg p-6">
                 <h2 className="text-2xl font-bold">Choose Game Mode</h2>
+
+                {/* Stockfish status */}
+                <div className="flex items-center gap-2 text-sm">
+                  <Cpu className="h-4 w-4" />
+                  <span>Stockfish 17:</span>
+                  {stockfishReady ? (
+                    <Badge variant="default" className="bg-green-500">Ready</Badge>
+                  ) : stockfishError ? (
+                    <Badge variant="destructive">Error</Badge>
+                  ) : (
+                    <Badge variant="secondary">Loading...</Badge>
+                  )}
+                </div>
+
+                {/* Difficulty selector */}
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-zinc-600 dark:text-zinc-400">Difficulty:</span>
+                  <Select value={difficulty} onValueChange={(val) => setDifficulty(val as Difficulty)}>
+                    <SelectTrigger className="w-32">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="easy">Easy</SelectItem>
+                      <SelectItem value="medium">Medium</SelectItem>
+                      <SelectItem value="hard">Hard</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button
                     size="lg"
                     className="gap-2"
-                    onClick={() => startGame("vs-llm", "white")}
+                    onClick={() => startGame("vs-ai", "white")}
+                    disabled={!stockfishReady}
                   >
                     <Bot className="h-5 w-5" />
                     Play vs AI (White)
@@ -237,7 +282,8 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
                     size="lg"
                     variant="outline"
                     className="gap-2"
-                    onClick={() => startGame("vs-llm", "black")}
+                    onClick={() => startGame("vs-ai", "black")}
+                    disabled={!stockfishReady}
                   >
                     <Bot className="h-5 w-5" />
                     Play vs AI (Black)
@@ -317,7 +363,7 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-zinc-500">Mode:</span>
                     <Badge variant="secondary">
-                      {gameMode === "vs-llm" ? "vs AI" : "2 Players"}
+                      {gameMode === "vs-ai" ? `vs Stockfish (${difficulty})` : "2 Players"}
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
