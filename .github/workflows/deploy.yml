@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - dev
   workflow_dispatch:
 
 jobs:
@@ -34,4 +35,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy .vercel/output/static --project-name=mcpchallenge
+          command: pages deploy .vercel/output/static --project-name=mcpchallenge --branch=${{ github.ref_name }}
