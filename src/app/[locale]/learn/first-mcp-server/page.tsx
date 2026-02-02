@@ -714,8 +714,8 @@ npm init -y`}
                 </Link>
               </Button>
               <Button variant="outline" asChild>
-                <Link href="/challenges/hello-world">
-                  Try a Challenge
+                <Link href="/challenges/chess">
+                  Try Chess Challenge
                 </Link>
               </Button>
               <Button variant="outline" asChild>

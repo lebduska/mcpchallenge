@@ -43,7 +43,7 @@ export async function GET() {
     email: user.email,
     image: user.image,
     bio: user.bio,
-    stats: stats || { totalPoints: 0, level: 1, challengesCompleted: 0 },
+    stats: stats || { totalPoints: 0, level: 1, challengesCompleted: 0, achievementsUnlocked: 0 },
   });
 }
 

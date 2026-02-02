@@ -4,15 +4,47 @@ export const runtime = "edge";
 
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Trophy, Target, Star, User, Settings } from "lucide-react";
 import Link from "next/link";
 
+interface UserStats {
+  totalPoints: number;
+  level: number;
+  challengesCompleted: number;
+  achievementsUnlocked?: number;
+}
+
+interface UserData {
+  id: string;
+  username: string | null;
+  name: string | null;
+  email: string;
+  image: string | null;
+  bio: string | null;
+  stats: UserStats;
+}
+
 export default function ProfilePage() {
   const { data: session, status } = useSession();
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  if (status === "loading") {
+  useEffect(() => {
+    if (status === "authenticated") {
+      fetch("/api/users/me")
+        .then((res) => res.json())
+        .then((data) => {
+          setUserData(data);
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
+    }
+  }, [status]);
+
+  if (status === "loading" || (status === "authenticated" && loading)) {
     return (
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
@@ -34,7 +66,12 @@ export default function ProfilePage() {
     redirect("/auth/signin");
   }
 
-  const user = session.user;
+  const user = userData || {
+    name: session.user.name,
+    email: session.user.email,
+    image: session.user.image,
+    stats: { totalPoints: 0, level: 1, challengesCompleted: 0, achievementsUnlocked: 0 },
+  };
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -58,16 +95,16 @@ export default function ProfilePage() {
             <div className="flex gap-4 mt-4">
               <div className="flex items-center gap-2">
                 <Trophy className="h-5 w-5 text-amber-500" />
-                <span className="font-semibold">0</span>
+                <span className="font-semibold">{user.stats.totalPoints}</span>
                 <span className="text-zinc-500">points</span>
               </div>
               <div className="flex items-center gap-2">
                 <Star className="h-5 w-5 text-purple-500" />
-                <span className="font-semibold">Level 1</span>
+                <span className="font-semibold">Level {user.stats.level}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Target className="h-5 w-5 text-green-500" />
-                <span className="font-semibold">0</span>
+                <span className="font-semibold">{user.stats.challengesCompleted}</span>
                 <span className="text-zinc-500">challenges</span>
               </div>
             </div>
@@ -91,16 +128,24 @@ export default function ProfilePage() {
                 Achievements
               </CardTitle>
               <CardDescription>
-                0 achievements unlocked
+                {user.stats.achievementsUnlocked || 0} achievements unlocked
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-zinc-500 text-sm">
-                No achievements yet. Start completing challenges!
-              </p>
-              <Link href="/challenges" className="mt-4 inline-block">
-                <Button size="sm">Browse Challenges</Button>
-              </Link>
+              {(user.stats.achievementsUnlocked || 0) === 0 ? (
+                <>
+                  <p className="text-zinc-500 text-sm">
+                    No achievements yet. Start completing challenges!
+                  </p>
+                  <Link href="/challenges" className="mt-4 inline-block">
+                    <Button size="sm">Browse Challenges</Button>
+                  </Link>
+                </>
+              ) : (
+                <Link href="/achievements" className="mt-4 inline-block">
+                  <Button size="sm">View All Achievements</Button>
+                </Link>
+              )}
             </CardContent>
           </Card>
 
@@ -126,7 +171,7 @@ export default function ProfilePage() {
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="text-green-500">2.</span>
-                  <Link href="/challenges/hello-world" className="hover:underline">Build your first MCP server</Link>
+                  <Link href="/learn/first-mcp-server" className="hover:underline">Build your first MCP server</Link>
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="text-green-500">3.</span>
