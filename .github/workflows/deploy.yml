@@ -7,11 +7,6 @@ on:
       - dev
   workflow_dispatch:
 
-env:
-  # Database names per branch
-  DB_NAME_MAIN: mcpchallenge-db
-  DB_NAME_DEV: mcpchallenge-dev
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -47,4 +42,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: d1 migrations apply ${{ github.ref_name == 'main' && env.DB_NAME_MAIN || env.DB_NAME_DEV }} --remote
+          command: d1 migrations apply ${{ github.ref_name == 'main' && 'DB' || 'DB_DEV' }} --remote
