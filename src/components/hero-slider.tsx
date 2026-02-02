@@ -101,6 +101,7 @@ export function HeroSlider() {
             fill
             className="object-cover"
             priority={index === 0}
+            unoptimized
           />
           {/* Overlay */}
           <div className="absolute inset-0 bg-black/50" />
