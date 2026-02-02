@@ -3,18 +3,25 @@ compatibility_date = "2024-12-01"
 compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = ".vercel/output/static"
 
-# D1 Database
+# Production database (main branch)
 [[d1_databases]]
 binding = "DB"
 database_name = "mcpchallenge-db"
 database_id = "76ba5514-f20d-495a-a7df-2ff06d394448"
 migrations_dir = "drizzle/migrations"
 
-# R2 Storage (for future use - avatars, etc.)
-# [[r2_buckets]]
-# binding = "STORAGE"
-# bucket_name = "mcpchallenge-storage"
-
 [vars]
 ENVIRONMENT = "production"
 NEXT_PUBLIC_GA_MEASUREMENT_ID = "G-FM35KECLVH"
+
+# Preview/Dev environment (non-main branches)
+[env.preview]
+[[env.preview.d1_databases]]
+binding = "DB"
+database_name = "mcpchallenge-dev"
+database_id = "e09482e6-5a1a-461a-8d49-ff86c2ee0df5"
+migrations_dir = "drizzle/migrations"
+
+[env.preview.vars]
+ENVIRONMENT = "development"
+NEXT_PUBLIC_GA_MEASUREMENT_ID = ""

@@ -9,10 +9,10 @@ npm run dev
 
 ## Environments
 
-| Branch | URL | Description |
-|--------|-----|-------------|
-| `main` | https://mcpchallenge.org | Production |
-| `dev` | https://dev.mcpchallenge.org | Development/staging |
+| Branch | URL | Database | Description |
+|--------|-----|----------|-------------|
+| `main` | https://mcpchallenge.org | `mcpchallenge-db` | Production |
+| `dev` | https://dev.mcpchallenge.org | `mcpchallenge-dev` | Development/staging |
 
 ## Deployment
 
@@ -50,8 +50,11 @@ npm run deploy
 # Generate migration
 npm run db:generate
 
-# Apply to remote D1
+# Apply to production D1
 CLOUDFLARE_EMAIL="..." CLOUDFLARE_API_KEY="..." npx wrangler d1 execute mcpchallenge-db --remote --file=drizzle/migrations/XXXX_migration.sql
+
+# Apply to dev D1
+CLOUDFLARE_EMAIL="..." CLOUDFLARE_API_KEY="..." npx wrangler d1 execute mcpchallenge-dev --remote --file=drizzle/migrations/XXXX_migration.sql
 ```
 
 ## Dev Workflow
