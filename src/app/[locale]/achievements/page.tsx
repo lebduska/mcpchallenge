@@ -72,6 +72,27 @@ export default async function AchievementsPage() {
     .filter((a) => unlockedIds.has(a.id))
     .reduce((sum, a) => sum + a.points, 0);
 
+  // Show sign-in prompt for non-logged users
+  if (!session) {
+    return (
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-md mx-auto text-center">
+          <Trophy className="h-16 w-16 text-amber-500 mx-auto mb-6" />
+          <h1 className="text-3xl font-bold mb-4">Achievements</h1>
+          <p className="text-zinc-600 dark:text-zinc-400 mb-8">
+            Sign in to track your achievements and show off your MCP skills.
+          </p>
+          <Link
+            href="/auth/signin"
+            className="inline-flex items-center justify-center rounded-md bg-zinc-900 px-6 py-3 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+          >
+            Sign in to view achievements
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-4xl mx-auto">
@@ -102,11 +123,6 @@ export default async function AchievementsPage() {
                 <div className="text-sm text-zinc-500">Points Earned</div>
               </div>
             </div>
-            {!session && (
-              <p className="text-center text-sm text-zinc-500 mt-4">
-                <Link href="/auth/signin" className="underline">Sign in</Link> to track your achievements.
-              </p>
-            )}
           </CardContent>
         </Card>
 

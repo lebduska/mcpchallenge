@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getRequestContext } from "@cloudflare/next-on-pages";
 import { createDb } from "@/db";
 import { achievements, userAchievements, users } from "@/db/schema";
@@ -8,9 +8,18 @@ import { Badge } from "@/components/ui/badge";
 import { Trophy, Users, ArrowLeft, Share2 } from "lucide-react";
 import Link from "next/link";
 import { ShareButtons } from "@/components/share/share-buttons";
+import NextAuth from "next-auth";
+import { createAuthConfig } from "@/lib/auth";
 import type { Metadata } from "next";
 
 export const runtime = "edge";
+
+async function getSession() {
+  const { env } = getRequestContext();
+  const db = createDb(env.DB);
+  const { auth } = NextAuth(createAuthConfig(db));
+  return auth();
+}
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -61,6 +70,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function AchievementDetailPage({ params }: PageProps) {
+  const session = await getSession();
+
+  // Redirect non-logged users to achievements page (which shows sign-in prompt)
+  if (!session) {
+    redirect("/achievements");
+  }
+
   const { id } = await params;
   const { env } = getRequestContext();
   const db = createDb(env.DB);
