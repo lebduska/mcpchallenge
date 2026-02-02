@@ -7,6 +7,11 @@ on:
       - dev
   workflow_dispatch:
 
+env:
+  # Database names per branch
+  DB_NAME_MAIN: mcpchallenge-db
+  DB_NAME_DEV: mcpchallenge-dev
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -36,3 +41,10 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy .vercel/output/static --project-name=mcpchallenge --branch=${{ github.ref_name }}
+
+      - name: Run D1 Migrations
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: d1 migrations apply ${{ github.ref_name == 'main' && env.DB_NAME_MAIN || env.DB_NAME_DEV }} --remote

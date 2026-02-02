@@ -46,15 +46,15 @@ npm run deploy
 
 ### Database Migrations
 
+Migrations run automatically in CI/CD after deployment. Just add migration files to `drizzle/migrations/`.
+
 ```bash
 # Generate migration
 npm run db:generate
 
-# Apply to production D1
-CLOUDFLARE_EMAIL="..." CLOUDFLARE_API_KEY="..." npx wrangler d1 execute mcpchallenge-db --remote --file=drizzle/migrations/XXXX_migration.sql
-
-# Apply to dev D1
-CLOUDFLARE_EMAIL="..." CLOUDFLARE_API_KEY="..." npx wrangler d1 execute mcpchallenge-dev --remote --file=drizzle/migrations/XXXX_migration.sql
+# Manual apply (if needed)
+npx wrangler d1 migrations apply mcpchallenge-db --remote   # prod
+npx wrangler d1 migrations apply mcpchallenge-dev --remote  # dev
 ```
 
 ## Dev Workflow
