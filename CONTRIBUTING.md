@@ -7,11 +7,18 @@ npm install
 npm run dev
 ```
 
+## Environments
+
+| Branch | URL | Description |
+|--------|-----|-------------|
+| `main` | https://mcpchallenge.org | Production |
+| `dev` | https://dev.mcpchallenge.org | Development/staging |
+
 ## Deployment
 
 ### Automatic (CI/CD)
 
-Push to `main` branch triggers automatic deployment via GitHub Actions.
+Push to `main` or `dev` branch triggers automatic deployment via GitHub Actions.
 
 **Required GitHub Secrets:**
 - `CLOUDFLARE_API_TOKEN` - Cloudflare API token with Pages edit permissions
@@ -46,6 +53,38 @@ npm run db:generate
 # Apply to remote D1
 CLOUDFLARE_EMAIL="..." CLOUDFLARE_API_KEY="..." npx wrangler d1 execute mcpchallenge-db --remote --file=drizzle/migrations/XXXX_migration.sql
 ```
+
+## Dev Workflow
+
+1. Create feature branch from `dev`:
+   ```bash
+   git checkout dev
+   git pull
+   git checkout -b feature/my-feature
+   ```
+
+2. Make changes and push:
+   ```bash
+   git add .
+   git commit -m "feat: My feature"
+   git push -u origin feature/my-feature
+   ```
+
+3. Merge to `dev` for testing:
+   ```bash
+   git checkout dev
+   git merge feature/my-feature
+   git push
+   ```
+   → Auto-deploys to https://dev.mcpchallenge.org
+
+4. After testing, merge to `main`:
+   ```bash
+   git checkout main
+   git merge dev
+   git push
+   ```
+   → Auto-deploys to https://mcpchallenge.org
 
 ## Tech Stack
 
