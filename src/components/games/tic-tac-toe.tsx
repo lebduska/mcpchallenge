@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   RotateCcw,
-  Bot,
+  Brain,
   Users,
   Loader2,
   Trophy,
@@ -216,7 +216,7 @@ export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
   const [winningLine, setWinningLine] = useState<number[] | null>(null);
   const [isThinking, setIsThinking] = useState(false);
   const [playerSymbol, setPlayerSymbol] = useState<Player>("X");
-  const [scores, setScores] = useState({ player: 0, ai: 0, draws: 0 });
+  const [scores, setScores] = useState({ player: 0, computer: 0, draws: 0 });
   const completionCalledRef = useRef(false);
 
   // Game completion hook
@@ -262,17 +262,17 @@ export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
     [boardSize, winLength]
   );
 
-  const makeAIMove = useCallback((currentBoard: Board, aiSymbol: Player) => {
+  const makeComputerMove = useCallback((currentBoard: Board, computerSymbol: Player) => {
     setIsThinking(true);
 
     setTimeout(() => {
       const move = boardSize === 3
-        ? getBestMove3x3([...currentBoard], aiSymbol, winCombos)
-        : getBestMoveLarge([...currentBoard], aiSymbol, boardSize, winLength, winCombos);
+        ? getBestMove3x3([...currentBoard], computerSymbol, winCombos)
+        : getBestMoveLarge([...currentBoard], computerSymbol, boardSize, winLength, winCombos);
 
       if (move !== -1) {
         const newBoard = [...currentBoard];
-        newBoard[move] = aiSymbol;
+        newBoard[move] = computerSymbol;
         setBoard(newBoard);
 
         const { winner: w, line } = checkWinner(newBoard, winCombos);
@@ -280,15 +280,15 @@ export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
           setWinner(w);
           setWinningLine(line);
           setGameStatus("won");
-          setScores(prev => ({ ...prev, ai: prev.ai + 1 }));
+          setScores(prev => ({ ...prev, computer: prev.computer + 1 }));
         } else if (isDraw(newBoard, winCombos)) {
           setGameStatus("draw");
           setScores(prev => ({ ...prev, draws: prev.draws + 1 }));
         } else {
-          setCurrentPlayer(aiSymbol === "X" ? "O" : "X");
+          setCurrentPlayer(computerSymbol === "X" ? "O" : "X");
         }
 
-        onMoveForMCP?.(move, aiSymbol!, boardToString(newBoard));
+        onMoveForMCP?.(move, computerSymbol!, boardToString(newBoard));
       }
 
       setIsThinking(false);
@@ -322,12 +322,12 @@ export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
       const nextPlayer = currentPlayer === "X" ? "O" : "X";
       setCurrentPlayer(nextPlayer);
 
-      // AI's turn
+      // Computer's turn
       if (gameMode === "vs-ai") {
-        makeAIMove(newBoard, nextPlayer);
+        makeComputerMove(newBoard, nextPlayer);
       }
     }
-  }, [board, currentPlayer, gameMode, gameStatus, isThinking, playerSymbol, makeAIMove, onMoveForMCP, winCombos]);
+  }, [board, currentPlayer, gameMode, gameStatus, isThinking, playerSymbol, makeComputerMove, onMoveForMCP, winCombos]);
 
   const startGame = (mode: GameMode, symbol: Player = "X") => {
     const newBoard = Array(boardSize * boardSize).fill(null);
@@ -339,9 +339,9 @@ export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
     setWinningLine(null);
     setPlayerSymbol(symbol);
 
-    // If playing as O against AI, let AI move first
+    // If playing as O against computer, let computer move first
     if (mode === "vs-ai" && symbol === "O") {
-      makeAIMove(newBoard, "X");
+      makeComputerMove(newBoard, "X");
     }
   };
 
@@ -363,7 +363,7 @@ export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
     setWinningLine(null);
 
     if (gameMode === "vs-ai" && playerSymbol === "O") {
-      makeAIMove(newBoard, "X");
+      makeComputerMove(newBoard, "X");
     }
   };
 
@@ -454,7 +454,7 @@ export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
                       className="gap-2 flex-1"
                       onClick={() => startGame("vs-ai", "X")}
                     >
-                      <Bot className="h-5 w-5" />
+                      <Brain className="h-5 w-5" />
                       Play as X
                     </Button>
                     <Button
@@ -463,7 +463,7 @@ export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
                       className="gap-2 flex-1"
                       onClick={() => startGame("vs-ai", "O")}
                     >
-                      <Bot className="h-5 w-5" />
+                      <Brain className="h-5 w-5" />
                       Play as O
                     </Button>
                   </div>
@@ -493,7 +493,7 @@ export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
                   <div className="absolute inset-0 bg-black/10 rounded flex items-center justify-center">
                     <div className="bg-white dark:bg-zinc-800 rounded-lg px-4 py-2 flex items-center gap-2 shadow-lg">
                       <Loader2 className="h-5 w-5 animate-spin" />
-                      <span>AI is thinking...</span>
+                      <span>Thinking...</span>
                     </div>
                   </div>
                 )}
@@ -509,7 +509,7 @@ export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
                           : gameMode === "vs-ai"
                             ? winner === playerSymbol
                               ? "You Win!"
-                              : "AI Wins!"
+                              : "Computer Wins!"
                             : `${winner} Wins!`
                         }
                       </h3>
@@ -536,7 +536,7 @@ export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-lg flex items-center gap-2">
-              {gameMode === "vs-ai" ? <Bot className="h-5 w-5" /> : <Users className="h-5 w-5" />}
+              {gameMode === "vs-ai" ? <Brain className="h-5 w-5" /> : <Users className="h-5 w-5" />}
               Game Status
             </CardTitle>
           </CardHeader>
@@ -607,8 +607,8 @@ export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
                   <div className="text-xs text-zinc-500">Draws</div>
                 </div>
                 <div className="p-3 bg-red-100 dark:bg-red-900/20 rounded-lg">
-                  <div className="text-2xl font-bold text-red-600">{scores.ai}</div>
-                  <div className="text-xs text-zinc-500">AI</div>
+                  <div className="text-2xl font-bold text-red-600">{scores.computer}</div>
+                  <div className="text-xs text-zinc-500">Computer</div>
                 </div>
               </div>
             </CardContent>

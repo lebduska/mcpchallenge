@@ -161,11 +161,11 @@
     "items": {
       "chess": {
         "title": "Chess Challenge",
-        "description": "Play chess via MCP! Solo vs AI, connect your MCP client, or host a tournament."
+        "description": "Play chess via MCP! Solo vs Stockfish, connect your MCP client, or host a tournament."
       },
       "tictactoe": {
         "title": "Tic-Tac-Toe",
-        "description": "Classic game with unbeatable minimax AI. Connect via MCP and try to force a draw!"
+        "description": "Classic game with unbeatable minimax algorithm. Connect via MCP and try to force a draw!"
       },
       "snake": {
         "title": "Snake (WebSocket)",

@@ -1,0 +1,27 @@
+name = "mcp-servers"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Durable Objects for game rooms
+[durable_objects]
+bindings = [
+  { name = "GAME_ROOM", class_name = "GameRoom" }
+]
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["GameRoom"]
+
+# Custom domain routing
+routes = [
+  { pattern = "mcp.mcpchallenge.org/*", zone_name = "mcpchallenge.org" }
+]
+
+# Development settings
+[dev]
+port = 8787
+
+# Environment variables
+[vars]
+ENVIRONMENT = "development"

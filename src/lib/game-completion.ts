@@ -5,7 +5,7 @@ import { useCallback, useState } from "react";
 
 export interface GameResult {
   score?: number;
-  winner?: "player" | "ai" | "llm" | "draw";
+  winner?: "player" | "ai" | "engine" | "computer" | "draw";
   moves?: number;
 }
 

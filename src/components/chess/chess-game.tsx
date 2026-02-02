@@ -17,7 +17,6 @@ import {
 import {
   RotateCcw,
   Flag,
-  Bot,
   Users,
   Loader2,
   Trophy,
@@ -32,7 +31,7 @@ type GameStatus = "waiting" | "playing" | "checkmate" | "draw" | "resigned";
 
 interface ChessGameProps {
   onMoveForMCP?: (move: string, fen: string) => void;
-  onGameComplete?: (result: { winner: "player" | "llm" | "draw"; moves: number }) => void;
+  onGameComplete?: (result: { winner: "player" | "engine" | "draw"; moves: number }) => void;
 }
 
 export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
@@ -84,11 +83,11 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
     ) {
       completionCalledRef.current = true;
 
-      let winner: "player" | "llm" | "draw" = "draw";
+      let winner: "player" | "engine" | "draw" = "draw";
       if (gameStatus === "checkmate") {
         // If it's white's turn, black won (and vice versa)
         const winnerColor = game.turn() === "w" ? "black" : "white";
-        winner = winnerColor === playerColor ? "player" : "llm";
+        winner = winnerColor === playerColor ? "player" : "engine";
       }
 
       // Call the onGameComplete callback if provided
@@ -112,8 +111,8 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
     }
   }, [gameStatus, gameMode, onGameComplete, game, playerColor, moveHistory.length, isAuthenticated, submitCompletion]);
 
-  // Make AI move using Stockfish
-  const makeAIMove = useCallback(async (currentGame: Chess) => {
+  // Make engine move using Stockfish
+  const makeEngineMove = useCallback(async (currentGame: Chess) => {
     if (currentGame.isGameOver()) return;
     if (!stockfishReady) {
       console.warn("Stockfish not ready yet");
@@ -148,7 +147,7 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
         onMoveForMCP?.(result.san, gameCopy.fen());
       }
     } catch (error) {
-      console.error("AI move error:", error);
+      console.error("Engine move error:", error);
     }
   }, [checkGameState, onMoveForMCP, getBestMove, stockfishReady]);
 
@@ -159,7 +158,7 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
       if (isThinking) return false;
       if (!targetSquare) return false;
 
-      // In vs-ai mode, only allow moves on player's turn
+      // In vs-engine mode, only allow moves on player's turn
       if (gameMode === "vs-ai") {
         const isWhiteTurn = game.turn() === "w";
         if ((playerColor === "white" && !isWhiteTurn) ||
@@ -192,14 +191,14 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
         checkGameState(gameCopy);
         onMoveForMCP?.(result.san, gameCopy.fen());
 
-        // If playing against AI and it's now AI's turn
+        // If playing against engine and it's now engine's turn
         if (gameMode === "vs-ai" && !gameCopy.isGameOver()) {
-          const isAITurn =
+          const isEngineTurn =
             (playerColor === "white" && gameCopy.turn() === "b") ||
             (playerColor === "black" && gameCopy.turn() === "w");
 
-          if (isAITurn) {
-            setTimeout(() => makeAIMove(gameCopy), 300);
+          if (isEngineTurn) {
+            setTimeout(() => makeEngineMove(gameCopy), 300);
           }
         }
 
@@ -208,7 +207,7 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
         return false;
       }
     },
-    [game, gameMode, gameStatus, isThinking, playerColor, checkGameState, makeAIMove, onMoveForMCP]
+    [game, gameMode, gameStatus, isThinking, playerColor, checkGameState, makeEngineMove, onMoveForMCP]
   );
 
   // Start new game
@@ -221,9 +220,9 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
     setPlayerColor(color);
     setStatusMessage("");
 
-    // If playing as black against AI, let AI move first
+    // If playing as black against engine, let engine move first
     if (mode === "vs-ai" && color === "black") {
-      setTimeout(() => makeAIMove(newGame), 500);
+      setTimeout(() => makeEngineMove(newGame), 500);
     }
   };
 
@@ -289,8 +288,8 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
                     onClick={() => startGame("vs-ai", "white")}
                     disabled={!stockfishReady}
                   >
-                    <Bot className="h-5 w-5" />
-                    Play vs AI (White)
+                    <Cpu className="h-5 w-5" />
+                    Play vs Stockfish (White)
                   </Button>
                   <Button
                     size="lg"
@@ -299,8 +298,8 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
                     onClick={() => startGame("vs-ai", "black")}
                     disabled={!stockfishReady}
                   >
-                    <Bot className="h-5 w-5" />
-                    Play vs AI (Black)
+                    <Cpu className="h-5 w-5" />
+                    Play vs Stockfish (Black)
                   </Button>
                 </div>
                 <div className="flex gap-4">
@@ -337,7 +336,7 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
                   <div className="absolute inset-0 bg-black/20 rounded-lg flex items-center justify-center">
                     <div className="bg-white dark:bg-zinc-800 rounded-lg px-4 py-2 flex items-center gap-2">
                       <Loader2 className="h-5 w-5 animate-spin" />
-                      <span>AI is thinking...</span>
+                      <span>Stockfish is thinking...</span>
                     </div>
                   </div>
                 )}

@@ -161,11 +161,11 @@
     "items": {
       "chess": {
         "title": "Šachová výzva",
-        "description": "Hrajte šachy přes MCP! Sólo proti AI, připojte MCP klienta, nebo uspořádejte turnaj."
+        "description": "Hrajte šachy přes MCP! Sólo proti Stockfish, připojte MCP klienta, nebo uspořádejte turnaj."
       },
       "tictactoe": {
         "title": "Piškvorky",
-        "description": "Klasická hra s neporazitelnou minimax AI. Připojte se přes MCP a zkuste vynutit remízu!"
+        "description": "Klasická hra s neporazitelným minimax algoritmem. Připojte se přes MCP a zkuste vynutit remízu!"
       },
       "snake": {
         "title": "Had (WebSocket)",
