@@ -23,7 +23,6 @@ interface CompletionData {
   score?: number;
   winner?: string;
   moves?: number;
-  type?: "game" | "tutorial";
 }
 
 interface UserStatsData {
@@ -33,73 +32,15 @@ interface UserStatsData {
   chessWins: number;
   snakeHighScore: number;
   ticTacToeWins: number;
-  completedMcpChallenges: Set<string>;
+  canvasDrawCompleted: boolean;
 }
 
-// MCP Build Challenge IDs
-const MCP_CHALLENGES = [
-  "hello-world",
-  "calculator",
-  "file-reader",
-  "weather-api",
-  "canvas-draw",
-  "multi-tool",
-  "data-pipeline",
-];
-
-const MCP_BASIC_CHALLENGES = ["hello-world", "calculator", "file-reader"];
-
-// Achievement rules
+// Achievement rules for game challenges
 const achievementRules: AchievementRule[] = [
   // First challenge
   {
     id: "first-challenge",
     check: (_, stats) => stats.challengesCompleted === 1,
-  },
-  // MCP Build Challenge achievements
-  {
-    id: "mcp-hello-world",
-    check: (data) => data.challengeId === "hello-world" && data.type === "tutorial",
-  },
-  {
-    id: "mcp-calculator",
-    check: (data) => data.challengeId === "calculator" && data.type === "tutorial",
-  },
-  {
-    id: "mcp-file-reader",
-    check: (data) => data.challengeId === "file-reader" && data.type === "tutorial",
-  },
-  {
-    id: "mcp-weather-api",
-    check: (data) => data.challengeId === "weather-api" && data.type === "tutorial",
-  },
-  {
-    id: "mcp-multi-tool",
-    check: (data) => data.challengeId === "multi-tool" && data.type === "tutorial",
-  },
-  {
-    id: "mcp-data-pipeline",
-    check: (data) => data.challengeId === "data-pipeline" && data.type === "tutorial",
-  },
-  {
-    id: "mcp-canvas-draw",
-    check: (data) => data.challengeId === "canvas-draw" && data.type === "tutorial",
-  },
-  {
-    id: "mcp-all-basics",
-    check: (data, stats) => {
-      if (data.type !== "tutorial") return false;
-      const completed = new Set([...stats.completedMcpChallenges, data.challengeId]);
-      return MCP_BASIC_CHALLENGES.every((c) => completed.has(c));
-    },
-  },
-  {
-    id: "mcp-all-challenges",
-    check: (data, stats) => {
-      if (data.type !== "tutorial") return false;
-      const completed = new Set([...stats.completedMcpChallenges, data.challengeId]);
-      return MCP_CHALLENGES.every((c) => completed.has(c));
-    },
   },
   // Chess achievements
   {
@@ -135,6 +76,11 @@ const achievementRules: AchievementRule[] = [
   {
     id: "ttt-master",
     check: (_, stats) => stats.ticTacToeWins >= 5,
+  },
+  // Canvas Draw achievement
+  {
+    id: "canvas-artist",
+    check: (data) => data.challengeId === "canvas-draw",
   },
   // Level achievements
   {
@@ -182,7 +128,6 @@ export async function POST(request: Request, { params }: PageProps) {
     score?: number;
     winner?: string;
     moves?: number;
-    type?: "game" | "tutorial";
   };
 
   // Record the completion
@@ -248,14 +193,14 @@ export async function POST(request: Request, { params }: PageProps) {
       )
     );
 
-  // Get completed MCP challenges
-  const mcpCompletions = await db
-    .select({ challengeId: challengeCompletions.challengeId })
+  // Check if canvas-draw was completed
+  const canvasDrawCompletion = await db
+    .select({ count: sql<number>`count(*)` })
     .from(challengeCompletions)
     .where(
       and(
         eq(challengeCompletions.userId, userId),
-        sql`${challengeCompletions.challengeId} IN ('hello-world', 'calculator', 'file-reader', 'weather-api', 'canvas-draw', 'multi-tool', 'data-pipeline')`
+        eq(challengeCompletions.challengeId, "canvas-draw")
       )
     );
 
@@ -266,7 +211,7 @@ export async function POST(request: Request, { params }: PageProps) {
     chessWins: Number(chessWins[0]?.count || 0),
     snakeHighScore: Number(snakeScores[0]?.maxScore || 0),
     ticTacToeWins: Number(tttWins[0]?.count || 0),
-    completedMcpChallenges: new Set(mcpCompletions.map((c) => c.challengeId)),
+    canvasDrawCompleted: Number(canvasDrawCompletion[0]?.count || 0) > 0,
   };
 
   const completionData: CompletionData = {
@@ -274,7 +219,6 @@ export async function POST(request: Request, { params }: PageProps) {
     score: body.score,
     winner: body.winner,
     moves: body.moves,
-    type: body.type,
   };
 
   // Get user's existing achievements

@@ -140,68 +140,40 @@
   },
   "challenges": {
     "title": "Challenges",
-    "subtitle": "Test your MCP skills with interactive challenges. Build working solutions and earn points!",
+    "subtitle": "Connect your MCP client and compete! Play games, create art, and climb the leaderboard.",
     "leaderboard": "Leaderboard",
     "completions": "completions",
     "filters": {
       "all": "All",
       "games": "Games",
-      "build": "Build",
-      "useTools": "Use Tools",
+      "creative": "Creative",
       "beginner": "Beginner",
-      "intermediate": "Intermediate",
-      "advanced": "Advanced"
+      "intermediate": "Intermediate"
     },
     "types": {
-      "build": "Build Server",
-      "use": "Use Tools",
-      "game": "Game"
+      "game": "Game",
+      "creative": "Creative"
     },
     "difficulty": {
       "beginner": "beginner",
-      "intermediate": "intermediate",
-      "advanced": "advanced"
+      "intermediate": "intermediate"
     },
     "items": {
       "chess": {
         "title": "Chess Challenge",
-        "description": "Play chess against AI or a friend. Build an MCP chess server!"
+        "description": "Play chess via MCP! Solo vs AI, connect your MCP client, or host a tournament."
       },
       "tictactoe": {
         "title": "Tic-Tac-Toe",
-        "description": "Classic game with unbeatable minimax AI. Can you force a draw?"
+        "description": "Classic game with unbeatable minimax AI. Connect via MCP and try to force a draw!"
       },
       "snake": {
-        "title": "Snake + MCP Transports",
-        "description": "Learn stdio, HTTP+SSE, and WebSocket transports by building a snake AI!"
-      },
-      "helloWorld": {
-        "title": "Hello World",
-        "description": "Create your first MCP tool that greets users"
-      },
-      "calculator": {
-        "title": "Calculator Tool",
-        "description": "Build a calculator tool with basic math operations"
-      },
-      "fileReader": {
-        "title": "File Reader",
-        "description": "Use the files.read tool to find specific content"
-      },
-      "weatherApi": {
-        "title": "Weather API Integration",
-        "description": "Create an MCP server that fetches real weather data"
-      },
-      "multiTool": {
-        "title": "Multi-Tool Server",
-        "description": "Build a server with 5+ interconnected tools"
+        "title": "Snake (WebSocket)",
+        "description": "Real-time snake game showcasing WebSocket MCP transport. Can your AI survive?"
       },
       "canvasDraw": {
-        "title": "Canvas Drawing Server",
-        "description": "Build an MCP server with drawing primitives and challenge AI to draw Mona Lisa!"
-      },
-      "dataPipeline": {
-        "title": "Data Pipeline",
-        "description": "Chain multiple MCP tools to process and transform data"
+        "title": "Canvas Drawing",
+        "description": "Connect your MCP client and draw on canvas! Use draw_line, circle, set_pixel to create art."
       }
     },
     "comingSoon": {

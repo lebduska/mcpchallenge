@@ -10,16 +10,10 @@ import { Badge } from "@/components/ui/badge";
 import { Trophy, Gamepad2 } from "lucide-react";
 
 const challengeData = [
-  { id: "chess", key: "chess", difficulty: "beginner", points: 100, type: "game", completions: 0, featured: true },
-  { id: "tic-tac-toe", key: "tictactoe", difficulty: "beginner", points: 50, type: "game", completions: 0 },
-  { id: "snake", key: "snake", difficulty: "intermediate", points: 150, type: "game", completions: 0, featured: true },
-  { id: "hello-world", key: "helloWorld", difficulty: "beginner", points: 50, type: "build", completions: 234 },
-  { id: "calculator", key: "calculator", difficulty: "beginner", points: 100, type: "build", completions: 156 },
-  { id: "file-reader", key: "fileReader", difficulty: "intermediate", points: 150, type: "use", completions: 89 },
-  { id: "weather-api", key: "weatherApi", difficulty: "intermediate", points: 200, type: "build", completions: 67 },
-  { id: "canvas-draw", key: "canvasDraw", difficulty: "intermediate", points: 250, type: "build", completions: 0, featured: true },
-  { id: "multi-tool", key: "multiTool", difficulty: "advanced", points: 300, type: "build", completions: 23 },
-  { id: "data-pipeline", key: "dataPipeline", difficulty: "advanced", points: 400, type: "use", completions: 12 },
+  { id: "chess", key: "chess", difficulty: "beginner", points: 100, type: "game", completions: 0, featured: true, transport: "HTTP+SSE" },
+  { id: "tic-tac-toe", key: "tictactoe", difficulty: "beginner", points: 50, type: "game", completions: 0, transport: "HTTP+SSE" },
+  { id: "snake", key: "snake", difficulty: "intermediate", points: 150, type: "game", completions: 0, featured: true, transport: "WebSocket" },
+  { id: "canvas-draw", key: "canvasDraw", difficulty: "intermediate", points: 250, type: "creative", completions: 0, featured: true, transport: "HTTP+SSE" },
 ];
 
 const difficultyColors = {
@@ -28,7 +22,7 @@ const difficultyColors = {
   advanced: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100",
 };
 
-type Filter = "all" | "game" | "build" | "use" | "beginner" | "intermediate" | "advanced";
+type Filter = "all" | "game" | "creative" | "beginner" | "intermediate";
 
 export default function ChallengesPage() {
   const t = useTranslations("challenges");
@@ -36,9 +30,8 @@ export default function ChallengesPage() {
   const [filter, setFilter] = useState<Filter>("all");
 
   const typeLabels = {
-    build: { label: t("types.build"), color: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100" },
-    use: { label: t("types.use"), color: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100" },
     game: { label: t("types.game"), color: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100" },
+    creative: { label: t("types.creative"), color: "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-100" },
   };
 
   const filteredChallenges = useMemo(() => {
@@ -70,11 +63,9 @@ export default function ChallengesPage() {
           {[
             { key: "all", label: t("filters.all") },
             { key: "game", label: t("filters.games"), icon: Gamepad2 },
-            { key: "build", label: t("filters.build") },
-            { key: "use", label: t("filters.useTools") },
+            { key: "creative", label: t("filters.creative") },
             { key: "beginner", label: t("filters.beginner") },
             { key: "intermediate", label: t("filters.intermediate") },
-            { key: "advanced", label: t("filters.advanced") },
           ].map(({ key, label, icon: Icon }) => (
             <Badge
               key={key}

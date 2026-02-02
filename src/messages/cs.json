@@ -140,68 +140,40 @@
   },
   "challenges": {
     "title": "Výzvy",
-    "subtitle": "Otestujte své MCP dovednosti s interaktivními výzvami. Vytvořte funkční řešení a získejte body!",
+    "subtitle": "Připojte svého MCP klienta a soutěžte! Hrajte hry, tvořte umění a stoupejte na žebříčku.",
     "leaderboard": "Žebříček",
     "completions": "dokončení",
     "filters": {
       "all": "Vše",
       "games": "Hry",
-      "build": "Sestavit",
-      "useTools": "Použít nástroje",
+      "creative": "Kreativní",
       "beginner": "Začátečník",
-      "intermediate": "Středně pokročilý",
-      "advanced": "Pokročilý"
+      "intermediate": "Středně pokročilý"
     },
     "types": {
-      "build": "Sestavit server",
-      "use": "Použít nástroje",
-      "game": "Hra"
+      "game": "Hra",
+      "creative": "Kreativní"
     },
     "difficulty": {
       "beginner": "začátečník",
-      "intermediate": "středně pokročilý",
-      "advanced": "pokročilý"
+      "intermediate": "středně pokročilý"
     },
     "items": {
       "chess": {
         "title": "Šachová výzva",
-        "description": "Hrajte šachy proti AI nebo příteli. Vytvořte MCP šachový server!"
+        "description": "Hrajte šachy přes MCP! Sólo proti AI, připojte MCP klienta, nebo uspořádejte turnaj."
       },
       "tictactoe": {
         "title": "Piškvorky",
-        "description": "Klasická hra s neporazitelnou minimax AI. Dokážete vynutit remízu?"
+        "description": "Klasická hra s neporazitelnou minimax AI. Připojte se přes MCP a zkuste vynutit remízu!"
       },
       "snake": {
-        "title": "Had + MCP Transporty",
-        "description": "Naučte se stdio, HTTP+SSE a WebSocket transporty stavbou hadí AI!"
-      },
-      "helloWorld": {
-        "title": "Hello World",
-        "description": "Vytvořte svůj první MCP nástroj, který zdraví uživatele"
-      },
-      "calculator": {
-        "title": "Kalkulačka",
-        "description": "Vytvořte kalkulačku se základními matematickými operacemi"
-      },
-      "fileReader": {
-        "title": "Čtečka souborů",
-        "description": "Použijte nástroj files.read k nalezení specifického obsahu"
-      },
-      "weatherApi": {
-        "title": "Integrace Weather API",
-        "description": "Vytvořte MCP server, který získává skutečná data o počasí"
-      },
-      "multiTool": {
-        "title": "Multi-nástrojový server",
-        "description": "Vytvořte server s 5+ propojenými nástroji"
+        "title": "Had (WebSocket)",
+        "description": "Real-time hadí hra ukazující WebSocket MCP transport. Přežije vaše AI?"
       },
       "canvasDraw": {
-        "title": "Kreslící canvas server",
-        "description": "Vytvořte MCP server s kreslícími nástroji a nechte AI nakreslit Monu Lisu!"
-      },
-      "dataPipeline": {
-        "title": "Datová pipeline",
-        "description": "Propojte více MCP nástrojů pro zpracování a transformaci dat"
+        "title": "Kreslení na canvas",
+        "description": "Připojte MCP klienta a kreslete! Použijte draw_line, circle, set_pixel k tvorbě umění."
       }
     },
     "comingSoon": {
