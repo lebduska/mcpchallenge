@@ -40,3 +40,4 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .dev.vars
+packages/mcp-servers/node_modules/

@@ -47,7 +47,7 @@ export function Navbar() {
         </nav>
         <div className="ml-auto flex items-center space-x-2">
           <ThemeToggle />
-          <LanguageSwitcher />
+          {/* <LanguageSwitcher /> */}
           <UserMenu />
         </div>
       </div>
