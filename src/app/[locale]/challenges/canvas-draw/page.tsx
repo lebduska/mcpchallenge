@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Paintbrush, CheckCircle2, Copy } from "lucide-react";
 import { MCPPlayground } from "@/components/playground/mcp-playground";
 import { ChallengeCompletion } from "@/components/challenges";
+import { PixelCanvas } from "@/components/canvas";
 import { useState } from "react";
 
 const completionSteps = [
@@ -362,6 +363,11 @@ export default function CanvasDrawChallengePage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Live Canvas Demo */}
+        <div className="mb-6">
+          <PixelCanvas />
+        </div>
 
         {/* Canvas Info */}
         <Card className="mb-6 border-blue-200 dark:border-blue-800">
