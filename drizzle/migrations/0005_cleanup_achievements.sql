@@ -1,5 +1,5 @@
 -- Remove MCP build challenge achievements (challenges moved to Learn section)
-DELETE FROM user_achievements WHERE achievementId IN (
+DELETE FROM user_achievements WHERE achievement_id IN (
   'mcp-hello-world',
   'mcp-calculator',
   'mcp-file-reader',
