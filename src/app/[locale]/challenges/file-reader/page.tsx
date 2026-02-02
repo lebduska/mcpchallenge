@@ -7,6 +7,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, FileText, CheckCircle2, Lightbulb } from "lucide-react";
 import { MCPPlayground } from "@/components/playground/mcp-playground";
+import { ChallengeCompletion } from "@/components/challenges";
+
+const completionSteps = [
+  { id: "understand-fs", title: "Understood Node.js fs/promises for file operations" },
+  { id: "create-read", title: "Created the read_file tool" },
+  { id: "create-list", title: "Created the list_dir tool with file/folder icons" },
+  { id: "create-search", title: "Created the search_file tool with line numbers" },
+  { id: "test-playground", title: "Tested all tools in the playground" },
+];
 
 const fileReaderCode = `import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
@@ -243,6 +252,12 @@ export default function FileReaderChallengePage() {
             </ul>
           </CardContent>
         </Card>
+
+        {/* Progress Tracking */}
+        <ChallengeCompletion
+          challengeId="file-reader"
+          steps={completionSteps}
+        />
       </div>
     </div>
   );

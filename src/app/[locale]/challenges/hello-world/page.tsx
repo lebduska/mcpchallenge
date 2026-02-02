@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Sparkles, CheckCircle2, Copy } from "lucide-react";
 import { MCPPlayground } from "@/components/playground/mcp-playground";
+import { ChallengeCompletion } from "@/components/challenges";
 import { useState } from "react";
 
 const helloWorldCode = `import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -73,6 +74,13 @@ ${helloWorldCode}`,
   }
 }`,
   },
+];
+
+const completionSteps = [
+  { id: "create-project", title: "Created the project and installed dependencies" },
+  { id: "create-server", title: "Created the server file with greet and hello tools" },
+  { id: "test-playground", title: "Tested the code in the playground" },
+  { id: "add-claude", title: "Added the server to Claude Desktop config" },
 ];
 
 export default function HelloWorldChallengePage() {
@@ -188,6 +196,12 @@ export default function HelloWorldChallengePage() {
             </ul>
           </CardContent>
         </Card>
+
+        {/* Progress Tracking */}
+        <ChallengeCompletion
+          challengeId="hello-world"
+          steps={completionSteps}
+        />
       </div>
     </div>
   );

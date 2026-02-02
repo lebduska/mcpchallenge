@@ -23,6 +23,7 @@ interface CompletionData {
   score?: number;
   winner?: string;
   moves?: number;
+  type?: "game" | "tutorial";
 }
 
 interface UserStatsData {
@@ -32,7 +33,20 @@ interface UserStatsData {
   chessWins: number;
   snakeHighScore: number;
   ticTacToeWins: number;
+  completedMcpChallenges: Set<string>;
 }
+
+// MCP Build Challenge IDs
+const MCP_CHALLENGES = [
+  "hello-world",
+  "calculator",
+  "file-reader",
+  "weather-api",
+  "multi-tool",
+  "data-pipeline",
+];
+
+const MCP_BASIC_CHALLENGES = ["hello-world", "calculator", "file-reader"];
 
 // Achievement rules
 const achievementRules: AchievementRule[] = [
@@ -40,6 +54,47 @@ const achievementRules: AchievementRule[] = [
   {
     id: "first-challenge",
     check: (_, stats) => stats.challengesCompleted === 1,
+  },
+  // MCP Build Challenge achievements
+  {
+    id: "mcp-hello-world",
+    check: (data) => data.challengeId === "hello-world" && data.type === "tutorial",
+  },
+  {
+    id: "mcp-calculator",
+    check: (data) => data.challengeId === "calculator" && data.type === "tutorial",
+  },
+  {
+    id: "mcp-file-reader",
+    check: (data) => data.challengeId === "file-reader" && data.type === "tutorial",
+  },
+  {
+    id: "mcp-weather-api",
+    check: (data) => data.challengeId === "weather-api" && data.type === "tutorial",
+  },
+  {
+    id: "mcp-multi-tool",
+    check: (data) => data.challengeId === "multi-tool" && data.type === "tutorial",
+  },
+  {
+    id: "mcp-data-pipeline",
+    check: (data) => data.challengeId === "data-pipeline" && data.type === "tutorial",
+  },
+  {
+    id: "mcp-all-basics",
+    check: (data, stats) => {
+      if (data.type !== "tutorial") return false;
+      const completed = new Set([...stats.completedMcpChallenges, data.challengeId]);
+      return MCP_BASIC_CHALLENGES.every((c) => completed.has(c));
+    },
+  },
+  {
+    id: "mcp-all-challenges",
+    check: (data, stats) => {
+      if (data.type !== "tutorial") return false;
+      const completed = new Set([...stats.completedMcpChallenges, data.challengeId]);
+      return MCP_CHALLENGES.every((c) => completed.has(c));
+    },
   },
   // Chess achievements
   {
@@ -122,6 +177,7 @@ export async function POST(request: Request, { params }: PageProps) {
     score?: number;
     winner?: string;
     moves?: number;
+    type?: "game" | "tutorial";
   };
 
   // Record the completion
@@ -187,6 +243,17 @@ export async function POST(request: Request, { params }: PageProps) {
       )
     );
 
+  // Get completed MCP challenges
+  const mcpCompletions = await db
+    .select({ challengeId: challengeCompletions.challengeId })
+    .from(challengeCompletions)
+    .where(
+      and(
+        eq(challengeCompletions.userId, userId),
+        sql`${challengeCompletions.challengeId} IN ('hello-world', 'calculator', 'file-reader', 'weather-api', 'multi-tool', 'data-pipeline')`
+      )
+    );
+
   const extendedStats: UserStatsData = {
     totalPoints: stats.totalPoints,
     level: stats.level,
@@ -194,6 +261,7 @@ export async function POST(request: Request, { params }: PageProps) {
     chessWins: Number(chessWins[0]?.count || 0),
     snakeHighScore: Number(snakeScores[0]?.maxScore || 0),
     ticTacToeWins: Number(tttWins[0]?.count || 0),
+    completedMcpChallenges: new Set(mcpCompletions.map((c) => c.challengeId)),
   };
 
   const completionData: CompletionData = {
@@ -201,6 +269,7 @@ export async function POST(request: Request, { params }: PageProps) {
     score: body.score,
     winner: body.winner,
     moves: body.moves,
+    type: body.type,
   };
 
   // Get user's existing achievements

@@ -7,6 +7,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Workflow, CheckCircle2, Lightbulb, ArrowRight } from "lucide-react";
 import { MCPPlayground } from "@/components/playground/mcp-playground";
+import { ChallengeCompletion } from "@/components/challenges";
+
+const completionSteps = [
+  { id: "understand-pipeline", title: "Understood the ETL pipeline concept (Load → Transform → Output)" },
+  { id: "create-load", title: "Created load tools for JSON and CSV data" },
+  { id: "create-transform", title: "Created transform tools (filter, map, sort)" },
+  { id: "create-aggregate", title: "Created aggregate tool (sum, avg, min, max, count)" },
+  { id: "create-output", title: "Created output tool with multiple formats (json, table, count)" },
+  { id: "test-full", title: "Tested a full pipeline from load to output" },
+];
 
 const dataPipelineCode = `import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
@@ -358,6 +368,12 @@ export default function DataPipelineChallengePage() {
             </ul>
           </CardContent>
         </Card>
+
+        {/* Progress Tracking */}
+        <ChallengeCompletion
+          challengeId="data-pipeline"
+          steps={completionSteps}
+        />
       </div>
     </div>
   );

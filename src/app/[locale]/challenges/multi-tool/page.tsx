@@ -7,6 +7,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Boxes, CheckCircle2, Lightbulb } from "lucide-react";
 import { MCPPlayground } from "@/components/playground/mcp-playground";
+import { ChallengeCompletion } from "@/components/challenges";
+
+const completionSteps = [
+  { id: "understand-state", title: "Understood how to share state between tools" },
+  { id: "create-store", title: "Created the key-value store tools (set, get, list)" },
+  { id: "create-notes", title: "Created the notes CRUD tools (create, list, read)" },
+  { id: "create-utils", title: "Added utility tools (uuid, timestamp)" },
+  { id: "test-state", title: "Verified state persists between tool calls" },
+  { id: "test-playground", title: "Tested all 8 tools in the playground" },
+];
 
 const multiToolCode = `import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
@@ -266,6 +276,12 @@ export default function MultiToolChallengePage() {
             </ul>
           </CardContent>
         </Card>
+
+        {/* Progress Tracking */}
+        <ChallengeCompletion
+          challengeId="multi-tool"
+          steps={completionSteps}
+        />
       </div>
     </div>
   );

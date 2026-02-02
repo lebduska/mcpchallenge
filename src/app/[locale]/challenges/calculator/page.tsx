@@ -7,7 +7,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Calculator, CheckCircle2, Copy } from "lucide-react";
 import { MCPPlayground } from "@/components/playground/mcp-playground";
+import { ChallengeCompletion } from "@/components/challenges";
 import { useState } from "react";
+
+const completionSteps = [
+  { id: "understand-schemas", title: "Understood Zod schemas for numeric parameters" },
+  { id: "create-server", title: "Created the calculator server with add, subtract, multiply, divide" },
+  { id: "test-playground", title: "Tested the operations in the playground" },
+  { id: "handle-errors", title: "Implemented error handling for division by zero" },
+];
 
 const calculatorCode = `import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
@@ -192,6 +200,12 @@ export default function CalculatorChallengePage() {
             </ul>
           </CardContent>
         </Card>
+
+        {/* Progress Tracking */}
+        <ChallengeCompletion
+          challengeId="calculator"
+          steps={completionSteps}
+        />
       </div>
     </div>
   );

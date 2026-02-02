@@ -7,6 +7,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Cloud, CheckCircle2, Lightbulb } from "lucide-react";
 import { MCPPlayground } from "@/components/playground/mcp-playground";
+import { ChallengeCompletion } from "@/components/challenges";
+
+const completionSteps = [
+  { id: "understand-api", title: "Understood the Open-Meteo API (free, no key required)" },
+  { id: "create-coords", title: "Created get_weather tool with lat/lon coordinates" },
+  { id: "create-city", title: "Created get_weather_by_city with geocoding" },
+  { id: "handle-errors", title: "Implemented error handling for API failures" },
+  { id: "test-playground", title: "Tested with real city names in the playground" },
+];
 
 const weatherApiCode = `import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
@@ -245,6 +254,12 @@ export default function WeatherApiChallengePage() {
             </ul>
           </CardContent>
         </Card>
+
+        {/* Progress Tracking */}
+        <ChallengeCompletion
+          challengeId="weather-api"
+          steps={completionSteps}
+        />
       </div>
     </div>
   );
