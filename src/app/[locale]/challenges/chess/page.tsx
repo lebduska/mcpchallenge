@@ -63,7 +63,7 @@ export default function ChessChallengePage() {
         <ChallengeHero
           title="Chess Challenge"
           description="Play chess in the browser against Stockfish or connect your MCP client!"
-          image="/images/challenges/chess.jpg"
+          image="/images/challenges/chess-v2.jpg"
           icon={<Crown className="h-8 w-8 text-amber-400" />}
           badges={[
             { label: "Game", className: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100" },
