@@ -33,10 +33,30 @@ export function MCPCommandLog({
     });
   };
 
-  const formatJson = (obj: unknown): string | null => {
+  // Extract text from MCP response content
+  const formatResult = (obj: unknown): string | null => {
     if (!obj) return null;
     try {
+      // MCP responses have format: { content: [{ type: "text", text: "..." }] }
+      const result = obj as { content?: Array<{ type: string; text: string }> };
+      if (result.content && Array.isArray(result.content)) {
+        return result.content
+          .filter((item) => item.type === "text")
+          .map((item) => item.text)
+          .join("\n");
+      }
+      // Fallback to JSON if not standard MCP format
       return JSON.stringify(obj, null, 2);
+    } catch {
+      return String(obj);
+    }
+  };
+
+  // Format request params as compact JSON
+  const formatParams = (obj: unknown): string | null => {
+    if (!obj) return null;
+    try {
+      return JSON.stringify(obj);
     } catch {
       return String(obj);
     }
@@ -111,13 +131,13 @@ export function MCPCommandLog({
                   </div>
 
                   {cmd.type === "request" && cmd.params ? (
-                    <pre className="text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap break-all overflow-hidden">
-                      {formatJson(cmd.params)}
-                    </pre>
+                    <code className="text-zinc-500 dark:text-zinc-400">
+                      {formatParams(cmd.params)}
+                    </code>
                   ) : null}
                   {cmd.type === "response" && cmd.result ? (
-                    <pre className="text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap break-all overflow-hidden max-h-40 overflow-y-auto">
-                      {formatJson(cmd.result)}
+                    <pre className="text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap break-words overflow-hidden max-h-60 overflow-y-auto">
+                      {formatResult(cmd.result)}
                     </pre>
                   ) : null}
                   {cmd.error ? (
