@@ -142,132 +142,285 @@ interface DrawCommand {
   delay?: number;
 }
 
-// Mona Lisa drawing commands
+// Mona Lisa drawing commands - Enhanced version with sfumato effect
 const monaLisaCommands: DrawCommand[] = [
-  // Background - sky
-  { type: "set_color", params: { r: 86, g: 125, b: 134 } },
-  { type: "draw_rect", params: { x: 0, y: 0, width: 64, height: 30, filled: true } },
+  // ============ BACKGROUND - Sfumato landscape ============
+  // Sky gradient (top to bottom)
+  { type: "set_color", params: { r: 82, g: 107, b: 115 } },
+  { type: "draw_rect", params: { x: 0, y: 0, width: 64, height: 8, filled: true } },
+  { type: "set_color", params: { r: 86, g: 115, b: 120 } },
+  { type: "draw_rect", params: { x: 0, y: 8, width: 64, height: 8, filled: true } },
+  { type: "set_color", params: { r: 90, g: 120, b: 118 } },
+  { type: "draw_rect", params: { x: 0, y: 16, width: 64, height: 8, filled: true } },
+  { type: "set_color", params: { r: 85, g: 110, b: 105 } },
+  { type: "draw_rect", params: { x: 0, y: 24, width: 64, height: 8, filled: true } },
 
-  // Background - landscape
-  { type: "set_color", params: { r: 67, g: 82, b: 61 } },
-  { type: "draw_rect", params: { x: 0, y: 30, width: 64, height: 34, filled: true } },
+  // Distant mountains (hazy)
+  { type: "set_color", params: { r: 95, g: 115, b: 110 } },
+  { type: "draw_line", params: { x1: 0, y1: 22, x2: 12, y2: 15 } },
+  { type: "draw_line", params: { x1: 12, y1: 15, x2: 20, y2: 20 } },
+  { type: "draw_line", params: { x1: 44, y1: 20, x2: 52, y2: 14 } },
+  { type: "draw_line", params: { x1: 52, y1: 14, x2: 63, y2: 22 } },
 
-  // Hair left
-  { type: "set_color", params: { r: 35, g: 25, b: 20 } },
-  { type: "draw_rect", params: { x: 18, y: 12, width: 12, height: 42, filled: true } },
+  // Landscape layers
+  { type: "set_color", params: { r: 75, g: 95, b: 80 } },
+  { type: "draw_rect", params: { x: 0, y: 28, width: 64, height: 10, filled: true } },
+  { type: "set_color", params: { r: 65, g: 82, b: 68 } },
+  { type: "draw_rect", params: { x: 0, y: 38, width: 64, height: 10, filled: true } },
+  { type: "set_color", params: { r: 55, g: 70, b: 58 } },
+  { type: "draw_rect", params: { x: 0, y: 48, width: 64, height: 16, filled: true } },
 
-  // Hair right
-  { type: "draw_rect", params: { x: 34, y: 12, width: 12, height: 42, filled: true } },
+  // Winding river/path left
+  { type: "set_color", params: { r: 100, g: 120, b: 110 } },
+  { type: "draw_line", params: { x1: 0, y1: 30, x2: 8, y2: 38 } },
+  { type: "draw_line", params: { x1: 8, y1: 38, x2: 3, y2: 48 } },
+  { type: "draw_line", params: { x1: 3, y1: 48, x2: 10, y2: 60 } },
+  { type: "set_color", params: { r: 90, g: 110, b: 100 } },
+  { type: "draw_line", params: { x1: 1, y1: 31, x2: 9, y2: 39 } },
 
-  // Hair top
-  { type: "draw_rect", params: { x: 22, y: 10, width: 20, height: 8, filled: true } },
+  // Winding river/path right
+  { type: "set_color", params: { r: 100, g: 120, b: 110 } },
+  { type: "draw_line", params: { x1: 63, y1: 30, x2: 56, y2: 38 } },
+  { type: "draw_line", params: { x1: 56, y1: 38, x2: 60, y2: 48 } },
+  { type: "draw_line", params: { x1: 60, y1: 48, x2: 54, y2: 60 } },
 
-  // Face
-  { type: "set_color", params: { r: 210, g: 180, b: 150 } },
-  { type: "draw_circle", params: { cx: 32, cy: 28, r: 11, filled: true } },
+  // Bridge on right
+  { type: "set_color", params: { r: 80, g: 90, b: 75 } },
+  { type: "draw_line", params: { x1: 50, y1: 32, x2: 58, y2: 32 } },
+  { type: "draw_line", params: { x1: 52, y1: 33, x2: 56, y2: 33 } },
+
+  // ============ PARAPET / BALUSTRADE ============
+  { type: "set_color", params: { r: 90, g: 80, b: 70 } },
+  { type: "draw_rect", params: { x: 0, y: 50, width: 18, height: 14, filled: true } },
+  { type: "draw_rect", params: { x: 46, y: 50, width: 18, height: 14, filled: true } },
+  { type: "set_color", params: { r: 100, g: 90, b: 80 } },
+  { type: "draw_line", params: { x1: 0, y1: 50, x2: 18, y2: 50 } },
+  { type: "draw_line", params: { x1: 46, y1: 50, x2: 63, y2: 50 } },
+
+  // Column hints
+  { type: "set_color", params: { r: 110, g: 100, b: 90 } },
+  { type: "draw_line", params: { x1: 5, y1: 50, x2: 5, y2: 64 } },
+  { type: "draw_line", params: { x1: 58, y1: 50, x2: 58, y2: 64 } },
+
+  // ============ HAIR - Dark with auburn highlights ============
+  // Base hair color
+  { type: "set_color", params: { r: 28, g: 20, b: 15 } },
+  { type: "draw_rect", params: { x: 17, y: 8, width: 30, height: 48, filled: true } },
+
+  // Hair curves left
+  { type: "draw_circle", params: { cx: 17, cy: 32, r: 8, filled: true } },
+  { type: "draw_circle", params: { cx: 15, cy: 45, r: 6, filled: true } },
+
+  // Hair curves right
+  { type: "draw_circle", params: { cx: 47, cy: 32, r: 8, filled: true } },
+  { type: "draw_circle", params: { cx: 49, cy: 45, r: 6, filled: true } },
+
+  // Hair top volume
+  { type: "draw_circle", params: { cx: 32, cy: 10, r: 12, filled: true } },
+
+  // Hair texture/waves
+  { type: "set_color", params: { r: 38, g: 28, b: 22 } },
+  { type: "draw_line", params: { x1: 20, y1: 15, x2: 18, y2: 35 } },
+  { type: "draw_line", params: { x1: 23, y1: 12, x2: 20, y2: 40 } },
+  { type: "draw_line", params: { x1: 44, y1: 15, x2: 46, y2: 35 } },
+  { type: "draw_line", params: { x1: 41, y1: 12, x2: 44, y2: 40 } },
+
+  // Hair highlights
+  { type: "set_color", params: { r: 50, g: 38, b: 30 } },
+  { type: "draw_line", params: { x1: 25, y1: 14, x2: 24, y2: 30 } },
+  { type: "draw_line", params: { x1: 39, y1: 14, x2: 40, y2: 30 } },
+
+  // Veil (sheer fabric on hair)
+  { type: "set_color", params: { r: 35, g: 28, b: 24 } },
+  { type: "draw_line", params: { x1: 22, y1: 8, x2: 42, y2: 8 } },
+  { type: "draw_line", params: { x1: 21, y1: 9, x2: 43, y2: 9 } },
+  { type: "draw_line", params: { x1: 20, y1: 10, x2: 44, y2: 10 } },
+
+  // ============ FACE - Soft sfumato shading ============
+  // Face base
+  { type: "set_color", params: { r: 205, g: 175, b: 145 } },
+  { type: "draw_circle", params: { cx: 32, cy: 28, r: 12, filled: true } },
+
+  // Forehead
+  { type: "set_color", params: { r: 215, g: 185, b: 155 } },
+  { type: "draw_circle", params: { cx: 32, cy: 20, r: 9, filled: true } },
 
   // Forehead highlight
-  { type: "set_color", params: { r: 225, g: 195, b: 165 } },
-  { type: "draw_circle", params: { cx: 32, cy: 22, r: 6, filled: true } },
+  { type: "set_color", params: { r: 225, g: 198, b: 170 } },
+  { type: "draw_circle", params: { cx: 32, cy: 18, r: 5, filled: true } },
+
+  // Cheeks
+  { type: "set_color", params: { r: 210, g: 175, b: 150 } },
+  { type: "draw_circle", params: { cx: 25, cy: 30, r: 5, filled: true } },
+  { type: "draw_circle", params: { cx: 39, cy: 30, r: 5, filled: true } },
+
+  // Jaw/chin
+  { type: "set_color", params: { r: 200, g: 168, b: 140 } },
+  { type: "draw_circle", params: { cx: 32, cy: 38, r: 6, filled: true } },
+
+  // Face shadow left
+  { type: "set_color", params: { r: 185, g: 155, b: 125 } },
+  { type: "draw_circle", params: { cx: 22, cy: 28, r: 4, filled: true } },
 
   // Neck
-  { type: "set_color", params: { r: 200, g: 170, b: 140 } },
-  { type: "draw_rect", params: { x: 27, y: 38, width: 10, height: 10, filled: true } },
+  { type: "set_color", params: { r: 195, g: 165, b: 138 } },
+  { type: "draw_rect", params: { x: 26, y: 40, width: 12, height: 12, filled: true } },
+
+  // Neck shadow
+  { type: "set_color", params: { r: 175, g: 145, b: 118 } },
+  { type: "draw_rect", params: { x: 26, y: 44, width: 5, height: 8, filled: true } },
+
+  // ============ EYES - The mysterious gaze ============
+  // Eye sockets shadow
+  { type: "set_color", params: { r: 180, g: 150, b: 125 } },
+  { type: "draw_circle", params: { cx: 27, cy: 25, r: 4, filled: true } },
+  { type: "draw_circle", params: { cx: 37, cy: 25, r: 4, filled: true } },
 
   // Eye whites
-  { type: "set_color", params: { r: 245, g: 240, b: 235 } },
-  { type: "draw_circle", params: { cx: 27, cy: 26, r: 3, filled: true } },
-  { type: "draw_circle", params: { cx: 37, cy: 26, r: 3, filled: true } },
+  { type: "set_color", params: { r: 240, g: 235, b: 228 } },
+  { type: "draw_rect", params: { x: 24, y: 24, width: 6, height: 3, filled: true } },
+  { type: "draw_rect", params: { x: 34, y: 24, width: 6, height: 3, filled: true } },
 
   // Irises
-  { type: "set_color", params: { r: 70, g: 50, b: 40 } },
-  { type: "draw_circle", params: { cx: 28, cy: 26, r: 2, filled: true } },
-  { type: "draw_circle", params: { cx: 38, cy: 26, r: 2, filled: true } },
+  { type: "set_color", params: { r: 65, g: 50, b: 40 } },
+  { type: "draw_circle", params: { cx: 27, cy: 25, r: 2, filled: true } },
+  { type: "draw_circle", params: { cx: 37, cy: 25, r: 2, filled: true } },
 
   // Pupils
-  { type: "set_color", params: { r: 20, g: 15, b: 10 } },
-  { type: "set_pixel", params: { x: 28, y: 26 } },
-  { type: "set_pixel", params: { x: 38, y: 26 } },
+  { type: "set_color", params: { r: 15, g: 10, b: 8 } },
+  { type: "set_pixel", params: { x: 27, y: 25 } },
+  { type: "set_pixel", params: { x: 28, y: 25 } },
+  { type: "set_pixel", params: { x: 37, y: 25 } },
+  { type: "set_pixel", params: { x: 38, y: 25 } },
 
   // Eye highlights
   { type: "set_color", params: { r: 255, g: 255, b: 255 } },
-  { type: "set_pixel", params: { x: 27, y: 25 } },
-  { type: "set_pixel", params: { x: 37, y: 25 } },
+  { type: "set_pixel", params: { x: 26, y: 24 } },
+  { type: "set_pixel", params: { x: 36, y: 24 } },
 
-  // Eyebrows
-  { type: "set_color", params: { r: 60, g: 45, b: 35 } },
-  { type: "draw_line", params: { x1: 24, y1: 22, x2: 31, y2: 21 } },
-  { type: "draw_line", params: { x1: 33, y1: 21, x2: 40, y2: 22 } },
+  // Upper eyelids
+  { type: "set_color", params: { r: 140, g: 110, b: 90 } },
+  { type: "draw_line", params: { x1: 23, y1: 23, x2: 30, y2: 23 } },
+  { type: "draw_line", params: { x1: 34, y1: 23, x2: 41, y2: 23 } },
 
-  // Nose shadow
-  { type: "set_color", params: { r: 180, g: 150, b: 120 } },
-  { type: "draw_line", params: { x1: 32, y1: 27, x2: 32, y2: 32 } },
-  { type: "draw_line", params: { x1: 33, y1: 28, x2: 33, y2: 31 } },
+  // Lower eyelids
+  { type: "set_color", params: { r: 175, g: 148, b: 125 } },
+  { type: "draw_line", params: { x1: 24, y1: 27, x2: 30, y2: 27 } },
+  { type: "draw_line", params: { x1: 34, y1: 27, x2: 40, y2: 27 } },
 
-  // Nose tip
-  { type: "set_color", params: { r: 195, g: 165, b: 135 } },
-  { type: "draw_line", params: { x1: 30, y1: 32, x2: 34, y2: 32 } },
+  // Eyebrows (subtle, she had thin brows)
+  { type: "set_color", params: { r: 120, g: 95, b: 75 } },
+  { type: "draw_line", params: { x1: 23, y1: 20, x2: 30, y2: 19 } },
+  { type: "draw_line", params: { x1: 34, y1: 19, x2: 41, y2: 20 } },
 
-  // The famous smile!
-  { type: "set_color", params: { r: 170, g: 110, b: 100 } },
-  { type: "draw_line", params: { x1: 28, y1: 35, x2: 32, y2: 36 } },
-  { type: "draw_line", params: { x1: 32, y1: 36, x2: 36, y2: 35 } },
+  // ============ NOSE ============
+  { type: "set_color", params: { r: 190, g: 160, b: 132 } },
+  { type: "draw_line", params: { x1: 32, y1: 26, x2: 32, y2: 33 } },
+  { type: "set_color", params: { r: 180, g: 150, b: 122 } },
+  { type: "draw_line", params: { x1: 33, y1: 27, x2: 33, y2: 32 } },
 
-  // Lips
-  { type: "set_color", params: { r: 185, g: 130, b: 115 } },
-  { type: "draw_line", params: { x1: 29, y1: 34, x2: 35, y2: 34 } },
+  // Nose tip highlight
+  { type: "set_color", params: { r: 210, g: 180, b: 152 } },
+  { type: "set_pixel", params: { x: 31, y: 32 } },
 
-  // Cheek blush
+  // Nostrils hint
+  { type: "set_color", params: { r: 160, g: 130, b: 105 } },
+  { type: "set_pixel", params: { x: 30, y: 33 } },
+  { type: "set_pixel", params: { x: 34, y: 33 } },
+
+  // ============ THE FAMOUS SMILE ============
+  // Upper lip
+  { type: "set_color", params: { r: 175, g: 130, b: 115 } },
+  { type: "draw_line", params: { x1: 28, y1: 36, x2: 32, y2: 35 } },
+  { type: "draw_line", params: { x1: 32, y1: 35, x2: 36, y2: 36 } },
+
+  // The subtle smile curve
+  { type: "set_color", params: { r: 165, g: 115, b: 100 } },
+  { type: "draw_line", params: { x1: 29, y1: 37, x2: 32, y2: 38 } },
+  { type: "draw_line", params: { x1: 32, y1: 38, x2: 35, y2: 37 } },
+
+  // Lip shadow/depth
+  { type: "set_color", params: { r: 145, g: 100, b: 85 } },
+  { type: "set_pixel", params: { x: 32, y: 36 } },
+
+  // Corner shadows (the enigmatic part!)
+  { type: "set_color", params: { r: 175, g: 145, b: 125 } },
+  { type: "set_pixel", params: { x: 27, y: 37 } },
+  { type: "set_pixel", params: { x: 37, y: 37 } },
+
+  // Lower lip highlight
+  { type: "set_color", params: { r: 195, g: 155, b: 140 } },
+  { type: "set_pixel", params: { x: 31, y: 37 } },
+  { type: "set_pixel", params: { x: 33, y: 37 } },
+
+  // ============ DRESS ============
+  // Dark dress base
+  { type: "set_color", params: { r: 35, g: 30, b: 25 } },
+  { type: "draw_rect", params: { x: 18, y: 48, width: 28, height: 16, filled: true } },
+
+  // Dress folds
+  { type: "set_color", params: { r: 45, g: 38, b: 32 } },
+  { type: "draw_line", params: { x1: 22, y1: 50, x2: 24, y2: 64 } },
+  { type: "draw_line", params: { x1: 40, y1: 50, x2: 42, y2: 64 } },
+  { type: "draw_line", params: { x1: 32, y1: 52, x2: 32, y2: 64 } },
+
+  // Neckline
+  { type: "set_color", params: { r: 55, g: 45, b: 38 } },
+  { type: "draw_line", params: { x1: 24, y1: 48, x2: 32, y2: 52 } },
+  { type: "draw_line", params: { x1: 32, y1: 52, x2: 40, y2: 48 } },
+
+  // Chest/décolletage
+  { type: "set_color", params: { r: 200, g: 170, b: 142 } },
+  { type: "draw_circle", params: { cx: 32, cy: 50, r: 5, filled: true } },
+
+  // Gold trim hint
+  { type: "set_color", params: { r: 120, g: 100, b: 60 } },
+  { type: "draw_line", params: { x1: 25, y1: 48, x2: 32, y2: 51 } },
+  { type: "draw_line", params: { x1: 32, y1: 51, x2: 39, y2: 48 } },
+
+  // ============ HANDS ============
+  // Right hand (viewer's left)
+  { type: "set_color", params: { r: 195, g: 165, b: 138 } },
+  { type: "draw_rect", params: { x: 18, y: 55, width: 10, height: 7, filled: true } },
+  { type: "draw_circle", params: { cx: 23, cy: 58, r: 4, filled: true } },
+
+  // Left hand (viewer's right)
+  { type: "draw_rect", params: { x: 36, y: 55, width: 10, height: 7, filled: true } },
+  { type: "draw_circle", params: { cx: 41, cy: 58, r: 4, filled: true } },
+
+  // Finger details
+  { type: "set_color", params: { r: 175, g: 145, b: 120 } },
+  { type: "draw_line", params: { x1: 20, y1: 57, x2: 20, y2: 61 } },
+  { type: "draw_line", params: { x1: 22, y1: 56, x2: 22, y2: 61 } },
+  { type: "draw_line", params: { x1: 24, y1: 56, x2: 24, y2: 61 } },
+  { type: "draw_line", params: { x1: 39, y1: 57, x2: 39, y2: 61 } },
+  { type: "draw_line", params: { x1: 41, y1: 56, x2: 41, y2: 61 } },
+  { type: "draw_line", params: { x1: 43, y1: 56, x2: 43, y2: 61 } },
+
+  // Wrist/sleeve
+  { type: "set_color", params: { r: 50, g: 42, b: 35 } },
+  { type: "draw_line", params: { x1: 18, y1: 55, x2: 28, y2: 55 } },
+  { type: "draw_line", params: { x1: 36, y1: 55, x2: 46, y2: 55 } },
+
+  // ============ FINAL DETAILS ============
+  // Face contour softening
+  { type: "set_color", params: { r: 195, g: 165, b: 140 } },
+  { type: "draw_line", params: { x1: 20, y1: 25, x2: 20, y2: 35 } },
+  { type: "draw_line", params: { x1: 44, y1: 25, x2: 44, y2: 35 } },
+
+  // Chin definition
+  { type: "set_color", params: { r: 180, g: 150, b: 125 } },
+  { type: "draw_line", params: { x1: 27, y1: 40, x2: 37, y2: 40 } },
+
+  // Hair frame around face
+  { type: "set_color", params: { r: 32, g: 24, b: 18 } },
+  { type: "draw_line", params: { x1: 19, y1: 18, x2: 21, y2: 38 } },
+  { type: "draw_line", params: { x1: 45, y1: 18, x2: 43, y2: 38 } },
+
+  // Subtle cheek blush
   { type: "set_color", params: { r: 215, g: 175, b: 155 } },
-  { type: "draw_circle", params: { cx: 24, cy: 31, r: 2, filled: true } },
-  { type: "draw_circle", params: { cx: 40, cy: 31, r: 2, filled: true } },
-
-  // Dress
-  { type: "set_color", params: { r: 45, g: 35, b: 30 } },
-  { type: "draw_rect", params: { x: 18, y: 46, width: 28, height: 18, filled: true } },
-
-  // Dress neckline
-  { type: "set_color", params: { r: 195, g: 165, b: 135 } },
-  { type: "draw_circle", params: { cx: 32, cy: 48, r: 6, filled: true } },
-
-  // Hands
-  { type: "set_color", params: { r: 200, g: 170, b: 140 } },
-  { type: "draw_rect", params: { x: 14, y: 54, width: 10, height: 8, filled: true } },
-  { type: "draw_rect", params: { x: 40, y: 54, width: 10, height: 8, filled: true } },
-
-  // Hand details
-  { type: "set_color", params: { r: 180, g: 150, b: 120 } },
-  { type: "draw_line", params: { x1: 16, y1: 56, x2: 16, y2: 60 } },
-  { type: "draw_line", params: { x1: 18, y1: 56, x2: 18, y2: 60 } },
-  { type: "draw_line", params: { x1: 46, y1: 56, x2: 46, y2: 60 } },
-  { type: "draw_line", params: { x1: 48, y1: 56, x2: 48, y2: 60 } },
-
-  // Landscape details - winding path left
-  { type: "set_color", params: { r: 90, g: 100, b: 80 } },
-  { type: "draw_line", params: { x1: 0, y1: 35, x2: 10, y2: 42 } },
-  { type: "draw_line", params: { x1: 0, y1: 38, x2: 8, y2: 45 } },
-  { type: "draw_line", params: { x1: 10, y1: 42, x2: 5, y2: 50 } },
-
-  // Landscape details - winding path right
-  { type: "draw_line", params: { x1: 63, y1: 35, x2: 54, y2: 42 } },
-  { type: "draw_line", params: { x1: 63, y1: 38, x2: 56, y2: 45 } },
-  { type: "draw_line", params: { x1: 54, y1: 42, x2: 58, y2: 50 } },
-
-  // Mountains in background
-  { type: "set_color", params: { r: 75, g: 95, b: 85 } },
-  { type: "draw_line", params: { x1: 0, y1: 32, x2: 8, y2: 25 } },
-  { type: "draw_line", params: { x1: 8, y1: 25, x2: 15, y2: 30 } },
-  { type: "draw_line", params: { x1: 49, y1: 30, x2: 56, y2: 25 } },
-  { type: "draw_line", params: { x1: 56, y1: 25, x2: 63, y2: 32 } },
-
-  // Chin shadow
-  { type: "set_color", params: { r: 175, g: 145, b: 115 } },
-  { type: "draw_line", params: { x1: 27, y1: 38, x2: 37, y2: 38 } },
-
-  // Hair shine
-  { type: "set_color", params: { r: 55, g: 40, b: 35 } },
-  { type: "draw_line", params: { x1: 22, y1: 15, x2: 22, y2: 25 } },
-  { type: "draw_line", params: { x1: 42, y1: 15, x2: 42, y2: 25 } },
+  { type: "set_pixel", params: { x: 25, y: 32 } },
+  { type: "set_pixel", params: { x: 39, y: 32 } },
 ];
 
 export function PixelCanvas() {
