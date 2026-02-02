@@ -35,7 +35,7 @@ export default function ProfilePage() {
   useEffect(() => {
     if (status === "authenticated") {
       fetch("/api/users/me")
-        .then((res) => res.json())
+        .then((res) => res.json() as Promise<UserData>)
         .then((data) => {
           setUserData(data);
           setLoading(false);

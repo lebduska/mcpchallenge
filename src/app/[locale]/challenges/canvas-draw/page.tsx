@@ -2,13 +2,12 @@
 
 export const runtime = "edge";
 
-import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Paintbrush, Copy, CheckCircle2, Play, Plug } from "lucide-react";
+import { Paintbrush, Copy, CheckCircle2, Play, Plug } from "lucide-react";
 import { PixelCanvas } from "@/components/canvas";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ChallengeHero } from "@/components/challenges/challenge-hero";
 
 const claudeConfig = `{
   "mcpServers": {
@@ -48,28 +47,16 @@ export default function CanvasDrawChallengePage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <Link
-            href="/challenges"
-            className="inline-flex items-center text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50 mb-4"
-          >
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            Back to Challenges
-          </Link>
-          <div className="flex items-center gap-3 mb-2">
-            <Paintbrush className="h-8 w-8 text-pink-500" />
-            <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
-              Canvas Drawing
-            </h1>
-            <Badge className="bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-100">
-              Creative
-            </Badge>
-          </div>
-          <p className="text-zinc-600 dark:text-zinc-400">
-            Create pixel art on a 64x64 canvas. Play the demo or connect your MCP client!
-          </p>
-        </div>
+        {/* Hero */}
+        <ChallengeHero
+          title="Canvas Drawing"
+          description="Create pixel art on a 64x64 canvas. Play the demo or connect your MCP client!"
+          image="/images/challenges/canvas.jpg"
+          icon={<Paintbrush className="h-8 w-8 text-pink-400" />}
+          badges={[
+            { label: "Creative", className: "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-100" },
+          ]}
+        />
 
         {/* Main Tabs */}
         <Tabs defaultValue="play" className="w-full">

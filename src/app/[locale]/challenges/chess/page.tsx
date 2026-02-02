@@ -3,12 +3,9 @@
 export const runtime = "edge";
 
 import { useState, useCallback } from "react";
-import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  ArrowLeft,
   Crown,
   Cpu,
   Users,
@@ -22,6 +19,7 @@ import { ChessGame } from "@/components/chess/chess-game";
 import { LiveGameBoard } from "@/components/mcp/live-game-board";
 import { useGameCompletion } from "@/hooks/use-game-completion";
 import { AchievementToast } from "@/components/achievements/achievement-toast";
+import { ChallengeHero } from "@/components/challenges/challenge-hero";
 
 interface Achievement {
   id: string;
@@ -61,28 +59,16 @@ export default function ChessChallengePage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <Link
-            href="/challenges"
-            className="inline-flex items-center text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50 mb-4"
-          >
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            Back to Challenges
-          </Link>
-          <div className="flex items-center gap-3 mb-2">
-            <Crown className="h-8 w-8 text-amber-500" />
-            <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
-              Chess Challenge
-            </h1>
-            <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100">
-              Game
-            </Badge>
-          </div>
-          <p className="text-zinc-600 dark:text-zinc-400">
-            Play chess in the browser against Stockfish or connect your MCP client!
-          </p>
-        </div>
+        {/* Hero */}
+        <ChallengeHero
+          title="Chess Challenge"
+          description="Play chess in the browser against Stockfish or connect your MCP client!"
+          image="/images/challenges/chess.jpg"
+          icon={<Crown className="h-8 w-8 text-amber-400" />}
+          badges={[
+            { label: "Game", className: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100" },
+          ]}
+        />
 
         {/* Main Tabs */}
         <Tabs defaultValue="play" className="w-full">

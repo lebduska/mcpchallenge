@@ -3,9 +3,7 @@
 export const runtime = "edge";
 
 import { useState, useCallback } from "react";
-import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ArrowLeft,
@@ -25,6 +23,7 @@ import { SnakeGame } from "@/components/games/snake-game";
 import { LiveGameBoard } from "@/components/mcp/live-game-board";
 import { useGameCompletion } from "@/hooks/use-game-completion";
 import { AchievementToast } from "@/components/achievements/achievement-toast";
+import { ChallengeHero } from "@/components/challenges/challenge-hero";
 
 interface Achievement {
   id: string;
@@ -60,31 +59,17 @@ export default function SnakeChallengePage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <Link
-            href="/challenges"
-            className="inline-flex items-center text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50 mb-4"
-          >
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            Back to Challenges
-          </Link>
-          <div className="flex items-center gap-3 mb-2">
-            <span className="text-3xl">🐍</span>
-            <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
-              Snake Game
-            </h1>
-            <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
-              Game
-            </Badge>
-            <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100">
-              WebSocket
-            </Badge>
-          </div>
-          <p className="text-zinc-600 dark:text-zinc-400">
-            Play in the browser or connect your MCP client via WebSocket for real-time AI control!
-          </p>
-        </div>
+        {/* Hero */}
+        <ChallengeHero
+          title="Snake Game"
+          description="Play in the browser or connect your MCP client via WebSocket for real-time AI control!"
+          image="/images/challenges/snake.jpg"
+          icon={<span className="text-3xl">🐍</span>}
+          badges={[
+            { label: "Game", className: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100" },
+            { label: "WebSocket", className: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100" },
+          ]}
+        />
 
         {/* Main Tabs */}
         <Tabs defaultValue="play" className="w-full">

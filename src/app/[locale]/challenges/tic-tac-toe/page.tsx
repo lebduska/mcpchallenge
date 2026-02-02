@@ -3,12 +3,9 @@
 export const runtime = "edge";
 
 import { useState, useCallback } from "react";
-import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  ArrowLeft,
   Grid3X3,
   Brain,
   Users,
@@ -22,6 +19,7 @@ import { TicTacToe } from "@/components/games/tic-tac-toe";
 import { LiveGameBoard } from "@/components/mcp/live-game-board";
 import { useGameCompletion } from "@/hooks/use-game-completion";
 import { AchievementToast } from "@/components/achievements/achievement-toast";
+import { ChallengeHero } from "@/components/challenges/challenge-hero";
 
 interface Achievement {
   id: string;
@@ -60,28 +58,16 @@ export default function TicTacToeChallengePage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <Link
-            href="/challenges"
-            className="inline-flex items-center text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50 mb-4"
-          >
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            Back to Challenges
-          </Link>
-          <div className="flex items-center gap-3 mb-2">
-            <Grid3X3 className="h-8 w-8 text-purple-500" />
-            <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
-              Tic-Tac-Toe
-            </h1>
-            <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100">
-              Game
-            </Badge>
-          </div>
-          <p className="text-zinc-600 dark:text-zinc-400">
-            Play in the browser or connect your MCP client to challenge the unbeatable minimax algorithm!
-          </p>
-        </div>
+        {/* Hero */}
+        <ChallengeHero
+          title="Tic-Tac-Toe"
+          description="Play in the browser or connect your MCP client to challenge the unbeatable minimax algorithm!"
+          image="/images/challenges/tictactoe.jpg"
+          icon={<Grid3X3 className="h-8 w-8 text-purple-400" />}
+          badges={[
+            { label: "Game", className: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100" },
+          ]}
+        />
 
         {/* Main Tabs */}
         <Tabs defaultValue="play" className="w-full">
