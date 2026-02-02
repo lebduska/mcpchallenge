@@ -168,7 +168,7 @@ function getGameDescription(gameType: string): string {
     case "tictactoe":
       return "Tic-Tac-Toe MCP Server - Classic game with minimax AI";
     case "snake":
-      return "Snake MCP Server - Real-time snake game via WebSocket";
+      return "Snake MCP Server - Control snake via MCP tools";
     case "canvas":
       return "Canvas MCP Server - Draw on canvas via MCP commands";
     default:
