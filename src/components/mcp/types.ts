@@ -75,4 +75,5 @@ export interface RoomInfo {
   gameType: GameType;
   mcpUrl: string;
   sseUrl: string;
+  wsUrl?: string;
 }

@@ -14,6 +14,7 @@ import type {
   GameState,
   ChessGameState,
   TicTacToeGameState,
+  SnakeGameState,
   CommandLogEntry,
   RoomInfo,
   RoomState,
@@ -53,6 +54,7 @@ export function LiveGameBoard({
         roomId?: string;
         mcpUrl?: string;
         sseUrl?: string;
+        wsUrl?: string;
       };
 
       if (data.roomId) {
@@ -62,6 +64,7 @@ export function LiveGameBoard({
           gameType,
           mcpUrl: data.mcpUrl || `${mcpBaseUrl}/${gameType}?room=${data.roomId}`,
           sseUrl: data.sseUrl || `${mcpBaseUrl}/${gameType}/sse?room=${data.roomId}`,
+          wsUrl: data.wsUrl,
         };
         setRoomInfo(info);
         onRoomCreated?.(info);
@@ -117,6 +120,7 @@ export function LiveGameBoard({
       gameType,
       mcpUrl: `${mcpBaseUrl}/${gameType}?room=${roomId}`,
       sseUrl: `${mcpBaseUrl}/${gameType}/sse?room=${roomId}`,
+      wsUrl: gameType === "snake" ? `wss://mcp.mcpchallenge.org/${gameType}/ws?room=${roomId}` : undefined,
     });
 
     return () => {
@@ -146,6 +150,8 @@ export function LiveGameBoard({
         return renderChessBoard(gameState);
       case "tictactoe":
         return renderTicTacToeBoard(gameState);
+      case "snake":
+        return renderSnakeBoard(gameState);
       default:
         return (
           <div className="aspect-square bg-zinc-100 dark:bg-zinc-800 rounded-lg flex items-center justify-center">
@@ -249,6 +255,77 @@ export function LiveGameBoard({
                   ? "Draw!"
                   : `${state.winner} wins!`}
               </h3>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderSnakeBoard = (state: SnakeGameState) => {
+    const gridSize = state.gridSize || 15;
+    const cellSize = 100 / gridSize;
+
+    return (
+      <div className="relative aspect-square bg-zinc-900 rounded-lg p-2">
+        {/* Spectator indicator */}
+        <div className="absolute top-2 left-2 z-10">
+          <Badge variant="outline" className="bg-white/80 dark:bg-zinc-900/80 gap-1">
+            <Eye className="h-3 w-3" />
+            Spectating
+          </Badge>
+        </div>
+
+        {/* Score */}
+        <div className="absolute top-2 right-2 z-10">
+          <Badge variant="default" className="bg-green-600">
+            Score: {state.score}
+          </Badge>
+        </div>
+
+        {/* Grid */}
+        <div
+          className="relative w-full h-full"
+          style={{
+            display: "grid",
+            gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
+            gridTemplateRows: `repeat(${gridSize}, 1fr)`,
+            gap: "1px",
+          }}
+        >
+          {/* Grid cells */}
+          {Array.from({ length: gridSize * gridSize }).map((_, i) => {
+            const x = i % gridSize;
+            const y = Math.floor(i / gridSize);
+            const isHead = state.snake[0]?.x === x && state.snake[0]?.y === y;
+            const isBody = state.snake.slice(1).some((p) => p.x === x && p.y === y);
+            const isFood = state.food?.x === x && state.food?.y === y;
+
+            return (
+              <div
+                key={i}
+                className={`rounded-sm ${
+                  isHead
+                    ? "bg-green-400"
+                    : isBody
+                    ? "bg-green-600"
+                    : isFood
+                    ? "bg-red-500"
+                    : "bg-zinc-800"
+                }`}
+              />
+            );
+          })}
+        </div>
+
+        {/* Game Over overlay */}
+        {state.gameOver && (
+          <div className="absolute inset-0 bg-black/70 rounded-lg flex items-center justify-center">
+            <div className="bg-white dark:bg-zinc-800 rounded-lg p-4 text-center">
+              <h3 className="text-lg font-bold text-red-500">Game Over!</h3>
+              <p className="text-zinc-600 dark:text-zinc-400">
+                Final Score: {state.score}
+              </p>
             </div>
           </div>
         )}

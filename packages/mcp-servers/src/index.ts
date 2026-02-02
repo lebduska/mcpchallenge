@@ -90,6 +90,7 @@ async function handleGameRequest(
         roomId,
         gameType,
         mcpUrl: `https://mcp.mcpchallenge.org/${gameType}?room=${roomId}`,
+        wsUrl: `wss://mcp.mcpchallenge.org/${gameType}/ws?room=${roomId}`,
         sseUrl: `https://mcp.mcpchallenge.org/${gameType}/sse?room=${roomId}`,
       },
       { headers: corsHeaders }
@@ -115,6 +116,15 @@ async function handleGameRequest(
   // Get the Durable Object for this room
   const id = env.GAME_ROOM.idFromName(`${gameType}:${roomId}`);
   const room = env.GAME_ROOM.get(id);
+
+  // WebSocket endpoint for MCP clients
+  if (subPath === "/ws") {
+    return room.fetch(
+      new Request(`https://internal/ws`, {
+        headers: request.headers,
+      })
+    );
+  }
 
   // SSE endpoint for web UI
   if (subPath === "/sse") {
@@ -153,6 +163,7 @@ async function handleGameRequest(
       roomId,
       endpoints: {
         mcp: `POST /${gameType}?room=${roomId}`,
+        ws: `wss://mcp.mcpchallenge.org/${gameType}/ws?room=${roomId}`,
         sse: `GET /${gameType}/sse?room=${roomId}`,
         state: `GET /${gameType}/state?room=${roomId}`,
       },

@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Copy, Check, Settings, Terminal } from "lucide-react";
+import { Copy, Check, Settings, Terminal, Wifi } from "lucide-react";
 import type { RoomInfo } from "./types";
 
 interface RoomConfigProps {
@@ -179,7 +179,7 @@ curl -X POST ${mcpUrl} \\
           </Tabs>
 
           {/* Direct URL */}
-          <div className="pt-2 border-t">
+          <div className="pt-2 border-t space-y-2">
             <div className="flex items-center gap-2 text-sm">
               <Terminal className="h-4 w-4 text-zinc-500" />
               <span className="text-zinc-500">MCP URL:</span>
@@ -193,6 +193,21 @@ curl -X POST ${mcpUrl} \\
                 onCopy={copyToClipboard}
               />
             </div>
+            {roomInfo.wsUrl && (
+              <div className="flex items-center gap-2 text-sm">
+                <Wifi className="h-4 w-4 text-purple-500" />
+                <span className="text-zinc-500">WebSocket URL:</span>
+                <code className="bg-purple-50 dark:bg-purple-950/30 px-2 py-0.5 rounded text-xs flex-1 overflow-x-auto text-purple-700 dark:text-purple-300">
+                  {roomInfo.wsUrl}
+                </code>
+                <CopyButton
+                  text={roomInfo.wsUrl}
+                  type="ws"
+                  copiedConfig={copiedConfig}
+                  onCopy={copyToClipboard}
+                />
+              </div>
+            )}
           </div>
         </div>
       </CardContent>

@@ -9,12 +9,17 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ArrowLeft,
+  ArrowRight,
   Play,
   Plug,
   Zap,
   Trophy,
   Gamepad2,
   Eye,
+  Wifi,
+  Radio,
+  Server,
+  Laptop,
 } from "lucide-react";
 import { SnakeGame } from "@/components/games/snake-game";
 import { LiveGameBoard } from "@/components/mcp/live-game-board";
@@ -72,9 +77,12 @@ export default function SnakeChallengePage() {
             <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
               Game
             </Badge>
+            <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100">
+              WebSocket
+            </Badge>
           </div>
           <p className="text-zinc-600 dark:text-zinc-400">
-            Play in the browser or connect your MCP client to watch AI control the snake!
+            Play in the browser or connect your MCP client via WebSocket for real-time AI control!
           </p>
         </div>
 
@@ -144,31 +152,106 @@ export default function SnakeChallengePage() {
           {/* CONNECT MCP TAB */}
           <TabsContent value="mcp" className="space-y-6">
             {/* How it works */}
-            <Card className="border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/30">
+            <Card className="border-purple-200 dark:border-purple-800 bg-purple-50/50 dark:bg-purple-950/30">
               <CardHeader>
-                <CardTitle className="text-green-700 dark:text-green-300">
-                  Play Snake via MCP
+                <CardTitle className="text-purple-700 dark:text-purple-300 flex items-center gap-2">
+                  <Wifi className="h-5 w-5" />
+                  Real-time Snake via WebSocket MCP
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-zinc-700 dark:text-zinc-300">
                 <ol className="space-y-2">
                   <li className="flex gap-3">
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center text-sm font-bold">1</span>
+                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-500 text-white flex items-center justify-center text-sm font-bold">1</span>
                     <span>Go to the &quot;Live Board&quot; tab and create a game room</span>
                   </li>
                   <li className="flex gap-3">
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center text-sm font-bold">2</span>
-                    <span>Copy the MCP configuration and add it to your client (Claude, Cursor)</span>
+                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-500 text-white flex items-center justify-center text-sm font-bold">2</span>
+                    <span>Copy the WebSocket MCP URL and add it to your client</span>
                   </li>
                   <li className="flex gap-3">
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center text-sm font-bold">3</span>
-                    <span>Ask your AI to play snake - it will use the MCP tools to make moves</span>
+                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-500 text-white flex items-center justify-center text-sm font-bold">3</span>
+                    <span>Your AI receives real-time game state updates via WebSocket</span>
                   </li>
                   <li className="flex gap-3">
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center text-sm font-bold">4</span>
-                    <span>Watch the game and MCP commands live on the board!</span>
+                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-500 text-white flex items-center justify-center text-sm font-bold">4</span>
+                    <span>Send move commands to control the snake - can your AI survive?</span>
                   </li>
                 </ol>
+              </CardContent>
+            </Card>
+
+            {/* WebSocket Transport Info */}
+            <Card className="border-purple-200 dark:border-purple-800">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Wifi className="h-5 w-5 text-purple-500" />
+                  Why WebSocket for Snake?
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  <div className="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Zap className="h-4 w-4 text-yellow-500" />
+                      <span className="font-medium text-sm">Low Latency</span>
+                    </div>
+                    <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                      Persistent connection means no connection overhead per move
+                    </p>
+                  </div>
+                  <div className="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Radio className="h-4 w-4 text-blue-500" />
+                      <span className="font-medium text-sm">Bidirectional</span>
+                    </div>
+                    <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                      Server pushes state updates, client sends commands
+                    </p>
+                  </div>
+                  <div className="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Wifi className="h-4 w-4 text-green-500" />
+                      <span className="font-medium text-sm">Real-time</span>
+                    </div>
+                    <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                      Perfect for games and live interactive applications
+                    </p>
+                  </div>
+                </div>
+
+                {/* Communication Flow */}
+                <div className="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-4">
+                  <h4 className="font-semibold mb-3 text-sm">WebSocket Communication Flow</h4>
+                  <div className="grid grid-cols-3 gap-4 text-center text-sm">
+                    <div>
+                      <div className="bg-white dark:bg-zinc-700 rounded-lg p-3 mb-2">
+                        <Laptop className="h-6 w-6 mx-auto mb-1" />
+                        <span className="text-xs">MCP Client (AI)</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-center">
+                      <div className="flex flex-col items-center gap-1">
+                        <div className="flex items-center">
+                          <ArrowRight className="h-4 w-4 text-blue-500" />
+                          <span className="text-xs px-2">move(dir)</span>
+                          <ArrowRight className="h-4 w-4 text-blue-500" />
+                        </div>
+                        <div className="flex items-center">
+                          <ArrowLeft className="h-4 w-4 text-green-500" />
+                          <span className="text-xs px-2">state push</span>
+                          <ArrowLeft className="h-4 w-4 text-green-500" />
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="bg-white dark:bg-zinc-700 rounded-lg p-3 mb-2">
+                        <Server className="h-6 w-6 mx-auto mb-1" />
+                        <span className="text-xs">MCP Server</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
 

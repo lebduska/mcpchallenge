@@ -5,6 +5,7 @@ import type { GameState, GameType, CommandLogEntry } from "./mcp/types";
 import { MCPServer } from "./mcp/server";
 import { createChessServer } from "./games/chess";
 import { createTicTacToeServer } from "./games/tictactoe";
+import { createSnakeServer } from "./games/snake";
 
 const ROOM_TTL = 60 * 60 * 1000; // 1 hour
 
@@ -21,10 +22,15 @@ export class GameRoom implements DurableObject {
   private state: DurableObjectState;
   private roomState: RoomState | null = null;
   private sseClients: Set<WritableStreamDefaultWriter> = new Set();
+  private wsClients: Set<WebSocket> = new Set();
   private mcpServer: MCPServer | null = null;
 
   constructor(state: DurableObjectState) {
     this.state = state;
+    // Restore WebSocket connections after hibernation
+    this.state.getWebSockets().forEach((ws) => {
+      this.wsClients.add(ws);
+    });
   }
 
   async fetch(request: Request): Promise<Response> {
@@ -59,6 +65,8 @@ export class GameRoom implements DurableObject {
     switch (path) {
       case "/mcp":
         return this.handleMCP(request);
+      case "/ws":
+        return this.handleWebSocket(request);
       case "/sse":
         return this.handleSSE(request);
       case "/state":
@@ -129,7 +137,14 @@ export class GameRoom implements DurableObject {
           onCommand
         );
         break;
-      // TODO: Add snake and canvas
+      case "snake":
+        this.mcpServer = createSnakeServer(
+          this.roomState.gameState,
+          onStateChange,
+          onCommand
+        );
+        break;
+      // TODO: Add canvas
       default:
         throw new Error(`Unknown game type: ${this.roomState.gameType}`);
     }
@@ -204,6 +219,88 @@ export class GameRoom implements DurableObject {
     });
   }
 
+  // WebSocket upgrade handler
+  private handleWebSocket(request: Request): Response {
+    const upgradeHeader = request.headers.get("Upgrade");
+    if (upgradeHeader !== "websocket") {
+      return new Response("Expected WebSocket upgrade", { status: 426 });
+    }
+
+    // Create WebSocket pair
+    const pair = new WebSocketPair();
+    const [client, server] = Object.values(pair);
+
+    // Accept the WebSocket connection (enables hibernation)
+    this.state.acceptWebSocket(server);
+    this.wsClients.add(server);
+
+    // Send initial state
+    server.send(JSON.stringify({
+      type: "state",
+      data: this.getPublicState(),
+    }));
+
+    // Send recent commands
+    for (const cmd of this.roomState!.commandLog.slice(-20)) {
+      server.send(JSON.stringify({
+        type: "command",
+        data: cmd,
+      }));
+    }
+
+    return new Response(null, {
+      status: 101,
+      webSocket: client,
+    });
+  }
+
+  // WebSocket message handler (Durable Object hibernation API)
+  async webSocketMessage(ws: WebSocket, message: string | ArrayBuffer): Promise<void> {
+    // Ensure room state is loaded
+    if (!this.roomState) {
+      this.roomState = await this.state.storage.get("roomState") ?? null;
+    }
+    if (!this.roomState) {
+      ws.send(JSON.stringify({
+        jsonrpc: "2.0",
+        id: null,
+        error: { code: -32600, message: "Room not initialized" },
+      }));
+      return;
+    }
+
+    // Ensure MCP server is created
+    if (!this.mcpServer) {
+      this.createMCPServer();
+    }
+
+    // Update activity
+    this.roomState.lastActivity = Date.now();
+    await this.state.storage.put("roomState", this.roomState);
+
+    // Handle MCP message
+    const messageStr = typeof message === "string" ? message : new TextDecoder().decode(message);
+    const response = await this.mcpServer!.handleMessage(messageStr);
+
+    // Save state
+    await this.state.storage.put("roomState", this.roomState);
+
+    // Send response back via WebSocket
+    if (response) {
+      ws.send(response);
+    }
+  }
+
+  // WebSocket close handler
+  async webSocketClose(ws: WebSocket, code: number, reason: string, wasClean: boolean): Promise<void> {
+    this.wsClients.delete(ws);
+  }
+
+  // WebSocket error handler
+  async webSocketError(ws: WebSocket, error: unknown): Promise<void> {
+    this.wsClients.delete(ws);
+  }
+
   private getPublicState(): Record<string, unknown> {
     if (!this.roomState) {
       return { error: "Room not initialized" };
@@ -220,15 +317,26 @@ export class GameRoom implements DurableObject {
   }
 
   private broadcast(event: string, data: unknown): void {
-    const message = `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
+    // SSE clients
+    const sseMessage = `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
     const encoder = new TextEncoder();
-    const encoded = encoder.encode(message);
+    const encoded = encoder.encode(sseMessage);
 
     for (const writer of this.sseClients) {
       writer.write(encoded).catch(() => {
         // Client disconnected, will be cleaned up
         this.sseClients.delete(writer);
       });
+    }
+
+    // WebSocket clients
+    const wsMessage = JSON.stringify({ type: event, data });
+    for (const ws of this.wsClients) {
+      try {
+        ws.send(wsMessage);
+      } catch {
+        this.wsClients.delete(ws);
+      }
     }
   }
 
@@ -249,6 +357,16 @@ export class GameRoom implements DurableObject {
         writer.close().catch(() => {});
       }
       this.sseClients.clear();
+
+      // Close all WebSocket clients
+      for (const ws of this.wsClients) {
+        try {
+          ws.close(1000, "Room expired");
+        } catch {
+          // Ignore
+        }
+      }
+      this.wsClients.clear();
     } else {
       // Schedule next check
       await this.state.storage.setAlarm(
