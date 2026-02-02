@@ -4,41 +4,10 @@ export const runtime = "edge";
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, Wrench, Trophy, Heart } from "lucide-react";
-
-function HeroLogo({ className }: { className?: string }) {
-  return (
-    <svg
-      width="80"
-      height="80"
-      viewBox="0 0 210 210"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-    >
-      <path
-        d="M105 10 L195 40 L195 100 C195 155 105 195 105 195 C105 195 15 155 15 100 L15 40 Z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="7"
-      />
-      <text
-        x="105"
-        y="112"
-        textAnchor="middle"
-        fontFamily="system-ui, -apple-system, sans-serif"
-        fontSize="52"
-        fontWeight="700"
-        fill="currentColor"
-      >
-        MCP
-      </text>
-    </svg>
-  );
-}
+import { HeroSlider } from "@/components/hero-slider";
 
 const featureIcons = {
   learn: BookOpen,
@@ -57,29 +26,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-50 to-white dark:from-zinc-950 dark:to-zinc-900">
-      {/* Hero Section */}
-      <section className="container mx-auto px-4 py-24 text-center">
-        <Badge variant="secondary" className="mb-4">
-          {t("badge")}
-        </Badge>
-        <div className="flex items-center justify-center gap-4 mb-2">
-          <HeroLogo className="text-zinc-900 dark:text-zinc-50" />
-          <h1 className="text-5xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-6xl">
-            Challenge
-          </h1>
-        </div>
-        <p className="mt-6 text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
-          {t("subtitle")}
-        </p>
-        <div className="mt-10 flex items-center justify-center gap-4">
-          <Button asChild size="lg">
-            <Link href="/learn">{t("startLearning")}</Link>
-          </Button>
-          <Button variant="outline" size="lg" asChild>
-            <Link href="/playground">{t("tryPlayground")}</Link>
-          </Button>
-        </div>
-      </section>
+      {/* Hero Slider */}
+      <HeroSlider />
 
       {/* What is MCP Section */}
       <section className="container mx-auto px-4 py-16">
