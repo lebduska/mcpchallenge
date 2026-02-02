@@ -195,6 +195,10 @@
         "title": "Multi-Tool Server",
         "description": "Build a server with 5+ interconnected tools"
       },
+      "canvasDraw": {
+        "title": "Canvas Drawing Server",
+        "description": "Build an MCP server with drawing primitives and challenge AI to draw Mona Lisa!"
+      },
       "dataPipeline": {
         "title": "Data Pipeline",
         "description": "Chain multiple MCP tools to process and transform data"

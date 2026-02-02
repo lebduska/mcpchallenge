@@ -42,6 +42,7 @@ const MCP_CHALLENGES = [
   "calculator",
   "file-reader",
   "weather-api",
+  "canvas-draw",
   "multi-tool",
   "data-pipeline",
 ];
@@ -79,6 +80,10 @@ const achievementRules: AchievementRule[] = [
   {
     id: "mcp-data-pipeline",
     check: (data) => data.challengeId === "data-pipeline" && data.type === "tutorial",
+  },
+  {
+    id: "mcp-canvas-draw",
+    check: (data) => data.challengeId === "canvas-draw" && data.type === "tutorial",
   },
   {
     id: "mcp-all-basics",
@@ -250,7 +255,7 @@ export async function POST(request: Request, { params }: PageProps) {
     .where(
       and(
         eq(challengeCompletions.userId, userId),
-        sql`${challengeCompletions.challengeId} IN ('hello-world', 'calculator', 'file-reader', 'weather-api', 'multi-tool', 'data-pipeline')`
+        sql`${challengeCompletions.challengeId} IN ('hello-world', 'calculator', 'file-reader', 'weather-api', 'canvas-draw', 'multi-tool', 'data-pipeline')`
       )
     );
 

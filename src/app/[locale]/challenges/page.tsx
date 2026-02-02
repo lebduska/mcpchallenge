@@ -17,6 +17,7 @@ const challengeData = [
   { id: "calculator", key: "calculator", difficulty: "beginner", points: 100, type: "build", completions: 156 },
   { id: "file-reader", key: "fileReader", difficulty: "intermediate", points: 150, type: "use", completions: 89 },
   { id: "weather-api", key: "weatherApi", difficulty: "intermediate", points: 200, type: "build", completions: 67 },
+  { id: "canvas-draw", key: "canvasDraw", difficulty: "intermediate", points: 250, type: "build", completions: 0, featured: true },
   { id: "multi-tool", key: "multiTool", difficulty: "advanced", points: 300, type: "build", completions: 23 },
   { id: "data-pipeline", key: "dataPipeline", difficulty: "advanced", points: 400, type: "use", completions: 12 },
 ];

@@ -195,6 +195,10 @@
         "title": "Multi-nástrojový server",
         "description": "Vytvořte server s 5+ propojenými nástroji"
       },
+      "canvasDraw": {
+        "title": "Kreslící canvas server",
+        "description": "Vytvořte MCP server s kreslícími nástroji a nechte AI nakreslit Monu Lisu!"
+      },
       "dataPipeline": {
         "title": "Datová pipeline",
         "description": "Propojte více MCP nástrojů pro zpracování a transformaci dat"
