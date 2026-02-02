@@ -4,7 +4,6 @@ export const runtime = "edge";
 
 import { useState, useCallback } from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,12 +12,14 @@ import {
   Crown,
   Bot,
   Users,
-  Code2,
-  Lightbulb,
-  Zap,
+  Play,
+  Plug,
+  Copy,
+  CheckCircle2,
+  Trophy,
+  Swords,
 } from "lucide-react";
 import { ChessGame } from "@/components/chess/chess-game";
-import { MCPPlayground } from "@/components/playground/mcp-playground";
 import { useGameCompletion } from "@/hooks/use-game-completion";
 import { AchievementToast } from "@/components/achievements/achievement-toast";
 
@@ -31,110 +32,38 @@ interface Achievement {
   rarity: string;
 }
 
-const chessMCPCode = `import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { z } from "zod";
-import { Chess } from "chess.js";
-
-const server = new McpServer({
-  name: "chess-server",
-  version: "1.0.0",
-});
-
-// Store the current game
-let game = new Chess();
-
-// Get current board state
-server.tool(
-  "chess_board",
-  "Get the current chess board state",
-  {},
-  async () => {
-    const board = game.board();
-    const ascii = game.ascii();
-    return {
-      content: [{
-        type: "text",
-        text: \`Current position (FEN): \${game.fen()}\\n\\n\${ascii}\\n\\nTurn: \${game.turn() === 'w' ? 'White' : 'Black'}\`,
-      }],
-    };
-  }
-);
-
-// Make a move
-server.tool(
-  "chess_move",
-  "Make a chess move in algebraic notation (e.g., 'e4', 'Nf3', 'O-O')",
-  {
-    move: z.string().describe("The move in algebraic notation"),
-  },
-  async ({ move }) => {
-    try {
-      const result = game.move(move);
-      if (!result) {
-        return {
-          content: [{ type: "text", text: \`Invalid move: \${move}\` }],
-        };
-      }
-
-      let status = \`Move played: \${result.san}\\n\\n\${game.ascii()}\`;
-
-      if (game.isCheckmate()) {
-        status += "\\n\\nCheckmate!";
-      } else if (game.isDraw()) {
-        status += "\\n\\nDraw!";
-      } else if (game.isCheck()) {
-        status += "\\n\\nCheck!";
-      }
-
-      return { content: [{ type: "text", text: status }] };
-    } catch (error) {
-      return {
-        content: [{ type: "text", text: \`Error: \${error}\` }],
-      };
+const claudeConfig = `{
+  "mcpServers": {
+    "chess": {
+      "url": "https://mcp.mcpchallenge.org/chess"
     }
   }
-);
+}`;
 
-// Get legal moves
-server.tool(
-  "chess_legal_moves",
-  "Get all legal moves in the current position",
-  {},
-  async () => {
-    const moves = game.moves();
-    return {
-      content: [{
-        type: "text",
-        text: \`Legal moves (\${moves.length}): \${moves.join(", ")}\`,
-      }],
-    };
+const cursorConfig = `// In Cursor Settings → MCP Servers
+{
+  "chess": {
+    "url": "https://mcp.mcpchallenge.org/chess"
   }
-);
+}`;
 
-// Reset the game
-server.tool(
-  "chess_reset",
-  "Start a new game",
-  {},
-  async () => {
-    game = new Chess();
-    return {
-      content: [{ type: "text", text: "New game started!\\n\\n" + game.ascii() }],
-    };
-  }
-);
-
-const transport = new StdioServerTransport();
-await server.connect(transport);`;
+const tools = [
+  { name: "get_board", description: "Get current board state (FEN, ASCII, turn)" },
+  { name: "get_legal_moves", description: "Get all legal moves in current position" },
+  { name: "make_move", params: "move", description: "Make a move (e.g., 'e4', 'Nf3', 'O-O')" },
+  { name: "new_game", params: "color?", description: "Start a new game (white/black/random)" },
+  { name: "resign", description: "Resign the current game" },
+];
 
 export default function ChessChallengePage() {
-  const [moveLog, setMoveLog] = useState<Array<{ move: string; fen: string }>>([]);
+  const [copiedConfig, setCopiedConfig] = useState<string | null>(null);
   const [unlockedAchievements, setUnlockedAchievements] = useState<Achievement[]>([]);
   const { submitCompletion } = useGameCompletion("chess");
 
-  const handleMoveForMCP = (move: string, fen: string) => {
-    setMoveLog(prev => [...prev, { move, fen }]);
+  const copyToClipboard = (text: string, key: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedConfig(key);
+    setTimeout(() => setCopiedConfig(null), 2000);
   };
 
   const handleGameComplete = useCallback(
@@ -167,40 +96,43 @@ export default function ChessChallengePage() {
             <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
               Chess Challenge
             </h1>
-            <Badge variant="secondary">Game</Badge>
+            <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100">
+              Game
+            </Badge>
           </div>
           <p className="text-zinc-600 dark:text-zinc-400">
-            Play chess against AI or a friend. Learn how to build an MCP server for chess!
+            Play chess in the browser or connect your MCP client for AI-powered gameplay!
           </p>
         </div>
 
-        <Tabs defaultValue="play" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="play" className="gap-2">
-              <Zap className="h-4 w-4" />
-              Play
+        {/* Main Tabs */}
+        <Tabs defaultValue="play" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-6">
+            <TabsTrigger value="play" className="flex items-center gap-2">
+              <Play className="h-4 w-4" />
+              Play Now
             </TabsTrigger>
-            <TabsTrigger value="mcp" className="gap-2">
-              <Code2 className="h-4 w-4" />
-              MCP Server
+            <TabsTrigger value="mcp" className="flex items-center gap-2">
+              <Plug className="h-4 w-4" />
+              Connect MCP
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="play">
-            <ChessGame onMoveForMCP={handleMoveForMCP} onGameComplete={handleGameComplete} />
+          {/* PLAY NOW TAB */}
+          <TabsContent value="play" className="space-y-6">
+            <ChessGame onGameComplete={handleGameComplete} />
 
-            {/* Tips */}
-            <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Game Modes Info */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm flex items-center gap-2">
                     <Bot className="h-4 w-4 text-blue-500" />
-                    vs AI Mode
+                    vs AI
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="text-sm text-zinc-600 dark:text-zinc-400">
-                  Play against a simple AI opponent. The AI uses basic heuristics
-                  to select moves.
+                  Play against Stockfish engine. Great for practice!
                 </CardContent>
               </Card>
 
@@ -208,85 +140,168 @@ export default function ChessChallengePage() {
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm flex items-center gap-2">
                     <Users className="h-4 w-4 text-green-500" />
-                    2 Players Mode
+                    2 Players
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="text-sm text-zinc-600 dark:text-zinc-400">
-                  Play against a friend on the same device. Take turns making
-                  moves on the same board.
+                  Play against a friend on the same device.
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm flex items-center gap-2">
-                    <Lightbulb className="h-4 w-4 text-amber-500" />
-                    MCP Integration
+                    <Trophy className="h-4 w-4 text-amber-500" />
+                    Achievements
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="text-sm text-zinc-600 dark:text-zinc-400">
-                  Check the &quot;MCP Server&quot; tab to see how to build a chess
-                  server that AI can play!
+                  Win games to unlock achievements and climb the leaderboard!
                 </CardContent>
               </Card>
             </div>
           </TabsContent>
 
-          <TabsContent value="mcp">
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Code2 className="h-5 w-5" />
-                    Chess MCP Server
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-zinc-600 dark:text-zinc-400 mb-4">
-                    This MCP server exposes chess tools that allow an AI to play chess.
-                    The server maintains game state and validates moves.
-                  </p>
+          {/* CONNECT MCP TAB */}
+          <TabsContent value="mcp" className="space-y-6">
+            {/* How it works */}
+            <Card className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/30">
+              <CardHeader>
+                <CardTitle className="text-blue-700 dark:text-blue-300">
+                  Play Chess via MCP
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-zinc-700 dark:text-zinc-300">
+                <ol className="space-y-2">
+                  <li className="flex gap-3">
+                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-bold">1</span>
+                    <span>Connect your MCP client (Claude, Cursor) to our chess server</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-bold">2</span>
+                    <span>Ask your AI to play chess - it will use the MCP tools to make moves</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-bold">3</span>
+                    <span>Watch the game unfold on the board below!</span>
+                  </li>
+                </ol>
+              </CardContent>
+            </Card>
 
-                  <div className="mb-4 flex flex-wrap gap-2">
-                    <Badge variant="outline">chess_board</Badge>
-                    <Badge variant="outline">chess_move</Badge>
-                    <Badge variant="outline">chess_legal_moves</Badge>
-                    <Badge variant="outline">chess_reset</Badge>
-                  </div>
+            {/* Connection Config */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Server Configuration</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Tabs defaultValue="claude" className="w-full">
+                  <TabsList className="mb-4">
+                    <TabsTrigger value="claude">Claude Desktop</TabsTrigger>
+                    <TabsTrigger value="cursor">Cursor</TabsTrigger>
+                    <TabsTrigger value="other">Other</TabsTrigger>
+                  </TabsList>
 
-                  <MCPPlayground
-                    initialCode={chessMCPCode}
-                    height="500px"
-                    showToolTester={true}
-                    title="Chess MCP Server"
-                    description="An MCP server that lets AI play chess"
-                  />
-                </CardContent>
-              </Card>
-
-              {/* Move Log for MCP */}
-              {moveLog.length > 0 && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">Move Log (for MCP)</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-zinc-500 mb-2">
-                      These moves were made in the game. You can use this data with your MCP server:
-                    </p>
-                    <div className="bg-zinc-900 rounded-lg p-4 font-mono text-sm text-zinc-100 max-h-48 overflow-y-auto">
-                      {moveLog.map((entry, i) => (
-                        <div key={i}>
-                          <span className="text-zinc-500">{i + 1}.</span>{" "}
-                          <span className="text-green-400">{entry.move}</span>{" "}
-                          <span className="text-zinc-600">{`// ${entry.fen}`}</span>
-                        </div>
-                      ))}
+                  <TabsContent value="claude">
+                    <div className="relative">
+                      <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-2">
+                        Add to <code className="px-1 bg-zinc-100 dark:bg-zinc-800 rounded">claude_desktop_config.json</code>:
+                      </p>
+                      <pre className="p-4 bg-zinc-900 text-zinc-100 rounded-lg text-sm overflow-x-auto">
+                        {claudeConfig}
+                      </pre>
+                      <button
+                        onClick={() => copyToClipboard(claudeConfig, "claude")}
+                        className="absolute top-10 right-2 p-2 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
+                      >
+                        {copiedConfig === "claude" ? <CheckCircle2 className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4" />}
+                      </button>
                     </div>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
+                  </TabsContent>
+
+                  <TabsContent value="cursor">
+                    <div className="relative">
+                      <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-2">
+                        In Cursor Settings → Features → MCP Servers:
+                      </p>
+                      <pre className="p-4 bg-zinc-900 text-zinc-100 rounded-lg text-sm overflow-x-auto">
+                        {cursorConfig}
+                      </pre>
+                      <button
+                        onClick={() => copyToClipboard(cursorConfig, "cursor")}
+                        className="absolute top-10 right-2 p-2 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
+                      >
+                        {copiedConfig === "cursor" ? <CheckCircle2 className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4" />}
+                      </button>
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="other">
+                    <div className="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-lg">
+                      <p className="text-zinc-700 dark:text-zinc-300 mb-2"><strong>Server URL:</strong></p>
+                      <code className="block p-3 bg-zinc-200 dark:bg-zinc-800 rounded text-sm">
+                        https://mcp.mcpchallenge.org/chess
+                      </code>
+                      <p className="text-sm text-zinc-500 mt-2">Transport: HTTP + SSE</p>
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
+
+            {/* Available Tools */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Available Tools</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {tools.map((tool) => (
+                    <div key={tool.name} className="flex items-start gap-3 p-3 bg-zinc-50 dark:bg-zinc-900 rounded-lg">
+                      <code className="text-amber-600 dark:text-amber-400 font-bold whitespace-nowrap">
+                        {tool.name}
+                        {tool.params && <span className="text-zinc-500">({tool.params})</span>}
+                      </code>
+                      <span className="text-sm text-zinc-600 dark:text-zinc-400">{tool.description}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Live Board */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Live Game Board</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+                  When your MCP client makes moves, they will appear here in real-time.
+                </p>
+                <ChessGame onGameComplete={handleGameComplete} />
+              </CardContent>
+            </Card>
+
+            {/* Tournament Mode Preview */}
+            <Card className="border-amber-200 dark:border-amber-800 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30">
+              <CardHeader>
+                <CardTitle className="text-amber-700 dark:text-amber-300 flex items-center gap-2">
+                  <Swords className="h-5 w-5" />
+                  Tournament Mode (Coming Soon)
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-zinc-700 dark:text-zinc-300">
+                <p className="mb-2">
+                  Soon you&apos;ll be able to create tournaments where two MCP clients play against each other!
+                </p>
+                <ul className="text-sm text-zinc-600 dark:text-zinc-400 space-y-1">
+                  <li>• Create a game room with unique ID</li>
+                  <li>• Two players connect with their MCP clients</li>
+                  <li>• Random color assignment</li>
+                  <li>• Spectate live on the web</li>
+                </ul>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>
