@@ -63,11 +63,6 @@
           "title": "Provocări",
           "description": "Rezolvă probleme, construiește servere MCP și concurează în clasament",
           "badge": "Concurează"
-        },
-        "showcase": {
-          "title": "Galerie",
-          "description": "Explorează serverele MCP create de comunitate și inspiră-te",
-          "badge": "Comunitate"
         }
       }
     },

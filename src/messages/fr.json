@@ -63,11 +63,6 @@
           "title": "Défis",
           "description": "Résolvez des problèmes, construisez des serveurs MCP et compétitionnez dans le classement",
           "badge": "Compétition"
-        },
-        "showcase": {
-          "title": "Vitrine",
-          "description": "Explorez les serveurs MCP créés par la communauté et inspirez-vous",
-          "badge": "Communauté"
         }
       }
     },

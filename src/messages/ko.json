@@ -63,11 +63,6 @@
           "title": "챌린지",
           "description": "문제를 해결하고, MCP 서버를 구축하고, 리더보드에서 경쟁하세요",
           "badge": "경쟁"
-        },
-        "showcase": {
-          "title": "쇼케이스",
-          "description": "커뮤니티가 만든 MCP 서버를 탐색하고 영감을 받으세요",
-          "badge": "커뮤니티"
         }
       }
     },

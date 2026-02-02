@@ -63,11 +63,6 @@
           "title": "Challenges",
           "description": "Los problemen op, bouw MCP-servers en strijd in het klassement",
           "badge": "Strijd"
-        },
-        "showcase": {
-          "title": "Showcase",
-          "description": "Ontdek door de community gebouwde MCP-servers en laat je inspireren",
-          "badge": "Community"
         }
       }
     },

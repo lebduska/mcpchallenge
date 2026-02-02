@@ -63,11 +63,6 @@
           "title": "Challenges",
           "description": "Solve problems, build MCP servers, and compete on the leaderboard",
           "badge": "Compete"
-        },
-        "showcase": {
-          "title": "Showcase",
-          "description": "Explore community-built MCP servers and get inspired",
-          "badge": "Community"
         }
       }
     },

@@ -136,11 +136,6 @@ export const pageSEO: Record<string, { title: string; description: string }> = {
     description:
       "See the top MCP developers ranked by points and achievements. Compete and climb the rankings!",
   },
-  "/showcase": {
-    title: "Showcase - Community MCP Servers",
-    description:
-      "Explore community-built MCP servers and get inspired. See what others have created with MCP.",
-  },
   "/privacy": {
     title: "Privacy Policy",
     description:

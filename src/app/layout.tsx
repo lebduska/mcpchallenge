@@ -56,21 +56,12 @@ export const metadata: Metadata = {
     siteName: "MCP Challenge",
     locale: "en_US",
     type: "website",
-    images: [
-      {
-        url: "/og-image.svg",
-        width: 1200,
-        height: 630,
-        alt: "MCP Challenge - Learn the Model Context Protocol",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "MCP Challenge - Master the Model Context Protocol",
     description:
       "Learn, build, and compete with interactive MCP challenges. Free tutorials, playground, and achievements.",
-    images: ["/og-image.svg"],
     creator: "@mcpchallenge",
   },
   robots: {

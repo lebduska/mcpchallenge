@@ -63,11 +63,6 @@
           "title": "挑战",
           "description": "解决问题，构建 MCP 服务器，在排行榜上竞争",
           "badge": "竞技"
-        },
-        "showcase": {
-          "title": "展示",
-          "description": "探索社区构建的 MCP 服务器并获取灵感",
-          "badge": "社区"
         }
       }
     },

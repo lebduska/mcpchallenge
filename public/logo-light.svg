@@ -1,0 +1,4 @@
+<svg width="30" height="30" viewBox="0 0 210 210" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M105 10 L195 40 L195 100 C195 155 105 195 105 195 C105 195 15 155 15 100 L15 40 Z" fill="none" stroke="#18181b" stroke-width="11"/>
+  <text x="105" y="115" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="58" font-weight="700" fill="#18181b">MCP</text>
+</svg>

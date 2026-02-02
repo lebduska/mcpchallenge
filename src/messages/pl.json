@@ -63,11 +63,6 @@
           "title": "Wyzwania",
           "description": "Rozwiązuj problemy, buduj serwery MCP i rywalizuj w rankingu",
           "badge": "Rywalizuj"
-        },
-        "showcase": {
-          "title": "Galeria",
-          "description": "Przeglądaj serwery MCP stworzone przez społeczność i czerp inspirację",
-          "badge": "Społeczność"
         }
       }
     },

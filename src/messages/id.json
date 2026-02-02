@@ -63,11 +63,6 @@
           "title": "Tantangan",
           "description": "Selesaikan masalah, bangun server MCP, dan bersaing di papan peringkat",
           "badge": "Bersaing"
-        },
-        "showcase": {
-          "title": "Galeri",
-          "description": "Jelajahi server MCP buatan komunitas dan dapatkan inspirasi",
-          "badge": "Komunitas"
         }
       }
     },

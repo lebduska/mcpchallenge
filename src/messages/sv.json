@@ -63,11 +63,6 @@
           "title": "Utmaningar",
           "description": "Lös problem, bygg MCP-servrar och tävla på topplistan",
           "badge": "Tävla"
-        },
-        "showcase": {
-          "title": "Utställning",
-          "description": "Utforska community-byggda MCP-servrar och bli inspirerad",
-          "badge": "Community"
         }
       }
     },

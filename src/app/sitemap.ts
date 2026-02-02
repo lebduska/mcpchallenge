@@ -25,7 +25,6 @@ const staticPages = [
   { path: "/playground", priority: 0.8, changeFrequency: "weekly" as const },
   { path: "/achievements", priority: 0.7, changeFrequency: "weekly" as const },
   { path: "/leaderboard", priority: 0.6, changeFrequency: "daily" as const },
-  { path: "/showcase", priority: 0.7, changeFrequency: "weekly" as const },
   { path: "/privacy", priority: 0.3, changeFrequency: "yearly" as const },
 ];
 

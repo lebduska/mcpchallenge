@@ -63,11 +63,6 @@
           "title": "Výzvy",
           "description": "Řešte problémy, vytvářejte MCP servery a soutěžte na žebříčku",
           "badge": "Soutěžte"
-        },
-        "showcase": {
-          "title": "Galerie",
-          "description": "Prozkoumejte MCP servery vytvořené komunitou a inspirujte se",
-          "badge": "Komunita"
         }
       }
     },

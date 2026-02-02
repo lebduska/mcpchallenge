@@ -63,11 +63,6 @@
           "title": "Kihívások",
           "description": "Oldj meg problémákat, építs MCP szervereket és versenyezz a ranglistán",
           "badge": "Versenyezz"
-        },
-        "showcase": {
-          "title": "Vitrin",
-          "description": "Fedezd fel a közösség által épített MCP szervereket és inspirálódj",
-          "badge": "Közösség"
         }
       }
     },

@@ -63,11 +63,6 @@
           "title": "Challenges",
           "description": "Löse Probleme, entwickle MCP-Server und tritt in der Bestenliste an",
           "badge": "Wetteifern"
-        },
-        "showcase": {
-          "title": "Showcase",
-          "description": "Entdecke von der Community erstellte MCP-Server und lass dich inspirieren",
-          "badge": "Community"
         }
       }
     },

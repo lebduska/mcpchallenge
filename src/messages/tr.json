@@ -63,11 +63,6 @@
           "title": "Görevler",
           "description": "Problemleri çözün, MCP sunucuları geliştirin ve lider tablosunda yarışın",
           "badge": "Yarış"
-        },
-        "showcase": {
-          "title": "Vitrin",
-          "description": "Topluluk tarafından oluşturulan MCP sunucularını keşfedin ve ilham alın",
-          "badge": "Topluluk"
         }
       }
     },
