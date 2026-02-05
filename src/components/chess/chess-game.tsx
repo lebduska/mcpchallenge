@@ -3,7 +3,10 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { Chess } from "chess.js";
 import dynamic from "next/dynamic";
-import type { Square, Piece } from "react-chessboard/dist/chessboard/types";
+
+// Types for react-chessboard callbacks
+type Square = string;
+type Piece = string;
 
 // Dynamic import with SSR disabled - react-chessboard uses DOM APIs
 const Chessboard = dynamic(
