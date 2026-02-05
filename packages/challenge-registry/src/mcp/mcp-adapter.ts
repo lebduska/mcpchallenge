@@ -194,10 +194,13 @@ export type ToolCallHandler = (
   args: Record<string, unknown>
 ) => Promise<ToolCallResult>;
 
+import type { DomainEvent } from '../types/domain-events';
+
 export interface ToolCallResult {
   readonly success: boolean;
   readonly data?: unknown;
   readonly error?: string;
+  readonly events?: readonly DomainEvent[];
 }
 
 // =============================================================================

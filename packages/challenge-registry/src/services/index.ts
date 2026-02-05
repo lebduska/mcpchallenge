@@ -78,3 +78,21 @@ export {
   type EvaluationSummary,
   type AchievementProgress,
 } from './achievement-evaluator';
+
+// Event Collector
+export {
+  EventCollector,
+  createEventCollector,
+  createEventCollectorFromString,
+  getCurrentSeq,
+  resetSeq,
+} from './event-collector';
+
+// Event Buffer
+export {
+  EventBuffer,
+  getEventBuffer,
+  createEventBuffer,
+  resetEventBuffer,
+  type EventBufferOptions,
+} from './event-buffer';

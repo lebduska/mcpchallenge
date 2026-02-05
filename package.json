@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "Interactive platform for learning Model Context Protocol (MCP) through hands-on coding challenges. Build MCP servers, connect AI agents, and earn achievements.",
   "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -17,6 +20,7 @@
     "db:migrate:local": "npx wrangler d1 migrations apply mcpchallenge-db --local"
   },
   "dependencies": {
+    "@mcpchallenge/challenge-registry": "file:./packages/challenge-registry",
     "@auth/drizzle-adapter": "^1.11.1",
     "@monaco-editor/react": "^4.7.0",
     "@next/third-parties": "^16.1.6",

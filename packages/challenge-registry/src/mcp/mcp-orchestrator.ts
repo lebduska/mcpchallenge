@@ -8,6 +8,7 @@
 import type { GameState, Seed, Difficulty } from '../types/engine';
 import type { ChallengeId, ChallengeDefinition } from '../types/challenge';
 import type { ChallengeRegistry } from '../registry';
+import type { SessionId as DomainSessionId } from '../types/domain-events';
 
 // Services
 import {
@@ -32,6 +33,9 @@ import {
   AchievementEvaluator,
   createAchievementEvaluatorFromRegistry,
 } from '../services/achievement-evaluator';
+import {
+  EventCollector,
+} from '../services/event-collector';
 
 // Types from old adapter (keep compatible)
 import type {
@@ -309,7 +313,15 @@ export class MCPOrchestrator {
       challenge,
     });
 
-    // Stage 7: Build response
+    // Stage 7: Create event collector and emit session_created
+    const events = new EventCollector(session.id as unknown as DomainSessionId);
+    events.emit('session_created', {
+      challengeId: challenge.id,
+      difficulty,
+      seed: seed as string,
+    });
+
+    // Stage 8: Build response
     const output: StartChallengeOutput = {
       sessionId: session.id,
       challengeId: challenge.id,
@@ -318,7 +330,7 @@ export class MCPOrchestrator {
       turn: initResult.state.turn,
     };
 
-    return { success: true, data: output };
+    return { success: true, data: output, events: events.getEvents() };
   }
 
   private handleMakeMove(ctx: PipelineContext): ToolCallResult {
@@ -330,10 +342,18 @@ export class MCPOrchestrator {
 
     const { sessionId, move } = validation.value;
 
+    // Create event collector for this session
+    const events = new EventCollector(sessionId as unknown as DomainSessionId);
+
     // Stage 2: Get session
     const sessionResult = this.sessionManager.get(sessionId);
     if (!sessionResult.ok) {
-      return { success: false, error: sessionResult.error.message };
+      events.emit('error', {
+        code: sessionResult.error.code,
+        message: sessionResult.error.message,
+        recoverable: false,
+      });
+      return { success: false, error: sessionResult.error.message, events: events.getEvents() };
     }
 
     const session = sessionResult.value;
@@ -341,25 +361,51 @@ export class MCPOrchestrator {
     // Stage 3: Validate session state
     const stateValidation = this.validator.validateSessionCanPlay(session);
     if (!stateValidation.valid) {
-      return { success: false, error: stateValidation.error.message };
+      events.emit('error', {
+        code: stateValidation.error.code,
+        message: stateValidation.error.message,
+        recoverable: true,
+      });
+      return { success: false, error: stateValidation.error.message, events: events.getEvents() };
     }
 
     // Stage 4: Get session data
     const data = this.sessionData.get(sessionId);
     if (!data) {
-      return { success: false, error: 'Session data not found' };
+      events.emit('error', {
+        code: 'SESSION_DATA_NOT_FOUND',
+        message: 'Session data not found',
+        recoverable: false,
+      });
+      return { success: false, error: 'Session data not found', events: events.getEvents() };
     }
 
     const { executor, recorder } = data;
 
     // Stage 5: Execute player move
     const moveResult = executor.executeMove(session.state, move);
+
+    // Emit move_validated event
+    events.emit('move_validated', {
+      move,
+      valid: moveResult.ok,
+      error: moveResult.ok ? undefined : moveResult.error.message,
+    });
+
     if (!moveResult.ok) {
       return {
         success: false,
         error: moveResult.error.message,
+        events: events.getEvents(),
       };
     }
+
+    // Emit move_executed event
+    events.emit('move_executed', {
+      move: moveResult.moveString,
+      turn: moveResult.state.turn,
+      moveCount: session.moveCount + 1,
+    });
 
     // Stage 6: Record player move
     recorder.recordPlayerMove({
@@ -375,9 +421,20 @@ export class MCPOrchestrator {
 
     // Stage 8: AI move (if game not over and AI's turn)
     if (!moveResult.gameOver && currentState.turn === 'opponent') {
+      // Emit ai_thinking event
+      events.emit('ai_thinking', {
+        difficulty: session.difficulty,
+      });
+
       const aiResult = executor.executeAI(currentState, session.difficulty, session.seed);
 
       if (aiResult.hasMove) {
+        // Emit ai_moved event
+        events.emit('ai_moved', {
+          move: aiResult.moveString,
+          thinkTimeMs: undefined, // Could add timing if needed
+        });
+
         // Stage 9: Record AI move
         recorder.recordAIMove({
           move: aiResult.move,
@@ -401,6 +458,14 @@ export class MCPOrchestrator {
     // Stage 11: Build response
     const stateInfo = executor.getStateInfo(currentState);
 
+    // Emit game_state_changed event
+    events.emit('game_state_changed', {
+      turn: stateInfo.turn,
+      moveCount: session.moveCount + 1,
+      gameOver: stateInfo.gameOver,
+      legalMoveCount: stateInfo.legalMoves.length,
+    });
+
     const output: ChallengeMoveOutput = {
       valid: true,
       gameState: stateInfo.rendered,
@@ -411,7 +476,7 @@ export class MCPOrchestrator {
       aiMove: aiMoveStr,
     };
 
-    return { success: true, data: output };
+    return { success: true, data: output, events: events.getEvents() };
   }
 
   private handleGetState(ctx: PipelineContext): ToolCallResult {
@@ -491,10 +556,18 @@ export class MCPOrchestrator {
 
     const { sessionId } = validation.value;
 
+    // Create event collector
+    const events = new EventCollector(sessionId as unknown as DomainSessionId);
+
     // Stage 2: Get session
     const sessionResult = this.sessionManager.get(sessionId);
     if (!sessionResult.ok) {
-      return { success: false, error: sessionResult.error.message };
+      events.emit('error', {
+        code: sessionResult.error.code,
+        message: sessionResult.error.message,
+        recoverable: false,
+      });
+      return { success: false, error: sessionResult.error.message, events: events.getEvents() };
     }
 
     const session = sessionResult.value;
@@ -502,7 +575,12 @@ export class MCPOrchestrator {
     // Stage 3: Get session data
     const data = this.sessionData.get(sessionId);
     if (!data) {
-      return { success: false, error: 'Session data not found' };
+      events.emit('error', {
+        code: 'SESSION_DATA_NOT_FOUND',
+        message: 'Session data not found',
+        recoverable: false,
+      });
+      return { success: false, error: 'Session data not found', events: events.getEvents() };
     }
 
     const { executor, recorder, challenge } = data;
@@ -510,7 +588,12 @@ export class MCPOrchestrator {
     // Stage 4: Get result
     const result = executor.getResult(session.state);
     if (!result) {
-      return { success: false, error: 'Game is not over yet' };
+      events.emit('error', {
+        code: 'GAME_NOT_OVER',
+        message: 'Game is not over yet',
+        recoverable: true,
+      });
+      return { success: false, error: 'Game is not over yet', events: events.getEvents() };
     }
 
     // Stage 5: Record game end
@@ -536,6 +619,30 @@ export class MCPOrchestrator {
       replay,
     });
 
+    // Emit game_completed event
+    events.emit('game_completed', {
+      result,
+      replayId: replay.replayId as string,
+    });
+
+    // Emit achievement_earned events for each earned achievement
+    for (const earned of evaluation.earned) {
+      events.emit('achievement_earned', {
+        achievementId: earned.id,
+        name: earned.name,
+        description: earned.description,
+        points: earned.points,
+        rarity: earned.rarity,
+        icon: undefined,
+      });
+    }
+
+    // Emit achievement_evaluation_complete event
+    events.emit('achievement_evaluation_complete', {
+      totalEarned: evaluation.earned.length,
+      totalPoints: evaluation.totalPoints,
+    });
+
     // Stage 8: Complete session
     this.sessionManager.complete(sessionId);
 
@@ -556,7 +663,7 @@ export class MCPOrchestrator {
       replayId: replay.replayId as string,
     };
 
-    return { success: true, data: output };
+    return { success: true, data: output, events: events.getEvents() };
   }
 
   // ===========================================================================

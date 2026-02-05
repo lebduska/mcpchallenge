@@ -14,9 +14,11 @@ import {
   Trophy,
   Swords,
   Eye,
+  Activity,
 } from "lucide-react";
 import { ChessGame } from "@/components/chess/chess-game";
 import { LiveGameBoard } from "@/components/mcp/live-game-board";
+import { MCPSessionDemo } from "@/components/mcp/mcp-session-demo";
 import { useGameCompletion } from "@/hooks/use-game-completion";
 import { AchievementToast } from "@/components/achievements/achievement-toast";
 import { ChallengeHero } from "@/components/challenges/challenge-hero";
@@ -72,7 +74,7 @@ export default function ChessChallengePage() {
 
         {/* Main Tabs */}
         <Tabs defaultValue="play" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6">
+          <TabsList className="grid w-full grid-cols-4 mb-6">
             <TabsTrigger value="play" className="flex items-center gap-2">
               <Play className="h-4 w-4" />
               Play Now
@@ -84,6 +86,10 @@ export default function ChessChallengePage() {
             <TabsTrigger value="live" className="flex items-center gap-2">
               <Eye className="h-4 w-4" />
               Live Board
+            </TabsTrigger>
+            <TabsTrigger value="events" className="flex items-center gap-2">
+              <Activity className="h-4 w-4" />
+              Events
             </TabsTrigger>
           </TabsList>
 
@@ -207,6 +213,11 @@ export default function ChessChallengePage() {
           {/* LIVE BOARD TAB */}
           <TabsContent value="live" className="space-y-6">
             <LiveGameBoard gameType="chess" />
+          </TabsContent>
+
+          {/* EVENTS TAB - MCP Session with DomainEvents */}
+          <TabsContent value="events" className="space-y-6">
+            <MCPSessionDemo challengeId="chess" />
           </TabsContent>
         </Tabs>
       </div>
