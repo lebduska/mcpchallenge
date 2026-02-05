@@ -205,12 +205,14 @@ export function LiveGameBoard({
 
         <div className="relative rounded-xl overflow-hidden shadow-2xl shadow-black/20 dark:shadow-black/50 ring-1 ring-zinc-200 dark:ring-white/10">
           <Chessboard
-            position={state.fen || "start"}
-            boardOrientation={state.playerColor || "white"}
-            arePiecesDraggable={false}
-            customBoardStyle={{ borderRadius: "12px" }}
-            customDarkSquareStyle={{ backgroundColor: "#4a7c59" }}
-            customLightSquareStyle={{ backgroundColor: "#ebecd0" }}
+            options={{
+              position: state.fen || "start",
+              boardOrientation: state.playerColor || "white",
+              allowDragging: false,
+              boardStyle: { borderRadius: "12px" },
+              darkSquareStyle: { backgroundColor: "#4a7c59" },
+              lightSquareStyle: { backgroundColor: "#ebecd0" },
+            }}
           />
 
           {/* Status overlay */}
@@ -364,12 +366,14 @@ export function LiveGameBoard({
       case "chess":
         return (
           <Chessboard
-            position="start"
-            arePiecesDraggable={false}
-            boardOrientation="white"
-            customBoardStyle={{ borderRadius: "16px" }}
-            customDarkSquareStyle={{ backgroundColor: "#4a7c59" }}
-            customLightSquareStyle={{ backgroundColor: "#ebecd0" }}
+            options={{
+              position: "start",
+              allowDragging: false,
+              boardOrientation: "white",
+              boardStyle: { borderRadius: "16px" },
+              darkSquareStyle: { backgroundColor: "#4a7c59" },
+              lightSquareStyle: { backgroundColor: "#ebecd0" },
+            }}
           />
         );
       case "tictactoe":

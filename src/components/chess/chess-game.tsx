@@ -55,6 +55,7 @@ interface ChessGameProps {
 
 export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
   const [game, setGame] = useState(new Chess());
+  const [fen, setFen] = useState("start");
   const [gameMode, setGameMode] = useState<GameMode>(null);
   const [gameStatus, setGameStatus] = useState<GameStatus>("waiting");
   const [moveHistory, setMoveHistory] = useState<string[]>([]);
@@ -70,6 +71,7 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
     setDifficulty,
     error: stockfishError
   } = useStockfish();
+
 
   // Track if completion was called
   const completionCalledRef = useRef(false);
@@ -164,6 +166,7 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
 
       if (result) {
         setGame(gameCopy);
+        setFen(gameCopy.fen());
         setMoveHistory(prev => [...prev, result.san]);
         setLastMove({ from, to });
         checkGameState(gameCopy);
@@ -176,7 +179,7 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
 
   // Handle player move
   const onDrop = useCallback(
-    (sourceSquare: Square, targetSquare: Square, piece: Piece) => {
+    ({ sourceSquare, targetSquare, piece }: { sourceSquare: Square; targetSquare: Square; piece: Piece }) => {
       if (gameStatus !== "playing") return false;
       if (isThinking) return false;
 
@@ -206,6 +209,7 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
         if (result === null) return false;
 
         setGame(gameCopy);
+        setFen(gameCopy.fen());
         setMoveHistory(prev => [...prev, result.san]);
         setLastMove({ from: sourceSquare, to: targetSquare });
         checkGameState(gameCopy);
@@ -233,6 +237,7 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
   const startGame = (mode: GameMode, color: "white" | "black" = "white") => {
     const newGame = new Chess();
     setGame(newGame);
+    setFen("start");
     setGameMode(mode);
     setGameStatus("playing");
     setMoveHistory([]);
@@ -247,6 +252,7 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
   // Reset game
   const resetGame = () => {
     setGame(new Chess());
+    setFen("start");
     setGameMode(null);
     setGameStatus("waiting");
     setMoveHistory([]);
@@ -294,12 +300,14 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
               )}
             >
               <Chessboard
-                position="start"
-                arePiecesDraggable={false}
-                boardOrientation="white"
-                customBoardStyle={{ borderRadius: "16px" }}
-                customDarkSquareStyle={{ backgroundColor: "#4a7c59" }}
-                customLightSquareStyle={{ backgroundColor: "#ebecd0" }}
+                options={{
+                  position: "start",
+                  allowDragging: false,
+                  boardOrientation: "white",
+                  boardStyle: { borderRadius: "16px" },
+                  darkSquareStyle: { backgroundColor: "#4a7c59" },
+                  lightSquareStyle: { backgroundColor: "#ebecd0" },
+                }}
               />
 
               {/* Overlay hint */}
@@ -474,13 +482,16 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
             )}
           >
             <Chessboard
-              position={game.fen()}
-              onPieceDrop={onDrop}
-              boardOrientation={playerColor}
-              customBoardStyle={{ borderRadius: "16px" }}
-              customDarkSquareStyle={{ backgroundColor: "#4a7c59" }}
-              customLightSquareStyle={{ backgroundColor: "#ebecd0" }}
-              customSquareStyles={customSquareStyles}
+              options={{
+                position: fen,
+                onPieceDrop: onDrop,
+                allowDragging: true,
+                boardOrientation: playerColor,
+                boardStyle: { borderRadius: "16px" },
+                darkSquareStyle: { backgroundColor: "#4a7c59" },
+                lightSquareStyle: { backgroundColor: "#ebecd0" },
+                squareStyles: customSquareStyles,
+              }}
             />
 
             {/* AI Thinking overlay */}
