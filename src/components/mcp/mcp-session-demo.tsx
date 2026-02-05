@@ -20,7 +20,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Chessboard } from 'react-chessboard';
+import dynamic from 'next/dynamic';
+
+// Dynamic import with SSR disabled - react-chessboard uses DOM APIs
+const Chessboard = dynamic(
+  () => import('react-chessboard').then((mod) => mod.Chessboard),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="aspect-square bg-zinc-100 dark:bg-zinc-800 rounded-lg animate-pulse flex items-center justify-center">
+        <span className="text-zinc-400">Loading board...</span>
+      </div>
+    )
+  }
+);
 import { Play, RotateCcw, Loader2, Plug, History } from 'lucide-react';
 import { useChallengeSession, type EarnedAchievement } from '@/hooks/use-challenge-session';
 import { useEventScrubber } from '@/hooks/use-event-scrubber';
@@ -174,17 +187,15 @@ export function MCPSessionDemo({ challengeId = 'chess' }: MCPSessionDemoProps) {
               <div className="relative">
                 {/* Chess board - read-only projection */}
                 <Chessboard
-                  options={{
-                    position: displayState,
-                    allowDragging: false,
-                    boardOrientation: 'white',
-                    boardStyle: {
-                      borderRadius: '8px',
-                      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                    },
-                    darkSquareStyle: { backgroundColor: '#779952' },
-                    lightSquareStyle: { backgroundColor: '#edeed1' },
+                  position={displayState}
+                  arePiecesDraggable={false}
+                  boardOrientation="white"
+                  customBoardStyle={{
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
                   }}
+                  customDarkSquareStyle={{ backgroundColor: '#779952' }}
+                  customLightSquareStyle={{ backgroundColor: '#edeed1' }}
                 />
 
                 {/* Scrub mode indicator */}

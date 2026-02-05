@@ -305,7 +305,7 @@ export function SnakeGame({ onStateChange, onGameComplete, gridSize = 15 }: Snak
               // Game board
               <div className="relative">
                 <div
-                  className="grid gap-0 bg-zinc-900 rounded-lg p-2 mx-auto"
+                  className="grid gap-0 bg-zinc-800 dark:bg-zinc-900 rounded-lg p-2 mx-auto"
                   style={{
                     gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
                     aspectRatio: "1",

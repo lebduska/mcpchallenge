@@ -733,7 +733,7 @@ export function MCPPlayground({
 
           <TabsContent value="output" className="mt-0">
             <div
-              className="border rounded-lg p-4 bg-zinc-900 text-zinc-100 font-mono text-sm overflow-y-auto"
+              className="border rounded-lg p-4 bg-zinc-800 dark:bg-zinc-900 text-zinc-100 font-mono text-sm overflow-y-auto"
               style={{ height }}
             >
               {!validation ? (

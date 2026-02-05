@@ -1,27 +1,23 @@
 "use client";
 
-export const runtime = "edge";
-
 import { useState, useCallback } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import {
-  Crown,
-  Cpu,
-  Users,
-  Play,
-  Plug,
-  Trophy,
-  Swords,
-  Eye,
-  Activity,
-} from "lucide-react";
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Crown, Play, Plug, Bug, Terminal, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { ChessGame } from "@/components/chess/chess-game";
 import { LiveGameBoard } from "@/components/mcp/live-game-board";
 import { MCPSessionDemo } from "@/components/mcp/mcp-session-demo";
+import { DebugDrawer } from "@/components/mcp/debug-drawer";
 import { useGameCompletion } from "@/hooks/use-game-completion";
 import { AchievementToast } from "@/components/achievements/achievement-toast";
-import { ChallengeHero } from "@/components/challenges/challenge-hero";
+import { cn } from "@/lib/utils";
 
 interface Achievement {
   id: string;
@@ -32,17 +28,17 @@ interface Achievement {
   rarity: string;
 }
 
-
 const tools = [
-  { name: "get_board", description: "Get current board state (FEN, ASCII, turn)" },
-  { name: "get_legal_moves", description: "Get all legal moves in current position" },
-  { name: "make_move", params: "move", description: "Make a move (e.g., 'e4', 'Nf3', 'O-O')" },
-  { name: "new_game", params: "color?", description: "Start a new game (white/black/random)" },
-  { name: "resign", description: "Resign the current game" },
+  { name: "get_board", description: "Current board state (FEN, turn)" },
+  { name: "get_legal_moves", description: "All legal moves" },
+  { name: "make_move", params: "move", description: "Make a move (e4, Nf3, O-O)" },
+  { name: "new_game", params: "color?", description: "Start new game" },
+  { name: "resign", description: "Resign game" },
 ];
 
 export default function ChessChallengePage() {
   const [unlockedAchievements, setUnlockedAchievements] = useState<Achievement[]>([]);
+  const [debugOpen, setDebugOpen] = useState(false);
   const { submitCompletion } = useGameCompletion("chess");
 
   const handleGameComplete = useCallback(
@@ -59,168 +55,115 @@ export default function ChessChallengePage() {
   );
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-6xl mx-auto">
-        {/* Hero */}
-        <ChallengeHero
-          title="Chess Challenge"
-          description="Play chess in the browser against Stockfish or connect your MCP client!"
-          image="/images/challenges/chess-v2.jpg"
-          icon={<Crown className="h-8 w-8 text-amber-400" />}
-          badges={[
-            { label: "Game", className: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100" },
-          ]}
-        />
-
-        {/* Main Tabs */}
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+      <div className="max-w-6xl mx-auto px-4 py-6">
         <Tabs defaultValue="play" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-6">
-            <TabsTrigger value="play" className="flex items-center gap-2">
-              <Play className="h-4 w-4" />
-              Play Now
-            </TabsTrigger>
-            <TabsTrigger value="mcp" className="flex items-center gap-2">
-              <Plug className="h-4 w-4" />
-              Connect MCP
-            </TabsTrigger>
-            <TabsTrigger value="live" className="flex items-center gap-2">
-              <Eye className="h-4 w-4" />
-              Live Board
-            </TabsTrigger>
-            <TabsTrigger value="events" className="flex items-center gap-2">
-              <Activity className="h-4 w-4" />
-              Events
-            </TabsTrigger>
-          </TabsList>
-
-          {/* PLAY NOW TAB */}
-          <TabsContent value="play" className="space-y-6">
-            <ChessGame onGameComplete={handleGameComplete} />
-
-            {/* Game Modes Info */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm flex items-center gap-2">
-                    <Cpu className="h-4 w-4 text-blue-500" />
-                    vs Stockfish
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="text-sm text-zinc-600 dark:text-zinc-400">
-                  Play against the Stockfish chess engine. Great for practice!
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm flex items-center gap-2">
-                    <Users className="h-4 w-4 text-green-500" />
-                    2 Players
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="text-sm text-zinc-600 dark:text-zinc-400">
-                  Play against a friend on the same device.
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm flex items-center gap-2">
-                    <Trophy className="h-4 w-4 text-amber-500" />
-                    Achievements
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="text-sm text-zinc-600 dark:text-zinc-400">
-                  Win games to unlock achievements and climb the leaderboard!
-                </CardContent>
-              </Card>
+          {/* Compact Header with integrated segmented control */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <Link
+                href="/challenges"
+                className="flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Challenges
+              </Link>
+              <div className="h-4 w-px bg-zinc-300 dark:bg-zinc-700" />
+              <div className="flex items-center gap-2">
+                <Crown className="h-5 w-5 text-amber-500" />
+                <h1 className="text-lg font-semibold text-zinc-900 dark:text-white">Chess</h1>
+              </div>
             </div>
+
+            {/* Segmented Control - Mode Switch */}
+            <TabsList className="h-9 p-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg">
+              <TabsTrigger
+                value="play"
+                className={cn(
+                  "h-7 px-4 text-sm font-medium rounded-md transition-all",
+                  "data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800",
+                  "data-[state=active]:text-emerald-600 dark:data-[state=active]:text-emerald-400",
+                  "data-[state=active]:shadow-sm"
+                )}
+              >
+                <Play className="h-3.5 w-3.5 mr-1.5" />
+                Play
+              </TabsTrigger>
+              <TabsTrigger
+                value="mcp"
+                className={cn(
+                  "h-7 px-4 text-sm font-medium rounded-md transition-all",
+                  "data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800",
+                  "data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400",
+                  "data-[state=active]:shadow-sm"
+                )}
+              >
+                <Plug className="h-3.5 w-3.5 mr-1.5" />
+                MCP
+              </TabsTrigger>
+            </TabsList>
+          </div>
+
+          {/* PLAY MODE */}
+          <TabsContent value="play" className="mt-0">
+            <ChessGame onGameComplete={handleGameComplete} />
           </TabsContent>
 
-          {/* CONNECT MCP TAB */}
-          <TabsContent value="mcp" className="space-y-6">
-            {/* How it works */}
-            <Card className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/30">
-              <CardHeader>
-                <CardTitle className="text-blue-700 dark:text-blue-300">
-                  Play Chess via MCP
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="text-zinc-700 dark:text-zinc-300">
-                <ol className="space-y-2">
-                  <li className="flex gap-3">
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-bold">1</span>
-                    <span>Go to the &quot;Live Board&quot; tab and create a game room</span>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-bold">2</span>
-                    <span>Copy the MCP configuration and add it to your client (Claude, Cursor)</span>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-bold">3</span>
-                    <span>Ask your AI to play chess - it will use the MCP tools to make moves</span>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-bold">4</span>
-                    <span>Watch the game and MCP commands live on the board!</span>
-                  </li>
-                </ol>
-              </CardContent>
-            </Card>
-
-            {/* Available Tools */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Available Tools</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {tools.map((tool) => (
-                    <div key={tool.name} className="flex items-start gap-3 p-3 bg-zinc-50 dark:bg-zinc-900 rounded-lg">
-                      <code className="text-amber-600 dark:text-amber-400 font-bold whitespace-nowrap">
-                        {tool.name}
-                        {tool.params && <span className="text-zinc-500">({tool.params})</span>}
-                      </code>
-                      <span className="text-sm text-zinc-600 dark:text-zinc-400">{tool.description}</span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Tournament Mode Preview */}
-            <Card className="border-amber-200 dark:border-amber-800 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30">
-              <CardHeader>
-                <CardTitle className="text-amber-700 dark:text-amber-300 flex items-center gap-2">
-                  <Swords className="h-5 w-5" />
-                  Tournament Mode (Coming Soon)
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="text-zinc-700 dark:text-zinc-300">
-                <p className="mb-2">
-                  Soon you&apos;ll be able to create tournaments where two MCP clients play against each other!
-                </p>
-                <ul className="text-sm text-zinc-600 dark:text-zinc-400 space-y-1">
-                  <li>• Create a game room with unique ID</li>
-                  <li>• Two players connect with their MCP clients</li>
-                  <li>• Random color assignment</li>
-                  <li>• Spectate live on the web</li>
-                </ul>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* LIVE BOARD TAB */}
-          <TabsContent value="live" className="space-y-6">
+          {/* MCP MODE */}
+          <TabsContent value="mcp" className="mt-0 space-y-6">
+            {/* Live Game Board - Command Center */}
             <LiveGameBoard gameType="chess" />
-          </TabsContent>
 
-          {/* EVENTS TAB - MCP Session with DomainEvents */}
-          <TabsContent value="events" className="space-y-6">
-            <MCPSessionDemo challengeId="chess" />
+            {/* Tools & Config - in accordion */}
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="tools" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4">
+                <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
+                  <div className="flex items-center gap-2">
+                    <Terminal className="h-4 w-4" />
+                    Available MCP Tools
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 pb-2">
+                    {tools.map((tool) => (
+                      <div
+                        key={tool.name}
+                        className="flex flex-col p-2.5 bg-zinc-50 dark:bg-zinc-900/50 rounded-lg border border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors"
+                      >
+                        <code className="text-emerald-600 dark:text-emerald-400 font-mono text-sm font-semibold">
+                          {tool.name}
+                          {tool.params && (
+                            <span className="text-zinc-400 dark:text-zinc-600">({tool.params})</span>
+                          )}
+                        </code>
+                        <span className="text-xs text-zinc-500 dark:text-zinc-500 mt-0.5">{tool.description}</span>
+                      </div>
+                    ))}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Debug Drawer - Events + Scrubber */}
+      <DebugDrawer
+        open={debugOpen}
+        onOpenChange={setDebugOpen}
+        trigger={
+          <Button
+            variant="outline"
+            size="icon"
+            className="fixed bottom-4 right-4 z-50 bg-white/80 dark:bg-zinc-900/80 border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            onClick={() => setDebugOpen(true)}
+          >
+            <Bug className="h-4 w-4" />
+          </Button>
+        }
+      >
+        <MCPSessionDemo challengeId="chess" />
+      </DebugDrawer>
 
       {/* Achievement notification */}
       {unlockedAchievements.length > 0 && (

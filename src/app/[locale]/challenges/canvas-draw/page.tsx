@@ -1,13 +1,18 @@
 "use client";
 
-export const runtime = "edge";
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Paintbrush, Copy, CheckCircle2, Play, Plug } from "lucide-react";
-import { PixelCanvas } from "@/components/canvas";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ChallengeHero } from "@/components/challenges/challenge-hero";
+import { Button } from "@/components/ui/button";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Paintbrush, Play, Plug, Terminal, ArrowLeft, Copy, CheckCircle2 } from "lucide-react";
+import Link from "next/link";
+import { PixelCanvas } from "@/components/canvas";
+import { cn } from "@/lib/utils";
 
 const claudeConfig = `{
   "mcpServers": {
@@ -31,8 +36,8 @@ const tools = [
   { name: "draw_circle", params: "cx, cy, r, filled?", description: "Draw circle at center with radius" },
   { name: "draw_rect", params: "x, y, w, h, filled?", description: "Draw rectangle" },
   { name: "fill", params: "x, y", description: "Flood fill from point" },
-  { name: "clear", params: "", description: "Reset canvas to white" },
-  { name: "get_canvas", params: "", description: "Get current pixel data" },
+  { name: "clear", description: "Reset canvas to white" },
+  { name: "get_canvas", description: "Get current pixel data" },
 ];
 
 export default function CanvasDrawChallengePage() {
@@ -45,199 +50,211 @@ export default function CanvasDrawChallengePage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Hero */}
-        <ChallengeHero
-          title="Canvas Drawing"
-          description="Create pixel art on a 64x64 canvas. Play the demo or connect your MCP client!"
-          image="/images/challenges/canvas.jpg"
-          icon={<Paintbrush className="h-8 w-8 text-pink-400" />}
-          badges={[
-            { label: "Creative", className: "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-100" },
-          ]}
-        />
-
-        {/* Main Tabs */}
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+      <div className="max-w-6xl mx-auto px-4 py-6">
         <Tabs defaultValue="play" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="play" className="flex items-center gap-2">
-              <Play className="h-4 w-4" />
-              Play Now
-            </TabsTrigger>
-            <TabsTrigger value="mcp" className="flex items-center gap-2">
-              <Plug className="h-4 w-4" />
-              Connect MCP
-            </TabsTrigger>
-          </TabsList>
+          {/* Compact Header with integrated segmented control */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <Link
+                href="/challenges"
+                className="flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Challenges
+              </Link>
+              <div className="h-4 w-px bg-zinc-300 dark:bg-zinc-700" />
+              <div className="flex items-center gap-2">
+                <Paintbrush className="h-5 w-5 text-pink-500" />
+                <h1 className="text-lg font-semibold text-zinc-900 dark:text-white">Canvas Drawing</h1>
+              </div>
+            </div>
 
-          {/* PLAY NOW TAB */}
-          <TabsContent value="play" className="space-y-6">
-            <Card className="border-pink-200 dark:border-pink-800 bg-gradient-to-br from-pink-50 to-amber-50 dark:from-pink-950/30 dark:to-amber-950/30">
-              <CardContent className="pt-6">
-                <p className="text-zinc-700 dark:text-zinc-300 mb-4 text-center">
-                  Watch the AI draw the Mona Lisa using drawing primitives!
-                </p>
-              </CardContent>
-            </Card>
+            {/* Segmented Control - Mode Switch */}
+            <TabsList className="h-9 p-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg">
+              <TabsTrigger
+                value="play"
+                className={cn(
+                  "h-7 px-4 text-sm font-medium rounded-md transition-all",
+                  "data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800",
+                  "data-[state=active]:text-pink-600 dark:data-[state=active]:text-pink-400",
+                  "data-[state=active]:shadow-sm"
+                )}
+              >
+                <Play className="h-3.5 w-3.5 mr-1.5" />
+                Play
+              </TabsTrigger>
+              <TabsTrigger
+                value="mcp"
+                className={cn(
+                  "h-7 px-4 text-sm font-medium rounded-md transition-all",
+                  "data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800",
+                  "data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400",
+                  "data-[state=active]:shadow-sm"
+                )}
+              >
+                <Plug className="h-3.5 w-3.5 mr-1.5" />
+                MCP
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
-            {/* Live Canvas with Mona Lisa button */}
-            <PixelCanvas />
+          {/* PLAY MODE */}
+          <TabsContent value="play" className="mt-0">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Left: Canvas */}
+              <div className="lg:col-span-2">
+                <PixelCanvas />
+              </div>
 
-            {/* Canvas Info */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">About the Demo</CardTitle>
-              </CardHeader>
-              <CardContent className="text-zinc-600 dark:text-zinc-400 text-sm space-y-2">
-                <p>
-                  The &quot;Draw Mona Lisa&quot; button simulates what an MCP client would do -
-                  it sends a sequence of drawing commands to create pixel art.
-                </p>
-                <p>
-                  Each command (set_color, draw_line, draw_circle, etc.) is executed
-                  step by step, just like an AI would call the MCP tools.
-                </p>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* CONNECT MCP TAB */}
-          <TabsContent value="mcp" className="space-y-6">
-            {/* How it works */}
-            <Card className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/30">
-              <CardHeader>
-                <CardTitle className="text-blue-700 dark:text-blue-300 flex items-center gap-2">
-                  How It Works
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="text-zinc-700 dark:text-zinc-300">
-                <ol className="space-y-2">
-                  <li className="flex gap-3">
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-bold">1</span>
-                    <span>Connect your MCP client to our canvas server</span>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-bold">2</span>
-                    <span>Ask your AI to draw something using the available tools</span>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-bold">3</span>
-                    <span>Watch your creation appear on the canvas in real-time!</span>
-                  </li>
-                </ol>
-              </CardContent>
-            </Card>
-
-            {/* Connection Config */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Server Configuration</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Tabs defaultValue="claude" className="w-full">
-                  <TabsList className="mb-4">
-                    <TabsTrigger value="claude">Claude Desktop</TabsTrigger>
-                    <TabsTrigger value="cursor">Cursor</TabsTrigger>
-                    <TabsTrigger value="other">Other</TabsTrigger>
-                  </TabsList>
-
-                  <TabsContent value="claude">
-                    <div className="relative">
-                      <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-2">
-                        Add to <code className="px-1 bg-zinc-100 dark:bg-zinc-800 rounded">claude_desktop_config.json</code>:
-                      </p>
-                      <pre className="p-4 bg-zinc-900 text-zinc-100 rounded-lg text-sm overflow-x-auto">
-                        {claudeConfig}
-                      </pre>
-                      <button
-                        onClick={() => copyToClipboard(claudeConfig, "claude")}
-                        className="absolute top-10 right-2 p-2 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
-                      >
-                        {copiedConfig === "claude" ? <CheckCircle2 className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4" />}
-                      </button>
-                    </div>
-                  </TabsContent>
-
-                  <TabsContent value="cursor">
-                    <div className="relative">
-                      <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-2">
-                        In Cursor Settings → Features → MCP Servers:
-                      </p>
-                      <pre className="p-4 bg-zinc-900 text-zinc-100 rounded-lg text-sm overflow-x-auto">
-                        {cursorConfig}
-                      </pre>
-                      <button
-                        onClick={() => copyToClipboard(cursorConfig, "cursor")}
-                        className="absolute top-10 right-2 p-2 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
-                      >
-                        {copiedConfig === "cursor" ? <CheckCircle2 className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4" />}
-                      </button>
-                    </div>
-                  </TabsContent>
-
-                  <TabsContent value="other">
-                    <div className="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-lg">
-                      <p className="text-zinc-700 dark:text-zinc-300 mb-2"><strong>Server URL:</strong></p>
-                      <code className="block p-3 bg-zinc-200 dark:bg-zinc-800 rounded text-sm">
-                        https://mcp.mcpchallenge.org/canvas
-                      </code>
-                      <p className="text-sm text-zinc-500 mt-2">Transport: HTTP + SSE</p>
-                    </div>
-                  </TabsContent>
-                </Tabs>
-              </CardContent>
-            </Card>
-
-            {/* Available Tools */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Available Tools</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                  {tools.map((tool) => (
-                    <div key={tool.name} className="p-2 bg-zinc-50 dark:bg-zinc-900 rounded border border-zinc-200 dark:border-zinc-800">
-                      <code className="text-pink-600 dark:text-pink-400 font-bold text-sm">{tool.name}</code>
-                      <p className="text-xs text-zinc-500 mt-1">{tool.description}</p>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-800">
-                  <p className="text-sm text-amber-800 dark:text-amber-200">
-                    <strong>Canvas:</strong> 64x64 pixels | <strong>Colors:</strong> RGB 0-255
+              {/* Right: Info */}
+              <div className="space-y-4">
+                <div className="rounded-xl p-4 bg-white dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 shadow-lg">
+                  <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-3">
+                    About
+                  </h3>
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                    The &quot;Draw Mona Lisa&quot; button simulates what an MCP client would do -
+                    it sends a sequence of drawing commands to create pixel art.
+                  </p>
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-2">
+                    Each command (set_color, draw_line, draw_circle, etc.) is executed
+                    step by step, just like an AI would call the MCP tools.
                   </p>
                 </div>
-              </CardContent>
-            </Card>
 
-            {/* Live Canvas for MCP */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Live Canvas</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
-                  When your MCP client sends drawing commands, they will appear here in real-time.
-                </p>
-                <PixelCanvas />
-              </CardContent>
-            </Card>
-
-            {/* Challenge prompt */}
-            <Card className="border-pink-200 dark:border-pink-800">
-              <CardHeader>
-                <CardTitle className="text-pink-600 dark:text-pink-400">
-                  Challenge: Draw Mona Lisa!
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-2">Try this prompt:</p>
-                <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded font-mono text-sm">
-                  &quot;Using the canvas drawing tools, create the Mona Lisa on the 64x64 pixel canvas.&quot;
+                <div className="rounded-xl p-4 bg-pink-50 dark:bg-pink-950/30 border border-pink-200 dark:border-pink-800">
+                  <h3 className="text-sm font-medium text-pink-700 dark:text-pink-300 mb-2">
+                    Canvas Specs
+                  </h3>
+                  <p className="text-sm text-pink-800 dark:text-pink-200">
+                    <strong>Size:</strong> 64x64 pixels | <strong>Colors:</strong> RGB 0-255
+                  </p>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* MCP MODE */}
+          <TabsContent value="mcp" className="mt-0 space-y-6">
+            {/* Live Canvas */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <div className="rounded-xl p-4 bg-white dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 shadow-lg">
+                  <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-3">
+                    Live Canvas
+                  </h3>
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+                    When your MCP client sends drawing commands, they will appear here in real-time.
+                  </p>
+                  <PixelCanvas />
+                </div>
+              </div>
+
+              {/* Right: Config */}
+              <div className="space-y-4">
+                <div className="rounded-xl p-4 bg-white dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 shadow-lg">
+                  <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-3">
+                    Server Configuration
+                  </h3>
+
+                  <Tabs defaultValue="claude" className="w-full">
+                    <TabsList className="mb-3 w-full">
+                      <TabsTrigger value="claude" className="flex-1 text-xs">Claude</TabsTrigger>
+                      <TabsTrigger value="cursor" className="flex-1 text-xs">Cursor</TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="claude">
+                      <div className="relative">
+                        <p className="text-xs text-zinc-500 mb-2">
+                          Add to <code className="px-1 bg-zinc-100 dark:bg-zinc-800 rounded">claude_desktop_config.json</code>:
+                        </p>
+                        <pre className="p-3 bg-zinc-900 text-zinc-100 rounded-lg text-xs overflow-x-auto">
+                          {claudeConfig}
+                        </pre>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="absolute top-8 right-2 h-6 w-6"
+                          onClick={() => copyToClipboard(claudeConfig, "claude")}
+                        >
+                          {copiedConfig === "claude" ? (
+                            <CheckCircle2 className="h-3 w-3 text-green-400" />
+                          ) : (
+                            <Copy className="h-3 w-3" />
+                          )}
+                        </Button>
+                      </div>
+                    </TabsContent>
+
+                    <TabsContent value="cursor">
+                      <div className="relative">
+                        <p className="text-xs text-zinc-500 mb-2">
+                          In Cursor Settings → Features → MCP Servers:
+                        </p>
+                        <pre className="p-3 bg-zinc-900 text-zinc-100 rounded-lg text-xs overflow-x-auto">
+                          {cursorConfig}
+                        </pre>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="absolute top-8 right-2 h-6 w-6"
+                          onClick={() => copyToClipboard(cursorConfig, "cursor")}
+                        >
+                          {copiedConfig === "cursor" ? (
+                            <CheckCircle2 className="h-3 w-3 text-green-400" />
+                          ) : (
+                            <Copy className="h-3 w-3" />
+                          )}
+                        </Button>
+                      </div>
+                    </TabsContent>
+                  </Tabs>
+                </div>
+
+                <div className="rounded-xl p-4 bg-pink-50 dark:bg-pink-950/30 border border-pink-200 dark:border-pink-800">
+                  <h3 className="text-sm font-medium text-pink-700 dark:text-pink-300 mb-2">
+                    Challenge
+                  </h3>
+                  <p className="text-xs text-pink-800 dark:text-pink-200 mb-2">
+                    Try this prompt with your MCP client:
+                  </p>
+                  <div className="p-2 bg-pink-100 dark:bg-pink-900/50 rounded text-xs font-mono text-pink-900 dark:text-pink-100">
+                    &quot;Using the canvas drawing tools, create the Mona Lisa on the 64x64 pixel canvas.&quot;
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Tools & Config - in accordion */}
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="tools" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4">
+                <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
+                  <div className="flex items-center gap-2">
+                    <Terminal className="h-4 w-4" />
+                    Available MCP Tools
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 pb-2">
+                    {tools.map((tool) => (
+                      <div
+                        key={tool.name}
+                        className="flex flex-col p-2.5 bg-zinc-50 dark:bg-zinc-900/50 rounded-lg border border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors"
+                      >
+                        <code className="text-pink-600 dark:text-pink-400 font-mono text-sm font-semibold">
+                          {tool.name}
+                          {tool.params && (
+                            <span className="text-zinc-400 dark:text-zinc-600">({tool.params})</span>
+                          )}
+                        </code>
+                        <span className="text-xs text-zinc-500 dark:text-zinc-500 mt-0.5">{tool.description}</span>
+                      </div>
+                    ))}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </TabsContent>
         </Tabs>
       </div>
