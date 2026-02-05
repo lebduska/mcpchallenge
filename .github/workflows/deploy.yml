@@ -27,6 +27,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build workspace packages
+        run: |
+          npm run build --workspace=@mcpchallenge/game-engines
+          npm run build --workspace=@mcpchallenge/challenge-registry
+
       - name: Build with @cloudflare/next-on-pages
         run: npx @cloudflare/next-on-pages
 
