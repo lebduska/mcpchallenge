@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { Chess } from "chess.js";
 import dynamic from "next/dynamic";
-import type { PieceDropHandlerArgs } from "react-chessboard";
+import type { Square, Piece } from "react-chessboard/dist/chessboard/types";
 
 // Dynamic import with SSR disabled - react-chessboard uses DOM APIs
 const Chessboard = dynamic(
@@ -172,10 +172,9 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
 
   // Handle player move
   const onDrop = useCallback(
-    ({ sourceSquare, targetSquare, piece }: PieceDropHandlerArgs) => {
+    (sourceSquare: Square, targetSquare: Square, piece: Piece) => {
       if (gameStatus !== "playing") return false;
       if (isThinking) return false;
-      if (!targetSquare) return false;
 
       if (gameMode === "vs-ai") {
         const isWhiteTurn = game.turn() === "w";
@@ -186,9 +185,9 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
       }
 
       const gameCopy = new Chess(game.fen());
-      const pieceType = piece.pieceType;
-      const isPawn = pieceType[1] === "P";
-      const isWhitePiece = pieceType[0] === "w";
+      // piece is like "wP", "bK" etc - first char is color, second is piece type
+      const isPawn = piece[1] === "P";
+      const isWhitePiece = piece[0] === "w";
       const isPromotion = isPawn &&
         ((isWhitePiece && targetSquare[1] === "8") ||
          (!isWhitePiece && targetSquare[1] === "1"));
