@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@mcpchallenge/game-engines": "file:../game-engines",
     "chess.js": "^1.0.0-beta.8"
   },
   "devDependencies": {

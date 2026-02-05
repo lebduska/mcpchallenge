@@ -3,6 +3,8 @@
 
 import type { GameState, GameType, CommandLogEntry } from "./mcp/types";
 import { MCPServer } from "./mcp/server";
+import { createRoomMCPServer, hasAdapterSupport } from "./adapters";
+// Legacy imports (fallback for unsupported game types)
 import { createChessServer } from "./games/chess";
 import { createTicTacToeServer } from "./games/tictactoe";
 import { createSnakeServer } from "./games/snake";
@@ -122,6 +124,18 @@ export class GameRoom implements DurableObject {
       this.broadcast("state", this.getPublicState());
     };
 
+    // Use new adapter system if available
+    if (hasAdapterSupport(this.roomState.gameType)) {
+      this.mcpServer = createRoomMCPServer({
+        gameType: this.roomState.gameType,
+        initialState: this.roomState.gameState,
+        onStateChange,
+        onCommand,
+      });
+      return;
+    }
+
+    // Fallback to legacy implementation for unsupported types (e.g., canvas)
     switch (this.roomState.gameType) {
       case "chess":
         this.mcpServer = createChessServer(

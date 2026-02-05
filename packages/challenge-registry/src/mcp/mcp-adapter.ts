@@ -1,0 +1,763 @@
+/**
+ * Challenge Registry MCP Adapter
+ *
+ * Type-safe MCP tool definitions generated from ChallengeRegistry.
+ * No chaos - single source of truth.
+ */
+
+import type {
+  GameEngine,
+  GameState,
+  GameResult,
+  Difficulty,
+  Seed,
+} from '../types/engine';
+import type {
+  ChallengeId,
+  ChallengeDefinition,
+  AchievementId,
+} from '../types/challenge';
+import type { GameReplay, ReplayEvent, EventSeq, RelativeTimestamp } from '../types/replay';
+import type { ChallengeRegistry, ChallengeListItem } from '../registry';
+import { AchievementEngine, computeGameStats, type AchievementEvaluation } from '../achievements';
+
+// =============================================================================
+// MCP Tool Schema Types (JSON Schema compatible)
+// =============================================================================
+
+export interface MCPToolSchema {
+  readonly name: string;
+  readonly description: string;
+  readonly inputSchema: {
+    readonly type: 'object';
+    readonly properties: Record<string, PropertySchema>;
+    readonly required?: readonly string[];
+  };
+}
+
+interface PropertySchema {
+  readonly type: string;
+  readonly description?: string;
+  readonly enum?: readonly (string | number)[];
+  readonly default?: unknown;
+}
+
+// =============================================================================
+// Generated Tool Names (const for type safety)
+// =============================================================================
+
+export const REGISTRY_TOOLS = {
+  LIST_CHALLENGES: 'list_challenges',
+  GET_CHALLENGE: 'get_challenge',
+  START_CHALLENGE: 'start_challenge',
+  MAKE_MOVE: 'challenge_move',
+  GET_STATE: 'challenge_state',
+  GET_ACHIEVEMENTS: 'get_achievements',
+  COMPLETE_CHALLENGE: 'complete_challenge',
+} as const;
+
+export type RegistryToolName = typeof REGISTRY_TOOLS[keyof typeof REGISTRY_TOOLS];
+
+// =============================================================================
+// Tool Call Types (type-safe inputs/outputs)
+// =============================================================================
+
+/** list_challenges input */
+export interface ListChallengesInput {
+  readonly difficulty?: 1 | 2 | 3 | 4 | 5;
+  readonly concept?: string;
+  readonly tag?: string;
+}
+
+/** list_challenges output */
+export interface ListChallengesOutput {
+  readonly challenges: readonly ChallengeListItem[];
+  readonly total: number;
+}
+
+/** get_challenge input */
+export interface GetChallengeInput {
+  readonly challengeId: string;
+}
+
+/** get_challenge output */
+export interface GetChallengeOutput {
+  readonly id: ChallengeId;
+  readonly name: string;
+  readonly description: string;
+  readonly difficulty: number;
+  readonly concepts: readonly string[];
+  readonly difficulties: readonly Difficulty[];
+  readonly achievementCount: number;
+  readonly basePoints: number;
+  readonly achievements: readonly {
+    readonly id: string;
+    readonly name: string;
+    readonly description: string;
+    readonly rarity: string;
+    readonly points: number;
+    readonly hidden: boolean;
+  }[];
+}
+
+/** start_challenge input */
+export interface StartChallengeInput {
+  readonly challengeId: string;
+  readonly difficulty?: Difficulty;
+  readonly seed?: string;
+}
+
+/** start_challenge output */
+export interface StartChallengeOutput {
+  readonly sessionId: string;
+  readonly challengeId: ChallengeId;
+  readonly gameState: string;
+  readonly legalMoves: readonly string[];
+  readonly turn: 'player' | 'opponent';
+}
+
+/** challenge_move input */
+export interface ChallengeMoveInput {
+  readonly sessionId: string;
+  readonly move: string;
+}
+
+/** challenge_move output */
+export interface ChallengeMoveOutput {
+  readonly valid: boolean;
+  readonly error?: string;
+  readonly gameState: string;
+  readonly legalMoves: readonly string[];
+  readonly turn: 'player' | 'opponent';
+  readonly gameOver: boolean;
+  readonly result?: {
+    readonly status: 'won' | 'lost' | 'draw';
+    readonly score?: number;
+  };
+  readonly aiMove?: string;
+}
+
+/** challenge_state input */
+export interface ChallengeStateInput {
+  readonly sessionId: string;
+}
+
+/** challenge_state output */
+export interface ChallengeStateOutput {
+  readonly sessionId: string;
+  readonly challengeId: ChallengeId;
+  readonly gameState: string;
+  readonly legalMoves: readonly string[];
+  readonly turn: 'player' | 'opponent';
+  readonly moveCount: number;
+  readonly gameOver: boolean;
+}
+
+/** get_achievements input */
+export interface GetAchievementsInput {
+  readonly challengeId: string;
+}
+
+/** get_achievements output */
+export interface GetAchievementsOutput {
+  readonly challengeId: ChallengeId;
+  readonly achievements: readonly {
+    readonly id: string;
+    readonly name: string;
+    readonly description: string;
+    readonly rarity: string;
+    readonly points: number;
+    readonly hidden: boolean;
+  }[];
+}
+
+/** complete_challenge input */
+export interface CompleteChallengeInput {
+  readonly sessionId: string;
+}
+
+/** complete_challenge output */
+export interface CompleteChallengeOutput {
+  readonly sessionId: string;
+  readonly challengeId: ChallengeId;
+  readonly result: GameResult;
+  readonly evaluation: AchievementEvaluation;
+  readonly replayId: string;
+}
+
+// =============================================================================
+// Tool Call Handler Types
+// =============================================================================
+
+export type ToolCallHandler = (
+  name: RegistryToolName,
+  args: Record<string, unknown>
+) => Promise<ToolCallResult>;
+
+export interface ToolCallResult {
+  readonly success: boolean;
+  readonly data?: unknown;
+  readonly error?: string;
+}
+
+// =============================================================================
+// Session Management
+// =============================================================================
+
+export interface GameSession<TState extends GameState = GameState, TMove = unknown> {
+  readonly id: string;
+  readonly challengeId: ChallengeId;
+  readonly engine: GameEngine<TState, TMove, Record<string, unknown>, unknown>;
+  readonly difficulty: Difficulty;
+  readonly seed: Seed;
+  readonly startedAt: number;
+  state: TState;
+  events: ReplayEvent<TMove>[];
+  moveCount: number;
+}
+
+// =============================================================================
+// MCP Adapter
+// =============================================================================
+
+/**
+ * Generates MCP tools and handlers from ChallengeRegistry
+ */
+export class RegistryMCPAdapter {
+  private readonly registry: ChallengeRegistry;
+  private readonly sessions: Map<string, GameSession> = new Map();
+  private readonly achievementEngines: Map<string, AchievementEngine<unknown>> = new Map();
+
+  constructor(registry: ChallengeRegistry) {
+    this.registry = registry;
+    this.initializeAchievementEngines();
+  }
+
+  private initializeAchievementEngines(): void {
+    for (const challenge of this.registry) {
+      const engine = new AchievementEngine();
+      engine.register(...challenge.achievements);
+      this.achievementEngines.set(challenge.id as string, engine);
+    }
+  }
+
+  /**
+   * Generate all MCP tool schemas
+   */
+  generateToolSchemas(): readonly MCPToolSchema[] {
+    return [
+      {
+        name: REGISTRY_TOOLS.LIST_CHALLENGES,
+        description: 'List available challenges with optional filtering',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            difficulty: {
+              type: 'integer',
+              description: 'Filter by difficulty (1-5)',
+              enum: [1, 2, 3, 4, 5],
+            },
+            concept: {
+              type: 'string',
+              description: 'Filter by learning concept',
+            },
+            tag: {
+              type: 'string',
+              description: 'Filter by tag',
+            },
+          },
+        },
+      },
+      {
+        name: REGISTRY_TOOLS.GET_CHALLENGE,
+        description: 'Get detailed information about a specific challenge',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            challengeId: {
+              type: 'string',
+              description: 'The challenge ID',
+            },
+          },
+          required: ['challengeId'],
+        },
+      },
+      {
+        name: REGISTRY_TOOLS.START_CHALLENGE,
+        description: 'Start a new game session for a challenge',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            challengeId: {
+              type: 'string',
+              description: 'The challenge to start',
+            },
+            difficulty: {
+              type: 'string',
+              enum: ['easy', 'medium', 'hard'],
+              description: 'AI difficulty (default: medium)',
+            },
+            seed: {
+              type: 'string',
+              description: 'Random seed for deterministic replay',
+            },
+          },
+          required: ['challengeId'],
+        },
+      },
+      {
+        name: REGISTRY_TOOLS.MAKE_MOVE,
+        description: 'Make a move in an active challenge session',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            sessionId: {
+              type: 'string',
+              description: 'The session ID',
+            },
+            move: {
+              type: 'string',
+              description: 'The move to make',
+            },
+          },
+          required: ['sessionId', 'move'],
+        },
+      },
+      {
+        name: REGISTRY_TOOLS.GET_STATE,
+        description: 'Get current state of a challenge session',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            sessionId: {
+              type: 'string',
+              description: 'The session ID',
+            },
+          },
+          required: ['sessionId'],
+        },
+      },
+      {
+        name: REGISTRY_TOOLS.GET_ACHIEVEMENTS,
+        description: 'Get available achievements for a challenge',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            challengeId: {
+              type: 'string',
+              description: 'The challenge ID',
+            },
+          },
+          required: ['challengeId'],
+        },
+      },
+      {
+        name: REGISTRY_TOOLS.COMPLETE_CHALLENGE,
+        description: 'Complete a challenge session and evaluate achievements',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            sessionId: {
+              type: 'string',
+              description: 'The session ID to complete',
+            },
+          },
+          required: ['sessionId'],
+        },
+      },
+    ];
+  }
+
+  /**
+   * Handle a tool call
+   */
+  async handleToolCall(
+    name: string,
+    args: Record<string, unknown>
+  ): Promise<ToolCallResult> {
+    try {
+      switch (name) {
+        case REGISTRY_TOOLS.LIST_CHALLENGES:
+          return this.listChallenges(args as unknown as ListChallengesInput);
+
+        case REGISTRY_TOOLS.GET_CHALLENGE:
+          return this.getChallenge(args as unknown as GetChallengeInput);
+
+        case REGISTRY_TOOLS.START_CHALLENGE:
+          return this.startChallenge(args as unknown as StartChallengeInput);
+
+        case REGISTRY_TOOLS.MAKE_MOVE:
+          return this.makeMove(args as unknown as ChallengeMoveInput);
+
+        case REGISTRY_TOOLS.GET_STATE:
+          return this.getState(args as unknown as ChallengeStateInput);
+
+        case REGISTRY_TOOLS.GET_ACHIEVEMENTS:
+          return this.getAchievements(args as unknown as GetAchievementsInput);
+
+        case REGISTRY_TOOLS.COMPLETE_CHALLENGE:
+          return this.completeChallenge(args as unknown as CompleteChallengeInput);
+
+        default:
+          return { success: false, error: `Unknown tool: ${name}` };
+      }
+    } catch (err) {
+      return {
+        success: false,
+        error: err instanceof Error ? err.message : String(err),
+      };
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Tool Implementations
+  // ---------------------------------------------------------------------------
+
+  private listChallenges(input: ListChallengesInput): ToolCallResult {
+    const challenges = this.registry.listChallenges({
+      difficulty: input.difficulty
+        ? { min: input.difficulty, max: input.difficulty }
+        : undefined,
+      concepts: input.concept ? [input.concept as any] : undefined,
+      tags: input.tag ? [input.tag] : undefined,
+    });
+
+    const output: ListChallengesOutput = {
+      challenges,
+      total: challenges.length,
+    };
+
+    return { success: true, data: output };
+  }
+
+  private getChallenge(input: GetChallengeInput): ToolCallResult {
+    const challenge = this.registry.getChallenge(input.challengeId as ChallengeId);
+    if (!challenge) {
+      return { success: false, error: `Challenge not found: ${input.challengeId}` };
+    }
+
+    const output: GetChallengeOutput = {
+      id: challenge.id,
+      name: challenge.meta.name,
+      description: challenge.meta.description,
+      difficulty: challenge.meta.difficulty,
+      concepts: [...challenge.meta.concepts],
+      difficulties: [...challenge.difficulties],
+      achievementCount: challenge.achievements.length,
+      basePoints: challenge.scoring.basePoints,
+      achievements: challenge.achievements.map((a) => ({
+        id: a.id as string,
+        name: a.name,
+        description: a.description,
+        rarity: a.rarity,
+        points: a.points,
+        hidden: a.hidden ?? false,
+      })),
+    };
+
+    return { success: true, data: output };
+  }
+
+  private startChallenge(input: StartChallengeInput): ToolCallResult {
+    const challenge = this.registry.getChallenge(input.challengeId as ChallengeId);
+    if (!challenge) {
+      return { success: false, error: `Challenge not found: ${input.challengeId}` };
+    }
+
+    const difficulty = input.difficulty ?? 'medium';
+    const seed = (input.seed ?? generateSeed()) as Seed;
+    const sessionId = generateSessionId();
+
+    // Start new game
+    const engine = challenge.engine;
+    const state = engine.newGame(challenge.defaultOptions, seed);
+
+    // Create session
+    const session: GameSession = {
+      id: sessionId,
+      challengeId: challenge.id,
+      engine: engine as any,
+      difficulty,
+      seed,
+      startedAt: Date.now(),
+      state,
+      events: [{
+        seq: 0 as EventSeq,
+        timestamp: 0 as RelativeTimestamp,
+        type: 'game_start',
+        payload: {
+          options: challenge.defaultOptions ?? {},
+          seed,
+          initialState: engine.serialize(state),
+        },
+      }],
+      moveCount: 0,
+    };
+
+    this.sessions.set(sessionId, session);
+
+    const legalMoves = engine.getLegalMoves(state);
+
+    const output: StartChallengeOutput = {
+      sessionId,
+      challengeId: challenge.id,
+      gameState: engine.renderText(state),
+      legalMoves: legalMoves.map((m) => engine.formatMove(m)),
+      turn: state.turn,
+    };
+
+    return { success: true, data: output };
+  }
+
+  private makeMove(input: ChallengeMoveInput): ToolCallResult {
+    const session = this.sessions.get(input.sessionId);
+    if (!session) {
+      return { success: false, error: `Session not found: ${input.sessionId}` };
+    }
+
+    const { engine, state } = session;
+
+    // Parse move
+    const move = engine.parseMove(input.move);
+    if (!move) {
+      return {
+        success: false,
+        error: `Invalid move: ${input.move}`,
+      };
+    }
+
+    // Make move
+    const result = engine.makeMove(state, move);
+    if (!result.valid) {
+      return {
+        success: false,
+        error: result.error ?? 'Invalid move',
+      };
+    }
+
+    // Record event
+    const timestamp = Date.now() - session.startedAt;
+    session.events.push({
+      seq: (session.events.length) as EventSeq,
+      timestamp: timestamp as RelativeTimestamp,
+      type: 'player_move',
+      payload: {
+        move,
+        moveString: engine.formatMove(move),
+        stateBefore: engine.serialize(state),
+        stateAfter: engine.serialize(result.state),
+      },
+    } as any);
+
+    session.state = result.state;
+    session.moveCount++;
+
+    // Check if game over
+    const gameOver = engine.isGameOver(result.state);
+    const gameResult = gameOver ? engine.getResult(result.state) : null;
+
+    // AI response if game not over and it's AI's turn
+    let aiMoveStr: string | undefined;
+    if (!gameOver && result.state.turn === 'opponent') {
+      const aiMove = engine.getAIMove(result.state, session.difficulty, session.seed);
+      if (aiMove) {
+        const aiResult = engine.makeMove(result.state, aiMove);
+        if (aiResult.valid) {
+          aiMoveStr = engine.formatMove(aiMove);
+
+          // Record AI event
+          session.events.push({
+            seq: (session.events.length) as EventSeq,
+            timestamp: (Date.now() - session.startedAt) as RelativeTimestamp,
+            type: 'ai_move',
+            payload: {
+              move: aiMove,
+              moveString: aiMoveStr,
+              stateBefore: engine.serialize(result.state),
+              stateAfter: engine.serialize(aiResult.state),
+            },
+          } as any);
+
+          session.state = aiResult.state;
+        }
+      }
+    }
+
+    const finalState = session.state;
+    const finalGameOver = engine.isGameOver(finalState);
+    const finalResult = finalGameOver ? engine.getResult(finalState) : null;
+
+    const output: ChallengeMoveOutput = {
+      valid: true,
+      gameState: engine.renderText(finalState),
+      legalMoves: engine.getLegalMoves(finalState).map((m) => engine.formatMove(m)),
+      turn: finalState.turn,
+      gameOver: finalGameOver,
+      result: finalResult ?? undefined,
+      aiMove: aiMoveStr,
+    };
+
+    return { success: true, data: output };
+  }
+
+  private getState(input: ChallengeStateInput): ToolCallResult {
+    const session = this.sessions.get(input.sessionId);
+    if (!session) {
+      return { success: false, error: `Session not found: ${input.sessionId}` };
+    }
+
+    const { engine, state } = session;
+
+    const output: ChallengeStateOutput = {
+      sessionId: session.id,
+      challengeId: session.challengeId,
+      gameState: engine.renderText(state),
+      legalMoves: engine.getLegalMoves(state).map((m) => engine.formatMove(m)),
+      turn: state.turn,
+      moveCount: session.moveCount,
+      gameOver: engine.isGameOver(state),
+    };
+
+    return { success: true, data: output };
+  }
+
+  private getAchievements(input: GetAchievementsInput): ToolCallResult {
+    const challenge = this.registry.getChallenge(input.challengeId as ChallengeId);
+    if (!challenge) {
+      return { success: false, error: `Challenge not found: ${input.challengeId}` };
+    }
+
+    const output: GetAchievementsOutput = {
+      challengeId: challenge.id,
+      achievements: challenge.achievements.map((a) => ({
+        id: a.id as string,
+        name: a.name,
+        description: a.description,
+        rarity: a.rarity,
+        points: a.points,
+        hidden: a.hidden ?? false,
+      })),
+    };
+
+    return { success: true, data: output };
+  }
+
+  private completeChallenge(input: CompleteChallengeInput): ToolCallResult {
+    const session = this.sessions.get(input.sessionId);
+    if (!session) {
+      return { success: false, error: `Session not found: ${input.sessionId}` };
+    }
+
+    const { engine, state, challengeId, events, seed } = session;
+
+    // Get result
+    const result = engine.getResult(state);
+    if (!result) {
+      return { success: false, error: 'Game is not yet over' };
+    }
+
+    // Record game end event
+    events.push({
+      seq: (events.length) as EventSeq,
+      timestamp: (Date.now() - session.startedAt) as RelativeTimestamp,
+      type: 'game_end',
+      payload: {
+        result,
+        finalState: engine.serialize(state),
+        reason: 'completed',
+      },
+    } as any);
+
+    // Build replay
+    const replayId = generateReplayId();
+    const replay: GameReplay = {
+      version: '1.0',
+      replayId: replayId as any,
+      challengeId: challengeId as string,
+      gameId: session.id as any,
+      seed,
+      options: {},
+      events,
+      result,
+      meta: {
+        createdAt: session.startedAt,
+        completedAt: Date.now(),
+        playerMoves: events.filter((e) => e.type === 'player_move').length,
+        aiMoves: events.filter((e) => e.type === 'ai_move').length,
+        duration: Date.now() - session.startedAt,
+      },
+    };
+
+    // Evaluate achievements
+    const achievementEngine = this.achievementEngines.get(challengeId as string);
+    const evaluation = achievementEngine
+      ? achievementEngine.evaluate(result, replay as any)
+      : { earned: [], failed: [], totalPoints: 0, stats: computeGameStats(replay as any) };
+
+    // Cleanup session
+    this.sessions.delete(input.sessionId);
+
+    const output: CompleteChallengeOutput = {
+      sessionId: input.sessionId,
+      challengeId,
+      result,
+      evaluation,
+      replayId,
+    };
+
+    return { success: true, data: output };
+  }
+
+  // ---------------------------------------------------------------------------
+  // Session Management
+  // ---------------------------------------------------------------------------
+
+  getSession(sessionId: string): GameSession | undefined {
+    return this.sessions.get(sessionId);
+  }
+
+  getActiveSessions(): readonly string[] {
+    return Array.from(this.sessions.keys());
+  }
+
+  cleanupExpiredSessions(maxAgeMs: number = 3600000): number {
+    const now = Date.now();
+    let cleaned = 0;
+
+    for (const [id, session] of this.sessions) {
+      if (now - session.startedAt > maxAgeMs) {
+        this.sessions.delete(id);
+        cleaned++;
+      }
+    }
+
+    return cleaned;
+  }
+}
+
+// =============================================================================
+// Factory
+// =============================================================================
+
+/**
+ * Create MCP adapter from registry
+ */
+export function createRegistryAdapter(registry: ChallengeRegistry): RegistryMCPAdapter {
+  return new RegistryMCPAdapter(registry);
+}
+
+// =============================================================================
+// Utilities
+// =============================================================================
+
+function generateSessionId(): string {
+  return `session_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function generateReplayId(): string {
+  return `replay_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function generateSeed(): string {
+  return `seed_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
+}

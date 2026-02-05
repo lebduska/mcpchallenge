@@ -1,0 +1,50 @@
+{
+  "name": "@mcpchallenge/game-engines",
+  "version": "0.1.0",
+  "description": "Pure game logic engines for MCP Challenge",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./chess": {
+      "import": "./dist/chess/index.js",
+      "types": "./dist/chess/index.d.ts"
+    },
+    "./tictactoe": {
+      "import": "./dist/tictactoe/index.js",
+      "types": "./dist/tictactoe/index.d.ts"
+    },
+    "./snake": {
+      "import": "./dist/snake/index.js",
+      "types": "./dist/snake/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "chess.js": "^1.0.0-beta.8"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "mcp",
+    "game",
+    "chess",
+    "snake",
+    "tictactoe"
+  ],
+  "license": "MIT"
+}

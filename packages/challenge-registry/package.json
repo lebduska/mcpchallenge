@@ -1,0 +1,39 @@
+{
+  "name": "@mcpchallenge/challenge-registry",
+  "version": "0.1.0",
+  "description": "Type-safe challenge definitions with replay and achievement support",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  },
+  "peerDependencies": {
+    "@mcpchallenge/game-engines": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@mcpchallenge/game-engines": {
+      "optional": true
+    }
+  }
+}
