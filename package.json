@@ -1,6 +1,7 @@
 {
   "name": "mcpchallenge",
   "version": "0.1.0",
+  "description": "Interactive platform for learning Model Context Protocol (MCP) through hands-on coding challenges. Build MCP servers, connect AI agents, and earn achievements.",
   "private": true,
   "scripts": {
     "dev": "next dev",

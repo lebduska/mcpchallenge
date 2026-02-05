@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MCP Challenge
+
+Interactive platform for learning **Model Context Protocol (MCP)** through hands-on coding challenges.
+
+**Live:** [mcpchallenge.org](https://mcpchallenge.org)
+
+## What is MCP?
+
+Model Context Protocol is an open standard that enables AI assistants to connect with external tools, data sources, and services. MCP Challenge helps developers learn MCP by building real MCP servers that solve interactive challenges.
+
+## Features
+
+- **Interactive Challenges** - Chess, Snake, Tic-Tac-Toe, Canvas Draw
+- **MCP Playground** - Test your MCP servers in real-time
+- **Achievements** - Earn badges for completing challenges
+- **Leaderboard** - Compete with other developers
+- **Multi-language** - 25+ languages supported
+
+## Tech Stack
+
+- **Framework:** Next.js 15 (App Router)
+- **Hosting:** Cloudflare Pages
+- **Database:** Cloudflare D1 (SQLite)
+- **Auth:** NextAuth.js with GitHub OAuth
+- **Styling:** Tailwind CSS v4
+- **i18n:** next-intl
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Open http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Challenges
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Challenge | Description | Difficulty |
+|-----------|-------------|------------|
+| Chess | Play chess against Stockfish via MCP | Hard |
+| Snake | Control the snake game with MCP tools | Medium |
+| Tic-Tac-Toe | Classic game with MCP interface | Easy |
+| Canvas Draw | Draw on canvas using MCP commands | Easy |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure
 
-## Learn More
+```
+src/
+├── app/
+│   ├── [locale]/        # i18n routes
+│   │   ├── challenges/  # Interactive challenges
+│   │   ├── learn/       # Learning resources
+│   │   ├── playground/  # MCP testing sandbox
+│   │   └── ...
+│   └── api/             # API routes
+├── components/          # React components
+├── db/                  # Database schema (Drizzle)
+├── i18n/                # Internationalization
+├── lib/                 # Utilities
+└── messages/            # Translations (25 languages)
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Deployment
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+# Build and deploy to Cloudflare Pages
+npm run deploy
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Contributing
 
-## Deploy on Vercel
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT

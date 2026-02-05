@@ -9,7 +9,7 @@ const intlMiddleware = createMiddleware({
   locales,
   defaultLocale,
   localePrefix: 'as-needed', // Only add prefix for non-default locales
-  localeDetection: true, // Enable automatic locale detection
+  localeDetection: false, // Disable automatic locale detection - always use English
 });
 
 export default function middleware(request: NextRequest) {
