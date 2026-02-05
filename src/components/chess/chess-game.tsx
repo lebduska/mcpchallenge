@@ -9,7 +9,8 @@ type Square = string;
 type Piece = string;
 
 // Dynamic import with SSR disabled - react-chessboard uses DOM APIs
-const Chessboard = dynamic(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const Chessboard: any = dynamic(
   () => import("react-chessboard").then((mod) => mod.Chessboard),
   {
     ssr: false,
