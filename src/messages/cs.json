@@ -173,6 +173,10 @@
       "minesweeper": {
         "title": "Miny",
         "description": "Klasické Miny z Windows XP! Odhalte všechna políčka bez šlápnutí na minu. Levé tlačítko odhalí, pravé vlajku."
+      },
+      "polyBridge": {
+        "title": "Poly Bridge",
+        "description": "Stavte mosty z trámů a lan, pak otestujte zda vozidlo přejede! Fyzikální puzzle hra."
       }
     },
     "comingSoon": {

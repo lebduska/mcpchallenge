@@ -173,6 +173,10 @@
       "minesweeper": {
         "title": "Minesweeper",
         "description": "Classic Windows XP Minesweeper! Reveal all cells without hitting a mine. Left-click to reveal, right-click to flag."
+      },
+      "polyBridge": {
+        "title": "Poly Bridge",
+        "description": "Build bridges with beams and cables, then test if vehicles can cross! Physics-based puzzle game."
       }
     },
     "comingSoon": {

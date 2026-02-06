@@ -28,12 +28,18 @@ export type { MinesweeperState, MinesweeperMove, MinesweeperOptions, CellValue }
 export { canvasEngine } from './canvas';
 export type { CanvasState, CanvasMove, CanvasOptions, CanvasMoveAction } from './canvas';
 
+// Poly Bridge engine
+export { polybridgeEngine } from './polybridge';
+export type { PolyBridgeState, PolyBridgeMove, PolyBridgeOptions, Structure, PolyBridgeMoveAction } from './polybridge';
+export { LEVELS as POLYBRIDGE_LEVELS, MATERIAL_COSTS } from './polybridge';
+
 // Engine registry for dynamic access
 import { chessEngine } from './chess';
 import { tictactoeEngine } from './tictactoe';
 import { snakeEngine } from './snake';
 import { minesweeperEngine } from './minesweeper';
 import { canvasEngine } from './canvas';
+import { polybridgeEngine } from './polybridge';
 import type { GameEngine, GameState } from './types';
 
 export const engines = {
@@ -42,6 +48,7 @@ export const engines = {
   snake: snakeEngine,
   canvas: canvasEngine,
   minesweeper: minesweeperEngine,
+  polybridge: polybridgeEngine,
 } as const;
 
 export type EngineId = keyof typeof engines;
