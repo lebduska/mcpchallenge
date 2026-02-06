@@ -15,14 +15,31 @@ import {
   Paintbrush,
   ChevronRight,
   Package,
-  Award,
   // Construction, // Poly Bridge hidden
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { challengeCovers } from "@/lib/challenge-covers";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+interface AchievementPreview {
+  id: string;
+  icon: string;
+  name: string;
+  rarity: string;
+  unlocked: boolean;
+}
 
 interface AchievementStats {
-  summary: Record<string, { total: number; unlocked: number }>;
+  summary: Record<string, {
+    total: number;
+    unlocked: number;
+    achievements: AchievementPreview[];
+  }>;
   totalAchievements: number;
   totalUnlocked: number;
   isAuthenticated: boolean;
@@ -308,15 +325,50 @@ export default function ChallengesPage() {
                               {t(`difficulty.${challenge.difficulty}`)}
                             </span>
                           </div>
-                          {/* Achievement count */}
-                          {achievementStats?.summary?.[challenge.id] && (
-                            <div className="flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400">
-                              <Award className="h-3.5 w-3.5" />
-                              <span className="font-medium">
-                                {achievementStats.summary[challenge.id].unlocked}/
-                                {achievementStats.summary[challenge.id].total}
-                              </span>
-                            </div>
+                          {/* Achievement icons with tooltips */}
+                          {achievementStats?.summary?.[challenge.id]?.achievements && (
+                            <TooltipProvider delayDuration={100}>
+                              <div className="flex items-center gap-0.5">
+                                {achievementStats.summary[challenge.id].achievements.slice(0, 5).map((achievement) => (
+                                  <Tooltip key={achievement.id}>
+                                    <TooltipTrigger asChild>
+                                      <span
+                                        className={cn(
+                                          "text-sm cursor-default transition-all",
+                                          achievement.unlocked
+                                            ? "opacity-100 hover:scale-125"
+                                            : "opacity-30 grayscale hover:opacity-50"
+                                        )}
+                                      >
+                                        {achievement.icon}
+                                      </span>
+                                    </TooltipTrigger>
+                                    <TooltipContent
+                                      side="top"
+                                      className={cn(
+                                        "text-xs",
+                                        achievement.unlocked && "border-emerald-500/50"
+                                      )}
+                                    >
+                                      <div className="flex items-center gap-1.5">
+                                        <span>{achievement.icon}</span>
+                                        <span className={achievement.unlocked ? "text-emerald-400" : ""}>
+                                          {achievement.name}
+                                        </span>
+                                        {achievement.unlocked && (
+                                          <span className="text-emerald-500">✓</span>
+                                        )}
+                                      </div>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                ))}
+                                {achievementStats.summary[challenge.id].achievements.length > 5 && (
+                                  <span className="text-xs text-zinc-500 ml-1">
+                                    +{achievementStats.summary[challenge.id].achievements.length - 5}
+                                  </span>
+                                )}
+                              </div>
+                            </TooltipProvider>
                           )}
                         </div>
 

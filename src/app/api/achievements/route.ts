@@ -122,10 +122,31 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Challenge not found" }, { status: 404 });
   }
 
-  // Return summary for all challenges
-  const summary: Record<string, { total: number; unlocked: number }> = {};
+  // Return summary for all challenges with achievement previews
+  const summary: Record<string, {
+    total: number;
+    unlocked: number;
+    achievements: Array<{
+      id: string;
+      icon: string;
+      name: string;
+      rarity: string;
+      unlocked: boolean;
+    }>;
+  }> = {};
   for (const [key, value] of Object.entries(byChallenge)) {
-    summary[key] = { total: value.total, unlocked: value.unlocked };
+    summary[key] = {
+      total: value.total,
+      unlocked: value.unlocked,
+      // Include all achievements with minimal data for preview
+      achievements: value.achievements.map(a => ({
+        id: a.id,
+        icon: a.icon,
+        name: a.name,
+        rarity: a.rarity,
+        unlocked: a.unlocked,
+      })),
+    };
   }
 
   return NextResponse.json({
