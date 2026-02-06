@@ -3,9 +3,8 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { RotateCcw, ChevronLeft, ChevronRight, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Trophy, Undo2, Play, Pause, SkipBack, SkipForward, Eye, EyeOff, AlertTriangle } from "lucide-react";
+import { RotateCcw, ChevronLeft, ChevronRight, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Trophy, Undo2, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useGameCompletion } from "@/lib/game-completion";
 import { SOKOBAN_LEVELS } from "@mcpchallenge/game-engines";
@@ -311,117 +310,6 @@ function getDeadlockedBoxes(board: CellType[][], boxes: Position[], goals: Posit
   return deadlocked;
 }
 
-// =============================================================================
-// Valid Moves Heatmap
-// =============================================================================
-
-type HeatmapCell = "reachable" | "pushable" | "blocked" | "none";
-
-/**
- * Calculate reachable positions for the player using flood fill
- */
-function getReachablePositions(
-  board: CellType[][],
-  player: Position,
-  boxes: Position[]
-): Set<string> {
-  const reachable = new Set<string>();
-  const visited = new Set<string>();
-  const queue: Position[] = [player];
-
-  while (queue.length > 0) {
-    const pos = queue.shift()!;
-    const key = `${pos.row},${pos.col}`;
-
-    if (visited.has(key)) continue;
-    visited.add(key);
-
-    if (isWall(board, pos)) continue;
-    if (posInList(pos, boxes)) continue;
-
-    reachable.add(key);
-
-    // Add neighbors
-    const directions: Direction[] = ["up", "down", "left", "right"];
-    for (const dir of directions) {
-      const delta = getDirection(dir);
-      queue.push(addPos(pos, delta));
-    }
-  }
-
-  return reachable;
-}
-
-/**
- * Get positions where boxes can be pushed to
- */
-function getPushablePositions(
-  board: CellType[][],
-  player: Position,
-  boxes: Position[],
-  reachable: Set<string>
-): Set<string> {
-  const pushable = new Set<string>();
-
-  for (const box of boxes) {
-    const directions: Direction[] = ["up", "down", "left", "right"];
-
-    for (const dir of directions) {
-      const delta = getDirection(dir);
-      const pushFrom = { row: box.row - delta.row, col: box.col - delta.col };
-      const pushTo = addPos(box, delta);
-
-      // Player must be able to reach the push position
-      const pushFromKey = `${pushFrom.row},${pushFrom.col}`;
-      if (!reachable.has(pushFromKey)) continue;
-
-      // Destination must not be wall or another box
-      if (isWall(board, pushTo)) continue;
-      if (posInList(pushTo, boxes)) continue;
-
-      pushable.add(`${pushTo.row},${pushTo.col}`);
-    }
-  }
-
-  return pushable;
-}
-
-/**
- * Calculate full heatmap for the board
- */
-function calculateHeatmap(
-  board: CellType[][],
-  player: Position,
-  boxes: Position[]
-): Map<string, HeatmapCell> {
-  const heatmap = new Map<string, HeatmapCell>();
-  const reachable = getReachablePositions(board, player, boxes);
-  const pushable = getPushablePositions(board, player, boxes, reachable);
-
-  const rows = board.length;
-  const cols = board[0].length;
-
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const key = `${r},${c}`;
-      const cell = board[r][c];
-
-      if (cell === "wall") {
-        heatmap.set(key, "blocked");
-      } else if (posInList({ row: r, col: c }, boxes)) {
-        heatmap.set(key, "blocked");
-      } else if (pushable.has(key)) {
-        heatmap.set(key, "pushable");
-      } else if (reachable.has(key)) {
-        heatmap.set(key, "reachable");
-      } else {
-        heatmap.set(key, "none");
-      }
-    }
-  }
-
-  return heatmap;
-}
 
 // =============================================================================
 // Cell Component
@@ -435,10 +323,6 @@ interface CellProps {
   isBoxOnGoal: boolean;
   isPlayerOnGoal: boolean;
   isDeadlocked: boolean;
-  heatmapType: HeatmapCell;
-  showHeatmap: boolean;
-  showDeadlocks: boolean;
-  isHighlighted: boolean;
   size: number;
 }
 
@@ -450,10 +334,6 @@ function Cell({
   isBoxOnGoal,
   isPlayerOnGoal,
   isDeadlocked,
-  heatmapType,
-  showHeatmap,
-  showDeadlocks,
-  isHighlighted,
   size,
 }: CellProps) {
   const baseStyle = {
@@ -484,32 +364,10 @@ function Cell({
     );
   }
 
-  // Determine background based on heatmap
   const bgClass =
     type === "goal" || isGoal
       ? "bg-gradient-to-br from-amber-100 to-amber-200 dark:from-amber-900/30 dark:to-amber-800/30"
       : "bg-gradient-to-br from-stone-100 to-stone-200 dark:from-stone-800 dark:to-stone-900";
-
-  // Heatmap overlay colors
-  let heatmapOverlay = "";
-  if (showHeatmap && !isPlayer && !isBox) {
-    switch (heatmapType) {
-      case "reachable":
-        heatmapOverlay = "bg-emerald-400/30 dark:bg-emerald-500/30";
-        break;
-      case "pushable":
-        heatmapOverlay = "bg-amber-400/40 dark:bg-amber-500/40";
-        break;
-      case "blocked":
-        heatmapOverlay = "bg-red-400/20 dark:bg-red-500/20";
-        break;
-    }
-  }
-
-  // Highlight for replay
-  const highlightClass = isHighlighted
-    ? "ring-2 ring-blue-400 ring-inset animate-pulse"
-    : "";
 
   const boxContent = isBox && (
     <TooltipProvider>
@@ -520,23 +378,23 @@ function Cell({
               "w-[80%] h-[80%] rounded-sm shadow-md flex items-center justify-center transition-all duration-100 relative",
               isBoxOnGoal
                 ? "bg-gradient-to-br from-emerald-400 to-emerald-600 border-2 border-emerald-700"
-                : isDeadlocked && showDeadlocks
-                  ? "bg-gradient-to-br from-red-500 to-red-700 border-2 border-red-800"
+                : isDeadlocked
+                  ? "bg-gradient-to-br from-red-500 to-red-700 border-2 border-red-800 animate-pulse"
                   : "bg-gradient-to-br from-amber-500 to-orange-600 border-2 border-orange-700"
             )}
           >
             <div className="w-[60%] h-[60%] border-2 border-white/30 rounded-sm" />
             {/* Deadlock warning icon */}
-            {isDeadlocked && showDeadlocks && (
+            {isDeadlocked && (
               <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-600 rounded-full flex items-center justify-center shadow-lg">
                 <AlertTriangle className="w-3 h-3 text-white" />
               </div>
             )}
           </div>
         </TooltipTrigger>
-        {isDeadlocked && showDeadlocks && (
+        {isDeadlocked && (
           <TooltipContent side="top" className="bg-red-600 text-white border-red-700">
-            <p className="text-xs font-medium">Deadlock: Box cannot reach any goal</p>
+            <p className="text-xs font-medium">Deadlock! Press Undo or Reset</p>
           </TooltipContent>
         )}
       </Tooltip>
@@ -548,15 +406,9 @@ function Cell({
       style={baseStyle}
       className={cn(
         bgClass,
-        "relative flex items-center justify-center border border-stone-300/50 dark:border-stone-700/50",
-        highlightClass
+        "relative flex items-center justify-center border border-stone-300/50 dark:border-stone-700/50"
       )}
     >
-      {/* Heatmap overlay */}
-      {heatmapOverlay && (
-        <div className={cn("absolute inset-0", heatmapOverlay)} />
-      )}
-
       {/* Goal marker */}
       {(type === "goal" || isGoal) && !isBox && !isPlayer && (
         <div className="absolute w-3 h-3 rounded-full bg-amber-500/60 dark:bg-amber-400/60 border-2 border-amber-600 dark:border-amber-500 z-10" />
@@ -597,26 +449,16 @@ export function SokobanGame({ onGameComplete }: SokobanProps) {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const { submitCompletion } = useGameCompletion("sokoban");
 
-  // New feature states
-  const [showHeatmap, setShowHeatmap] = useState(false);
-  const [showDeadlocks, setShowDeadlocks] = useState(true);
-  const [replayIndex, setReplayIndex] = useState<number | null>(null);
-  const [isReplaying, setIsReplaying] = useState(false);
-  const [highlightedCells, setHighlightedCells] = useState<Set<string>>(new Set());
-
   const totalLevels = LEVEL_DATA.length;
 
-  // Calculate deadlocked boxes
+  // Calculate deadlocked boxes (always on)
   const deadlockedBoxes = useMemo(() => {
     if (!gameState) return new Set<string>();
     return getDeadlockedBoxes(gameState.board, gameState.boxes, gameState.goals);
   }, [gameState]);
 
-  // Calculate heatmap
-  const heatmap = useMemo(() => {
-    if (!gameState || !showHeatmap) return new Map<string, HeatmapCell>();
-    return calculateHeatmap(gameState.board, gameState.player, gameState.boxes);
-  }, [gameState, showHeatmap]);
+  // Check if game is unwinnable
+  const isUnwinnable = deadlockedBoxes.size > 0;
 
   // Change level with state reset
   const changeLevel = useCallback((newIndex: number) => {
@@ -624,18 +466,12 @@ export function SokobanGame({ onGameComplete }: SokobanProps) {
     setLevelIndex(clampedIndex);
     setGameState(parseLevel(clampedIndex));
     setHistory([]);
-    setReplayIndex(null);
-    setIsReplaying(false);
-    setHighlightedCells(new Set());
   }, [totalLevels]);
 
   // Reset current level
   const resetLevel = useCallback(() => {
     setGameState(parseLevel(levelIndex));
     setHistory([]);
-    setReplayIndex(null);
-    setIsReplaying(false);
-    setHighlightedCells(new Set());
   }, [levelIndex]);
 
   // Handle move
@@ -707,16 +543,6 @@ export function SokobanGame({ onGameComplete }: SokobanProps) {
     if (history.length === 0 || !gameState) return;
 
     const prev = history[history.length - 1];
-
-    // Highlight changed cells
-    const changed = new Set<string>();
-    changed.add(`${gameState.player.row},${gameState.player.col}`);
-    changed.add(`${prev.player.row},${prev.player.col}`);
-    gameState.boxes.forEach(b => changed.add(`${b.row},${b.col}`));
-    prev.boxes.forEach(b => changed.add(`${b.row},${b.col}`));
-    setHighlightedCells(changed);
-    setTimeout(() => setHighlightedCells(new Set()), 300);
-
     setGameState({
       ...gameState,
       player: prev.player,
@@ -726,98 +552,7 @@ export function SokobanGame({ onGameComplete }: SokobanProps) {
       status: "playing",
     });
     setHistory((h) => h.slice(0, -1));
-    setReplayIndex(null);
   }, [history, gameState]);
-
-  // Replay navigation
-  const goToHistoryStep = useCallback((index: number) => {
-    if (!history.length || index < 0 || index >= history.length) return;
-
-    const step = history[index];
-    const initialState = parseLevel(levelIndex);
-    if (!initialState) return;
-
-    // Highlight changes
-    if (gameState) {
-      const changed = new Set<string>();
-      changed.add(`${gameState.player.row},${gameState.player.col}`);
-      changed.add(`${step.player.row},${step.player.col}`);
-      gameState.boxes.forEach(b => changed.add(`${b.row},${b.col}`));
-      step.boxes.forEach(b => changed.add(`${b.row},${b.col}`));
-      setHighlightedCells(changed);
-      setTimeout(() => setHighlightedCells(new Set()), 500);
-    }
-
-    setGameState({
-      ...initialState,
-      player: step.player,
-      boxes: step.boxes.map(b => ({ ...b })),
-      moveCount: step.moveCount,
-      pushCount: step.pushCount,
-      status: "playing",
-    });
-    setReplayIndex(index);
-  }, [history, gameState, levelIndex]);
-
-  const replayStepBack = useCallback(() => {
-    if (replayIndex === null) {
-      // Start replay from current position
-      if (history.length > 0) {
-        goToHistoryStep(history.length - 2);
-      }
-    } else if (replayIndex > 0) {
-      goToHistoryStep(replayIndex - 1);
-    } else {
-      // Go to initial state
-      const initialState = parseLevel(levelIndex);
-      if (initialState) {
-        setGameState(initialState);
-        setReplayIndex(-1);
-      }
-    }
-  }, [replayIndex, history, goToHistoryStep, levelIndex]);
-
-  const replayStepForward = useCallback(() => {
-    if (replayIndex === null || replayIndex === history.length - 1) {
-      setReplayIndex(null);
-      return;
-    }
-    goToHistoryStep(replayIndex + 1);
-  }, [replayIndex, history, goToHistoryStep]);
-
-  const toggleReplay = useCallback(() => {
-    if (isReplaying) {
-      setIsReplaying(false);
-    } else if (history.length > 0) {
-      setIsReplaying(true);
-      // Start from beginning
-      const initialState = parseLevel(levelIndex);
-      if (initialState) {
-        setGameState(initialState);
-        setReplayIndex(-1);
-      }
-    }
-  }, [isReplaying, history, levelIndex]);
-
-  // Auto-play replay
-  useEffect(() => {
-    if (!isReplaying) return;
-
-    const timer = setInterval(() => {
-      setReplayIndex(prev => {
-        if (prev === null) return null;
-        const next = prev + 1;
-        if (next >= history.length) {
-          setIsReplaying(false);
-          return null;
-        }
-        goToHistoryStep(next);
-        return next;
-      });
-    }, 500);
-
-    return () => clearInterval(timer);
-  }, [isReplaying, history, goToHistoryStep]);
 
   // Keyboard controls
   useEffect(() => {
@@ -924,10 +659,6 @@ export function SokobanGame({ onGameComplete }: SokobanProps) {
                   isBoxOnGoal={isBoxHere && isGoalHere}
                   isPlayerOnGoal={isPlayerHere && isGoalHere}
                   isDeadlocked={isBoxHere && deadlockedBoxes.has(key)}
-                  heatmapType={heatmap.get(key) || "none"}
-                  showHeatmap={showHeatmap}
-                  showDeadlocks={showDeadlocks}
-                  isHighlighted={highlightedCells.has(key)}
                   size={cellSize}
                 />
               );
@@ -936,54 +667,11 @@ export function SokobanGame({ onGameComplete }: SokobanProps) {
         ))}
       </div>
 
-      {/* Feature Toggles */}
-      <div className="flex items-center gap-6 text-sm">
-        <div className="flex items-center gap-2">
-          <Switch
-            id="deadlocks"
-            checked={showDeadlocks}
-            onCheckedChange={setShowDeadlocks}
-          />
-          <label
-            htmlFor="deadlocks"
-            className="cursor-pointer flex items-center gap-1.5 text-zinc-600 dark:text-zinc-400"
-          >
-            <AlertTriangle className="w-3.5 h-3.5 text-red-500" />
-            Deadlocks
-          </label>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Switch
-            id="heatmap"
-            checked={showHeatmap}
-            onCheckedChange={setShowHeatmap}
-          />
-          <label
-            htmlFor="heatmap"
-            className="cursor-pointer flex items-center gap-1.5 text-zinc-600 dark:text-zinc-400"
-          >
-            {showHeatmap ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-            Heatmap
-          </label>
-        </div>
-      </div>
-
-      {/* Heatmap Legend */}
-      {showHeatmap && (
-        <div className="flex items-center gap-4 text-xs text-zinc-500 dark:text-zinc-400">
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded bg-emerald-400/50" />
-            <span>Reachable</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded bg-amber-400/60" />
-            <span>Push target</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded bg-red-400/30" />
-            <span>Blocked</span>
-          </div>
+      {/* Deadlock Warning Banner */}
+      {isUnwinnable && (
+        <div className="flex items-center gap-2 px-4 py-2 bg-red-500/20 border border-red-500/50 rounded-lg text-red-400">
+          <AlertTriangle className="w-5 h-5" />
+          <span className="text-sm font-medium">Level cannot be completed! Press Undo or Reset.</span>
         </div>
       )}
 
@@ -1018,48 +706,7 @@ export function SokobanGame({ onGameComplete }: SokobanProps) {
         </Button>
       </div>
 
-      {/* Replay Controls */}
-      {history.length > 0 && (
-        <div className="flex items-center gap-2 p-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={replayStepBack}
-            disabled={replayIndex === -1}
-            className="h-8 w-8 p-0"
-          >
-            <SkipBack className="w-4 h-4" />
-          </Button>
-
-          <Button
-            variant={isReplaying ? "secondary" : "ghost"}
-            size="sm"
-            onClick={toggleReplay}
-            className="h-8 px-3"
-          >
-            {isReplaying ? (
-              <><Pause className="w-4 h-4 mr-1" /> Pause</>
-            ) : (
-              <><Play className="w-4 h-4 mr-1" /> Replay</>
-            )}
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={replayStepForward}
-            disabled={replayIndex === null || replayIndex >= history.length - 1}
-            className="h-8 w-8 p-0"
-          >
-            <SkipForward className="w-4 h-4" />
-          </Button>
-
-          <span className="text-xs text-zinc-500 dark:text-zinc-400 ml-2">
-            {replayIndex !== null ? `${replayIndex + 1}/${history.length}` : `${history.length} moves`}
-          </span>
-        </div>
-      )}
-
+      
       {/* Mobile Controls */}
       <div className="grid grid-cols-3 gap-1 md:hidden">
         <div />
