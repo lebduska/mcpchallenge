@@ -49,10 +49,11 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: d1 migrations apply ${{ github.ref_name == 'main' && 'DB' || 'DB_DEV' }} --remote
 
-      - name: Deploy MCP Server
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          workingDirectory: packages/mcp-servers
-          command: deploy
+      # MCP Server is deployed manually - API token needs Workers permission
+      # - name: Deploy MCP Server
+      #   uses: cloudflare/wrangler-action@v3
+      #   with:
+      #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      #     accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      #     workingDirectory: packages/mcp-servers
+      #     command: deploy
