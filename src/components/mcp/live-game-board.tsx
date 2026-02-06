@@ -38,11 +38,25 @@ import {
   Check,
   Users,
   Bot,
+  ChevronDown,
+  ChevronUp,
+  ExternalLink,
 } from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { MCPCommandLog } from "./mcp-command-log";
 import { RoomConfig } from "./room-config";
-import { AgentChip, type AgentIdentity } from "./agent-chip";
-import { PvPAgents, PvPWaiting, type PvPPlayersState } from "./pvp-agents";
+import type { AgentIdentity } from "./agent-chip";
+import { PvPAgents, type PvPPlayersState } from "./pvp-agents";
 import { cn } from "@/lib/utils";
 import type {
   GameType,
@@ -83,6 +97,10 @@ export function LiveGameBoard({
   const [pvpPlayers, setPvpPlayers] = useState<PvPPlayersState>({ white: null, black: null });
   // Selected mode for room creation
   const [selectedMode, setSelectedMode] = useState<"ai" | "pvp">("ai");
+  // Config format selection (for quick copy)
+  const [configFormat, setConfigFormat] = useState<"claude" | "cursor" | "curl">("claude");
+  // Advanced drawer state
+  const [advancedOpen, setAdvancedOpen] = useState(false);
 
   const mcpBaseUrl =
     process.env.NEXT_PUBLIC_MCP_URL || "https://mcp.mcpchallenge.org";
@@ -129,15 +147,6 @@ export function LiveGameBoard({
       setIsCreatingRoom(false);
     }
   }, [gameType, mcpBaseUrl, onRoomCreated, selectedMode]);
-
-  // Copy MCP URL
-  const copyMcpUrl = useCallback(() => {
-    if (roomInfo?.mcpUrl) {
-      navigator.clipboard.writeText(roomInfo.mcpUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  }, [roomInfo]);
 
   // Connect to SSE stream
   useEffect(() => {
@@ -854,41 +863,42 @@ export function LiveGameBoard({
             </div>
 
             <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
-              Create a room and connect your MCP client (Claude, Cursor, etc.) to play. Watch the game live as moves stream in.
+              Create a room, connect your AI agent, and watch the game live.
             </p>
 
-            {/* Mode selector */}
-            <div className="flex gap-2 mb-4">
-              <button
-                onClick={() => setSelectedMode("ai")}
-                className={cn(
-                  "flex-1 flex items-center justify-center gap-2 p-3 rounded-lg border transition-all",
-                  selectedMode === "ai"
-                    ? "bg-blue-500/10 border-blue-500/50 text-blue-600 dark:text-blue-400"
-                    : "bg-zinc-50 dark:bg-zinc-800/50 border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:border-zinc-300 dark:hover:border-zinc-600"
-                )}
-              >
-                <Bot className="h-4 w-4" />
-                <div className="text-left">
-                  <div className="font-medium text-sm">vs AI</div>
-                  <div className="text-xs opacity-70">Single player</div>
-                </div>
-              </button>
-              <button
-                onClick={() => setSelectedMode("pvp")}
-                className={cn(
-                  "flex-1 flex items-center justify-center gap-2 p-3 rounded-lg border transition-all",
-                  selectedMode === "pvp"
-                    ? "bg-purple-500/10 border-purple-500/50 text-purple-600 dark:text-purple-400"
-                    : "bg-zinc-50 dark:bg-zinc-800/50 border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:border-zinc-300 dark:hover:border-zinc-600"
-                )}
-              >
-                <Users className="h-4 w-4" />
-                <div className="text-left">
-                  <div className="font-medium text-sm">MCP vs MCP</div>
-                  <div className="text-xs opacity-70">Two agents</div>
-                </div>
-              </button>
+            {/* Mode dropdown - compact */}
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-sm text-zinc-500">Mode:</span>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="gap-2 h-8">
+                    {selectedMode === "ai" ? (
+                      <>
+                        <Bot className="h-3.5 w-3.5" />
+                        vs AI
+                      </>
+                    ) : (
+                      <>
+                        <Users className="h-3.5 w-3.5" />
+                        MCP vs MCP
+                      </>
+                    )}
+                    <ChevronDown className="h-3 w-3 opacity-50" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start">
+                  <DropdownMenuItem onClick={() => setSelectedMode("ai")}>
+                    <Bot className="h-4 w-4 mr-2" />
+                    vs AI
+                    <span className="text-xs text-zinc-500 ml-2">Single agent</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setSelectedMode("pvp")}>
+                    <Users className="h-4 w-4 mr-2" />
+                    MCP vs MCP
+                    <span className="text-xs text-zinc-500 ml-2">Two agents</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
 
             <Button
@@ -940,76 +950,183 @@ export function LiveGameBoard({
   }
 
   // ==========================================================================
-  // RENDER: Active room - Command Center layout
+  // RENDER: Active room - Simplified 2-step onboarding
   // ==========================================================================
+
+  // Generate config snippets
+  const mcpUrl = roomInfo?.mcpUrl || `${mcpBaseUrl}/${gameType}?room=${roomId}`;
+
+  const getConfigSnippet = () => {
+    switch (configFormat) {
+      case "claude":
+        return `{
+  "mcpServers": {
+    "${gameType}": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-proxy", "${mcpUrl}"]
+    }
+  }
+}`;
+      case "cursor":
+        return `{
+  "mcp": {
+    "servers": {
+      "${gameType}": { "url": "${mcpUrl}", "transport": "http" }
+    }
+  }
+}`;
+      case "curl":
+        return `curl -X POST "${mcpUrl}" \\
+  -H "Content-Type: application/json" \\
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'`;
+    }
+  };
+
+  const copyConfig = async () => {
+    await navigator.clipboard.writeText(getConfigSnippet());
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  // Connection status helper - consistent height to avoid layout shifts
+  const renderConnectionStatus = () => {
+    const baseClasses = "flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium border min-w-[140px] justify-center";
+
+    if (isConnecting) {
+      return (
+        <div className={cn(baseClasses, "bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-500/30")}>
+          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          Waiting...
+        </div>
+      );
+    }
+
+    if (isConnected && (agentIdentity || (pvpPlayers.white || pvpPlayers.black))) {
+      const agentName = gameMode === "pvp"
+        ? (pvpPlayers.white?.name || pvpPlayers.black?.name || "Agent")
+        : (agentIdentity?.name || "Agent");
+      return (
+        <div className={cn(baseClasses, "bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/30")}>
+          <Wifi className="h-3.5 w-3.5" />
+          <span className="truncate max-w-[100px]">{agentName}</span>
+        </div>
+      );
+    }
+
+    if (isConnected) {
+      return (
+        <div className={cn(baseClasses, "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-500/30")}>
+          <Wifi className="h-3.5 w-3.5" />
+          Waiting for agent
+        </div>
+      );
+    }
+
+    return (
+      <div className={cn(baseClasses, "bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-300 border-red-200 dark:border-red-500/30")}>
+        <WifiOff className="h-3.5 w-3.5" />
+        Disconnected
+      </div>
+    );
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
+      {/* 2-Step Onboarding Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {/* Step 1: Room Created ✓ */}
+        <div className="rounded-xl p-4 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center text-sm font-bold">
+              ✓
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-emerald-800 dark:text-emerald-300">Room Created</h3>
+              <code className="text-xs text-emerald-600 dark:text-emerald-400 font-mono">{roomId}</code>
+            </div>
+          </div>
+        </div>
+
+        {/* Step 2: Connect Agent */}
+        <div className="rounded-xl p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-bold">
+              2
+            </div>
+            <h3 className="font-semibold text-zinc-900 dark:text-white">Connect your agent</h3>
+          </div>
+
+          {/* Format selector + Copy button */}
+          <div className="flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="gap-1 h-8 text-xs">
+                  {configFormat === "claude" && "Claude"}
+                  {configFormat === "cursor" && "Cursor"}
+                  {configFormat === "curl" && "cURL"}
+                  <ChevronDown className="h-3 w-3 opacity-50" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                <DropdownMenuItem onClick={() => setConfigFormat("claude")}>Claude Desktop</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setConfigFormat("cursor")}>Cursor</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setConfigFormat("curl")}>cURL</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <Button
+              onClick={copyConfig}
+              size="sm"
+              className={cn(
+                "gap-2 h-8 flex-1",
+                copied && "bg-emerald-600 hover:bg-emerald-600"
+              )}
+            >
+              {copied ? (
+                <>
+                  <Check className="h-3.5 w-3.5" />
+                  Copied!
+                </>
+              ) : (
+                <>
+                  <Copy className="h-3.5 w-3.5" />
+                  Copy Config
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+      </div>
+
       {/* Main content - 2-column Command Center */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left: Live board (larger) */}
         <div className="lg:col-span-2">
           {/* Header bar above board */}
           <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-3">
-              {/* Connection status */}
-              <div
-                className={cn(
-                  "flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium",
-                  "border transition-colors",
-                  isConnected
-                    ? "bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/30"
-                    : isConnecting
-                    ? "bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-500/30"
-                    : "bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-300 border-red-200 dark:border-red-500/30"
-                )}
-              >
-                {isConnecting ? (
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                ) : isConnected ? (
-                  <Wifi className="h-3.5 w-3.5" />
-                ) : (
-                  <WifiOff className="h-3.5 w-3.5" />
-                )}
-                {isConnecting ? "Connecting..." : isConnected ? "Live" : "Disconnected"}
-              </div>
+            {/* Connection status chip - fixed width */}
+            {renderConnectionStatus()}
 
-              {/* Room ID */}
-              <code className="text-xs text-zinc-400 dark:text-zinc-600 font-mono">
-                {roomId.slice(0, 8)}...
-              </code>
-            </div>
-
-            {/* Agent display - PvP or single player */}
-            {gameMode === "pvp" ? (
+            {/* Agent display - PvP mode */}
+            {gameMode === "pvp" && (pvpPlayers.white || pvpPlayers.black) && (
               <PvPAgents
                 players={pvpPlayers}
                 currentTurn={(gameState as ChessGameState)?.turn || "white"}
               />
-            ) : (
-              <AgentChip identity={agentIdentity} />
             )}
 
-            {/* Copy URL button */}
-            {roomInfo && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={copyMcpUrl}
-                className="gap-2 h-8"
-              >
-                {copied ? (
-                  <>
-                    <Check className="h-3.5 w-3.5 text-emerald-500" />
-                    Copied!
-                  </>
-                ) : (
-                  <>
-                    <Copy className="h-3.5 w-3.5" />
-                    Copy URL
-                  </>
-                )}
-              </Button>
-            )}
+            {/* Room actions */}
+            <div className="flex items-center gap-2">
+              {gameMode === "pvp" && (
+                <Badge variant="outline" className="gap-1 text-purple-600 dark:text-purple-400 border-purple-300 dark:border-purple-500/50">
+                  <Users className="h-3 w-3" />
+                  PvP
+                </Badge>
+              )}
+              <code className="text-xs text-zinc-400 font-mono hidden sm:block">
+                {roomId.slice(0, 8)}...
+              </code>
+            </div>
           </div>
 
           {/* Board */}
@@ -1022,8 +1139,31 @@ export function LiveGameBoard({
         </div>
       </div>
 
-      {/* Room config (collapsible) - outside grid */}
-      {roomInfo && <RoomConfig roomInfo={roomInfo} />}
+      {/* Advanced Config Drawer */}
+      {roomInfo && (
+        <Collapsible open={advancedOpen} onOpenChange={setAdvancedOpen}>
+          <CollapsibleTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full justify-between text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+            >
+              <span className="flex items-center gap-2">
+                <ExternalLink className="h-3.5 w-3.5" />
+                Advanced config
+              </span>
+              {advancedOpen ? (
+                <ChevronUp className="h-4 w-4" />
+              ) : (
+                <ChevronDown className="h-4 w-4" />
+              )}
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="pt-2">
+            <RoomConfig roomInfo={roomInfo} />
+          </CollapsibleContent>
+        </Collapsible>
+      )}
     </div>
   );
 }
