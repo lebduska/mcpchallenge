@@ -7,8 +7,10 @@ import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Trophy, Target, Star, User, Settings, Gamepad2, CheckCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Trophy, Target, Star, User, Settings, Gamepad2, CheckCircle, Lock, Award } from "lucide-react";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 interface UserStats {
   totalPoints: number;
@@ -45,6 +47,30 @@ interface ProgressData {
   levelBests: Record<string, LevelBest>;
 }
 
+interface Achievement {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  points: number;
+  rarity: string;
+  unlocked: boolean;
+}
+
+const rarityColors: Record<string, string> = {
+  common: "border-zinc-300 dark:border-zinc-600",
+  rare: "border-blue-400 dark:border-blue-500",
+  epic: "border-purple-400 dark:border-purple-500",
+  legendary: "border-amber-400 dark:border-amber-500",
+};
+
+const rarityBg: Record<string, string> = {
+  common: "bg-zinc-100 dark:bg-zinc-800",
+  rare: "bg-blue-50 dark:bg-blue-950/30",
+  epic: "bg-purple-50 dark:bg-purple-950/30",
+  legendary: "bg-amber-50 dark:bg-amber-950/30",
+};
+
 const CHALLENGE_INFO: Record<string, { name: string; totalLevels: number; icon: string }> = {
   sokoban: { name: "Sokoban", totalLevels: 60, icon: "📦" },
 };
@@ -53,6 +79,7 @@ export default function ProfilePage() {
   const { data: session, status } = useSession();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [challengeProgress, setChallengeProgress] = useState<Record<string, ProgressData>>({});
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -78,6 +105,16 @@ export default function ProfilePage() {
           })
           .catch(console.error);
       });
+
+      // Fetch user's achievements
+      fetch("/api/progress/me")
+        .then((res) => res.json() as Promise<{ achievements?: Achievement[] }>)
+        .then((data) => {
+          if (data.achievements) {
+            setAchievements(data.achievements.map(a => ({ ...a, unlocked: true })));
+          }
+        })
+        .catch(console.error);
     }
   }, [status]);
 
@@ -208,33 +245,97 @@ export default function ProfilePage() {
           </div>
         </div>
 
+        {/* Achievements Section */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold flex items-center gap-2">
+              <Award className="h-5 w-5 text-amber-500" />
+              Achievements
+            </h2>
+            <Link href="/achievements">
+              <Button variant="outline" size="sm">View All</Button>
+            </Link>
+          </div>
+
+          {achievements.length === 0 ? (
+            <Card>
+              <CardContent className="py-8 text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+                  <Lock className="h-8 w-8 text-zinc-400" />
+                </div>
+                <p className="text-zinc-500 mb-4">No achievements unlocked yet</p>
+                <Link href="/challenges">
+                  <Button size="sm">Start Playing</Button>
+                </Link>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+              {achievements.slice(0, 10).map((achievement) => (
+                <Link key={achievement.id} href={`/achievements/${achievement.id}`}>
+                  <div
+                    className={cn(
+                      "relative p-3 rounded-xl border-2 transition-all hover:scale-105",
+                      "bg-white dark:bg-zinc-900",
+                      rarityColors[achievement.rarity],
+                      rarityBg[achievement.rarity]
+                    )}
+                  >
+                    <div className="text-center">
+                      <div className="text-3xl mb-2">{achievement.icon}</div>
+                      <h4 className="text-xs font-semibold text-zinc-900 dark:text-white truncate">
+                        {achievement.name}
+                      </h4>
+                      <Badge
+                        className={cn(
+                          "mt-1 text-[10px]",
+                          achievement.rarity === "legendary" && "bg-amber-500 text-white",
+                          achievement.rarity === "epic" && "bg-purple-500 text-white",
+                          achievement.rarity === "rare" && "bg-blue-500 text-white",
+                          achievement.rarity === "common" && "bg-zinc-500 text-white"
+                        )}
+                      >
+                        +{achievement.points}
+                      </Badge>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Achievements */}
+          {/* Stats Card */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Trophy className="h-5 w-5" />
-                Achievements
+                Stats
               </CardTitle>
               <CardDescription>
-                {user.stats.achievementsUnlocked || 0} achievements unlocked
+                Your progress overview
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {(user.stats.achievementsUnlocked || 0) === 0 ? (
-                <>
-                  <p className="text-zinc-500 text-sm">
-                    No achievements yet. Start completing challenges!
-                  </p>
-                  <Link href="/challenges" className="mt-4 inline-block">
-                    <Button size="sm">Browse Challenges</Button>
-                  </Link>
-                </>
-              ) : (
-                <Link href="/achievements" className="mt-4 inline-block">
-                  <Button size="sm">View All Achievements</Button>
-                </Link>
-              )}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center p-3 bg-amber-50 dark:bg-amber-950/30 rounded-lg">
+                  <div className="text-2xl font-bold text-amber-600">{user.stats.totalPoints}</div>
+                  <div className="text-xs text-zinc-500">Total Points</div>
+                </div>
+                <div className="text-center p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
+                  <div className="text-2xl font-bold text-purple-600">Lv.{user.stats.level}</div>
+                  <div className="text-xs text-zinc-500">Level</div>
+                </div>
+                <div className="text-center p-3 bg-emerald-50 dark:bg-emerald-950/30 rounded-lg">
+                  <div className="text-2xl font-bold text-emerald-600">{user.stats.challengesCompleted}</div>
+                  <div className="text-xs text-zinc-500">Challenges</div>
+                </div>
+                <div className="text-center p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg">
+                  <div className="text-2xl font-bold text-blue-600">{achievements.length}</div>
+                  <div className="text-xs text-zinc-500">Achievements</div>
+                </div>
+              </div>
             </CardContent>
           </Card>
 

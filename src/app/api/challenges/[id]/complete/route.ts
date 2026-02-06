@@ -33,6 +33,8 @@ interface UserStatsData {
   snakeHighScore: number;
   ticTacToeWins: number;
   canvasDrawCompleted: boolean;
+  minesweeperWins: number;
+  sokobanLevels: number;
 }
 
 // Achievement rules for game challenges
@@ -81,6 +83,29 @@ const achievementRules: AchievementRule[] = [
   {
     id: "canvas-artist",
     check: (data) => data.challengeId === "canvas-draw",
+  },
+  // Minesweeper achievements
+  {
+    id: "minesweeper-win",
+    check: (data) => data.challengeId === "minesweeper" && data.winner === "player",
+  },
+  {
+    id: "minesweeper-expert",
+    check: (data, stats) =>
+      data.challengeId === "minesweeper" && data.winner === "player" && stats.minesweeperWins >= 5,
+  },
+  // Sokoban achievements
+  {
+    id: "sokoban-10",
+    check: (_, stats) => stats.sokobanLevels >= 10,
+  },
+  {
+    id: "sokoban-30",
+    check: (_, stats) => stats.sokobanLevels >= 30,
+  },
+  {
+    id: "sokoban-complete",
+    check: (_, stats) => stats.sokobanLevels >= 60,
   },
   // Level achievements
   {
@@ -204,6 +229,28 @@ export async function POST(request: Request, { params }: PageProps) {
       )
     );
 
+  // Minesweeper wins
+  const minesweeperWins = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(challengeCompletions)
+    .where(
+      and(
+        eq(challengeCompletions.userId, userId),
+        eq(challengeCompletions.challengeId, "minesweeper")
+      )
+    );
+
+  // Sokoban levels completed (count unique levels via score field as level index)
+  const sokobanLevels = await db
+    .select({ count: sql<number>`count(distinct score)` })
+    .from(challengeCompletions)
+    .where(
+      and(
+        eq(challengeCompletions.userId, userId),
+        eq(challengeCompletions.challengeId, "sokoban")
+      )
+    );
+
   const extendedStats: UserStatsData = {
     totalPoints: stats.totalPoints,
     level: stats.level,
@@ -212,6 +259,8 @@ export async function POST(request: Request, { params }: PageProps) {
     snakeHighScore: Number(snakeScores[0]?.maxScore || 0),
     ticTacToeWins: Number(tttWins[0]?.count || 0),
     canvasDrawCompleted: Number(canvasDrawCompletion[0]?.count || 0) > 0,
+    minesweeperWins: Number(minesweeperWins[0]?.count || 0),
+    sokobanLevels: Number(sokobanLevels[0]?.count || 0),
   };
 
   const completionData: CompletionData = {

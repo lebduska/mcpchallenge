@@ -2,12 +2,12 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getRequestContext } from "@cloudflare/next-on-pages";
 import { createDb } from "@/db";
-import { shareLinks, replays, users } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { shareLinks, replays, users, userAchievements, achievements } from "@/db/schema";
+import { eq, and } from "drizzle-orm";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, User, Calendar, Trophy, Clock, Move, Bot, Github, ExternalLink } from "lucide-react";
+import { ArrowLeft, User, Calendar, Trophy, Clock, Move, Bot, Github, ExternalLink, Award } from "lucide-react";
 
 export const runtime = "edge";
 
@@ -37,6 +37,16 @@ async function getShareData(code: string) {
   if (!replay) return null;
 
   let user = null;
+  let earnedAchievements: Array<{
+    id: string;
+    name: string;
+    description: string;
+    icon: string;
+    points: number;
+    rarity: string;
+    unlockedAt: Date | null;
+  }> = [];
+
   if (replay.userId) {
     user = await db.query.users.findFirst({
       where: eq(users.id, replay.userId),
@@ -47,13 +57,47 @@ async function getShareData(code: string) {
         image: true,
       },
     });
+
+    // Get achievements for this challenge
+    const challengePrefix = getChallengePrefix(replay.challengeId);
+    if (challengePrefix) {
+      const userAchievementsData = await db
+        .select({
+          id: achievements.id,
+          name: achievements.name,
+          description: achievements.description,
+          icon: achievements.icon,
+          points: achievements.points,
+          rarity: achievements.rarity,
+          unlockedAt: userAchievements.unlockedAt,
+        })
+        .from(userAchievements)
+        .innerJoin(achievements, eq(userAchievements.achievementId, achievements.id))
+        .where(eq(userAchievements.userId, replay.userId));
+
+      // Filter to only this challenge's achievements
+      earnedAchievements = userAchievementsData.filter(a => a.id.startsWith(challengePrefix));
+    }
   }
 
   return {
     link,
     replay,
     user,
+    achievements: earnedAchievements,
   };
+}
+
+function getChallengePrefix(challengeId: string): string | null {
+  const prefixes: Record<string, string> = {
+    chess: "chess-",
+    snake: "snake-",
+    "tic-tac-toe": "ttt-",
+    "canvas-draw": "canvas-",
+    minesweeper: "minesweeper-",
+    sokoban: "sokoban-",
+  };
+  return prefixes[challengeId] || null;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -90,10 +134,17 @@ export default async function SharePage({ params }: PageProps) {
     notFound();
   }
 
-  const { replay, user } = data;
+  const { replay, user, achievements: earnedAchievements } = data;
   const result = replay.resultJson ? JSON.parse(replay.resultJson) : null;
   const moves = JSON.parse(replay.movesJson);
   const challengeName = replay.challengeId.charAt(0).toUpperCase() + replay.challengeId.slice(1);
+
+  const rarityColors: Record<string, string> = {
+    common: "border-zinc-500/50 bg-zinc-800/50",
+    rare: "border-blue-500/50 bg-blue-900/20",
+    epic: "border-purple-500/50 bg-purple-900/20",
+    legendary: "border-amber-500/50 bg-amber-900/20",
+  };
 
   // Parse agent snapshot if available
   const agentSnapshot = replay.agentSnapshotJson
@@ -222,6 +273,38 @@ export default async function SharePage({ params }: PageProps) {
                   ))}
                 </div>
               )}
+            </div>
+          )}
+
+          {/* Earned Achievements */}
+          {earnedAchievements && earnedAchievements.length > 0 && (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Award className="w-4 h-4 text-amber-400" />
+                <h3 className="text-sm font-medium text-zinc-400">
+                  Achievements Earned ({earnedAchievements.length})
+                </h3>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {earnedAchievements.map((achievement) => (
+                  <div
+                    key={achievement.id}
+                    className={`p-3 rounded-lg border ${rarityColors[achievement.rarity] || rarityColors.common}`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl">{achievement.icon}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-white truncate">
+                          {achievement.name}
+                        </p>
+                        <p className="text-xs text-zinc-400 truncate">
+                          +{achievement.points} pts
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 

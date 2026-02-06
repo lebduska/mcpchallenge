@@ -2,11 +2,10 @@
 
 export const runtime = "edge";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-// Badge removed - not used with new cover image design
 import {
   Trophy,
   Gamepad2,
@@ -16,10 +15,18 @@ import {
   Paintbrush,
   ChevronRight,
   Package,
+  Award,
   // Construction, // Poly Bridge hidden
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { challengeCovers } from "@/lib/challenge-covers";
+
+interface AchievementStats {
+  summary: Record<string, { total: number; unlocked: number }>;
+  totalAchievements: number;
+  totalUnlocked: number;
+  isAuthenticated: boolean;
+}
 
 const challengeData = [
   {
@@ -120,6 +127,15 @@ type Filter = "all" | "game" | "creative";
 export default function ChallengesPage() {
   const t = useTranslations("challenges");
   const [filter, setFilter] = useState<Filter>("all");
+  const [achievementStats, setAchievementStats] = useState<AchievementStats | null>(null);
+
+  // Fetch achievement stats
+  useEffect(() => {
+    fetch("/api/achievements")
+      .then((res) => res.json() as Promise<AchievementStats>)
+      .then((data) => setAchievementStats(data))
+      .catch(console.error);
+  }, []);
 
   const filteredChallenges = useMemo(() => {
     if (filter === "all") return challengeData;
@@ -284,12 +300,24 @@ export default function ChallengesPage() {
 
                       {/* Footer */}
                       <div className="flex items-center justify-between">
-                        {/* Difficulty */}
-                        <div className="flex items-center gap-2">
-                          <span className={cn("w-2 h-2 rounded-full", diffConfig.dotColor)} />
-                          <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
-                            {t(`difficulty.${challenge.difficulty}`)}
-                          </span>
+                        {/* Difficulty + Achievements */}
+                        <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-2">
+                            <span className={cn("w-2 h-2 rounded-full", diffConfig.dotColor)} />
+                            <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+                              {t(`difficulty.${challenge.difficulty}`)}
+                            </span>
+                          </div>
+                          {/* Achievement count */}
+                          {achievementStats?.summary?.[challenge.id] && (
+                            <div className="flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400">
+                              <Award className="h-3.5 w-3.5" />
+                              <span className="font-medium">
+                                {achievementStats.summary[challenge.id].unlocked}/
+                                {achievementStats.summary[challenge.id].total}
+                              </span>
+                            </div>
+                          )}
                         </div>
 
                         {/* Play Indicator */}

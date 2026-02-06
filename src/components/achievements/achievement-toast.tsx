@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Trophy, X, Share2 } from "lucide-react";
 
 interface Achievement {
   id: string;
@@ -16,6 +17,8 @@ interface Achievement {
 interface AchievementToastProps {
   achievements: Achievement[];
   onClose: () => void;
+  replayId?: string;
+  onShare?: () => void;
 }
 
 const rarityColors: Record<string, string> = {
@@ -32,7 +35,7 @@ const rarityBadgeColors: Record<string, string> = {
   legendary: "bg-amber-200 text-amber-800",
 };
 
-export function AchievementToast({ achievements, onClose }: AchievementToastProps) {
+export function AchievementToast({ achievements, onClose, replayId, onShare }: AchievementToastProps) {
   const [visible, setVisible] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -114,6 +117,26 @@ export function AchievementToast({ achievements, onClose }: AchievementToastProp
                 +{achievement.points} pts
               </span>
             </div>
+
+            {/* Share button */}
+            {(replayId || onShare) && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-3 w-full gap-2 text-xs"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (onShare) {
+                    onShare();
+                  } else if (replayId) {
+                    window.open(`/s/${replayId}`, '_blank');
+                  }
+                }}
+              >
+                <Share2 className="h-3 w-3" />
+                Share Achievement
+              </Button>
+            )}
           </div>
         </div>
 
