@@ -18,11 +18,19 @@ import {
   Eye,
 } from "lucide-react";
 import { useGameCompletion } from "@/lib/game-completion";
+import { useReplayShare } from "@/hooks/use-replay-share";
+import { ShareButton } from "@/components/games/share-button";
 
 type Direction = "up" | "down" | "left" | "right";
 type Position = { x: number; y: number };
 type GameMode = "realtime" | "step" | null;
 type GameStatus = "waiting" | "playing" | "paused" | "gameover";
+
+interface SnakeMove {
+  direction: Direction;
+  ate: boolean;
+  position: Position;
+}
 
 interface LookResult {
   up: "empty" | "food" | "wall" | "body";
@@ -70,6 +78,11 @@ export function SnakeGame({ onStateChange, onGameComplete, gridSize = 15 }: Snak
   // Game completion hook
   const { submitCompletion, isAuthenticated } = useGameCompletion("snake");
 
+  // Replay sharing hook
+  const replay = useReplayShare<SnakeMove>({
+    challengeId: "snake",
+  });
+
   // Calculate what's in each direction
   const look = useCallback((): LookResult => {
     const head = snake[0];
@@ -113,6 +126,8 @@ export function SnakeGame({ onStateChange, onGameComplete, gridSize = 15 }: Snak
       if (newHead.x < 0 || newHead.x >= gridSize || newHead.y < 0 || newHead.y >= gridSize) {
         setGameStatus("gameover");
         if (score > highScore) setHighScore(score);
+        // Save replay on game over
+        replay.saveReplay({ score, won: false });
         return currentSnake;
       }
 
@@ -120,13 +135,23 @@ export function SnakeGame({ onStateChange, onGameComplete, gridSize = 15 }: Snak
       if (currentSnake.some(s => s.x === newHead.x && s.y === newHead.y)) {
         setGameStatus("gameover");
         if (score > highScore) setHighScore(score);
+        // Save replay on game over
+        replay.saveReplay({ score, won: false });
         return currentSnake;
       }
 
       const newSnake = [newHead, ...currentSnake];
+      const ate = newHead.x === food.x && newHead.y === food.y;
+
+      // Record move
+      replay.recordMove({
+        direction: dir,
+        ate,
+        position: newHead,
+      });
 
       // Check food
-      if (newHead.x === food.x && newHead.y === food.y) {
+      if (ate) {
         setScore(s => s + 1);
         setFood(getRandomPosition(gridSize, newSnake));
         // Speed up slightly
@@ -137,7 +162,7 @@ export function SnakeGame({ onStateChange, onGameComplete, gridSize = 15 }: Snak
 
       return newSnake;
     });
-  }, [nextDirection, food, gridSize, score, highScore]);
+  }, [nextDirection, food, gridSize, score, highScore, replay]);
 
   // Game loop for realtime mode
   useEffect(() => {
@@ -232,6 +257,7 @@ export function SnakeGame({ onStateChange, onGameComplete, gridSize = 15 }: Snak
     setSpeed(150);
     setGameMode(mode);
     setGameStatus("playing");
+    replay.reset();
   };
 
   const resetGame = () => {
@@ -244,6 +270,7 @@ export function SnakeGame({ onStateChange, onGameComplete, gridSize = 15 }: Snak
     setNextDirection("right");
     setScore(0);
     setSpeed(150);
+    replay.reset();
   };
 
   const togglePause = () => {
@@ -348,13 +375,20 @@ export function SnakeGame({ onStateChange, onGameComplete, gridSize = 15 }: Snak
                       {score === highScore && score > 0 && (
                         <Badge className="mb-4">New High Score!</Badge>
                       )}
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 justify-center">
                         <Button onClick={() => startGame(gameMode)}>
                           Play Again
                         </Button>
                         <Button variant="outline" onClick={resetGame}>
                           Change Mode
                         </Button>
+                        <ShareButton
+                          canShare={replay.canShare}
+                          isSharing={replay.isSharing}
+                          shareCopied={replay.shareCopied}
+                          onShare={replay.shareReplay}
+                          variant="outline"
+                        />
                       </div>
                     </div>
                   </div>

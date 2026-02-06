@@ -7,7 +7,7 @@ import { eq } from "drizzle-orm";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, User, Calendar, Trophy, Clock, Move } from "lucide-react";
+import { ArrowLeft, User, Calendar, Trophy, Clock, Move, Bot, Github, ExternalLink } from "lucide-react";
 
 export const runtime = "edge";
 
@@ -95,6 +95,27 @@ export default async function SharePage({ params }: PageProps) {
   const moves = JSON.parse(replay.movesJson);
   const challengeName = replay.challengeId.charAt(0).toUpperCase() + replay.challengeId.slice(1);
 
+  // Parse agent snapshot if available
+  const agentSnapshot = replay.agentSnapshotJson
+    ? JSON.parse(replay.agentSnapshotJson) as {
+        schemaVersion: number;
+        identity: {
+          name: string;
+          model: string;
+          client: string;
+          strategy?: string;
+          repo?: string;
+          envVars?: string[];
+          share: "private" | "unlisted" | "public";
+        };
+        identifiedAt: number;
+      }
+    : null;
+
+  // Only show agent info if share mode allows it
+  const showAgent = agentSnapshot &&
+    (agentSnapshot.identity.share === "unlisted" || agentSnapshot.identity.share === "public");
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-800">
       <div className="container max-w-4xl mx-auto px-4 py-8">
@@ -153,6 +174,56 @@ export default async function SharePage({ params }: PageProps) {
               )}
             </div>
           </div>
+
+          {/* Agent Info (if MCP agent) */}
+          {showAgent && agentSnapshot && (
+            <div className="p-4 bg-zinc-900/50 rounded-lg border border-purple-500/30">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-purple-500/10 rounded-lg">
+                  <Bot className="w-6 h-6 text-purple-400" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-white flex items-center gap-2">
+                    {agentSnapshot.identity.name}
+                    <Badge variant="outline" className="text-xs border-purple-500/50 text-purple-300">
+                      {agentSnapshot.identity.model}
+                    </Badge>
+                  </p>
+                  <p className="text-sm text-zinc-400">{agentSnapshot.identity.client}</p>
+                </div>
+              </div>
+              {agentSnapshot.identity.strategy && (
+                <p className="mt-3 text-sm text-zinc-300 bg-zinc-800/50 rounded p-2">
+                  {agentSnapshot.identity.strategy}
+                </p>
+              )}
+              {agentSnapshot.identity.repo && (
+                <a
+                  href={agentSnapshot.identity.repo}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-3 inline-flex items-center gap-1.5 text-sm text-purple-400 hover:text-purple-300 hover:underline"
+                >
+                  <Github className="w-4 h-4" />
+                  Repository
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              )}
+              {agentSnapshot.identity.envVars && agentSnapshot.identity.envVars.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-1">
+                  {agentSnapshot.identity.envVars.map((name) => (
+                    <Badge
+                      key={name}
+                      variant="outline"
+                      className="text-xs font-mono bg-zinc-800/50"
+                    >
+                      {name}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Stats */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">

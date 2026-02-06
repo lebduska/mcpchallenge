@@ -14,11 +14,19 @@ import {
   X,
 } from "lucide-react";
 import { useGameCompletion } from "@/lib/game-completion";
+import { useReplayShare } from "@/hooks/use-replay-share";
+import { ShareButton } from "@/components/games/share-button";
 
 type Player = "X" | "O" | null;
 type Board = Player[];
 type GameMode = "vs-ai" | "vs-player" | null;
 type GameStatus = "waiting" | "playing" | "won" | "draw";
+
+interface TicTacToeMove {
+  position: number;
+  player: Player;
+  boardState: string;
+}
 
 interface TicTacToeProps {
   onMoveForMCP?: (position: number, player: string, board: string) => void;
@@ -222,6 +230,11 @@ export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
   // Game completion hook
   const { submitCompletion, isAuthenticated } = useGameCompletion("tic-tac-toe");
 
+  // Replay sharing hook
+  const replay = useReplayShare<TicTacToeMove>({
+    challengeId: "tic-tac-toe",
+  });
+
   // Notify game completion
   useEffect(() => {
     if (
@@ -275,15 +288,26 @@ export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
         newBoard[move] = computerSymbol;
         setBoard(newBoard);
 
+        // Record move for replay
+        replay.recordMove({
+          position: move,
+          player: computerSymbol,
+          boardState: boardToString(newBoard),
+        });
+
         const { winner: w, line } = checkWinner(newBoard, winCombos);
         if (w) {
           setWinner(w);
           setWinningLine(line);
           setGameStatus("won");
           setScores(prev => ({ ...prev, computer: prev.computer + 1 }));
+          // Save replay - computer won
+          replay.saveReplay({ won: false, winner: "ai" });
         } else if (isDraw(newBoard, winCombos)) {
           setGameStatus("draw");
           setScores(prev => ({ ...prev, draws: prev.draws + 1 }));
+          // Save replay - draw
+          replay.saveReplay({ won: false, winner: "draw" });
         } else {
           setCurrentPlayer(computerSymbol === "X" ? "O" : "X");
         }
@@ -293,7 +317,7 @@ export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
 
       setIsThinking(false);
     }, 300 + Math.random() * 400);
-  }, [boardSize, winLength, winCombos, onMoveForMCP]);
+  }, [boardSize, winLength, winCombos, onMoveForMCP, replay]);
 
   const handleCellClick = useCallback((index: number) => {
     if (gameStatus !== "playing" || board[index] || isThinking) return;
@@ -305,6 +329,13 @@ export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
     newBoard[index] = currentPlayer;
     setBoard(newBoard);
 
+    // Record move for replay
+    replay.recordMove({
+      position: index,
+      player: currentPlayer,
+      boardState: boardToString(newBoard),
+    });
+
     onMoveForMCP?.(index, currentPlayer!, boardToString(newBoard));
 
     const { winner: w, line } = checkWinner(newBoard, winCombos);
@@ -314,10 +345,17 @@ export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
       setGameStatus("won");
       if (gameMode === "vs-ai") {
         setScores(prev => ({ ...prev, player: prev.player + 1 }));
+        // Save replay - player won
+        replay.saveReplay({ won: true, winner: "player" });
+      } else {
+        // 2-player mode
+        replay.saveReplay({ won: true, winner: currentPlayer === "X" ? "X" : "O" });
       }
     } else if (isDraw(newBoard, winCombos)) {
       setGameStatus("draw");
       setScores(prev => ({ ...prev, draws: prev.draws + 1 }));
+      // Save replay - draw
+      replay.saveReplay({ won: false, winner: "draw" });
     } else {
       const nextPlayer = currentPlayer === "X" ? "O" : "X";
       setCurrentPlayer(nextPlayer);
@@ -327,7 +365,7 @@ export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
         makeComputerMove(newBoard, nextPlayer);
       }
     }
-  }, [board, currentPlayer, gameMode, gameStatus, isThinking, playerSymbol, makeComputerMove, onMoveForMCP, winCombos]);
+  }, [board, currentPlayer, gameMode, gameStatus, isThinking, playerSymbol, makeComputerMove, onMoveForMCP, winCombos, replay]);
 
   const startGame = (mode: GameMode, symbol: Player = "X") => {
     const newBoard = Array(boardSize * boardSize).fill(null);
@@ -338,6 +376,7 @@ export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
     setWinner(null);
     setWinningLine(null);
     setPlayerSymbol(symbol);
+    replay.reset();
 
     // If playing as O against computer, let computer move first
     if (mode === "vs-ai" && symbol === "O") {
@@ -352,6 +391,7 @@ export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
     setGameStatus("waiting");
     setWinner(null);
     setWinningLine(null);
+    replay.reset();
   };
 
   const playAgain = () => {
@@ -361,6 +401,7 @@ export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
     setGameStatus("playing");
     setWinner(null);
     setWinningLine(null);
+    replay.reset();
 
     if (gameMode === "vs-ai" && playerSymbol === "O") {
       makeComputerMove(newBoard, "X");
@@ -513,13 +554,20 @@ export function TicTacToe({ onMoveForMCP, onGameComplete }: TicTacToeProps) {
                             : `${winner} Wins!`
                         }
                       </h3>
-                      <div className="flex gap-2 mt-4">
+                      <div className="flex gap-2 mt-4 justify-center">
                         <Button onClick={playAgain}>
                           Play Again
                         </Button>
                         <Button variant="outline" onClick={resetGame}>
                           Change Mode
                         </Button>
+                        <ShareButton
+                          canShare={replay.canShare}
+                          isSharing={replay.isSharing}
+                          shareCopied={replay.shareCopied}
+                          onShare={replay.shareReplay}
+                          variant="outline"
+                        />
                       </div>
                     </div>
                   </div>

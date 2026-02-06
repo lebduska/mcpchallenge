@@ -2,6 +2,8 @@
 // Manages game state and broadcasts updates to web viewers
 
 import type { GameState, GameType, CommandLogEntry } from "./mcp/types";
+import type { AgentSnapshot, AgentIdentifyParams } from "./mcp/agent-types";
+import { sanitizeAgentIdentity, createAgentSnapshot } from "./mcp/agent-types";
 import { MCPServer } from "./mcp/server";
 import { createRoomMCPServer, hasAdapterSupport } from "./adapters";
 // Legacy imports (fallback for unsupported game types)
@@ -14,6 +16,8 @@ const ROOM_TTL = 60 * 60 * 1000; // 1 hour
 interface RoomState {
   gameType: GameType;
   roomId: string;
+  sessionNonce: string;              // For agent.identify verification
+  agentSnapshot: AgentSnapshot | null; // Locked after first identify
   gameState: GameState | null;
   commandLog: CommandLogEntry[];
   createdAt: number;
@@ -84,10 +88,15 @@ export class GameRoom implements DurableObject {
       roomId: string;
     };
 
+    // Generate session nonce for agent.identify verification
+    const sessionNonce = crypto.randomUUID().replace(/-/g, "").slice(0, 32);
+
     // Initialize room state
     this.roomState = {
       gameType,
       roomId,
+      sessionNonce,
+      agentSnapshot: null,
       gameState: null,
       commandLog: [],
       createdAt: Date.now(),
@@ -103,7 +112,7 @@ export class GameRoom implements DurableObject {
     // Schedule cleanup alarm
     await this.state.storage.setAlarm(Date.now() + ROOM_TTL);
 
-    return Response.json({ success: true, roomId });
+    return Response.json({ success: true, roomId, sessionNonce });
   }
 
   private createMCPServer(): void {
@@ -170,6 +179,18 @@ export class GameRoom implements DurableObject {
     }
 
     const message = await request.text();
+
+    // Intercept agent.identify tool calls at room level
+    const intercepted = await this.interceptAgentIdentify(message);
+    if (intercepted) {
+      return new Response(intercepted, {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      });
+    }
+
     const response = await this.mcpServer!.handleMessage(message);
 
     // Save state after each MCP message
@@ -184,6 +205,82 @@ export class GameRoom implements DurableObject {
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
+      },
+    });
+  }
+
+  // Handle agent.identify tool at room level (before game-specific MCP server)
+  private async interceptAgentIdentify(message: string): Promise<string | null> {
+    try {
+      const parsed = JSON.parse(message);
+
+      // Only intercept tools/call for agent.identify
+      if (parsed.method !== "tools/call" || parsed.params?.name !== "agent.identify") {
+        return null;
+      }
+
+      const args = parsed.params?.arguments as AgentIdentifyParams | undefined;
+      if (!args) {
+        return this.mcpErrorResponse(parsed.id, "Missing arguments");
+      }
+
+      // Verify nonce
+      if (args.sessionNonce !== this.roomState?.sessionNonce) {
+        return this.mcpErrorResponse(parsed.id, "Invalid session nonce");
+      }
+
+      // Already identified?
+      if (this.roomState?.agentSnapshot) {
+        return this.mcpErrorResponse(parsed.id, "Agent already identified for this session");
+      }
+
+      // Sanitize and validate
+      const identity = sanitizeAgentIdentity(args);
+      if (!identity) {
+        return this.mcpErrorResponse(parsed.id, "Invalid agent identity data");
+      }
+
+      // Lock identity
+      this.roomState!.agentSnapshot = createAgentSnapshot(identity);
+      await this.state.storage.put("roomState", this.roomState);
+
+      // Broadcast to UI
+      this.broadcast("agent", this.roomState!.agentSnapshot);
+
+      // Log the command
+      const entry: CommandLogEntry = {
+        timestamp: Date.now(),
+        type: "response",
+        id: parsed.id,
+        toolName: "agent.identify",
+        result: { identified: true, name: identity.name, model: identity.model },
+      };
+      this.roomState!.commandLog.push(entry);
+      this.broadcast("command", entry);
+
+      // Return success response
+      return JSON.stringify({
+        jsonrpc: "2.0",
+        id: parsed.id,
+        result: {
+          content: [{
+            type: "text",
+            text: `Identified as ${identity.name} (${identity.model})`,
+          }],
+        },
+      });
+    } catch {
+      return null; // Parse error, let normal handler deal with it
+    }
+  }
+
+  private mcpErrorResponse(id: string | number, message: string): string {
+    return JSON.stringify({
+      jsonrpc: "2.0",
+      id,
+      result: {
+        content: [{ type: "text", text: message }],
+        isError: true,
       },
     });
   }
@@ -294,6 +391,14 @@ export class GameRoom implements DurableObject {
 
     // Handle MCP message
     const messageStr = typeof message === "string" ? message : new TextDecoder().decode(message);
+
+    // Intercept agent.identify at room level
+    const intercepted = await this.interceptAgentIdentify(messageStr);
+    if (intercepted) {
+      ws.send(intercepted);
+      return;
+    }
+
     const response = await this.mcpServer!.handleMessage(messageStr);
 
     // Save state
@@ -323,6 +428,8 @@ export class GameRoom implements DurableObject {
     return {
       roomId: this.roomState.roomId,
       gameType: this.roomState.gameType,
+      sessionNonce: this.roomState.sessionNonce,
+      agentIdentity: this.roomState.agentSnapshot?.identity ?? null,
       gameState: this.roomState.gameState,
       commandCount: this.roomState.commandLog.length,
       createdAt: this.roomState.createdAt,

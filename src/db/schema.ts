@@ -125,6 +125,7 @@ export const replays = sqliteTable("replays", {
   seed: text("seed"),
   movesJson: text("moves_json").notNull(),
   resultJson: text("result_json"),
+  agentSnapshotJson: text("agent_snapshot_json"), // Agent identity snapshot (if MCP agent)
   createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 });
 

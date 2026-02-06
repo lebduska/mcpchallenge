@@ -4,9 +4,11 @@ import { useState, useCallback, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { RotateCcw, ChevronLeft, ChevronRight, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Trophy, Undo2, AlertTriangle, Share2, Check, Loader2 } from "lucide-react";
+import { RotateCcw, ChevronLeft, ChevronRight, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Trophy, Undo2, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useGameCompletion } from "@/lib/game-completion";
+import { useReplayShare } from "@/hooks/use-replay-share";
+import { ShareButton } from "@/components/games/share-button";
 import { SOKOBAN_LEVELS } from "@mcpchallenge/game-engines";
 
 // =============================================================================
@@ -293,12 +295,14 @@ export function SokobanGame({ onGameComplete }: SokobanProps) {
   const [levelIndex, setLevelIndex] = useState(0);
   const [gameState, setGameState] = useState<GameState | null>(() => parseLevel(0));
   const [history, setHistory] = useState<HistoryEntry[]>([]);
-  const [moveHistory, setMoveHistory] = useState<MoveRecord[]>([]);
   const [startTime, setStartTime] = useState<number>(() => Date.now());
-  const [replayId, setReplayId] = useState<string | null>(null);
-  const [isSharing, setIsSharing] = useState(false);
-  const [shareCopied, setShareCopied] = useState(false);
   const { submitCompletion } = useGameCompletion("sokoban");
+
+  // Replay sharing hook
+  const replay = useReplayShare<MoveRecord>({
+    challengeId: "sokoban",
+    levelId: String(levelIndex + 1),
+  });
 
   const totalLevels = LEVEL_DATA.length;
 
@@ -317,21 +321,17 @@ export function SokobanGame({ onGameComplete }: SokobanProps) {
     setLevelIndex(clampedIndex);
     setGameState(parseLevel(clampedIndex));
     setHistory([]);
-    setMoveHistory([]);
     setStartTime(Date.now());
-    setReplayId(null);
-    setShareCopied(false);
-  }, [totalLevels]);
+    replay.reset();
+  }, [totalLevels, replay]);
 
   // Reset current level
   const resetLevel = useCallback(() => {
     setGameState(parseLevel(levelIndex));
     setHistory([]);
-    setMoveHistory([]);
     setStartTime(Date.now());
-    setReplayId(null);
-    setShareCopied(false);
-  }, [levelIndex]);
+    replay.reset();
+  }, [levelIndex, replay]);
 
   // Handle move
   const move = useCallback(
@@ -371,7 +371,7 @@ export function SokobanGame({ onGameComplete }: SokobanProps) {
       ]);
 
       // Track move for replay
-      setMoveHistory((prev) => [...prev, { direction, pushed }]);
+      replay.recordMove({ direction, pushed });
 
       const won = checkWin(newBoxes, gameState.goals);
 
@@ -388,36 +388,19 @@ export function SokobanGame({ onGameComplete }: SokobanProps) {
         const timeMs = Date.now() - startTime;
         const finalMoves = gameState.moveCount + 1;
         const finalPushes = gameState.pushCount + (pushed ? 1 : 0);
-        const finalMoveHistory = [...moveHistory, { direction, pushed }];
 
         submitCompletion({
           winner: "player",
           moves: finalMoves,
         });
 
-        // Save replay
-        fetch("/api/replays", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            challengeId: "sokoban",
-            levelId: String(levelIndex + 1),
-            moves: finalMoveHistory,
-            result: {
-              won: true,
-              moves: finalMoves,
-              pushes: finalPushes,
-              timeMs,
-            },
-          }),
-        })
-          .then((res) => res.json() as Promise<{ id?: string; success?: boolean }>)
-          .then((data) => {
-            if (data.id) {
-              setReplayId(data.id);
-            }
-          })
-          .catch(console.error);
+        // Save replay using hook
+        replay.saveReplay({
+          won: true,
+          moves: finalMoves,
+          pushes: finalPushes,
+          timeMs,
+        });
 
         onGameComplete?.({
           won: true,
@@ -427,7 +410,7 @@ export function SokobanGame({ onGameComplete }: SokobanProps) {
         });
       }
     },
-    [gameState, levelIndex, submitCompletion, onGameComplete, startTime, moveHistory]
+    [gameState, levelIndex, submitCompletion, onGameComplete, startTime, replay]
   );
 
   // Undo
@@ -444,32 +427,8 @@ export function SokobanGame({ onGameComplete }: SokobanProps) {
       status: "playing",
     });
     setHistory((h) => h.slice(0, -1));
-    setMoveHistory((m) => m.slice(0, -1));
+    // Note: We don't remove from replay.moves - the final result stats are from gameState
   }, [history, gameState]);
-
-  // Share replay
-  const shareReplay = useCallback(async () => {
-    if (!replayId) return;
-
-    setIsSharing(true);
-    try {
-      const res = await fetch("/api/share", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ replayId }),
-      });
-      const data = (await res.json()) as { url?: string; code?: string };
-      if (data.url) {
-        await navigator.clipboard.writeText(data.url);
-        setShareCopied(true);
-        setTimeout(() => setShareCopied(false), 3000);
-      }
-    } catch (error) {
-      console.error("Failed to share replay:", error);
-    } finally {
-      setIsSharing(false);
-    }
-  }, [replayId]);
 
   // Keyboard controls
   useEffect(() => {
@@ -593,33 +552,22 @@ export function SokobanGame({ onGameComplete }: SokobanProps) {
       )}
 
       {/* Win Panel with Share */}
-      {status === "won" && replayId && (
+      {status === "won" && (
         <div className="flex items-center gap-2 px-4 py-3 bg-emerald-500/20 border border-emerald-500/50 rounded-lg">
           <Trophy className="w-5 h-5 text-emerald-400" />
           <span className="text-sm font-medium text-emerald-400">
             Level completed in {moveCount} moves!
           </span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={shareReplay}
-            disabled={isSharing}
-            className="ml-auto border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/20"
-          >
-            {isSharing ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : shareCopied ? (
-              <>
-                <Check className="w-4 h-4 mr-1" />
-                Copied!
-              </>
-            ) : (
-              <>
-                <Share2 className="w-4 h-4 mr-1" />
-                Share
-              </>
-            )}
-          </Button>
+          <div className="ml-auto">
+            <ShareButton
+              canShare={replay.canShare}
+              isSharing={replay.isSharing}
+              shareCopied={replay.shareCopied}
+              onShare={replay.shareReplay}
+              size="sm"
+              className="border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/20"
+            />
+          </div>
         </div>
       )}
 

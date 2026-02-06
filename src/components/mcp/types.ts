@@ -127,4 +127,5 @@ export interface RoomInfo {
   mcpUrl: string;
   sseUrl: string;
   wsUrl?: string;
+  sessionNonce?: string;  // For agent.identify verification
 }

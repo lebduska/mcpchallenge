@@ -12,6 +12,7 @@ import {
 import { createGameAdapter, type AdaptedMCPServer } from './game-adapter';
 import type { MCPServer } from '../mcp/server';
 import type { GameState, GameType, CommandLogEntry } from '../mcp/types';
+import { systemTools } from '../mcp/system-tools';
 
 // =============================================================================
 // Types
@@ -276,7 +277,7 @@ export function createRoomMCPServer(config: RoomMCPServerConfig): MCPServer {
   // Convert initial state
   const engineInitialState = convertToEngineState(gameType, initialState);
 
-  // Create the adapter
+  // Create the adapter with system tools (like agent.identify)
   const adapter = createGameAdapter({
     engine: engine as any,
     initialState: engineInitialState as any,
@@ -288,6 +289,7 @@ export function createRoomMCPServer(config: RoomMCPServerConfig): MCPServer {
     onCommand,
     responseFormat: 'text',
     autoPlayAI: true,
+    additionalTools: systemTools,
   });
 
   return adapter.server;

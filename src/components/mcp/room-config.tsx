@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Copy, Check, Settings, Terminal, Wifi } from "lucide-react";
+import { Copy, Check, Settings, Terminal, Wifi, Bot } from "lucide-react";
 import type { RoomInfo } from "./types";
 
 interface RoomConfigProps {
@@ -85,6 +85,20 @@ curl -X POST ${mcpUrl} \\
   -H "Content-Type: application/json" \\
   -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"new_game","arguments":{}}}'`;
 
+  // Auto-Identify snippet
+  const autoIdentifySnippet = `// Call immediately after connecting to identify your agent:
+await mcp.call("agent.identify", {
+  sessionNonce: "${roomInfo.sessionNonce ?? "SESSION_NONCE"}",
+  name: "YourAgent",
+  model: "your-model-id",
+  client: "YourClient",
+  // Optional fields:
+  strategy: "Description of your strategy",
+  repo: "https://github.com/your/repo",
+  envVars: ["SOME_VAR"],  // Names only, no values!
+  share: "private"  // "private" | "unlisted" | "public"
+});`;
+
   const copyToClipboard = async (text: string, type: string) => {
     await navigator.clipboard.writeText(text);
     setCopiedConfig(type);
@@ -107,14 +121,26 @@ curl -X POST ${mcpUrl} \\
             <Badge variant="outline" className="font-mono">
               {roomInfo.roomId}
             </Badge>
+            {roomInfo.sessionNonce && (
+              <>
+                <span className="text-zinc-500 ml-2">Session:</span>
+                <Badge variant="outline" className="font-mono text-xs bg-purple-500/10 border-purple-500/30">
+                  {roomInfo.sessionNonce.slice(0, 8)}...
+                </Badge>
+              </>
+            )}
           </div>
 
           {/* Configuration Tabs */}
           <Tabs defaultValue="claude" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="claude">Claude Desktop</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="claude">Claude</TabsTrigger>
               <TabsTrigger value="cursor">Cursor</TabsTrigger>
               <TabsTrigger value="curl">cURL</TabsTrigger>
+              <TabsTrigger value="identify" className="gap-1">
+                <Bot className="h-3 w-3" />
+                Agent
+              </TabsTrigger>
             </TabsList>
 
             {/* Claude Desktop */}
@@ -175,6 +201,30 @@ curl -X POST ${mcpUrl} \\
                   />
                 </div>
               </div>
+            </TabsContent>
+
+            {/* Agent Identify */}
+            <TabsContent value="identify" className="space-y-2">
+              <p className="text-sm text-zinc-500">
+                Identify your agent to show its info on the board:
+              </p>
+              <div className="relative">
+                <pre className="bg-zinc-100 dark:bg-zinc-800 rounded-lg p-3 text-xs font-mono overflow-x-auto whitespace-pre-wrap">
+                  {autoIdentifySnippet}
+                </pre>
+                <div className="absolute top-2 right-2">
+                  <CopyButton
+                    text={autoIdentifySnippet}
+                    type="identify"
+                    copiedConfig={copiedConfig}
+                    onCopy={copyToClipboard}
+                  />
+                </div>
+              </div>
+              <p className="text-xs text-zinc-400 mt-2">
+                Call <code className="bg-zinc-800 px-1 rounded">agent.identify</code> once after connecting.
+                The <code className="bg-zinc-800 px-1 rounded">sessionNonce</code> prevents spoofing.
+              </p>
             </TabsContent>
           </Tabs>
 

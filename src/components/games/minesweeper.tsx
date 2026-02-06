@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useGameCompletion } from "@/lib/game-completion";
+import { useReplayShare } from "@/hooks/use-replay-share";
+import { ShareButton } from "@/components/games/share-button";
 
 // =============================================================================
 // Types
@@ -30,6 +32,13 @@ interface GameState {
 
 interface MinesweeperProps {
   onGameComplete?: (result: { won: boolean; time: number; difficulty: Difficulty }) => void;
+}
+
+interface MinesweeperMove {
+  action: "reveal" | "flag";
+  row: number;
+  col: number;
+  result?: "safe" | "mine";
 }
 
 // =============================================================================
@@ -169,6 +178,11 @@ export function Minesweeper({ onGameComplete }: MinesweeperProps) {
 
   const { submitCompletion, isAuthenticated } = useGameCompletion("minesweeper");
 
+  // Replay sharing hook
+  const replay = useReplayShare<MinesweeperMove>({
+    challengeId: "minesweeper",
+  });
+
   // Timer effect
   useEffect(() => {
     if (gameState?.status === "playing" && gameState.startTime) {
@@ -223,6 +237,7 @@ export function Minesweeper({ onGameComplete }: MinesweeperProps) {
     const config = DIFFICULTY_CONFIG[diff];
     setDifficulty(diff);
     setElapsedTime(0);
+    replay.reset();
     setGameState({
       board: createEmptyBoard(config.rows, config.cols, 0),
       revealed: createEmptyBoard(config.rows, config.cols, false),
@@ -234,7 +249,7 @@ export function Minesweeper({ onGameComplete }: MinesweeperProps) {
       startTime: null,
       firstMove: true,
     });
-  }, []);
+  }, [replay]);
 
   const handleCellClick = useCallback((row: number, col: number) => {
     if (!gameState || gameState.status !== "playing") return;
@@ -255,6 +270,9 @@ export function Minesweeper({ onGameComplete }: MinesweeperProps) {
     // Check if hit mine
     if (newBoard[row][col] === -1) {
       newRevealed[row][col] = true;
+      // Record move and save replay
+      replay.recordMove({ action: "reveal", row, col, result: "mine" });
+      replay.saveReplay({ won: false, timeMs: elapsedTime * 1000 });
       setGameState({
         ...gameState,
         board: newBoard,
@@ -265,6 +283,9 @@ export function Minesweeper({ onGameComplete }: MinesweeperProps) {
       });
       return;
     }
+
+    // Record safe reveal
+    replay.recordMove({ action: "reveal", row, col, result: "safe" });
 
     // Safe reveal with flood fill
     floodReveal(newBoard, newRevealed, row, col, gameState.rows, gameState.cols);
@@ -281,10 +302,12 @@ export function Minesweeper({ onGameComplete }: MinesweeperProps) {
     // Check win
     if (checkWin(newState)) {
       newState.status = "won";
+      // Save replay on win
+      replay.saveReplay({ won: true, timeMs: elapsedTime * 1000 });
     }
 
     setGameState(newState);
-  }, [gameState]);
+  }, [gameState, replay, elapsedTime]);
 
   const handleRightClick = useCallback((e: React.MouseEvent, row: number, col: number) => {
     e.preventDefault();
@@ -294,16 +317,20 @@ export function Minesweeper({ onGameComplete }: MinesweeperProps) {
     const newFlagged = gameState.flagged.map(r => [...r]);
     newFlagged[row][col] = !newFlagged[row][col];
 
+    // Record flag action
+    replay.recordMove({ action: "flag", row, col });
+
     setGameState({
       ...gameState,
       flagged: newFlagged,
     });
-  }, [gameState]);
+  }, [gameState, replay]);
 
   const resetGame = useCallback(() => {
     setGameState(null);
     setElapsedTime(0);
-  }, []);
+    replay.reset();
+  }, [replay]);
 
   const flagsRemaining = gameState
     ? gameState.mineCount - countFlagged(gameState.flagged)
@@ -471,7 +498,7 @@ export function Minesweeper({ onGameComplete }: MinesweeperProps) {
                     </p>
                   </>
                 )}
-                <div className="flex gap-2 justify-center">
+                <div className="flex gap-2 justify-center flex-wrap">
                   <Button onClick={() => startGame(difficulty)}>
                     <RotateCcw className="w-4 h-4 mr-2" />
                     Play Again
@@ -479,6 +506,13 @@ export function Minesweeper({ onGameComplete }: MinesweeperProps) {
                   <Button variant="outline" onClick={resetGame}>
                     Change Difficulty
                   </Button>
+                  <ShareButton
+                    canShare={replay.canShare}
+                    isSharing={replay.isSharing}
+                    shareCopied={replay.shareCopied}
+                    onShare={replay.shareReplay}
+                    variant="outline"
+                  />
                 </div>
               </CardContent>
             </Card>

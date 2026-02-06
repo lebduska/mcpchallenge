@@ -26,6 +26,7 @@ interface CreateReplayBody {
     timeMs?: number;
     score?: number;
   };
+  agentSnapshotJson?: string; // Agent identity snapshot (if MCP agent)
 }
 
 /**
@@ -56,6 +57,7 @@ export async function POST(request: Request) {
     seed: body.seed || null,
     movesJson: JSON.stringify(body.moves),
     resultJson: body.result ? JSON.stringify(body.result) : null,
+    agentSnapshotJson: body.agentSnapshotJson || null,
   });
 
   return NextResponse.json({

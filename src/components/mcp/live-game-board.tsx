@@ -39,6 +39,7 @@ import {
 } from "lucide-react";
 import { MCPCommandLog } from "./mcp-command-log";
 import { RoomConfig } from "./room-config";
+import { AgentChip, type AgentIdentity } from "./agent-chip";
 import { cn } from "@/lib/utils";
 import type {
   GameType,
@@ -69,6 +70,7 @@ export function LiveGameBoard({
   const [roomInfo, setRoomInfo] = useState<RoomInfo | null>(null);
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [commands, setCommands] = useState<CommandLogEntry[]>([]);
+  const [agentIdentity, setAgentIdentity] = useState<AgentIdentity | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [isCreatingRoom, setIsCreatingRoom] = useState(false);
@@ -89,6 +91,7 @@ export function LiveGameBoard({
         mcpUrl?: string;
         sseUrl?: string;
         wsUrl?: string;
+        sessionNonce?: string;
       };
 
       if (data.roomId) {
@@ -99,6 +102,7 @@ export function LiveGameBoard({
           mcpUrl: data.mcpUrl || `${mcpBaseUrl}/${gameType}?room=${data.roomId}`,
           sseUrl: data.sseUrl || `${mcpBaseUrl}/${gameType}/sse?room=${data.roomId}`,
           wsUrl: data.wsUrl,
+          sessionNonce: data.sessionNonce,
         };
         setRoomInfo(info);
         onRoomCreated?.(info);
@@ -140,8 +144,12 @@ export function LiveGameBoard({
 
     eventSource.addEventListener("state", (event) => {
       try {
-        const data = JSON.parse(event.data) as RoomState;
+        const data = JSON.parse(event.data) as RoomState & { agentIdentity?: AgentIdentity };
         setGameState(data.gameState);
+        // Also update agent identity if present in state
+        if (data.agentIdentity) {
+          setAgentIdentity(data.agentIdentity);
+        }
       } catch (error) {
         console.error("Failed to parse state:", error);
       }
@@ -156,6 +164,15 @@ export function LiveGameBoard({
       }
     });
 
+    eventSource.addEventListener("agent", (event) => {
+      try {
+        const data = JSON.parse(event.data) as { identity: AgentIdentity };
+        setAgentIdentity(data.identity);
+      } catch (error) {
+        console.error("Failed to parse agent:", error);
+      }
+    });
+
     setRoomInfo({
       roomId,
       gameType,
@@ -167,6 +184,7 @@ export function LiveGameBoard({
     return () => {
       eventSource.close();
       setIsConnected(false);
+      setAgentIdentity(null);
     };
   }, [roomId, gameType, mcpBaseUrl]);
 
@@ -882,6 +900,9 @@ export function LiveGameBoard({
                 {roomId.slice(0, 8)}...
               </code>
             </div>
+
+            {/* Agent chip */}
+            <AgentChip identity={agentIdentity} />
 
             {/* Copy URL button */}
             {roomInfo && (

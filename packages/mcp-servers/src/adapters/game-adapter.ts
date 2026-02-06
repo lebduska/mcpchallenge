@@ -40,6 +40,9 @@ export interface GameAdapterConfig<TState extends GameState, TMove> {
 
   /** Whether AI should auto-respond after player moves */
   autoPlayAI?: boolean;
+
+  /** Additional tools to include (e.g., system tools like agent.identify) */
+  additionalTools?: MCPTool[];
 }
 
 export interface AdaptedMCPServer {
@@ -223,6 +226,7 @@ export function createGameAdapter<TState extends GameState, TMove>(
     onCommand,
     responseFormat = 'text',
     autoPlayAI = true,
+    additionalTools = [],
   } = config;
 
   const { metadata } = engine;
@@ -467,7 +471,7 @@ export function createGameAdapter<TState extends GameState, TMove>(
   const server = new MCPServer({
     name: `${metadata.id}-mcp-server`,
     version: '0.2.0',
-    tools: generateTools(engine),
+    tools: [...generateTools(engine), ...additionalTools],
     onToolCall: handleToolCall,
     onCommand,
   });
