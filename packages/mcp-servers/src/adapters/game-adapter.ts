@@ -57,7 +57,7 @@ function generateTools<TState extends GameState, TMove>(
 ): MCPTool[] {
   const { metadata } = engine;
 
-  return [
+  const tools: MCPTool[] = [
     {
       name: 'new_game',
       description: `Start a new ${metadata.name} game`,
@@ -126,6 +126,36 @@ function generateTools<TState extends GameState, TMove>(
       },
     },
   ];
+
+  // Add Sokoban-specific tools
+  if (metadata.id === 'sokoban') {
+    tools.push({
+      name: 'change_level',
+      description: 'Change to a different level (0-59)',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          level: {
+            type: 'number',
+            description: 'Level index (0-59)',
+            minimum: 0,
+            maximum: 59,
+          },
+        },
+        required: ['level'],
+      },
+    });
+    tools.push({
+      name: 'reset_level',
+      description: 'Reset the current level to its initial state',
+      inputSchema: {
+        type: 'object',
+        properties: {},
+      },
+    });
+  }
+
+  return tools;
 }
 
 // =============================================================================
@@ -384,6 +414,45 @@ export function createGameAdapter<TState extends GameState, TMove>(
         updateState(finalState);
 
         return textContent('You resigned. Game over.');
+      }
+
+      // ---------------------------------------------------------------------
+      // change_level (Sokoban-specific)
+      // ---------------------------------------------------------------------
+      case 'change_level': {
+        if (metadata.id !== 'sokoban') {
+          return errorContent('change_level is only available for Sokoban.');
+        }
+
+        const level = args.level as number;
+        if (typeof level !== 'number' || level < 0 || level > 59) {
+          return errorContent('Level must be a number between 0 and 59.');
+        }
+
+        const newState = engine.newGame({ levelIndex: level } as any);
+        updateState(newState);
+
+        return formatResponse(engine, newState, responseFormat, `Changed to level ${level + 1}`);
+      }
+
+      // ---------------------------------------------------------------------
+      // reset_level (Sokoban-specific)
+      // ---------------------------------------------------------------------
+      case 'reset_level': {
+        if (metadata.id !== 'sokoban') {
+          return errorContent('reset_level is only available for Sokoban.');
+        }
+
+        if (!gameState) {
+          return errorContent('No game in progress. Use new_game to start.');
+        }
+
+        // Get current level index and restart
+        const currentLevel = (gameState as any).levelIndex ?? 0;
+        const newState = engine.newGame({ levelIndex: currentLevel } as any);
+        updateState(newState);
+
+        return formatResponse(engine, newState, responseFormat, 'Level reset');
       }
 
       // ---------------------------------------------------------------------

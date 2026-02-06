@@ -117,6 +117,24 @@ function convertToEngineState(
         commands: canvasOldState.commands || [],
       } as any;
 
+    case 'sokoban':
+      const sokobanOldState = oldState as any;
+      return {
+        gameId: `${oldState.createdAt}`,
+        status: sokobanOldState.status,
+        turn: 'player',
+        moveCount: sokobanOldState.moveCount || 0,
+        board: sokobanOldState.board,
+        player: sokobanOldState.player,
+        boxes: sokobanOldState.boxes,
+        goals: sokobanOldState.goals,
+        rows: sokobanOldState.rows,
+        cols: sokobanOldState.cols,
+        levelIndex: sokobanOldState.levelIndex || 0,
+        totalLevels: sokobanOldState.totalLevels || 60,
+        pushCount: sokobanOldState.pushCount || 0,
+      } as any;
+
     default:
       return null;
   }
@@ -210,6 +228,28 @@ function convertToOldState(
         width: canvasState.width,
         height: canvasState.height,
         commands: canvasState.commands || [],
+      } as GameState;
+
+    case 'sokoban':
+      const sokobanState = engineState as any;
+      return {
+        gameType: 'sokoban',
+        status: sokobanState.status,
+        createdAt: now,
+        lastActivity: now,
+        board: sokobanState.board,
+        player: sokobanState.player,
+        boxes: sokobanState.boxes,
+        goals: sokobanState.goals,
+        rows: sokobanState.rows,
+        cols: sokobanState.cols,
+        levelIndex: sokobanState.levelIndex,
+        totalLevels: sokobanState.totalLevels,
+        moveCount: sokobanState.moveCount,
+        pushCount: sokobanState.pushCount,
+        boxesOnGoals: sokobanState.boxes?.filter((b: any) =>
+          sokobanState.goals?.some((g: any) => g.row === b.row && g.col === b.col)
+        ).length || 0,
       } as GameState;
 
     default:

@@ -107,7 +107,7 @@ export interface CommandLogEntry {
 }
 
 // Game state types
-export type GameType = "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "polybridge";
+export type GameType = "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "polybridge" | "sokoban";
 
 export interface BaseGameState {
   gameType: GameType;
@@ -185,4 +185,20 @@ export interface PolyBridgeGameState extends BaseGameState {
   levelComplete: boolean;
 }
 
-export type GameState = ChessGameState | TicTacToeGameState | SnakeGameState | CanvasGameState | MinesweeperGameState | PolyBridgeGameState;
+export interface SokobanGameState extends BaseGameState {
+  gameType: "sokoban";
+  status: "waiting" | "playing" | "won";
+  board: string[][];
+  player: { row: number; col: number };
+  boxes: Array<{ row: number; col: number }>;
+  goals: Array<{ row: number; col: number }>;
+  rows: number;
+  cols: number;
+  levelIndex: number;
+  totalLevels: number;
+  moveCount: number;
+  pushCount: number;
+  boxesOnGoals: number;
+}
+
+export type GameState = ChessGameState | TicTacToeGameState | SnakeGameState | CanvasGameState | MinesweeperGameState | PolyBridgeGameState | SokobanGameState;

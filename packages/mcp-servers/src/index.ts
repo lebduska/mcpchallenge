@@ -34,16 +34,16 @@ export default {
           status: "ok",
           service: "mcp-servers",
           version: "0.1.0",
-          games: ["chess", "tictactoe", "snake", "canvas", "minesweeper"],
+          games: ["chess", "tictactoe", "snake", "canvas", "minesweeper", "sokoban"],
         },
         { headers: corsHeaders }
       );
     }
 
     // Route to game endpoints
-    const gameMatch = path.match(/^\/(chess|tictactoe|snake|canvas|minesweeper)(\/.*)?$/);
+    const gameMatch = path.match(/^\/(chess|tictactoe|snake|canvas|minesweeper|sokoban)(\/.*)?$/);
     if (gameMatch) {
-      const gameType = gameMatch[1] as "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper";
+      const gameType = gameMatch[1] as "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "sokoban";
       const subPath = gameMatch[2] || "";
 
       return handleGameRequest(request, env, gameType, subPath);
@@ -184,6 +184,8 @@ function getGameDescription(gameType: string): string {
       return "Canvas MCP Server - Draw on canvas via MCP commands";
     case "minesweeper":
       return "Minesweeper MCP Server - Classic minesweeper game via MCP tools";
+    case "sokoban":
+      return "Sokoban MCP Server - Classic box-pushing puzzle with 60 DOS levels";
     default:
       return "MCP Game Server";
   }
