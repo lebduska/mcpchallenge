@@ -48,6 +48,7 @@ import type {
   SnakeGameState,
   CanvasGameState,
   MinesweeperGameState,
+  SokobanGameState,
   CommandLogEntry,
   RoomInfo,
   RoomState,
@@ -198,6 +199,8 @@ export function LiveGameBoard({
         return renderCanvasBoard(gameState);
       case "minesweeper":
         return renderMinesweeperBoard(gameState);
+      case "sokoban":
+        return renderSokobanBoard(gameState as SokobanGameState);
       default:
         return null;
     }
@@ -493,6 +496,93 @@ export function LiveGameBoard({
     );
   };
 
+  const renderSokobanBoard = (state: SokobanGameState) => {
+    const { rows, cols, board, player, boxes, goals, levelIndex, totalLevels, moveCount, pushCount, status } = state;
+
+    // Helper to check if position has item
+    const isPlayer = (r: number, c: number) => player?.row === r && player?.col === c;
+    const isBox = (r: number, c: number) => boxes?.some(b => b.row === r && b.col === c);
+    const isGoal = (r: number, c: number) => goals?.some(g => g.row === r && g.col === c);
+    const boxesOnGoals = boxes?.filter(b => goals?.some(g => g.row === b.row && g.col === b.col)).length || 0;
+
+    return (
+      <div className="relative bg-stone-800 dark:bg-stone-900 rounded-xl p-3 border border-stone-600 dark:border-stone-700">
+        {/* Spectator badge */}
+        <div className="absolute top-2 left-2 z-10">
+          <Badge variant="outline" className="bg-black/50 backdrop-blur-md border-white/10 text-white gap-1">
+            <Eye className="h-3 w-3" />
+            Spectating
+          </Badge>
+        </div>
+
+        {/* Header bar */}
+        <div className="flex items-center justify-between gap-4 p-2 bg-stone-700 dark:bg-stone-800 rounded-lg mb-2">
+          <div className="flex items-center gap-2 text-amber-400 font-mono text-sm">
+            <span>📦</span>
+            <span>{boxesOnGoals}/{goals?.length || 0}</span>
+          </div>
+          <div className="text-amber-100 text-sm font-medium">
+            Level {(levelIndex || 0) + 1}/{totalLevels || 60}
+          </div>
+          <div className="flex items-center gap-2 text-stone-300 font-mono text-sm">
+            <span>Moves: {moveCount || 0}</span>
+          </div>
+        </div>
+
+        {/* Board */}
+        <div
+          className="inline-grid gap-0 p-1 bg-stone-900 rounded"
+          style={{ gridTemplateColumns: `repeat(${cols || 10}, 1fr)` }}
+        >
+          {Array.from({ length: rows || 10 }, (_, row) =>
+            Array.from({ length: cols || 10 }, (_, col) => {
+              const cell = board?.[row]?.[col];
+              const hasPlayer = isPlayer(row, col);
+              const hasBox = isBox(row, col);
+              const hasGoal = isGoal(row, col);
+              const isWall = cell === "wall";
+              const boxOnGoal = hasBox && hasGoal;
+
+              return (
+                <div
+                  key={`${row}-${col}`}
+                  className={cn(
+                    "w-5 h-5 flex items-center justify-center text-[10px] font-bold select-none",
+                    isWall && "bg-red-900 border border-red-950",
+                    !isWall && hasGoal && "bg-amber-200 dark:bg-amber-900/30",
+                    !isWall && !hasGoal && "bg-stone-200 dark:bg-stone-700"
+                  )}
+                >
+                  {hasPlayer && <div className="w-3.5 h-3.5 rounded-full bg-blue-500" />}
+                  {hasBox && !hasPlayer && (
+                    <div className={cn(
+                      "w-3.5 h-3.5 rounded-sm",
+                      boxOnGoal ? "bg-emerald-500" : "bg-amber-500"
+                    )} />
+                  )}
+                  {hasGoal && !hasBox && !hasPlayer && (
+                    <div className="w-2 h-2 rounded-full bg-amber-500/50" />
+                  )}
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        {/* Win overlay */}
+        {status === "won" && (
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm rounded-xl flex items-center justify-center">
+            <div className="bg-stone-800/95 rounded-xl p-6 text-center border border-amber-500/30">
+              <div className="text-4xl mb-2">🎉</div>
+              <h3 className="text-xl font-bold text-amber-400">Level Complete!</h3>
+              <p className="text-stone-400 mt-1">Moves: {moveCount} | Pushes: {pushCount}</p>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   // Render preview board based on game type
   const renderPreviewBoard = () => {
     switch (gameType) {
@@ -595,6 +685,41 @@ export function LiveGameBoard({
             </div>
           </div>
         );
+      case "sokoban":
+        return (
+          <div className="aspect-square p-4 bg-stone-800 dark:bg-stone-900 rounded-xl flex flex-col items-center justify-center">
+            {/* Mini header */}
+            <div className="flex items-center gap-3 mb-3 text-sm">
+              <span className="text-amber-400">📦 0/3</span>
+              <span className="text-stone-300">Level 1/60</span>
+            </div>
+            {/* Preview grid - simple sokoban pattern */}
+            <div className="grid grid-cols-7 gap-0 p-1 bg-stone-900 rounded">
+              {Array(49).fill(null).map((_, i) => {
+                const walls = [0,1,2,3,4,5,6,7,13,14,20,21,27,28,34,35,41,42,43,44,45,46,47,48];
+                const player = i === 23;
+                const box = i === 24;
+                const goal = i === 31;
+                const isWall = walls.includes(i);
+                return (
+                  <div
+                    key={i}
+                    className={cn(
+                      "w-4 h-4 flex items-center justify-center",
+                      isWall && "bg-red-900",
+                      !isWall && goal && "bg-amber-200/30",
+                      !isWall && !goal && "bg-stone-700"
+                    )}
+                  >
+                    {player && <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />}
+                    {box && <div className="w-2.5 h-2.5 rounded-sm bg-amber-500" />}
+                    {goal && !box && <div className="w-1.5 h-1.5 rounded-full bg-amber-500/50" />}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
       default:
         return null;
     }
@@ -617,6 +742,7 @@ export function LiveGameBoard({
                 gameType === "tictactoe" ? "bg-gradient-to-br from-purple-500/30 via-transparent to-pink-500/20" :
                 gameType === "canvas" ? "bg-gradient-to-br from-pink-500/30 via-transparent to-purple-500/20" :
                 gameType === "minesweeper" ? "bg-gradient-to-br from-zinc-500/30 via-transparent to-red-500/20" :
+                gameType === "sokoban" ? "bg-gradient-to-br from-amber-500/30 via-transparent to-stone-500/20" :
                 "bg-gradient-to-br from-green-500/30 via-transparent to-emerald-500/20",
                 "group-hover:opacity-40"
               )}
