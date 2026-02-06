@@ -107,11 +107,11 @@ export interface CommandLogEntry {
 }
 
 // Game state types
-export type GameType = "chess" | "tictactoe" | "snake" | "canvas";
+export type GameType = "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper";
 
 export interface BaseGameState {
   gameType: GameType;
-  status: "waiting" | "playing" | "finished";
+  status: "waiting" | "playing" | "finished" | "won" | "lost";
   createdAt: number;
   lastActivity: number;
 }
@@ -154,4 +154,17 @@ export interface CanvasGameState extends BaseGameState {
   }>;
 }
 
-export type GameState = ChessGameState | TicTacToeGameState | SnakeGameState | CanvasGameState;
+export interface MinesweeperGameState extends BaseGameState {
+  gameType: "minesweeper";
+  status: "waiting" | "playing" | "won" | "lost";
+  board: number[][];        // -1=mine, 0-8=adjacent count (visible after reveal)
+  revealed: boolean[][];
+  flagged: boolean[][];
+  rows: number;
+  cols: number;
+  mineCount: number;
+  flagsRemaining: number;
+  elapsedSeconds: number;
+}
+
+export type GameState = ChessGameState | TicTacToeGameState | SnakeGameState | CanvasGameState | MinesweeperGameState;

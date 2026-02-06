@@ -84,6 +84,25 @@ function convertToEngineState(
         gameOver: (oldState as any).gameOver,
       } as any;
 
+    case 'minesweeper':
+      const msOldState = oldState as any;
+      return {
+        gameId: `${oldState.createdAt}`,
+        status: msOldState.status,
+        turn: 'player',
+        moveCount: 0,
+        board: msOldState.board,
+        revealed: msOldState.revealed,
+        flagged: msOldState.flagged,
+        rows: msOldState.rows,
+        cols: msOldState.cols,
+        mineCount: msOldState.mineCount,
+        flagsRemaining: msOldState.flagsRemaining,
+        startTime: null,
+        elapsedSeconds: msOldState.elapsedSeconds || 0,
+        firstMove: true,
+      } as any;
+
     default:
       return null;
   }
@@ -146,6 +165,25 @@ function convertToOldState(
         score: snakeState.score ?? 0,
         gridSize: snakeState.gridSize,
         gameOver: snakeState.gameOver,
+      } as GameState;
+
+    case 'minesweeper':
+      const msState = engineState as any;
+      return {
+        gameType: 'minesweeper',
+        status: msState.status,
+        createdAt: now,
+        lastActivity: now,
+        board: msState.board,
+        revealed: msState.revealed,
+        flagged: msState.flagged,
+        rows: msState.rows,
+        cols: msState.cols,
+        mineCount: msState.mineCount,
+        flagsRemaining: msState.flagsRemaining,
+        elapsedSeconds: msState.startTime
+          ? Math.floor((Date.now() - msState.startTime) / 1000)
+          : 0,
       } as GameState;
 
     default:

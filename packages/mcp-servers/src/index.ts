@@ -34,16 +34,16 @@ export default {
           status: "ok",
           service: "mcp-servers",
           version: "0.1.0",
-          games: ["chess", "tictactoe", "snake", "canvas"],
+          games: ["chess", "tictactoe", "snake", "canvas", "minesweeper"],
         },
         { headers: corsHeaders }
       );
     }
 
     // Route to game endpoints
-    const gameMatch = path.match(/^\/(chess|tictactoe|snake|canvas)(\/.*)?$/);
+    const gameMatch = path.match(/^\/(chess|tictactoe|snake|canvas|minesweeper)(\/.*)?$/);
     if (gameMatch) {
-      const gameType = gameMatch[1] as "chess" | "tictactoe" | "snake" | "canvas";
+      const gameType = gameMatch[1] as "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper";
       const subPath = gameMatch[2] || "";
 
       return handleGameRequest(request, env, gameType, subPath);
@@ -182,6 +182,8 @@ function getGameDescription(gameType: string): string {
       return "Snake MCP Server - Control snake via MCP tools";
     case "canvas":
       return "Canvas MCP Server - Draw on canvas via MCP commands";
+    case "minesweeper":
+      return "Minesweeper MCP Server - Classic minesweeper game via MCP tools";
     default:
       return "MCP Game Server";
   }
