@@ -14,7 +14,7 @@ import {
   Bomb,
   Paintbrush,
   ChevronRight,
-  Construction,
+  // Construction, // Poly Bridge hidden
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -69,19 +69,20 @@ const challengeData = [
     gradient: "from-pink-500/20 via-rose-500/10 to-fuchsia-500/20",
     accentColor: "pink",
   },
-  {
-    id: "poly-bridge",
-    key: "polyBridge",
-    difficulty: "intermediate",
-    points: 200,
-    type: "game",
-    completions: 0,
-    featured: false,
-    transport: "HTTP+SSE",
-    icon: Construction,
-    gradient: "from-cyan-500/20 via-sky-500/10 to-blue-500/20",
-    accentColor: "cyan",
-  },
+  // Poly Bridge - hidden until physics is fixed
+  // {
+  //   id: "poly-bridge",
+  //   key: "polyBridge",
+  //   difficulty: "intermediate",
+  //   points: 200,
+  //   type: "game",
+  //   completions: 0,
+  //   featured: false,
+  //   transport: "HTTP+SSE",
+  //   icon: Construction,
+  //   gradient: "from-cyan-500/20 via-sky-500/10 to-blue-500/20",
+  //   accentColor: "cyan",
+  // },
 ];
 
 const difficultyConfig = {

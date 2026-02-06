@@ -781,7 +781,7 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
   const runTest = useCallback(() => {
     setTestResult("testing");
 
-    const engine = Matter.Engine.create({ gravity: { x: 0, y: 1 } });
+    const engine = Matter.Engine.create({ gravity: { x: 0, y: 0.5 } }); // Lower gravity for visible sag
     engineRef.current = engine;
     const world = engine.world;
 
@@ -853,13 +853,13 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
               bodyB,
               pointA: { x: a.x - bodyA.position.x, y: a.y - bodyA.position.y },
               pointB: { x: b.x - bodyB.position.x, y: b.y - bodyB.position.y },
-              stiffness: isSteel ? 0.4 : 0.15, // Much lower - allows flex
-              damping: 0.05,
+              stiffness: isSteel ? 0.08 : 0.03, // Very low - allows visible sagging
+              damping: 0.02,
               length: 0,
             }) as BreakableConstraint;
 
-            // Set max stretch before breaking (steel stronger)
-            constraint.maxLength = isSteel ? 25 : 15;
+            // Set max stretch before breaking - much higher for visible flex
+            constraint.maxLength = isSteel ? 80 : 50;
             constraint.broken = false;
 
             allConstraints.push(constraint);
@@ -881,12 +881,12 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
               bodyA: body,
               pointA: { x: point.x - body.position.x, y: point.y - body.position.y },
               pointB: anchor,
-              stiffness: isSteel ? 0.6 : 0.3, // Anchor points stronger but not rigid
-              damping: 0.1,
+              stiffness: isSteel ? 0.15 : 0.06, // Low enough to allow sag
+              damping: 0.05,
               length: 0,
             }) as BreakableConstraint;
 
-            constraint.maxLength = isSteel ? 30 : 20;
+            constraint.maxLength = isSteel ? 100 : 60;
             constraint.broken = false;
 
             allConstraints.push(constraint);
@@ -910,18 +910,18 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
       }
     }
 
-    // Vehicle - much heavier to stress the bridge
+    // Vehicle - heavy enough to stress weak bridges
     const vehicle = Matter.Bodies.rectangle(
       level.vehicleStart.x,
       level.vehicleStart.y - 15,
       30,
       20,
-      { friction: 0.5, density: 0.015 * level.vehicleWeight } // 5x heavier
+      { friction: 0.5, density: 0.008 * level.vehicleWeight }
     );
     Matter.Composite.add(world, vehicle);
 
-    const wheelLeft = Matter.Bodies.circle(level.vehicleStart.x - 10, level.vehicleStart.y - 5, 6, { friction: 1, density: 0.005 });
-    const wheelRight = Matter.Bodies.circle(level.vehicleStart.x + 10, level.vehicleStart.y - 5, 6, { friction: 1, density: 0.005 });
+    const wheelLeft = Matter.Bodies.circle(level.vehicleStart.x - 10, level.vehicleStart.y - 5, 6, { friction: 1, density: 0.003 });
+    const wheelRight = Matter.Bodies.circle(level.vehicleStart.x + 10, level.vehicleStart.y - 5, 6, { friction: 1, density: 0.003 });
     Matter.Composite.add(world, [wheelLeft, wheelRight]);
 
     Matter.Composite.add(world, [
