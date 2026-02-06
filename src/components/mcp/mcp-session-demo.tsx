@@ -188,17 +188,15 @@ export function MCPSessionDemo({ challengeId = 'chess' }: MCPSessionDemoProps) {
               <div className="relative">
                 {/* Chess board - read-only projection */}
                 <Chessboard
-                  options={{
-                    position: displayState,
-                    allowDragging: false,
-                    boardOrientation: "white",
-                    boardStyle: {
-                      borderRadius: '8px',
-                      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                    },
-                    darkSquareStyle: { backgroundColor: '#779952' },
-                    lightSquareStyle: { backgroundColor: '#edeed1' },
+                  position={displayState}
+                  arePiecesDraggable={false}
+                  boardOrientation="white"
+                  customBoardStyle={{
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
                   }}
+                  customDarkSquareStyle={{ backgroundColor: '#779952' }}
+                  customLightSquareStyle={{ backgroundColor: '#edeed1' }}
                 />
 
                 {/* Scrub mode indicator */}

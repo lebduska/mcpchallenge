@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { Chess } from "chess.js";
 import dynamic from "next/dynamic";
 
@@ -21,6 +21,7 @@ const Chessboard: any = dynamic(
     )
   }
 );
+
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -61,6 +62,7 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
   const [moveHistory, setMoveHistory] = useState<string[]>([]);
   const [playerColor, setPlayerColor] = useState<"white" | "black">("white");
   const [lastMove, setLastMove] = useState<{ from: string; to: string } | null>(null);
+  const [legalMoveSquares, setLegalMoveSquares] = useState<string[]>([]);
 
   // Stockfish engine
   const {
@@ -179,7 +181,7 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
 
   // Handle player move
   const onDrop = useCallback(
-    ({ sourceSquare, targetSquare, piece }: { sourceSquare: Square; targetSquare: Square; piece: Piece }) => {
+    (sourceSquare: Square, targetSquare: Square, piece: Piece) => {
       if (gameStatus !== "playing") return false;
       if (isThinking) return false;
 
@@ -233,6 +235,21 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
     [game, gameMode, gameStatus, isThinking, playerColor, checkGameState, makeEngineMove, onMoveForMCP]
   );
 
+  // Handle piece drag begin - show legal moves
+  const onPieceDragBegin = useCallback(
+    (_piece: Piece, sourceSquare: Square) => {
+      const moves = game.moves({ square: sourceSquare as never, verbose: true });
+      const squares = moves.map(m => m.to);
+      setLegalMoveSquares(squares);
+    },
+    [game]
+  );
+
+  // Handle piece drag end - clear legal moves
+  const onPieceDragEnd = useCallback(() => {
+    setLegalMoveSquares([]);
+  }, []);
+
   // Start new game
   const startGame = (mode: GameMode, color: "white" | "black" = "white") => {
     const newGame = new Chess();
@@ -264,13 +281,23 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
     setGameStatus("resigned");
   };
 
-  // Custom square styles for last move highlight
-  const customSquareStyles = lastMove
-    ? {
-        [lastMove.from]: { backgroundColor: "rgba(16, 185, 129, 0.3)" },
-        [lastMove.to]: { backgroundColor: "rgba(16, 185, 129, 0.4)" },
-      }
-    : {};
+  // Custom square styles for last move and legal moves highlight
+  const customSquareStyles = useMemo(() => {
+    const styles: Record<string, { backgroundColor: string }> = {};
+
+    // Last move highlight
+    if (lastMove) {
+      styles[lastMove.from] = { backgroundColor: "rgba(16, 185, 129, 0.3)" };
+      styles[lastMove.to] = { backgroundColor: "rgba(16, 185, 129, 0.4)" };
+    }
+
+    // Legal moves highlight (during drag)
+    legalMoveSquares.forEach(square => {
+      styles[square] = { backgroundColor: "rgba(59, 130, 246, 0.5)" };
+    });
+
+    return styles;
+  }, [lastMove, legalMoveSquares]);
 
   // ==========================================================================
   // RENDER: Game Mode Selection (Start Screen) - Board-first 2-column layout
@@ -300,14 +327,12 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
               )}
             >
               <Chessboard
-                options={{
-                  position: "start",
-                  allowDragging: false,
-                  boardOrientation: "white",
-                  boardStyle: { borderRadius: "16px" },
-                  darkSquareStyle: { backgroundColor: "#4a7c59" },
-                  lightSquareStyle: { backgroundColor: "#ebecd0" },
-                }}
+                position="start"
+                arePiecesDraggable={false}
+                boardOrientation="white"
+                customBoardStyle={{ borderRadius: "16px" }}
+                customDarkSquareStyle={{ backgroundColor: "#4a7c59" }}
+                customLightSquareStyle={{ backgroundColor: "#ebecd0" }}
               />
 
               {/* Overlay hint */}
@@ -460,39 +485,27 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Left: Chess Board - Hero Element */}
       <div className="lg:col-span-2">
-        <div className="relative group">
-          {/* Gradient glow behind board */}
-          <div
-            className={cn(
-              "absolute -inset-3 rounded-2xl blur-2xl transition-opacity duration-500",
-              isThinking
-                ? "opacity-50 dark:opacity-70 bg-gradient-to-br from-amber-500/30 via-transparent to-amber-600/20"
-                : "opacity-20 dark:opacity-30 bg-gradient-to-br from-emerald-500/30 via-transparent to-amber-500/20",
-              "group-hover:opacity-40 dark:group-hover:opacity-50"
-            )}
+        <div
+          className={cn(
+            "relative rounded-2xl",
+            "bg-white dark:bg-zinc-900",
+            "shadow-2xl shadow-black/15 dark:shadow-black/40",
+            "ring-1 ring-black/5 dark:ring-white/10"
+          )}
+        >
+          <Chessboard
+            id="PlayBoard"
+            position={fen}
+            onPieceDrop={onDrop}
+            onPieceDragBegin={onPieceDragBegin}
+            onPieceDragEnd={onPieceDragEnd}
+            arePiecesDraggable={true}
+            boardOrientation={playerColor}
+            customBoardStyle={{ borderRadius: "16px" }}
+            customDarkSquareStyle={{ backgroundColor: "#4a7c59" }}
+            customLightSquareStyle={{ backgroundColor: "#ebecd0" }}
+            customSquareStyles={customSquareStyles}
           />
-
-          {/* Board container with glassmorphism */}
-          <div
-            className={cn(
-              "relative rounded-2xl overflow-hidden",
-              "bg-white/60 dark:bg-zinc-900/60 backdrop-blur-sm",
-              "shadow-2xl shadow-black/15 dark:shadow-black/40",
-              "ring-1 ring-black/5 dark:ring-white/10"
-            )}
-          >
-            <Chessboard
-              options={{
-                position: fen,
-                onPieceDrop: onDrop,
-                allowDragging: true,
-                boardOrientation: playerColor,
-                boardStyle: { borderRadius: "16px" },
-                darkSquareStyle: { backgroundColor: "#4a7c59" },
-                lightSquareStyle: { backgroundColor: "#ebecd0" },
-                squareStyles: customSquareStyles,
-              }}
-            />
 
             {/* AI Thinking overlay */}
             {isThinking && !isGameOver && (
@@ -548,7 +561,6 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
                 </div>
               </div>
             )}
-          </div>
         </div>
       </div>
 
