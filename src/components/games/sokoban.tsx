@@ -205,6 +205,93 @@ function isEdgeDeadlock(board: CellType[][], pos: Position, goals: Position[]): 
 }
 
 /**
+ * Check for freeze deadlock - two adjacent boxes that block each other
+ * This happens when two boxes are side-by-side and both have walls perpendicular to their alignment
+ */
+function isFreezeDeadlock(
+  board: CellType[][],
+  box: Position,
+  boxes: Position[],
+  goals: Position[]
+): boolean {
+  // If box is on a goal, skip (might still be part of solution)
+  if (posInList(box, goals)) return false;
+
+  const { row, col } = box;
+
+  // Check horizontal freeze (box to left or right)
+  const leftBox = boxes.find(b => b.row === row && b.col === col - 1);
+  const rightBox = boxes.find(b => b.row === row && b.col === col + 1);
+
+  if (leftBox || rightBox) {
+    const otherBox = leftBox || rightBox!;
+    // Both boxes must have wall above OR both have wall below
+    const thisWallAbove = isWall(board, { row: row - 1, col });
+    const thisWallBelow = isWall(board, { row: row + 1, col });
+    const otherWallAbove = isWall(board, { row: otherBox.row - 1, col: otherBox.col });
+    const otherWallBelow = isWall(board, { row: otherBox.row + 1, col: otherBox.col });
+
+    // Freeze if both have wall on same side (can't push either up or down)
+    if ((thisWallAbove && otherWallAbove) || (thisWallBelow && otherWallBelow)) {
+      // Check if neither box is on goal
+      if (!posInList(box, goals) && !posInList(otherBox, goals)) {
+        return true;
+      }
+    }
+  }
+
+  // Check vertical freeze (box above or below)
+  const aboveBox = boxes.find(b => b.row === row - 1 && b.col === col);
+  const belowBox = boxes.find(b => b.row === row + 1 && b.col === col);
+
+  if (aboveBox || belowBox) {
+    const otherBox = aboveBox || belowBox!;
+    // Both boxes must have wall left OR both have wall right
+    const thisWallLeft = isWall(board, { row, col: col - 1 });
+    const thisWallRight = isWall(board, { row, col: col + 1 });
+    const otherWallLeft = isWall(board, { row: otherBox.row, col: otherBox.col - 1 });
+    const otherWallRight = isWall(board, { row: otherBox.row, col: otherBox.col + 1 });
+
+    if ((thisWallLeft && otherWallLeft) || (thisWallRight && otherWallRight)) {
+      if (!posInList(box, goals) && !posInList(otherBox, goals)) {
+        return true;
+      }
+    }
+  }
+
+  // Check 2x2 box square deadlock (4 boxes in square, or 2+ boxes with walls forming square)
+  // Check if this box is part of a 2x2 pattern with walls/boxes
+  const positions = [
+    { dr: 0, dc: 1 },   // right
+    { dr: 1, dc: 0 },   // down
+    { dr: 1, dc: 1 },   // diagonal
+  ];
+
+  for (const offset of positions) {
+    const r2 = row + offset.dr;
+    const c2 = col + offset.dc;
+
+    // Check 2x2 square starting at (row, col)
+    const topLeft = { row, col };
+    const topRight = { row, col: col + 1 };
+    const bottomLeft = { row: row + 1, col };
+    const bottomRight = { row: row + 1, col: col + 1 };
+
+    const corners = [topLeft, topRight, bottomLeft, bottomRight];
+    const boxCount = corners.filter(c => posInList(c, boxes)).length;
+    const wallCount = corners.filter(c => isWall(board, c)).length;
+    const goalCount = corners.filter(c => posInList(c, goals)).length;
+
+    // If 2+ boxes and rest are walls, and no goals in square -> deadlock
+    if (boxCount >= 2 && boxCount + wallCount === 4 && goalCount === 0) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**
  * Get all deadlocked box positions
  */
 function getDeadlockedBoxes(board: CellType[][], boxes: Position[], goals: Position[]): Set<string> {
@@ -212,7 +299,11 @@ function getDeadlockedBoxes(board: CellType[][], boxes: Position[], goals: Posit
 
   for (const box of boxes) {
     const key = `${box.row},${box.col}`;
-    if (isSimpleDeadlock(board, box, goals) || isEdgeDeadlock(board, box, goals)) {
+    if (
+      isSimpleDeadlock(board, box, goals) ||
+      isEdgeDeadlock(board, box, goals) ||
+      isFreezeDeadlock(board, box, boxes, goals)
+    ) {
       deadlocked.add(key);
     }
   }
