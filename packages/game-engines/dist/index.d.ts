@@ -18,6 +18,8 @@ export type { CanvasState, CanvasMove, CanvasOptions, CanvasMoveAction } from '.
 export { polybridgeEngine } from './polybridge';
 export type { PolyBridgeState, PolyBridgeMove, PolyBridgeOptions, Structure, PolyBridgeMoveAction } from './polybridge';
 export { LEVELS as POLYBRIDGE_LEVELS, MATERIAL_COSTS } from './polybridge';
+export { sokobanEngine, SOKOBAN_LEVELS, TOTAL_LEVELS as SOKOBAN_TOTAL_LEVELS } from './sokoban';
+export type { SokobanState, SokobanMove, SokobanOptions, Direction as SokobanDirection, Position as SokobanPosition } from './sokoban';
 import type { GameEngine, GameState } from './types';
 export declare const engines: {
     readonly chess: GameEngine<import("./chess").ChessState, import("./chess").ChessMove, import("./chess").ChessOptions>;
@@ -26,6 +28,7 @@ export declare const engines: {
     readonly canvas: GameEngine<import("./canvas").CanvasState, import("./canvas").CanvasMove, import("./canvas").CanvasOptions>;
     readonly minesweeper: GameEngine<import("./minesweeper").MinesweeperState, import("./minesweeper").MinesweeperMove, import("./minesweeper").MinesweeperOptions>;
     readonly polybridge: GameEngine<import("./polybridge").PolyBridgeState, import("./polybridge").PolyBridgeMove, import("./polybridge").PolyBridgeOptions>;
+    readonly sokoban: GameEngine<import("./sokoban").SokobanState, import("./sokoban").SokobanMove, import("./sokoban").SokobanOptions>;
 };
 export type EngineId = keyof typeof engines;
 /**

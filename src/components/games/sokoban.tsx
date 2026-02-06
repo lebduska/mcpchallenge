@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { RotateCcw, ChevronLeft, ChevronRight, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Trophy, Undo2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useGameCompletion } from "@/lib/game-completion";
+import { SOKOBAN_LEVELS } from "@mcpchallenge/game-engines";
 
 // =============================================================================
 // Types
@@ -44,243 +45,26 @@ interface SokobanProps {
 }
 
 // =============================================================================
-// Level Data (10 Classic DOS Levels)
+// Level Data - imported from game engine (60 classic DOS levels)
 // =============================================================================
 
-const LEVEL_DATA = [
-  // Level 1 - Simple introduction
-  {
-    map: `
-    #####
-    #   #
-    #$  #
-  ###  $###
-  #  $  $ #
-### # ## #   ######
-#   # ## #####  ..#
-# $  $          ..#
-##### ### #@##  ..#
-    #     #########
-    #######
-`,
-  },
-  // Level 2
-  {
-    map: `
-############
-#..  #     ###
-#..  # $  $  #
-#..  #$####  #
-#..    @ ##  #
-#..  # #  $ ##
-###### ##$ $ #
-  # $  $ $ $ #
-  #    #     #
-  ############
-`,
-  },
-  // Level 3
-  {
-    map: `
-        ########
-        #     @#
-        # $#$ ##
-        # $  $#
-        ##$ $ #
-######### $ # ###
-#....  ## $  $  #
-##...    $  $   #
-#....  ##########
-########
-`,
-  },
-  // Level 4
-  {
-    map: `
-              ########
-              #  ....#
-   ############  ....#
-   #    #  $ $   ....#
-   # $$$#$  $ #  ....#
-   #  $     $ #  ....#
-   # $$ #$ $ $########
-####  $ #     #
-#   # #########
-#    $  ##
-# $$#$$ @#
-#   #   ##
-#########
-`,
-  },
-  // Level 5
-  {
-    map: `
-        #####
-        #   #####
-        # #$##  #
-        #     $ #
-######### ###   #
-#....  ## $  $###
-#....    $ $$ ##
-#....  ##$  $ @#
-#########  $  ##
-        # $ $  #
-        ### ## #
-          #    #
-          ######
-`,
-  },
-  // Level 6
-  {
-    map: `
-######  ###
-#..  # ##@##
-#..  ###   #
-#..     $$ #
-#..  # # $ #
-#..### # $ #
-#### $ #$  #
-   #  $# $ #
-   # $  $  #
-   #  ##   #
-   #########
-`,
-  },
-  // Level 7
-  {
-    map: `
-       #####
- #######   ##
-## # @## $$ #
-#    $      #
-#  $  ###   #
-### ####$####
-# $  ### ..#
-# $ $ $ ...#
-#    ###...#
-###### #####
-`,
-  },
-  // Level 8
-  {
-    map: `
-  ####
-  #  #########
-  #    $  $  #
-  # $ #  # $ #
-  #  $###$  @#
-###$###  # ###
-#  $  #  #  #
-#    $#  $  #
-####  #  $  #
-   #### ### #
-  #....# #  #
-  #....#    #
-  ######### #
-          ###
-`,
-  },
-  // Level 9
-  {
-    map: `
-          #####
-          #   ##
-          # $  #
-  ####### #$   #
-###     ###  $ #
-#  $ ###  $ $$ #
-#  @$       ####
-###### ###$ #
-     #     $#
-     ### #  #
-   #...###  #
-   #...    ##
-   #... ####
-   #####
-`,
-  },
-  // Level 10
-  {
-    map: `
-     #######
-     #  ...#
-    ##  ...#
-   ##  #...#
-   #  # #..#
-####$ # ##.#
-#   $ # ####
-#  $$ #$   #
-###    $  @#
-  ##### $ ##
-      #  ##
-      ####
-`,
-  },
-];
+const LEVEL_DATA = SOKOBAN_LEVELS;
 
 // =============================================================================
 // Level Parser
 // =============================================================================
 
-function parseLevel(levelData: { map: string }): GameState | null {
-  const lines = levelData.map.split("\n").filter((line) => line.trim());
-  if (lines.length === 0) return null;
-
-  const rows = lines.length;
-  const cols = Math.max(...lines.map((l) => l.length));
-
-  const board: CellType[][] = [];
-  let player: Position = { row: 0, col: 0 };
-  const boxes: Position[] = [];
-  const goals: Position[] = [];
-
-  for (let r = 0; r < rows; r++) {
-    const row: CellType[] = [];
-    const line = lines[r].padEnd(cols, " ");
-
-    for (let c = 0; c < cols; c++) {
-      const char = line[c];
-
-      switch (char) {
-        case "#":
-          row.push("wall");
-          break;
-        case ".":
-          row.push("goal");
-          goals.push({ row: r, col: c });
-          break;
-        case "$":
-          row.push("floor");
-          boxes.push({ row: r, col: c });
-          break;
-        case "@":
-          row.push("floor");
-          player = { row: r, col: c };
-          break;
-        case "+": // Player on goal
-          row.push("goal");
-          goals.push({ row: r, col: c });
-          player = { row: r, col: c };
-          break;
-        case "*": // Box on goal
-          row.push("goal");
-          goals.push({ row: r, col: c });
-          boxes.push({ row: r, col: c });
-          break;
-        default:
-          row.push("floor");
-      }
-    }
-    board.push(row);
-  }
+function parseLevel(levelIndex: number): GameState | null {
+  const level = LEVEL_DATA[levelIndex];
+  if (!level) return null;
 
   return {
-    board,
-    player,
-    boxes,
-    goals,
-    rows,
-    cols,
+    board: level.board.map(row => [...row]),
+    player: { ...level.player },
+    boxes: level.boxes.map(b => ({ ...b })),
+    goals: level.goals.map(g => ({ ...g })),
+    rows: level.rows,
+    cols: level.cols,
     moveCount: 0,
     pushCount: 0,
     status: "playing",
@@ -352,28 +136,41 @@ function Cell({
     height: size,
   };
 
-  // Wall
+  // Wall - brick pattern
   if (type === "wall") {
     return (
       <div
         style={baseStyle}
-        className="bg-gradient-to-br from-stone-600 to-stone-800 border border-stone-900 shadow-inner"
-      />
+        className="relative bg-gradient-to-br from-red-900 to-red-950 border-2 border-red-950 shadow-inner overflow-hidden"
+      >
+        {/* Brick pattern */}
+        <div className="absolute inset-0 opacity-40">
+          <div className="absolute top-0 left-0 right-0 h-[45%] border-b border-red-700/50 flex">
+            <div className="w-1/2 border-r border-red-700/50" />
+          </div>
+          <div className="absolute bottom-0 left-0 right-0 h-[45%] flex">
+            <div className="w-1/4 border-r border-red-700/50" />
+            <div className="w-1/2 border-r border-red-700/50" />
+          </div>
+        </div>
+        {/* Highlight */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
+      </div>
     );
   }
 
   // Floor/Goal background
   const bgClass =
     type === "goal" || isGoal
-      ? "bg-gradient-to-br from-amber-100 to-amber-200 dark:from-amber-900/40 dark:to-amber-800/40"
-      : "bg-gradient-to-br from-stone-200 to-stone-300 dark:from-stone-700 dark:to-stone-800";
+      ? "bg-gradient-to-br from-amber-100 to-amber-200 dark:from-amber-900/30 dark:to-amber-800/30"
+      : "bg-gradient-to-br from-stone-100 to-stone-200 dark:from-stone-800 dark:to-stone-900";
 
   return (
     <div
       style={baseStyle}
       className={cn(
         bgClass,
-        "relative flex items-center justify-center border border-stone-300 dark:border-stone-600"
+        "relative flex items-center justify-center border border-stone-300/50 dark:border-stone-700/50"
       )}
     >
       {/* Goal marker */}
@@ -423,7 +220,7 @@ function Cell({
 
 export function SokobanGame({ onGameComplete }: SokobanProps) {
   const [levelIndex, setLevelIndex] = useState(0);
-  const [gameState, setGameState] = useState<GameState | null>(() => parseLevel(LEVEL_DATA[0]));
+  const [gameState, setGameState] = useState<GameState | null>(() => parseLevel(0));
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const { submitCompletion } = useGameCompletion("sokoban");
 
@@ -433,13 +230,13 @@ export function SokobanGame({ onGameComplete }: SokobanProps) {
   const changeLevel = useCallback((newIndex: number) => {
     const clampedIndex = Math.max(0, Math.min(totalLevels - 1, newIndex));
     setLevelIndex(clampedIndex);
-    setGameState(parseLevel(LEVEL_DATA[clampedIndex]));
+    setGameState(parseLevel(clampedIndex));
     setHistory([]);
   }, [totalLevels]);
 
   // Reset current level
   const resetLevel = useCallback(() => {
-    setGameState(parseLevel(LEVEL_DATA[levelIndex]));
+    setGameState(parseLevel(levelIndex));
     setHistory([]);
   }, [levelIndex]);
 
