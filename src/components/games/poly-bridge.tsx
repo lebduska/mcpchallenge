@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useRef, useState, useEffect, useCallback, useMemo } from "react";
 import Matter from "matter-js";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -13,7 +13,6 @@ import {
   XCircle,
 } from "lucide-react";
 import {
-  type PolyBridgeState,
   type Structure,
   POLYBRIDGE_LEVELS,
   MATERIAL_COSTS,
@@ -108,26 +107,23 @@ function pointToLineDistance(point: Point, lineStart: Point, lineEnd: Point): nu
 export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<Matter.Engine | null>(null);
-  const renderRef = useRef<Matter.Render | null>(null);
   const runnerRef = useRef<Matter.Runner | null>(null);
 
   const [levelIndex, setLevelIndex] = useState(0);
   const [structures, setStructures] = useState<Structure[]>([]);
-  const [budgetUsed, setBudgetUsed] = useState(0);
   const [selectedTool, setSelectedTool] = useState<ToolType>("beam");
   const [selectedMaterial, setSelectedMaterial] = useState<MaterialType>("wood");
   const [testResult, setTestResult] = useState<"untested" | "testing" | "passed" | "failed">("untested");
   const [isDrawing, setIsDrawing] = useState(false);
   const [drawStart, setDrawStart] = useState<Point | null>(null);
   const [drawEnd, setDrawEnd] = useState<Point | null>(null);
-  const [levelComplete, setLevelComplete] = useState(false);
+  const [isLevelComplete, setIsLevelComplete] = useState(false);
 
   const level = POLYBRIDGE_LEVELS[levelIndex];
 
-  // Calculate budget used
-  useEffect(() => {
-    const total = structures.reduce((sum, s) => sum + s.cost, 0);
-    setBudgetUsed(total);
+  // Calculate budget used - use useMemo instead of effect+state
+  const budgetUsed = useMemo(() => {
+    return structures.reduce((sum, s) => sum + s.cost, 0);
   }, [structures]);
 
   // Draw canvas
@@ -519,7 +515,7 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
         clearInterval(forceInterval);
         Matter.Runner.stop(runner);
         setTestResult("passed");
-        setLevelComplete(true);
+        setIsLevelComplete(true);
         onGameComplete?.({ won: true, level: levelIndex + 1, budget: budgetUsed });
       } else if (vehicle.position.y > level.height + 50 || elapsed > 15000) {
         // FAIL - fell or timeout
@@ -542,9 +538,8 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
   // Reset level
   const resetLevel = useCallback(() => {
     setStructures([]);
-    setBudgetUsed(0);
     setTestResult("untested");
-    setLevelComplete(false);
+    setIsLevelComplete(false);
 
     if (runnerRef.current) {
       Matter.Runner.stop(runnerRef.current);
