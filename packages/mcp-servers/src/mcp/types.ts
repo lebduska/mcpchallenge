@@ -107,7 +107,7 @@ export interface CommandLogEntry {
 }
 
 // Game state types
-export type GameType = "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper";
+export type GameType = "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "polybridge";
 
 export interface BaseGameState {
   gameType: GameType;
@@ -167,4 +167,22 @@ export interface MinesweeperGameState extends BaseGameState {
   elapsedSeconds: number;
 }
 
-export type GameState = ChessGameState | TicTacToeGameState | SnakeGameState | CanvasGameState | MinesweeperGameState;
+export interface PolyBridgeGameState extends BaseGameState {
+  gameType: "polybridge";
+  levelIndex: number;
+  structures: Array<{
+    id: string;
+    type: "beam" | "cable" | "road";
+    start: { x: number; y: number };
+    end: { x: number; y: number };
+    material: "wood" | "steel" | "cable" | "road";
+    cost: number;
+  }>;
+  budgetUsed: number;
+  budgetTotal: number;
+  testResult: "untested" | "testing" | "passed" | "failed";
+  vehicleProgress: number;
+  levelComplete: boolean;
+}
+
+export type GameState = ChessGameState | TicTacToeGameState | SnakeGameState | CanvasGameState | MinesweeperGameState | PolyBridgeGameState;
