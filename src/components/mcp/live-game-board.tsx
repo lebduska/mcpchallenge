@@ -36,6 +36,8 @@ import {
   Loader2,
   Copy,
   Check,
+  Users,
+  Bot,
 } from "lucide-react";
 import { MCPCommandLog } from "./mcp-command-log";
 import { RoomConfig } from "./room-config";
@@ -79,6 +81,8 @@ export function LiveGameBoard({
   // PvP mode state
   const [gameMode, setGameMode] = useState<"ai" | "pvp">("ai");
   const [pvpPlayers, setPvpPlayers] = useState<PvPPlayersState>({ white: null, black: null });
+  // Selected mode for room creation
+  const [selectedMode, setSelectedMode] = useState<"ai" | "pvp">("ai");
 
   const mcpBaseUrl =
     process.env.NEXT_PUBLIC_MCP_URL || "https://mcp.mcpchallenge.org";
@@ -89,6 +93,8 @@ export function LiveGameBoard({
     try {
       const response = await fetch(`${mcpBaseUrl}/${gameType}/room/create`, {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode: selectedMode }),
       });
       const data = (await response.json()) as {
         roomId?: string;
@@ -96,10 +102,15 @@ export function LiveGameBoard({
         sseUrl?: string;
         wsUrl?: string;
         sessionNonce?: string;
+        gameMode?: "ai" | "pvp";
       };
 
       if (data.roomId) {
         setRoomId(data.roomId);
+        // Set game mode from response
+        if (data.gameMode) {
+          setGameMode(data.gameMode);
+        }
         const info: RoomInfo = {
           roomId: data.roomId,
           gameType,
@@ -107,6 +118,7 @@ export function LiveGameBoard({
           sseUrl: data.sseUrl || `${mcpBaseUrl}/${gameType}/sse?room=${data.roomId}`,
           wsUrl: data.wsUrl,
           sessionNonce: data.sessionNonce,
+          gameMode: data.gameMode,
         };
         setRoomInfo(info);
         onRoomCreated?.(info);
@@ -116,7 +128,7 @@ export function LiveGameBoard({
     } finally {
       setIsCreatingRoom(false);
     }
-  }, [gameType, mcpBaseUrl, onRoomCreated]);
+  }, [gameType, mcpBaseUrl, onRoomCreated, selectedMode]);
 
   // Copy MCP URL
   const copyMcpUrl = useCallback(() => {
@@ -844,6 +856,40 @@ export function LiveGameBoard({
             <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
               Create a room and connect your MCP client (Claude, Cursor, etc.) to play. Watch the game live as moves stream in.
             </p>
+
+            {/* Mode selector */}
+            <div className="flex gap-2 mb-4">
+              <button
+                onClick={() => setSelectedMode("ai")}
+                className={cn(
+                  "flex-1 flex items-center justify-center gap-2 p-3 rounded-lg border transition-all",
+                  selectedMode === "ai"
+                    ? "bg-blue-500/10 border-blue-500/50 text-blue-600 dark:text-blue-400"
+                    : "bg-zinc-50 dark:bg-zinc-800/50 border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:border-zinc-300 dark:hover:border-zinc-600"
+                )}
+              >
+                <Bot className="h-4 w-4" />
+                <div className="text-left">
+                  <div className="font-medium text-sm">vs AI</div>
+                  <div className="text-xs opacity-70">Single player</div>
+                </div>
+              </button>
+              <button
+                onClick={() => setSelectedMode("pvp")}
+                className={cn(
+                  "flex-1 flex items-center justify-center gap-2 p-3 rounded-lg border transition-all",
+                  selectedMode === "pvp"
+                    ? "bg-purple-500/10 border-purple-500/50 text-purple-600 dark:text-purple-400"
+                    : "bg-zinc-50 dark:bg-zinc-800/50 border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:border-zinc-300 dark:hover:border-zinc-600"
+                )}
+              >
+                <Users className="h-4 w-4" />
+                <div className="text-left">
+                  <div className="font-medium text-sm">MCP vs MCP</div>
+                  <div className="text-xs opacity-70">Two agents</div>
+                </div>
+              </button>
+            </div>
 
             <Button
               onClick={createRoom}
