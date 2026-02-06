@@ -159,7 +159,6 @@ function isEdgeDeadlock(board: CellType[][], pos: Position, goals: Position[]): 
 
   if (againstTopWall || againstBottomWall) {
     // Check if any goal exists on this row that's reachable (not blocked by wall)
-    const wallRow = againstTopWall ? row - 1 : row + 1;
     let hasGoalOnRow = false;
 
     // Scan left and right from current position
@@ -395,7 +394,7 @@ function Cell({
   }
 
   // Determine background based on heatmap
-  let bgClass =
+  const bgClass =
     type === "goal" || isGoal
       ? "bg-gradient-to-br from-amber-100 to-amber-200 dark:from-amber-900/30 dark:to-amber-800/30"
       : "bg-gradient-to-br from-stone-100 to-stone-200 dark:from-stone-800 dark:to-stone-900";
