@@ -7,8 +7,12 @@
  * Designed as glassmorphism overlay.
  */
 
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Loader2, Crown, Handshake, Flag, Sparkles } from "lucide-react";
+import { Loader2, Crown, Handshake, Flag, Sparkles, Cpu } from "lucide-react";
+
+// Easing function for smooth oscillation
+const easeInOutSine = (t: number) => -(Math.cos(Math.PI * t) - 1) / 2;
 
 type GameState = "your-turn" | "ai-thinking" | "opponent-turn" | "checkmate" | "draw" | "resigned" | "check";
 
@@ -108,7 +112,7 @@ export function GameHUD({ state, winner, playerColor, className }: GameHUDProps)
 }
 
 /**
- * GameHUDBar - Full width HUD bar variant
+ * GameHUDBar - Full width HUD bar variant with integrated AI depth bar
  */
 interface GameHUDBarProps {
   state: GameState;
@@ -116,6 +120,7 @@ interface GameHUDBarProps {
   playerColor?: "white" | "black";
   turn?: "w" | "b";
   moveCount?: number;
+  isThinking?: boolean;
   className?: string;
 }
 
@@ -125,10 +130,85 @@ export function GameHUDBar({
   playerColor,
   turn,
   moveCount = 0,
+  isThinking = false,
   className,
 }: GameHUDBarProps) {
   const config = stateConfig[state];
   const Icon = config.icon;
+
+  // AI depth bar animation state
+  const [progress, setProgress] = useState(0);
+  const [showDepth, setShowDepth] = useState(false);
+  const animationRef = useRef<number | null>(null);
+  const startTimeRef = useRef<number>(0);
+  const lastJumpRef = useRef<number>(0);
+  const prevThinkingRef = useRef(false);
+
+  // Handle thinking state transitions
+  useEffect(() => {
+    const wasThinking = prevThinkingRef.current;
+    prevThinkingRef.current = isThinking;
+
+    if (isThinking && !wasThinking) {
+      queueMicrotask(() => {
+        setShowDepth(true);
+        setProgress(10);
+      });
+    } else if (!isThinking && wasThinking) {
+      queueMicrotask(() => {
+        setProgress(100);
+        // Hide after completion animation
+        setTimeout(() => {
+          setShowDepth(false);
+          setProgress(0);
+        }, 300);
+      });
+    }
+  }, [isThinking]);
+
+  // Animation loop
+  useEffect(() => {
+    if (!isThinking || !showDepth) return;
+
+    startTimeRef.current = 0;
+    lastJumpRef.current = 0;
+
+    const animate = (timestamp: number) => {
+      if (!startTimeRef.current) {
+        startTimeRef.current = timestamp;
+        lastJumpRef.current = timestamp;
+      }
+
+      const elapsed = timestamp - startTimeRef.current;
+      const cycleProgress = (elapsed % 3000) / 3000;
+      const oscillation = easeInOutSine(cycleProgress);
+      let newProgress = 10 + 55 * oscillation;
+
+      // Occasional jumps
+      if (timestamp - lastJumpRef.current > 800 + Math.random() * 700) {
+        newProgress = Math.min(75, newProgress + 5 + Math.random() * 10);
+        lastJumpRef.current = timestamp;
+      }
+
+      // Micro-noise
+      newProgress += (Math.random() - 0.5) * 2;
+      newProgress = Math.max(8, Math.min(78, newProgress));
+
+      setProgress(newProgress);
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    animationRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
+      }
+    };
+  }, [isThinking, showDepth]);
+
+  const depth = Math.floor(6 + (progress / 100) * 14);
 
   let displayLabel = config.label;
   if (state === "checkmate" && winner && playerColor) {
@@ -139,7 +219,7 @@ export function GameHUDBar({
     <div
       className={cn(
         // Premium glassmorphism bar
-        "relative flex items-center justify-between px-5 py-4 rounded-xl overflow-hidden",
+        "relative flex flex-col rounded-xl overflow-hidden",
         "bg-gradient-to-r border border-zinc-200/80 dark:border-white/10",
         "shadow-lg shadow-black/10 dark:shadow-black/30",
         "transition-all duration-500",
@@ -152,51 +232,94 @@ export function GameHUDBar({
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
       )}
 
-      {/* Left: Status */}
-      <div className="relative flex items-center gap-3">
-        <div
-          className={cn(
-            "relative flex items-center justify-center w-10 h-10 rounded-xl",
-            "bg-white/60 dark:bg-black/30",
-            "shadow-inner transition-all duration-300",
-            state === "ai-thinking" && "ring-2 ring-amber-400/50 animate-pulse"
-          )}
-        >
-          <Icon
+      {/* Main status row */}
+      <div className="relative flex items-center justify-between px-5 py-4">
+        {/* Left: Status */}
+        <div className="relative flex items-center gap-3">
+          <div
             className={cn(
-              "h-5 w-5 relative z-10",
-              config.color,
-              config.animate && "animate-spin"
+              "relative flex items-center justify-center w-10 h-10 rounded-xl",
+              "bg-white/60 dark:bg-black/30",
+              "shadow-inner transition-all duration-300",
+              state === "ai-thinking" && "ring-2 ring-amber-400/50 animate-pulse"
             )}
-          />
+          >
+            <Icon
+              className={cn(
+                "h-5 w-5 relative z-10",
+                config.color,
+                config.animate && "animate-spin"
+              )}
+            />
+          </div>
+          <div>
+            <span className={cn(
+              "text-sm font-bold tracking-wide",
+              config.color,
+              "transition-colors duration-300"
+            )}>
+              {displayLabel}
+            </span>
+            {turn && state !== "checkmate" && state !== "draw" && state !== "resigned" && (
+              <p className="text-xs text-zinc-500 dark:text-white/50 font-medium">
+                {turn === "w" ? "White" : "Black"} to move
+              </p>
+            )}
+          </div>
         </div>
-        <div>
-          <span className={cn(
-            "text-sm font-bold tracking-wide",
-            config.color,
-            "transition-colors duration-300"
-          )}>
-            {displayLabel}
-          </span>
-          {turn && state !== "checkmate" && state !== "draw" && state !== "resigned" && (
-            <p className="text-xs text-zinc-500 dark:text-white/50 font-medium">
-              {turn === "w" ? "White" : "Black"} to move
+
+        {/* Right: Move counter with premium styling */}
+        <div className="relative flex items-center gap-3">
+          <div className="text-right">
+            <p className="text-[10px] text-zinc-400 dark:text-white/40 uppercase tracking-widest font-semibold">Moves</p>
+            <p className={cn(
+              "text-2xl font-mono font-black tabular-nums",
+              "text-zinc-700 dark:text-white/90",
+              "transition-all duration-300"
+            )}>
+              {moveCount}
             </p>
-          )}
+          </div>
         </div>
       </div>
 
-      {/* Right: Move counter with premium styling */}
-      <div className="relative flex items-center gap-3">
-        <div className="text-right">
-          <p className="text-[10px] text-zinc-400 dark:text-white/40 uppercase tracking-widest font-semibold">Moves</p>
-          <p className={cn(
-            "text-2xl font-mono font-black tabular-nums",
-            "text-zinc-700 dark:text-white/90",
-            "transition-all duration-300"
-          )}>
-            {moveCount}
-          </p>
+      {/* AI Depth Bar - Fixed height, opacity toggle for no layout shift */}
+      <div
+        className={cn(
+          "h-8 px-5 pb-3 transition-opacity duration-200",
+          showDepth ? "opacity-100" : "opacity-0"
+        )}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between mb-1.5">
+          <div className="flex items-center gap-1.5">
+            <Cpu className="h-3 w-3 text-amber-500 dark:text-amber-400 animate-spin" />
+            <span className="text-[10px] font-medium text-amber-600 dark:text-amber-400">
+              Stockfish calculating...
+            </span>
+          </div>
+          <span className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 tabular-nums">
+            Depth ~{depth}
+          </span>
+        </div>
+
+        {/* Progress bar */}
+        <div className="relative h-1 bg-zinc-200/80 dark:bg-zinc-800 rounded-full overflow-hidden">
+          <div
+            className={cn(
+              "absolute inset-y-0 left-0 rounded-full",
+              "bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500",
+              !isThinking ? "transition-all duration-200 ease-out" : "transition-[width] duration-75 ease-linear"
+            )}
+            style={{ width: `${progress}%` }}
+          />
+          {/* Shimmer */}
+          {isThinking && showDepth && (
+            <div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"
+              style={{ backgroundSize: "200% 100%" }}
+            />
+          )}
         </div>
       </div>
     </div>
