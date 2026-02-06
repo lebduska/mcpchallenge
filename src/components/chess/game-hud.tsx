@@ -142,48 +142,69 @@ export function GameHUDBar({
   return (
     <div
       className={cn(
-        // Glassmorphism bar
-        "flex items-center justify-between px-4 py-3 rounded-xl",
-        "bg-gradient-to-r border border-zinc-200 dark:border-white/10",
-        "shadow-lg shadow-black/10 dark:shadow-black/20",
+        // Premium glassmorphism bar
+        "relative flex items-center justify-between px-5 py-4 rounded-xl overflow-hidden",
+        "bg-gradient-to-r border border-zinc-200/80 dark:border-white/10",
+        "shadow-lg shadow-black/10 dark:shadow-black/30",
+        "transition-all duration-500",
         config.bgColor,
         className
       )}
     >
+      {/* Subtle animated gradient overlay for active states */}
+      {(state === "your-turn" || state === "ai-thinking") && (
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
+      )}
+
       {/* Left: Status */}
-      <div className="flex items-center gap-3">
+      <div className="relative flex items-center gap-3">
         <div
           className={cn(
-            "flex items-center justify-center w-8 h-8 rounded-full",
-            "bg-white/50 dark:bg-black/20",
-            config.pulse && "animate-pulse"
+            "relative flex items-center justify-center w-10 h-10 rounded-xl",
+            "bg-white/60 dark:bg-black/30",
+            "shadow-inner transition-all duration-300",
+            state === "ai-thinking" && "ring-2 ring-amber-400/50 animate-pulse"
           )}
         >
+          {/* Glow effect for active states */}
+          {config.pulse && (
+            <div className="absolute inset-0 rounded-xl bg-current opacity-20 blur-sm animate-pulse" />
+          )}
           <Icon
             className={cn(
-              "h-4 w-4",
+              "h-5 w-5 relative z-10",
               config.color,
               config.animate && "animate-spin"
             )}
           />
         </div>
         <div>
-          <span className={cn("text-sm font-semibold tracking-wide", config.color)}>
+          <span className={cn(
+            "text-sm font-bold tracking-wide",
+            config.color,
+            "transition-colors duration-300"
+          )}>
             {displayLabel}
           </span>
           {turn && state !== "checkmate" && state !== "draw" && state !== "resigned" && (
-            <p className="text-xs text-zinc-500 dark:text-white/50">
+            <p className="text-xs text-zinc-500 dark:text-white/50 font-medium">
               {turn === "w" ? "White" : "Black"} to move
             </p>
           )}
         </div>
       </div>
 
-      {/* Right: Move counter */}
-      <div className="flex items-center gap-2">
+      {/* Right: Move counter with premium styling */}
+      <div className="relative flex items-center gap-3">
         <div className="text-right">
-          <p className="text-xs text-zinc-500 dark:text-white/50 uppercase tracking-wider">Moves</p>
-          <p className="text-lg font-mono font-bold text-zinc-700 dark:text-white/80">{moveCount}</p>
+          <p className="text-[10px] text-zinc-400 dark:text-white/40 uppercase tracking-widest font-semibold">Moves</p>
+          <p className={cn(
+            "text-2xl font-mono font-black tabular-nums",
+            "text-zinc-700 dark:text-white/90",
+            "transition-all duration-300"
+          )}>
+            {moveCount}
+          </p>
         </div>
       </div>
     </div>

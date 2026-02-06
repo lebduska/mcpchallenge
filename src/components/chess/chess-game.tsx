@@ -283,17 +283,26 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
 
   // Custom square styles for last move and legal moves highlight
   const customSquareStyles = useMemo(() => {
-    const styles: Record<string, { backgroundColor: string }> = {};
+    const styles: Record<string, { backgroundColor: string; boxShadow?: string }> = {};
 
-    // Last move highlight
+    // Last move highlight with soft inner glow
     if (lastMove) {
-      styles[lastMove.from] = { backgroundColor: "rgba(16, 185, 129, 0.3)" };
-      styles[lastMove.to] = { backgroundColor: "rgba(16, 185, 129, 0.4)" };
+      styles[lastMove.from] = {
+        backgroundColor: "rgba(16, 185, 129, 0.35)",
+        boxShadow: "inset 0 0 12px rgba(16, 185, 129, 0.4)",
+      };
+      styles[lastMove.to] = {
+        backgroundColor: "rgba(16, 185, 129, 0.45)",
+        boxShadow: "inset 0 0 16px rgba(16, 185, 129, 0.5), 0 0 8px rgba(16, 185, 129, 0.3)",
+      };
     }
 
-    // Legal moves highlight (during drag)
+    // Legal moves highlight with subtle pulse effect
     legalMoveSquares.forEach(square => {
-      styles[square] = { backgroundColor: "rgba(59, 130, 246, 0.5)" };
+      styles[square] = {
+        backgroundColor: "rgba(59, 130, 246, 0.4)",
+        boxShadow: "inset 0 0 8px rgba(59, 130, 246, 0.5)",
+      };
     });
 
     return styles;
@@ -485,62 +494,107 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Left: Chess Board - Hero Element */}
       <div className="lg:col-span-2">
-        <div
-          className={cn(
-            "relative rounded-2xl",
-            "bg-white dark:bg-zinc-900",
-            "shadow-2xl shadow-black/15 dark:shadow-black/40",
-            "ring-1 ring-black/5 dark:ring-white/10"
-          )}
-        >
-          <Chessboard
-            id="PlayBoard"
-            position={fen}
-            onPieceDrop={onDrop}
-            onPieceDragBegin={onPieceDragBegin}
-            onPieceDragEnd={onPieceDragEnd}
-            arePiecesDraggable={true}
-            boardOrientation={playerColor}
-            customBoardStyle={{ borderRadius: "16px" }}
-            customDarkSquareStyle={{ backgroundColor: "#4a7c59" }}
-            customLightSquareStyle={{ backgroundColor: "#ebecd0" }}
-            customSquareStyles={customSquareStyles}
+        {/* Ambient gradient background */}
+        <div className="relative">
+          {/* Soft ambient glow behind board */}
+          <div
+            className={cn(
+              "absolute -inset-4 rounded-3xl blur-2xl opacity-40 dark:opacity-30",
+              "bg-gradient-to-br from-emerald-500/20 via-transparent to-amber-500/20",
+              "transition-opacity duration-700",
+              isThinking && "opacity-60 dark:opacity-50",
+              isGameOver && "opacity-20 dark:opacity-10"
+            )}
           />
 
-            {/* AI Thinking overlay */}
+          {/* Board container */}
+          <div
+            className={cn(
+              "relative rounded-2xl",
+              "bg-white dark:bg-zinc-900",
+              "shadow-2xl shadow-black/20 dark:shadow-black/50",
+              "ring-1 ring-black/5 dark:ring-white/10",
+              "transition-all duration-500"
+            )}
+          >
+            <Chessboard
+              id="PlayBoard"
+              position={fen}
+              onPieceDrop={onDrop}
+              onPieceDragBegin={onPieceDragBegin}
+              onPieceDragEnd={onPieceDragEnd}
+              arePiecesDraggable={true}
+              boardOrientation={playerColor}
+              customBoardStyle={{ borderRadius: "16px" }}
+              customDarkSquareStyle={{ backgroundColor: "#4a7c59" }}
+              customLightSquareStyle={{ backgroundColor: "#ebecd0" }}
+              customSquareStyles={customSquareStyles}
+            />
+
+            {/* Premium AI Thinking overlay */}
             {isThinking && !isGameOver && (
               <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute bottom-4 left-4 flex items-center gap-2 px-3 py-2 rounded-full bg-amber-500/90 backdrop-blur-sm text-white text-sm font-medium shadow-lg animate-pulse">
-                  <Cpu className="h-4 w-4 animate-spin" />
-                  AI thinking...
+                {/* Subtle pulsing border glow */}
+                <div className="absolute inset-0 rounded-2xl animate-pulse ring-2 ring-amber-400/30 dark:ring-amber-500/20" />
+
+                {/* Premium thinking badge */}
+                <div className="absolute bottom-4 left-4 flex items-center gap-3 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/30 animate-in slide-in-from-left-2 duration-300">
+                  {/* Animated spinner ring */}
+                  <div className="relative">
+                    <div className="absolute inset-0 rounded-full bg-white/20 animate-ping" />
+                    <Cpu className="h-5 w-5 animate-spin" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold tracking-wide">Stockfish calculating…</span>
+                    <span className="text-xs text-white/70">Analyzing position</span>
+                  </div>
                 </div>
               </div>
             )}
 
-            {/* Game over overlay */}
+            {/* Game over overlay - Premium celebration */}
             {isGameOver && (
-              <div className="absolute inset-0 bg-white/80 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center animate-in fade-in zoom-in-95 duration-300">
-                <div className="bg-white dark:bg-zinc-900/95 backdrop-blur-md rounded-2xl p-8 text-center border border-zinc-200 dark:border-white/10 shadow-2xl max-w-sm mx-4 animate-in slide-in-from-bottom-4 duration-500">
+              <div className="absolute inset-0 bg-white/85 dark:bg-black/70 flex items-center justify-center animate-in fade-in zoom-in-95 duration-500">
+                {/* Victory particles effect (CSS only) */}
+                {winner === playerColor && (
+                  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                    <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-yellow-400 rounded-full animate-bounce delay-100" />
+                    <div className="absolute top-1/3 right-1/4 w-1.5 h-1.5 bg-amber-400 rounded-full animate-bounce delay-200" />
+                    <div className="absolute bottom-1/3 left-1/3 w-2 h-2 bg-yellow-300 rounded-full animate-bounce delay-300" />
+                  </div>
+                )}
+
+                <div className="bg-white dark:bg-zinc-900/95 rounded-2xl p-8 text-center border border-zinc-200 dark:border-white/10 shadow-2xl max-w-sm mx-4 animate-in slide-in-from-bottom-4 zoom-in-95 duration-500">
+                  {/* Glowing icon container */}
                   <div
                     className={cn(
-                      "w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center",
+                      "w-20 h-20 rounded-full mx-auto mb-5 flex items-center justify-center relative",
                       winner === playerColor
-                        ? "bg-gradient-to-br from-yellow-400 to-amber-500 shadow-lg shadow-amber-500/30"
+                        ? "bg-gradient-to-br from-yellow-400 to-amber-500 shadow-xl shadow-amber-500/40"
                         : winner
-                        ? "bg-gradient-to-br from-zinc-500 to-zinc-600"
-                        : "bg-gradient-to-br from-blue-500 to-blue-600"
+                        ? "bg-gradient-to-br from-zinc-500 to-zinc-600 shadow-xl shadow-zinc-500/30"
+                        : "bg-gradient-to-br from-blue-500 to-blue-600 shadow-xl shadow-blue-500/30"
                     )}
                   >
+                    {/* Pulsing ring for victory */}
+                    {winner === playerColor && (
+                      <div className="absolute inset-0 rounded-full bg-yellow-400/30 animate-ping" />
+                    )}
                     {winner === playerColor ? (
-                      <Trophy className="h-8 w-8 text-white" />
+                      <Trophy className="h-10 w-10 text-white drop-shadow-lg" />
                     ) : winner ? (
-                      <Flag className="h-8 w-8 text-white" />
+                      <Flag className="h-10 w-10 text-white drop-shadow-lg" />
                     ) : (
-                      <Sparkles className="h-8 w-8 text-white" />
+                      <Sparkles className="h-10 w-10 text-white drop-shadow-lg" />
                     )}
                   </div>
 
-                  <h3 className="text-2xl font-bold text-zinc-900 dark:text-white mb-1">
+                  <h3 className={cn(
+                    "text-3xl font-bold mb-2",
+                    winner === playerColor
+                      ? "text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-amber-600"
+                      : "text-zinc-900 dark:text-white"
+                  )}>
                     {winner === playerColor ? "Victory!" : winner ? "Defeat" : "Draw!"}
                   </h3>
                   <p className="text-zinc-500 dark:text-zinc-400 mb-6 text-sm">
@@ -553,7 +607,12 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
 
                   <Button
                     onClick={resetGame}
-                    className="gap-2 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 shadow-lg shadow-emerald-500/20"
+                    className={cn(
+                      "gap-2 shadow-lg transition-all duration-300 hover:scale-105",
+                      winner === playerColor
+                        ? "bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 shadow-amber-500/30"
+                        : "bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 shadow-emerald-500/20"
+                    )}
                   >
                     <RotateCcw className="h-4 w-4" />
                     Play Again
@@ -561,6 +620,7 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
                 </div>
               </div>
             )}
+          </div>
         </div>
       </div>
 
@@ -576,18 +636,26 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
           className="rounded-xl"
         />
 
-        {/* Move Timeline */}
+        {/* Move Timeline - Premium Card */}
         <div
           className={cn(
             "rounded-xl p-4 flex-1 min-h-0",
-            "bg-white dark:bg-zinc-900/80",
-            "border border-zinc-200 dark:border-zinc-800",
-            "shadow-lg"
+            "bg-gradient-to-b from-white to-zinc-50/50 dark:from-zinc-900/90 dark:to-zinc-950/80",
+            "border border-zinc-200/80 dark:border-zinc-800/80",
+            "shadow-lg shadow-black/5 dark:shadow-black/30",
+            "transition-shadow duration-300 hover:shadow-xl"
           )}
         >
-          <h3 className="text-xs font-medium text-zinc-500 dark:text-zinc-500 uppercase tracking-wider mb-3 flex items-center justify-between">
-            Move History
-            <span className="text-zinc-400 dark:text-zinc-600 font-mono">{moveHistory.length}</span>
+          <h3 className="text-[10px] font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mb-3 flex items-center justify-between">
+            <span>Move History</span>
+            <span className={cn(
+              "text-xs font-mono font-bold px-2 py-0.5 rounded-full transition-all duration-300",
+              moveHistory.length > 0
+                ? "bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400"
+                : "bg-zinc-100 dark:bg-zinc-800 text-zinc-400 dark:text-zinc-600"
+            )}>
+              {moveHistory.length}
+            </span>
           </h3>
           <MoveTimeline
             moves={moveHistory}
@@ -597,27 +665,38 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
           />
         </div>
 
-        {/* Controls */}
+        {/* Controls - Premium buttons with micro-animations */}
         {gameStatus === "playing" && (
-          <div className="flex gap-2">
+          <div className="flex gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <Button
               variant="outline"
               size="sm"
-              className="flex-1 gap-1.5 h-10 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              className={cn(
+                "flex-1 gap-2 h-11 font-medium",
+                "bg-white dark:bg-zinc-900",
+                "hover:bg-zinc-50 dark:hover:bg-zinc-800",
+                "border-zinc-200 dark:border-zinc-700",
+                "hover:border-zinc-300 dark:hover:border-zinc-600",
+                "shadow-sm hover:shadow-md",
+                "transition-all duration-200 hover:-translate-y-0.5"
+              )}
               onClick={resetGame}
             >
-              <RotateCcw className="h-4 w-4" />
+              <RotateCcw className="h-4 w-4 transition-transform group-hover:rotate-180 duration-300" />
               New Game
             </Button>
             <Button
               variant="outline"
               size="sm"
               className={cn(
-                "flex-1 gap-1.5 h-10 transition-colors",
+                "flex-1 gap-2 h-11 font-medium",
+                "bg-white dark:bg-zinc-900",
                 "border-red-200 dark:border-red-900/50",
                 "text-red-600 dark:text-red-400",
-                "hover:bg-red-50 dark:hover:bg-red-900/20",
-                "hover:border-red-300 dark:hover:border-red-800"
+                "hover:bg-red-50 dark:hover:bg-red-950/50",
+                "hover:border-red-300 dark:hover:border-red-800",
+                "shadow-sm hover:shadow-md hover:shadow-red-500/10",
+                "transition-all duration-200 hover:-translate-y-0.5"
               )}
               onClick={resign}
             >
