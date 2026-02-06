@@ -39,7 +39,7 @@ interface MinesweeperProps {
 const DIFFICULTY_CONFIG: Record<Difficulty, { rows: number; cols: number; mines: number }> = {
   easy: { rows: 9, cols: 9, mines: 10 },
   medium: { rows: 16, cols: 16, mines: 40 },
-  hard: { rows: 16, cols: 30, mines: 99 },
+  hard: { rows: 30, cols: 16, mines: 99 },  // Vertical layout for larger cells
 };
 
 const NEIGHBORS = [
@@ -323,8 +323,8 @@ export function Minesweeper({ onGameComplete }: MinesweeperProps) {
     // Show all mines on loss
     const showMine = status === "lost" && isMine;
 
-    // Calculate cell size based on difficulty
-    const cellSize = difficulty === "hard" ? "w-5 h-5 text-[10px]" : difficulty === "medium" ? "w-6 h-6 text-xs" : "w-7 h-7 text-sm";
+    // Calculate cell size based on difficulty (hard now vertical = can use larger cells)
+    const cellSize = difficulty === "hard" ? "w-6 h-6 text-xs" : difficulty === "medium" ? "w-6 h-6 text-xs" : "w-7 h-7 text-sm";
 
     return (
       <button
@@ -405,7 +405,7 @@ export function Minesweeper({ onGameComplete }: MinesweeperProps) {
                 onClick={() => startGame("hard")}
               >
                 <span>Hard</span>
-                <Badge variant="secondary">16×30 • 99 mines</Badge>
+                <Badge variant="secondary">30×16 • 99 mines</Badge>
               </Button>
             </div>
           </CardContent>
