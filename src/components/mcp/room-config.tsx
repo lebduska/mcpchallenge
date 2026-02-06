@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Copy, Check, Settings, Terminal, Wifi, Bot } from "lucide-react";
+import { Copy, Check, Settings, Terminal, Wifi, Bot, Users } from "lucide-react";
 import type { RoomInfo } from "./types";
 
 interface RoomConfigProps {
@@ -133,13 +133,17 @@ await mcp.call("agent.identify", {
 
           {/* Configuration Tabs */}
           <Tabs defaultValue="claude" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="claude">Claude</TabsTrigger>
               <TabsTrigger value="cursor">Cursor</TabsTrigger>
               <TabsTrigger value="curl">cURL</TabsTrigger>
               <TabsTrigger value="identify" className="gap-1">
                 <Bot className="h-3 w-3" />
                 Agent
+              </TabsTrigger>
+              <TabsTrigger value="pvp" className="gap-1">
+                <Users className="h-3 w-3" />
+                PvP
               </TabsTrigger>
             </TabsList>
 
@@ -224,6 +228,64 @@ await mcp.call("agent.identify", {
               <p className="text-xs text-zinc-400 mt-2">
                 Call <code className="bg-zinc-800 px-1 rounded">agent.identify</code> once after connecting.
                 The <code className="bg-zinc-800 px-1 rounded">sessionNonce</code> prevents spoofing.
+              </p>
+            </TabsContent>
+
+            {/* PvP Mode */}
+            <TabsContent value="pvp" className="space-y-3">
+              <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+                <p className="text-sm text-amber-400 flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  Two AI agents play against each other!
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium text-zinc-300">Step 1: Create PvP room</h4>
+                <div className="relative">
+                  <pre className="bg-zinc-100 dark:bg-zinc-800 rounded-lg p-3 text-xs font-mono overflow-x-auto">
+{`curl -X POST ${mcpBaseUrl}/${roomInfo.gameType}/room/create \\
+  -H "Content-Type: application/json" \\
+  -d '{"mode":"pvp"}'`}
+                  </pre>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium text-zinc-300">Step 2: Join as Player (each agent)</h4>
+                <div className="relative">
+                  <pre className="bg-zinc-100 dark:bg-zinc-800 rounded-lg p-3 text-xs font-mono overflow-x-auto">
+{`# Each player calls /join to get their nonce and color
+curl -X POST ${mcpBaseUrl}/${roomInfo.gameType}/join?room=ROOM_ID
+
+# Response: { "playerNonce": "abc123", "color": "white" }`}
+                  </pre>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium text-zinc-300">Step 3: Connect with player nonce</h4>
+                <div className="relative">
+                  <pre className="bg-zinc-100 dark:bg-zinc-800 rounded-lg p-3 text-xs font-mono overflow-x-auto">
+{`{
+  "mcpServers": {
+    "${roomInfo.gameType}": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@anthropic/mcp-proxy",
+        "${mcpBaseUrl}/${roomInfo.gameType}?room=ROOM_ID&player=PLAYER_NONCE"
+      ]
+    }
+  }
+}`}
+                  </pre>
+                </div>
+              </div>
+
+              <p className="text-xs text-zinc-400">
+                Each player uses their unique <code className="bg-zinc-800 px-1 rounded">player</code> nonce.
+                Game auto-starts when both players call <code className="bg-zinc-800 px-1 rounded">agent.identify</code>.
               </p>
             </TabsContent>
           </Tabs>

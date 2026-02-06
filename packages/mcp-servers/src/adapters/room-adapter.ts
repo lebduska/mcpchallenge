@@ -23,6 +23,8 @@ export interface RoomMCPServerConfig {
   initialState: GameState | null;
   onStateChange: (state: GameState) => void;
   onCommand: (entry: CommandLogEntry) => void;
+  /** Game mode: "ai" for single player vs AI, "pvp" for 2-player MCP vs MCP */
+  gameMode?: "ai" | "pvp";
 }
 
 // =============================================================================
@@ -143,16 +145,28 @@ function convertToEngineState(
 
 /**
  * Convert new EngineGameState back to old GameState format
+ * @param isPvP - Whether this is a PvP game (affects how turn is computed)
  */
 function convertToOldState(
   gameType: GameType,
-  engineState: EngineGameState
+  engineState: EngineGameState,
+  isPvP = false
 ): GameState {
   const now = Date.now();
 
   switch (gameType) {
     case 'chess':
       const chessState = engineState as any;
+      // In PvP mode, we get actual color from FEN (via chess.js turn())
+      // In AI mode, we compute from playerColor + turn
+      const computedTurn = isPvP
+        // PvP: extract turn directly from FEN (w = white, b = black)
+        ? (chessState.fen?.split(' ')[1] === 'w' ? 'white' : 'black')
+        // AI: compute from playerColor and turn
+        : chessState.playerColor === 'white'
+          ? (chessState.turn === 'player' ? 'white' : 'black')
+          : (chessState.turn === 'player' ? 'black' : 'white');
+
       return {
         gameType: 'chess',
         status: chessState.status === 'playing' ? 'playing' : 'finished',
@@ -160,16 +174,15 @@ function convertToOldState(
         lastActivity: now,
         fen: chessState.fen,
         pgn: chessState.pgn,
-        turn: chessState.playerColor === 'white'
-          ? (chessState.turn === 'player' ? 'white' : 'black')
-          : (chessState.turn === 'player' ? 'black' : 'white'),
-        playerColor: chessState.playerColor,
+        turn: computedTurn,
+        playerColor: isPvP ? undefined : chessState.playerColor,
         result: chessState.status === 'won'
           ? chessState.playerColor
           : chessState.status === 'lost'
             ? (chessState.playerColor === 'white' ? 'black' : 'white')
             : chessState.status === 'draw' ? 'draw' : undefined,
         difficulty: chessState.difficulty,
+        gameMode: isPvP ? 'pvp' : 'ai',
       } as GameState;
 
     case 'tictactoe':
@@ -266,7 +279,8 @@ function convertToOldState(
  * Create an MCP server for a game room using the new adapter system
  */
 export function createRoomMCPServer(config: RoomMCPServerConfig): MCPServer {
-  const { gameType, initialState, onStateChange, onCommand } = config;
+  const { gameType, initialState, onStateChange, onCommand, gameMode = "ai" } = config;
+  const isPvP = gameMode === "pvp";
 
   // Get the engine
   const engine = engines[gameType as keyof typeof engines];
@@ -283,12 +297,15 @@ export function createRoomMCPServer(config: RoomMCPServerConfig): MCPServer {
     initialState: engineInitialState as any,
     onStateChange: (newEngineState) => {
       // Convert back to old format and notify
-      const oldState = convertToOldState(gameType, newEngineState);
+      const oldState = convertToOldState(gameType, newEngineState, isPvP);
       onStateChange(oldState);
     },
     onCommand,
     responseFormat: 'text',
-    autoPlayAI: true,
+    // In PvP mode, disable auto AI moves - both players are human/MCP agents
+    autoPlayAI: !isPvP,
+    // In PvP mode, skip turn validation in adapter - room.ts handles it via validatePvPTurn
+    skipTurnValidation: isPvP,
     additionalTools: systemTools,
   });
 

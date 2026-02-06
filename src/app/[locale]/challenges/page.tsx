@@ -4,8 +4,9 @@ export const runtime = "edge";
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { Badge } from "@/components/ui/badge";
+// Badge removed - not used with new cover image design
 import {
   Trophy,
   Gamepad2,
@@ -18,6 +19,7 @@ import {
   // Construction, // Poly Bridge hidden
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { challengeCovers } from "@/lib/challenge-covers";
 
 const challengeData = [
   {
@@ -184,6 +186,8 @@ export default function ChallengesPage() {
               const Icon = challenge.icon;
               const diffConfig = difficultyConfig[challenge.difficulty as keyof typeof difficultyConfig];
 
+              const cover = challengeCovers[challenge.id];
+
               return (
                 <Link key={challenge.id} href={`/challenges/${challenge.id}`}>
                   <div
@@ -200,13 +204,35 @@ export default function ChallengesPage() {
                       challenge.featured && "ring-2 ring-amber-400/50 dark:ring-amber-500/30"
                     )}
                   >
-                    {/* Gradient Background */}
-                    <div
-                      className={cn(
-                        "absolute inset-0 bg-gradient-to-br opacity-60 dark:opacity-40",
-                        challenge.gradient
-                      )}
-                    />
+                    {/* Cover Image */}
+                    {cover && (
+                      <div className="relative h-32 w-full overflow-hidden">
+                        <Image
+                          src={cover.image}
+                          alt={cover.alt}
+                          fill
+                          className="object-cover transition-transform duration-500 group-hover:scale-110"
+                          sizes="(max-width: 768px) 100vw, 50vw"
+                        />
+                        {/* Gradient Overlay for text readability */}
+                        <div
+                          className={cn(
+                            "absolute inset-0 bg-gradient-to-t",
+                            cover.overlayGradient
+                          )}
+                        />
+                      </div>
+                    )}
+
+                    {/* Fallback gradient if no cover */}
+                    {!cover && (
+                      <div
+                        className={cn(
+                          "absolute inset-0 bg-gradient-to-br opacity-60 dark:opacity-40",
+                          challenge.gradient
+                        )}
+                      />
+                    )}
 
                     {/* Featured Badge */}
                     {challenge.featured && (
@@ -235,13 +261,14 @@ export default function ChallengesPage() {
                     </div>
 
                     {/* Content */}
-                    <div className="relative p-6 pt-14">
+                    <div className={cn("relative p-6", cover ? "pt-4" : "pt-14")}>
                       {/* Icon */}
                       <div
                         className={cn(
                           "w-12 h-12 rounded-xl flex items-center justify-center mb-4",
-                          "bg-zinc-100 dark:bg-zinc-800",
-                          "group-hover:scale-110 transition-transform duration-300"
+                          "bg-zinc-100 dark:bg-zinc-800/80 backdrop-blur-sm",
+                          "group-hover:scale-110 transition-transform duration-300",
+                          cover && "-mt-10 relative z-10 shadow-lg border border-zinc-200 dark:border-zinc-700"
                         )}
                       >
                         <Icon className="h-6 w-6 text-zinc-600 dark:text-zinc-400" />

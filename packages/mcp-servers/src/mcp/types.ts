@@ -106,6 +106,17 @@ export interface CommandLogEntry {
   error?: string;
 }
 
+// Game mode types (for 2-player support)
+export type GameMode = "ai" | "pvp";
+export type PlayerColor = "white" | "black";
+
+export interface PlayerSlot {
+  nonce: string;
+  agentSnapshot: import("./agent-types").AgentSnapshot | null;
+  connectedAt: number;
+  lastActivity: number;
+}
+
 // Game state types
 export type GameType = "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "polybridge" | "sokoban";
 
@@ -121,9 +132,15 @@ export interface ChessGameState extends BaseGameState {
   fen: string;
   pgn: string;
   turn: "white" | "black";
-  playerColor: "white" | "black";
+  playerColor?: "white" | "black";  // Optional for PvP mode
   result?: "white" | "black" | "draw";
   difficulty: "easy" | "medium" | "hard";
+  // PvP mode fields
+  gameMode?: GameMode;
+  players?: {
+    white: { name: string; model: string } | null;
+    black: { name: string; model: string } | null;
+  };
 }
 
 export interface TicTacToeGameState extends BaseGameState {

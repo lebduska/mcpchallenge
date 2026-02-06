@@ -1,7 +1,7 @@
 // GameRoom Durable Object
 // Manages game state and broadcasts updates to web viewers
 
-import type { GameState, GameType, CommandLogEntry } from "./mcp/types";
+import type { GameState, GameType, CommandLogEntry, GameMode, PlayerColor, PlayerSlot } from "./mcp/types";
 import type { AgentSnapshot, AgentIdentifyParams } from "./mcp/agent-types";
 import { sanitizeAgentIdentity, createAgentSnapshot } from "./mcp/agent-types";
 import { MCPServer } from "./mcp/server";
@@ -17,11 +17,17 @@ interface RoomState {
   gameType: GameType;
   roomId: string;
   sessionNonce: string;              // For agent.identify verification
-  agentSnapshot: AgentSnapshot | null; // Locked after first identify
+  agentSnapshot: AgentSnapshot | null; // Locked after first identify (AI mode)
   gameState: GameState | null;
   commandLog: CommandLogEntry[];
   createdAt: number;
   lastActivity: number;
+  // PvP mode fields
+  gameMode: GameMode;
+  players: {
+    white: PlayerSlot | null;
+    black: PlayerSlot | null;
+  };
 }
 
 export class GameRoom implements DurableObject {
@@ -71,6 +77,8 @@ export class GameRoom implements DurableObject {
     switch (path) {
       case "/mcp":
         return this.handleMCP(request);
+      case "/join":
+        return this.handleJoin(request);
       case "/ws":
         return this.handleWebSocket(request);
       case "/sse":
@@ -83,10 +91,14 @@ export class GameRoom implements DurableObject {
   }
 
   private async handleInit(request: Request): Promise<Response> {
-    const { gameType, roomId } = await request.json() as {
+    const { gameType, roomId, mode } = await request.json() as {
       gameType: GameType;
       roomId: string;
+      mode?: "ai" | "pvp";
     };
+
+    // Determine game mode
+    const gameMode: GameMode = mode === "pvp" ? "pvp" : "ai";
 
     // Generate session nonce for agent.identify verification
     const sessionNonce = crypto.randomUUID().replace(/-/g, "").slice(0, 32);
@@ -101,6 +113,8 @@ export class GameRoom implements DurableObject {
       commandLog: [],
       createdAt: Date.now(),
       lastActivity: Date.now(),
+      gameMode,
+      players: { white: null, black: null },
     };
 
     // Create MCP server for this game type
@@ -112,7 +126,61 @@ export class GameRoom implements DurableObject {
     // Schedule cleanup alarm
     await this.state.storage.setAlarm(Date.now() + ROOM_TTL);
 
-    return Response.json({ success: true, roomId, sessionNonce });
+    return Response.json({ success: true, roomId, sessionNonce, gameMode });
+  }
+
+  // Join endpoint for PvP mode - assigns player to a color
+  private async handleJoin(request: Request): Promise<Response> {
+    if (!this.roomState) {
+      return Response.json({ error: "Room not initialized" }, { status: 400 });
+    }
+
+    // Generate unique player nonce
+    const playerNonce = crypto.randomUUID().replace(/-/g, "").slice(0, 32);
+
+    // Assign color (first = white, second = black)
+    let assignedColor: PlayerColor | null = null;
+
+    if (!this.roomState.players.white) {
+      assignedColor = "white";
+    } else if (!this.roomState.players.black && this.roomState.gameMode === "pvp") {
+      assignedColor = "black";
+    }
+
+    if (!assignedColor) {
+      return Response.json({ error: "Room is full" }, { status: 400 });
+    }
+
+    // Create player slot
+    this.roomState.players[assignedColor] = {
+      nonce: playerNonce,
+      agentSnapshot: null,
+      connectedAt: Date.now(),
+      lastActivity: Date.now(),
+    };
+
+    await this.state.storage.put("roomState", this.roomState);
+
+    // Broadcast player joined
+    this.broadcast("players", {
+      white: this.roomState.players.white?.agentSnapshot?.identity ?? null,
+      black: this.roomState.players.black?.agentSnapshot?.identity ?? null,
+    });
+
+    return Response.json({
+      success: true,
+      playerNonce,
+      color: assignedColor,
+      roomId: this.roomState.roomId,
+      gameMode: this.roomState.gameMode,
+    });
+  }
+
+  // Helper to get player color from nonce
+  private getPlayerColor(nonce: string): PlayerColor | null {
+    if (this.roomState?.players.white?.nonce === nonce) return "white";
+    if (this.roomState?.players.black?.nonce === nonce) return "black";
+    return null;
   }
 
   private createMCPServer(): void {
@@ -140,6 +208,7 @@ export class GameRoom implements DurableObject {
         initialState: this.roomState.gameState,
         onStateChange,
         onCommand,
+        gameMode: this.roomState.gameMode,
       });
       return;
     }
@@ -178,10 +247,14 @@ export class GameRoom implements DurableObject {
       this.createMCPServer();
     }
 
+    // Extract player nonce from URL for PvP mode
+    const url = new URL(request.url);
+    const playerNonce = url.searchParams.get("player") ?? undefined;
+
     const message = await request.text();
 
     // Intercept agent.identify tool calls at room level
-    const intercepted = await this.interceptAgentIdentify(message);
+    const intercepted = await this.interceptAgentIdentify(message, playerNonce);
     if (intercepted) {
       return new Response(intercepted, {
         headers: {
@@ -189,6 +262,19 @@ export class GameRoom implements DurableObject {
           "Access-Control-Allow-Origin": "*",
         },
       });
+    }
+
+    // For PvP mode, validate player turn before make_move
+    if (this.roomState?.gameMode === "pvp" && playerNonce) {
+      const turnError = this.validatePvPTurn(message, playerNonce);
+      if (turnError) {
+        return new Response(turnError, {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        });
+      }
     }
 
     const response = await this.mcpServer!.handleMessage(message);
@@ -209,8 +295,35 @@ export class GameRoom implements DurableObject {
     });
   }
 
+  // Validate that the player can make a move in PvP mode
+  private validatePvPTurn(message: string, playerNonce: string): string | null {
+    try {
+      const parsed = JSON.parse(message);
+      if (parsed.method !== "tools/call" || parsed.params?.name !== "make_move") {
+        return null;
+      }
+
+      const playerColor = this.getPlayerColor(playerNonce);
+      if (!playerColor) {
+        return this.mcpErrorResponse(parsed.id, "Invalid player nonce");
+      }
+
+      // Get current turn from game state
+      const gameState = this.roomState?.gameState as { turn?: string } | null;
+      const currentTurn = gameState?.turn;
+
+      if (currentTurn && currentTurn !== playerColor) {
+        return this.mcpErrorResponse(parsed.id, `It's ${currentTurn}'s turn, not yours!`);
+      }
+
+      return null;
+    } catch {
+      return null;
+    }
+  }
+
   // Handle agent.identify tool at room level (before game-specific MCP server)
-  private async interceptAgentIdentify(message: string): Promise<string | null> {
+  private async interceptAgentIdentify(message: string, playerNonce?: string): Promise<string | null> {
     try {
       const parsed = JSON.parse(message);
 
@@ -224,6 +337,69 @@ export class GameRoom implements DurableObject {
         return this.mcpErrorResponse(parsed.id, "Missing arguments");
       }
 
+      // PvP mode: use playerNonce to identify which player
+      if (this.roomState?.gameMode === "pvp") {
+        if (!playerNonce) {
+          return this.mcpErrorResponse(parsed.id, "Missing player nonce for PvP mode");
+        }
+
+        const playerColor = this.getPlayerColor(playerNonce);
+        if (!playerColor) {
+          return this.mcpErrorResponse(parsed.id, "Invalid player nonce - join the room first");
+        }
+
+        // Already identified?
+        if (this.roomState.players[playerColor]?.agentSnapshot) {
+          return this.mcpErrorResponse(parsed.id, "Player already identified");
+        }
+
+        // Sanitize and validate
+        const identity = sanitizeAgentIdentity(args);
+        if (!identity) {
+          return this.mcpErrorResponse(parsed.id, "Invalid agent identity data");
+        }
+
+        // Lock identity for this player
+        this.roomState.players[playerColor]!.agentSnapshot = createAgentSnapshot(identity);
+        await this.state.storage.put("roomState", this.roomState);
+
+        // Broadcast both players
+        this.broadcast("players", {
+          white: this.roomState.players.white?.agentSnapshot?.identity ?? null,
+          black: this.roomState.players.black?.agentSnapshot?.identity ?? null,
+        });
+
+        // Auto-start game when both identified
+        if (this.roomState.players.white?.agentSnapshot &&
+            this.roomState.players.black?.agentSnapshot &&
+            !this.roomState.gameState) {
+          await this.startPvPGame();
+        }
+
+        // Log the command
+        const entry: CommandLogEntry = {
+          timestamp: Date.now(),
+          type: "response",
+          id: parsed.id,
+          toolName: "agent.identify",
+          result: { identified: true, name: identity.name, model: identity.model, color: playerColor },
+        };
+        this.roomState.commandLog.push(entry);
+        this.broadcast("command", entry);
+
+        return JSON.stringify({
+          jsonrpc: "2.0",
+          id: parsed.id,
+          result: {
+            content: [{
+              type: "text",
+              text: `Identified as ${identity.name} (${identity.model}) playing ${playerColor}`,
+            }],
+          },
+        });
+      }
+
+      // AI mode: original logic
       // Verify nonce
       if (args.sessionNonce !== this.roomState?.sessionNonce) {
         return this.mcpErrorResponse(parsed.id, "Invalid session nonce");
@@ -271,6 +447,27 @@ export class GameRoom implements DurableObject {
       });
     } catch {
       return null; // Parse error, let normal handler deal with it
+    }
+  }
+
+  // Start PvP game when both players are identified
+  private async startPvPGame(): Promise<void> {
+    if (!this.roomState || !this.mcpServer) return;
+
+    // Trigger new_game with PvP mode
+    const response = await this.mcpServer.handleMessage(JSON.stringify({
+      jsonrpc: "2.0",
+      id: "pvp-auto-start",
+      method: "tools/call",
+      params: {
+        name: "new_game",
+        arguments: { mode: "pvp" },
+      },
+    }));
+
+    // Broadcast the new state
+    if (this.roomState.gameState) {
+      this.broadcast("state", this.getPublicState());
     }
   }
 
@@ -429,7 +626,13 @@ export class GameRoom implements DurableObject {
       roomId: this.roomState.roomId,
       gameType: this.roomState.gameType,
       sessionNonce: this.roomState.sessionNonce,
+      gameMode: this.roomState.gameMode,
       agentIdentity: this.roomState.agentSnapshot?.identity ?? null,
+      // PvP mode: both players
+      players: {
+        white: this.roomState.players.white?.agentSnapshot?.identity ?? null,
+        black: this.roomState.players.black?.agentSnapshot?.identity ?? null,
+      },
       gameState: this.roomState.gameState,
       commandCount: this.roomState.commandLog.length,
       createdAt: this.roomState.createdAt,

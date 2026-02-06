@@ -43,6 +43,9 @@ export interface GameAdapterConfig<TState extends GameState, TMove> {
 
   /** Additional tools to include (e.g., system tools like agent.identify) */
   additionalTools?: MCPTool[];
+
+  /** Skip turn validation (for PvP where room-level validation is used) */
+  skipTurnValidation?: boolean;
 }
 
 export interface AdaptedMCPServer {
@@ -227,6 +230,7 @@ export function createGameAdapter<TState extends GameState, TMove>(
     responseFormat = 'text',
     autoPlayAI = true,
     additionalTools = [],
+    skipTurnValidation = false,
   } = config;
 
   const { metadata } = engine;
@@ -323,8 +327,8 @@ export function createGameAdapter<TState extends GameState, TMove>(
           );
         }
 
-        // Check if it's player's turn
-        if (gameState.turn !== 'player') {
+        // Check if it's player's turn (skip in PvP where room-level validation is used)
+        if (!skipTurnValidation && gameState.turn !== 'player') {
           return errorContent("It's not your turn!");
         }
 

@@ -128,4 +128,10 @@ export interface RoomInfo {
   sseUrl: string;
   wsUrl?: string;
   sessionNonce?: string;  // For agent.identify verification
+  // PvP mode
+  gameMode?: "ai" | "pvp";
+  playerNonces?: {
+    white: string | null;
+    black: string | null;
+  };
 }

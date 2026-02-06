@@ -40,6 +40,7 @@ import {
 import { MCPCommandLog } from "./mcp-command-log";
 import { RoomConfig } from "./room-config";
 import { AgentChip, type AgentIdentity } from "./agent-chip";
+import { PvPAgents, PvPWaiting, type PvPPlayersState } from "./pvp-agents";
 import { cn } from "@/lib/utils";
 import type {
   GameType,
@@ -75,6 +76,9 @@ export function LiveGameBoard({
   const [isConnecting, setIsConnecting] = useState(false);
   const [isCreatingRoom, setIsCreatingRoom] = useState(false);
   const [copied, setCopied] = useState(false);
+  // PvP mode state
+  const [gameMode, setGameMode] = useState<"ai" | "pvp">("ai");
+  const [pvpPlayers, setPvpPlayers] = useState<PvPPlayersState>({ white: null, black: null });
 
   const mcpBaseUrl =
     process.env.NEXT_PUBLIC_MCP_URL || "https://mcp.mcpchallenge.org";
@@ -144,9 +148,21 @@ export function LiveGameBoard({
 
     eventSource.addEventListener("state", (event) => {
       try {
-        const data = JSON.parse(event.data) as RoomState & { agentIdentity?: AgentIdentity };
+        const data = JSON.parse(event.data) as RoomState & {
+          agentIdentity?: AgentIdentity;
+          gameMode?: "ai" | "pvp";
+          players?: PvPPlayersState;
+        };
         setGameState(data.gameState);
-        // Also update agent identity if present in state
+        // Update game mode if present
+        if (data.gameMode) {
+          setGameMode(data.gameMode);
+        }
+        // Update PvP players if present
+        if (data.players) {
+          setPvpPlayers(data.players);
+        }
+        // Also update agent identity if present in state (AI mode)
         if (data.agentIdentity) {
           setAgentIdentity(data.agentIdentity);
         }
@@ -173,6 +189,20 @@ export function LiveGameBoard({
       }
     });
 
+    // PvP players update
+    eventSource.addEventListener("players", (event) => {
+      try {
+        const data = JSON.parse(event.data) as PvPPlayersState;
+        setPvpPlayers(data);
+        // If we have players, we're in PvP mode
+        if (data.white || data.black) {
+          setGameMode("pvp");
+        }
+      } catch (error) {
+        console.error("Failed to parse players:", error);
+      }
+    });
+
     setRoomInfo({
       roomId,
       gameType,
@@ -185,6 +215,8 @@ export function LiveGameBoard({
       eventSource.close();
       setIsConnected(false);
       setAgentIdentity(null);
+      setGameMode("ai");
+      setPvpPlayers({ white: null, black: null });
     };
   }, [roomId, gameType, mcpBaseUrl]);
 
@@ -901,8 +933,15 @@ export function LiveGameBoard({
               </code>
             </div>
 
-            {/* Agent chip */}
-            <AgentChip identity={agentIdentity} />
+            {/* Agent display - PvP or single player */}
+            {gameMode === "pvp" ? (
+              <PvPAgents
+                players={pvpPlayers}
+                currentTurn={(gameState as ChessGameState)?.turn || "white"}
+              />
+            ) : (
+              <AgentChip identity={agentIdentity} />
+            )}
 
             {/* Copy URL button */}
             {roomInfo && (
