@@ -169,6 +169,10 @@
       "canvasDraw": {
         "title": "Kreslení na canvas",
         "description": "Připojte MCP klienta a kreslete! Použijte draw_line, circle, set_pixel k tvorbě umění."
+      },
+      "minesweeper": {
+        "title": "Miny",
+        "description": "Klasické Miny z Windows XP! Odhalte všechna políčka bez šlápnutí na minu. Levé tlačítko odhalí, pravé vlajku."
       }
     },
     "comingSoon": {

@@ -169,6 +169,10 @@
       "canvasDraw": {
         "title": "Canvas Drawing",
         "description": "Connect your MCP client and draw on canvas! Use draw_line, circle, set_pixel to create art."
+      },
+      "minesweeper": {
+        "title": "Minesweeper",
+        "description": "Classic Windows XP Minesweeper! Reveal all cells without hitting a mine. Left-click to reveal, right-click to flag."
       }
     },
     "comingSoon": {

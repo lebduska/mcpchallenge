@@ -12,6 +12,7 @@ import { Trophy, Gamepad2 } from "lucide-react";
 const challengeData = [
   { id: "chess", key: "chess", difficulty: "beginner", points: 100, type: "game", completions: 0, featured: true, transport: "HTTP+SSE" },
   { id: "tic-tac-toe", key: "tictactoe", difficulty: "beginner", points: 50, type: "game", completions: 0, transport: "HTTP+SSE" },
+  { id: "minesweeper", key: "minesweeper", difficulty: "beginner", points: 75, type: "game", completions: 0, transport: "N/A" },
   // TODO: Snake temporarily disabled - WebSocket transport needs work
   // { id: "snake", key: "snake", difficulty: "intermediate", points: 150, type: "game", completions: 0, featured: true, transport: "WebSocket" },
   { id: "canvas-draw", key: "canvasDraw", difficulty: "intermediate", points: 250, type: "creative", completions: 0, featured: true, transport: "HTTP+SSE" },

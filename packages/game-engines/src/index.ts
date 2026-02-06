@@ -20,16 +20,22 @@ export type { TicTacToeState, TicTacToeMove, TicTacToeOptions, Symbol, Board } f
 export { snakeEngine, getVision } from './snake';
 export type { SnakeState, SnakeMove, SnakeOptions, Direction, Position, Vision } from './snake';
 
+// Minesweeper engine
+export { minesweeperEngine } from './minesweeper';
+export type { MinesweeperState, MinesweeperMove, MinesweeperOptions, CellValue } from './minesweeper';
+
 // Engine registry for dynamic access
 import { chessEngine } from './chess';
 import { tictactoeEngine } from './tictactoe';
 import { snakeEngine } from './snake';
+import { minesweeperEngine } from './minesweeper';
 import type { GameEngine, GameState } from './types';
 
 export const engines = {
   chess: chessEngine,
   tictactoe: tictactoeEngine,
   snake: snakeEngine,
+  minesweeper: minesweeperEngine,
 } as const;
 
 export type EngineId = keyof typeof engines;
