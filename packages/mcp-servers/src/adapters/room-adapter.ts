@@ -103,6 +103,20 @@ function convertToEngineState(
         firstMove: true,
       } as any;
 
+    case 'canvas':
+      const canvasOldState = oldState as any;
+      return {
+        gameId: `${oldState.createdAt}`,
+        status: 'playing',
+        turn: 'player',
+        moveCount: canvasOldState.commands?.length || 0,
+        width: canvasOldState.width || 64,
+        height: canvasOldState.height || 64,
+        currentColor: [0, 0, 0],
+        pixels: [],
+        commands: canvasOldState.commands || [],
+      } as any;
+
     default:
       return null;
   }
@@ -184,6 +198,18 @@ function convertToOldState(
         elapsedSeconds: msState.startTime
           ? Math.floor((Date.now() - msState.startTime) / 1000)
           : 0,
+      } as GameState;
+
+    case 'canvas':
+      const canvasState = engineState as any;
+      return {
+        gameType: 'canvas',
+        status: 'playing',
+        createdAt: now,
+        lastActivity: now,
+        width: canvasState.width,
+        height: canvasState.height,
+        commands: canvasState.commands || [],
       } as GameState;
 
     default:

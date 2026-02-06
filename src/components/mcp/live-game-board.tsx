@@ -46,6 +46,7 @@ import type {
   ChessGameState,
   TicTacToeGameState,
   SnakeGameState,
+  CanvasGameState,
   MinesweeperGameState,
   CommandLogEntry,
   RoomInfo,
@@ -193,6 +194,8 @@ export function LiveGameBoard({
         return renderTicTacToeBoard(gameState);
       case "snake":
         return renderSnakeBoard(gameState);
+      case "canvas":
+        return renderCanvasBoard(gameState);
       case "minesweeper":
         return renderMinesweeperBoard(gameState);
       default:
@@ -361,6 +364,50 @@ export function LiveGameBoard({
     );
   };
 
+  const renderCanvasBoard = (state: CanvasGameState) => {
+    const { width, height, commands } = state;
+
+    return (
+      <div className="relative bg-white dark:bg-zinc-900 rounded-xl p-4 border border-zinc-200 dark:border-zinc-800">
+        {/* Spectator badge */}
+        <div className="absolute top-2 left-2 z-10">
+          <Badge variant="outline" className="bg-white/80 dark:bg-black/50 border-zinc-200 dark:border-white/10 gap-1">
+            <Eye className="h-3 w-3" />
+            Spectating
+          </Badge>
+        </div>
+
+        {/* Command counter */}
+        <div className="absolute top-2 right-2 z-10">
+          <Badge className="bg-pink-500/80 backdrop-blur-md border-0">
+            {commands?.length || 0} commands
+          </Badge>
+        </div>
+
+        {/* Canvas area - rendered by commands */}
+        <div className="flex items-center justify-center min-h-[300px]">
+          <div
+            className="bg-white border-2 border-zinc-300 dark:border-zinc-600 rounded shadow-inner"
+            style={{ width: (width || 64) * 5, height: (height || 64) * 5 }}
+          >
+            <div className="w-full h-full flex items-center justify-center text-zinc-400 dark:text-zinc-600 text-sm">
+              {commands && commands.length > 0 ? (
+                <span className="text-pink-500">{commands.length} drawing commands received</span>
+              ) : (
+                <span>Waiting for drawing commands...</span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Canvas info */}
+        <div className="mt-3 text-center text-xs text-zinc-500 dark:text-zinc-500">
+          Canvas: {width || 64}×{height || 64} pixels
+        </div>
+      </div>
+    );
+  };
+
   const renderMinesweeperBoard = (state: MinesweeperGameState) => {
     const { rows, cols, board, revealed, flagged, status, flagsRemaining, elapsedSeconds } = state;
 
@@ -503,6 +550,18 @@ export function LiveGameBoard({
             </div>
           </div>
         );
+      case "canvas":
+        return (
+          <div className="aspect-square p-4 bg-white dark:bg-zinc-900 rounded-xl flex flex-col items-center justify-center">
+            {/* Mini canvas preview */}
+            <div className="w-48 h-48 bg-white border-2 border-zinc-300 dark:border-zinc-600 rounded shadow-inner flex items-center justify-center">
+              <div className="text-center">
+                <div className="text-4xl mb-2">🎨</div>
+                <div className="text-xs text-zinc-400">64×64 canvas</div>
+              </div>
+            </div>
+          </div>
+        );
       case "minesweeper":
         return (
           <div className="aspect-square p-4 bg-zinc-200 dark:bg-zinc-800 rounded-xl flex flex-col items-center justify-center">
@@ -556,6 +615,7 @@ export function LiveGameBoard({
                 "absolute -inset-2 rounded-2xl blur-xl opacity-20 dark:opacity-30 transition-opacity",
                 gameType === "chess" ? "bg-gradient-to-br from-emerald-500/30 via-transparent to-amber-500/20" :
                 gameType === "tictactoe" ? "bg-gradient-to-br from-purple-500/30 via-transparent to-pink-500/20" :
+                gameType === "canvas" ? "bg-gradient-to-br from-pink-500/30 via-transparent to-purple-500/20" :
                 gameType === "minesweeper" ? "bg-gradient-to-br from-zinc-500/30 via-transparent to-red-500/20" :
                 "bg-gradient-to-br from-green-500/30 via-transparent to-emerald-500/20",
                 "group-hover:opacity-40"

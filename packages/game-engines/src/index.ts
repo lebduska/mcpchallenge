@@ -24,17 +24,23 @@ export type { SnakeState, SnakeMove, SnakeOptions, Direction, Position, Vision }
 export { minesweeperEngine } from './minesweeper';
 export type { MinesweeperState, MinesweeperMove, MinesweeperOptions, CellValue } from './minesweeper';
 
+// Canvas engine
+export { canvasEngine } from './canvas';
+export type { CanvasState, CanvasMove, CanvasOptions, CanvasMoveAction } from './canvas';
+
 // Engine registry for dynamic access
 import { chessEngine } from './chess';
 import { tictactoeEngine } from './tictactoe';
 import { snakeEngine } from './snake';
 import { minesweeperEngine } from './minesweeper';
+import { canvasEngine } from './canvas';
 import type { GameEngine, GameState } from './types';
 
 export const engines = {
   chess: chessEngine,
   tictactoe: tictactoeEngine,
   snake: snakeEngine,
+  canvas: canvasEngine,
   minesweeper: minesweeperEngine,
 } as const;
 
