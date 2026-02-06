@@ -2,15 +2,16 @@
 
 import { useRef, useState, useEffect, useCallback, useMemo } from "react";
 import Matter from "matter-js";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
   Play,
   RotateCcw,
   Trash2,
   ChevronRight,
-  CheckCircle2,
-  XCircle,
+  Hammer,
+  Link2,
+  Route,
+  Sparkles,
 } from "lucide-react";
 import {
   type Structure,
@@ -34,7 +35,6 @@ interface PolyBridgeGameProps {
   onGameComplete?: (result: { won: boolean; level: number; budget: number }) => void;
 }
 
-// Extended Matter.Body type with custom property
 interface BodyWithStructureId extends Matter.Body {
   structureId?: string;
 }
@@ -43,11 +43,11 @@ interface BodyWithStructureId extends Matter.Body {
 // Constants
 // =============================================================================
 
-const TOOL_COLORS: Record<ToolType, string> = {
-  beam: "#8B4513",
-  cable: "#333333",
-  road: "#555555",
-  delete: "#ff0000",
+const TOOL_CONFIG: Record<ToolType, { icon: typeof Hammer; label: string; color: string }> = {
+  beam: { icon: Hammer, label: "Beam", color: "#8B4513" },
+  cable: { icon: Link2, label: "Cable", color: "#333333" },
+  road: { icon: Route, label: "Road", color: "#555555" },
+  delete: { icon: Trash2, label: "Delete", color: "#ef4444" },
 };
 
 const MATERIAL_DISPLAY: Record<MaterialType, { color: string; label: string }> = {
@@ -58,7 +58,7 @@ const MATERIAL_DISPLAY: Record<MaterialType, { color: string; label: string }> =
 };
 
 // =============================================================================
-// Helper Functions (outside component to avoid hoisting issues)
+// Helper Functions
 // =============================================================================
 
 function splitTerrainIntoPolygons(terrain: Point[]): Point[][] {
@@ -101,7 +101,258 @@ function pointToLineDistance(point: Point, lineStart: Point, lineEnd: Point): nu
 }
 
 // =============================================================================
-// Component
+// Sub-components
+// =============================================================================
+
+function BudgetBar({ used, total }: { used: number; total: number }) {
+  const percentage = Math.min((used / total) * 100, 100);
+  const remaining = total - used;
+
+  // Color transitions: green (0-60%) -> yellow (60-85%) -> red (85-100%)
+  const getBarColor = () => {
+    if (percentage < 60) return "from-emerald-400 to-emerald-500";
+    if (percentage < 85) return "from-amber-400 to-amber-500";
+    return "from-red-400 to-red-500";
+  };
+
+  const getTextColor = () => {
+    if (percentage < 60) return "text-emerald-600 dark:text-emerald-400";
+    if (percentage < 85) return "text-amber-600 dark:text-amber-400";
+    return "text-red-600 dark:text-red-400";
+  };
+
+  return (
+    <div className="w-48">
+      <div className="flex justify-between items-baseline mb-1">
+        <span className="text-xs font-medium text-zinc-500 uppercase tracking-wide">Budget</span>
+        <span className={cn("text-sm font-bold tabular-nums", getTextColor())}>
+          ${used.toLocaleString()}
+          <span className="text-zinc-400 font-normal"> / ${total.toLocaleString()}</span>
+        </span>
+      </div>
+      <div className="h-2.5 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden shadow-inner">
+        <div
+          className={cn(
+            "h-full bg-gradient-to-r rounded-full transition-all duration-300 ease-out",
+            getBarColor()
+          )}
+          style={{ width: `${percentage}%` }}
+        />
+      </div>
+      <div className="flex justify-between mt-1">
+        <span className="text-[10px] text-zinc-400">
+          {remaining >= 0 ? `$${remaining} left` : "Over budget!"}
+        </span>
+        <span className="text-[10px] text-zinc-400">{percentage.toFixed(0)}%</span>
+      </div>
+    </div>
+  );
+}
+
+function CountdownOverlay({ count, onComplete }: { count: number; onComplete: () => void }) {
+  useEffect(() => {
+    if (count <= 0) {
+      onComplete();
+    }
+  }, [count, onComplete]);
+
+  return (
+    <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm rounded-xl z-20">
+      <div
+        className="relative"
+        key={count}
+      >
+        <div className="text-8xl font-black text-white animate-ping absolute inset-0 flex items-center justify-center opacity-50">
+          {count}
+        </div>
+        <div className="text-8xl font-black text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.5)]">
+          {count}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ToolButton({
+  tool,
+  selected,
+  onClick,
+}: {
+  tool: ToolType;
+  selected: boolean;
+  onClick: () => void;
+}) {
+  const config = TOOL_CONFIG[tool];
+  const Icon = config.icon;
+
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        "group relative flex flex-col items-center gap-1 px-4 py-2.5 rounded-xl transition-all duration-200",
+        "border-2",
+        selected
+          ? tool === "delete"
+            ? "bg-red-500 border-red-600 text-white shadow-lg shadow-red-500/30 scale-105"
+            : "bg-zinc-900 dark:bg-white border-zinc-900 dark:border-white text-white dark:text-zinc-900 shadow-lg shadow-zinc-900/30 dark:shadow-white/30 scale-105"
+          : "bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:border-zinc-300 dark:hover:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:scale-102"
+      )}
+    >
+      <Icon className={cn(
+        "h-5 w-5 transition-transform duration-200",
+        selected ? "" : "group-hover:scale-110"
+      )} />
+      <span className="text-[10px] font-semibold uppercase tracking-wide">
+        {config.label}
+      </span>
+      {selected && (
+        <div className={cn(
+          "absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full",
+          tool === "delete" ? "bg-red-300" : "bg-white dark:bg-zinc-900"
+        )} />
+      )}
+    </button>
+  );
+}
+
+function MaterialButton({
+  material,
+  selected,
+  onClick,
+}: {
+  material: "wood" | "steel";
+  selected: boolean;
+  onClick: () => void;
+}) {
+  const display = MATERIAL_DISPLAY[material];
+
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        "flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all duration-200 text-sm",
+        selected
+          ? "bg-zinc-800 dark:bg-zinc-100 text-white dark:text-zinc-900 shadow-md"
+          : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+      )}
+    >
+      <div
+        className="w-3 h-3 rounded-sm shadow-inner"
+        style={{ backgroundColor: display.color }}
+      />
+      <span className="font-medium">{display.label}</span>
+      <span className="text-xs opacity-60">${MATERIAL_COSTS[material]}/u</span>
+    </button>
+  );
+}
+
+function SuccessOverlay({
+  budgetUsed,
+  budgetTotal,
+  hasNextLevel,
+  onNextLevel,
+}: {
+  budgetUsed: number;
+  budgetTotal: number;
+  hasNextLevel: boolean;
+  onNextLevel: () => void;
+}) {
+  const savings = budgetTotal - budgetUsed;
+  const efficiency = Math.round((savings / budgetTotal) * 100);
+
+  return (
+    <div className="absolute inset-0 flex items-center justify-center rounded-xl z-20 animate-in fade-in duration-300">
+      {/* Success glow effect */}
+      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/30 via-green-500/20 to-teal-500/30 animate-pulse" />
+      <div className="absolute inset-0 border-4 border-emerald-400/50 rounded-xl animate-pulse" />
+
+      <div className="relative bg-white/95 dark:bg-zinc-900/95 backdrop-blur-sm p-8 rounded-2xl shadow-2xl text-center max-w-sm mx-4 border border-emerald-200 dark:border-emerald-800">
+        {/* Success icon with sparkles */}
+        <div className="relative mx-auto w-20 h-20 mb-4">
+          <div className="absolute inset-0 bg-emerald-500 rounded-full animate-ping opacity-20" />
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-400 to-green-500 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/50">
+            <Sparkles className="w-10 h-10 text-white" />
+          </div>
+        </div>
+
+        <h3 className="text-2xl font-black text-zinc-900 dark:text-white mb-1">
+          Bridge Holds!
+        </h3>
+        <p className="text-emerald-600 dark:text-emerald-400 font-semibold mb-4">
+          {savings > 0 ? `$${savings} under budget!` : "Within budget!"}
+        </p>
+
+        {/* Stats */}
+        <div className="flex justify-center gap-6 mb-6 p-3 bg-zinc-100 dark:bg-zinc-800 rounded-xl">
+          <div className="text-center">
+            <div className="text-2xl font-bold text-zinc-900 dark:text-white">${budgetUsed}</div>
+            <div className="text-xs text-zinc-500">Spent</div>
+          </div>
+          <div className="w-px bg-zinc-300 dark:bg-zinc-700" />
+          <div className="text-center">
+            <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{efficiency}%</div>
+            <div className="text-xs text-zinc-500">Efficiency</div>
+          </div>
+        </div>
+
+        {hasNextLevel ? (
+          <button
+            onClick={onNextLevel}
+            className="group w-full py-3 px-6 bg-gradient-to-r from-emerald-500 to-green-500 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+          >
+            <span className="flex items-center justify-center gap-2">
+              Next Level
+              <ChevronRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            </span>
+          </button>
+        ) : (
+          <div className="py-3 px-6 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-xl">
+            🏆 All Levels Complete!
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function FailureOverlay({ onRetry }: { onRetry: () => void }) {
+  return (
+    <div className="absolute inset-0 flex items-center justify-center rounded-xl z-20 animate-in fade-in duration-200">
+      {/* Failure flash effect */}
+      <div className="absolute inset-0 bg-gradient-to-br from-red-500/30 via-rose-500/20 to-orange-500/30" />
+      <div className="absolute inset-0 border-4 border-red-400/50 rounded-xl" />
+
+      <div className="relative bg-white/95 dark:bg-zinc-900/95 backdrop-blur-sm p-8 rounded-2xl shadow-2xl text-center max-w-sm mx-4 border border-red-200 dark:border-red-900 animate-in zoom-in-95 duration-200">
+        {/* Failure icon */}
+        <div className="relative mx-auto w-20 h-20 mb-4">
+          <div className="absolute inset-0 bg-gradient-to-br from-red-400 to-rose-500 rounded-full flex items-center justify-center shadow-lg shadow-red-500/50">
+            <span className="text-4xl">💥</span>
+          </div>
+        </div>
+
+        <h3 className="text-2xl font-black text-zinc-900 dark:text-white mb-1">
+          Bridge Collapsed!
+        </h3>
+        <p className="text-red-600 dark:text-red-400 font-medium mb-6">
+          Try a different design approach
+        </p>
+
+        <button
+          onClick={onRetry}
+          className="group w-full py-3 px-6 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+        >
+          <span className="flex items-center justify-center gap-2">
+            <RotateCcw className="h-4 w-4 group-hover:-rotate-45 transition-transform" />
+            Try Again
+          </span>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// =============================================================================
+// Main Component
 // =============================================================================
 
 export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
@@ -113,15 +364,15 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
   const [structures, setStructures] = useState<Structure[]>([]);
   const [selectedTool, setSelectedTool] = useState<ToolType>("beam");
   const [selectedMaterial, setSelectedMaterial] = useState<MaterialType>("wood");
-  const [testResult, setTestResult] = useState<"untested" | "testing" | "passed" | "failed">("untested");
+  const [testResult, setTestResult] = useState<"untested" | "countdown" | "testing" | "passed" | "failed">("untested");
+  const [countdown, setCountdown] = useState(3);
   const [isDrawing, setIsDrawing] = useState(false);
   const [drawStart, setDrawStart] = useState<Point | null>(null);
   const [drawEnd, setDrawEnd] = useState<Point | null>(null);
-  const [isLevelComplete, setIsLevelComplete] = useState(false);
+  const [canvasShake, setCanvasShake] = useState(false);
 
   const level = POLYBRIDGE_LEVELS[levelIndex];
 
-  // Calculate budget used - use useMemo instead of effect+state
   const budgetUsed = useMemo(() => {
     return structures.reduce((sum, s) => sum + s.cost, 0);
   }, [structures]);
@@ -134,12 +385,14 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Clear
-    ctx.fillStyle = "#87CEEB"; // Sky blue
+    // Sky gradient
+    const skyGradient = ctx.createLinearGradient(0, 0, 0, level.height);
+    skyGradient.addColorStop(0, "#7dd3fc");
+    skyGradient.addColorStop(1, "#bae6fd");
+    ctx.fillStyle = skyGradient;
     ctx.fillRect(0, 0, level.width, level.height);
 
-    // Draw terrain
-    ctx.fillStyle = "#4a7c34";
+    // Draw terrain with gradient
     const terrainChunks = splitTerrainIntoPolygons(level.terrain);
     for (const chunk of terrainChunks) {
       if (chunk.length >= 3) {
@@ -149,23 +402,47 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
           ctx.lineTo(chunk[i].x, chunk[i].y);
         }
         ctx.closePath();
+        const terrainGradient = ctx.createLinearGradient(0, level.height - 100, 0, level.height);
+        terrainGradient.addColorStop(0, "#4ade80");
+        terrainGradient.addColorStop(1, "#16a34a");
+        ctx.fillStyle = terrainGradient;
         ctx.fill();
       }
     }
 
-    // Draw anchors
+    // Draw anchors with glow
     for (const anchor of level.anchors) {
+      // Glow
+      ctx.beginPath();
+      ctx.arc(anchor.x, anchor.y, 14, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(34, 197, 94, 0.3)";
+      ctx.fill();
+
+      // Anchor
       ctx.beginPath();
       ctx.arc(anchor.x, anchor.y, 8, 0, Math.PI * 2);
-      ctx.fillStyle = "#22c55e";
+      const anchorGradient = ctx.createRadialGradient(anchor.x - 2, anchor.y - 2, 0, anchor.x, anchor.y, 8);
+      anchorGradient.addColorStop(0, "#4ade80");
+      anchorGradient.addColorStop(1, "#16a34a");
+      ctx.fillStyle = anchorGradient;
       ctx.fill();
-      ctx.strokeStyle = "#166534";
+      ctx.strokeStyle = "#15803d";
       ctx.lineWidth = 2;
       ctx.stroke();
     }
 
-    // Draw structures
+    // Draw structures with better styling
     for (const structure of structures) {
+      ctx.beginPath();
+      ctx.moveTo(structure.start.x, structure.start.y);
+      ctx.lineTo(structure.end.x, structure.end.y);
+
+      // Shadow
+      ctx.strokeStyle = "rgba(0,0,0,0.2)";
+      ctx.lineWidth = structure.type === "road" ? 8 : structure.type === "cable" ? 3 : 6;
+      ctx.stroke();
+
+      // Main line
       ctx.beginPath();
       ctx.moveTo(structure.start.x, structure.start.y);
       ctx.lineTo(structure.end.x, structure.end.y);
@@ -173,50 +450,89 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
       ctx.lineWidth = structure.type === "road" ? 6 : structure.type === "cable" ? 2 : 4;
       ctx.stroke();
 
-      // Draw joints at endpoints
-      ctx.beginPath();
-      ctx.arc(structure.start.x, structure.start.y, 4, 0, Math.PI * 2);
-      ctx.fillStyle = "#333";
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(structure.end.x, structure.end.y, 4, 0, Math.PI * 2);
-      ctx.fill();
+      // Joints
+      for (const point of [structure.start, structure.end]) {
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 5, 0, Math.PI * 2);
+        ctx.fillStyle = "#27272a";
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 3, 0, Math.PI * 2);
+        ctx.fillStyle = "#52525b";
+        ctx.fill();
+      }
     }
 
-    // Draw current drawing
+    // Draw current drawing preview
     if (isDrawing && drawStart && drawEnd) {
       ctx.beginPath();
       ctx.moveTo(drawStart.x, drawStart.y);
       ctx.lineTo(drawEnd.x, drawEnd.y);
-      ctx.strokeStyle = selectedTool === "delete" ? "#ff0000" : TOOL_COLORS[selectedTool];
+      ctx.strokeStyle = selectedTool === "delete" ? "#ef4444" : TOOL_CONFIG[selectedTool].color;
       ctx.lineWidth = 3;
-      ctx.setLineDash([5, 5]);
+      ctx.setLineDash([8, 4]);
       ctx.stroke();
       ctx.setLineDash([]);
+
+      // Preview cost
+      const dx = drawEnd.x - drawStart.x;
+      const dy = drawEnd.y - drawStart.y;
+      const length = Math.sqrt(dx * dx + dy * dy);
+      if (length > 20) {
+        const material = selectedTool === "cable" ? "cable" : selectedTool === "road" ? "road" : selectedMaterial;
+        const previewCost = Math.ceil(length * MATERIAL_COSTS[material] / 10);
+        const midX = (drawStart.x + drawEnd.x) / 2;
+        const midY = (drawStart.y + drawEnd.y) / 2;
+
+        ctx.font = "bold 12px system-ui";
+        ctx.fillStyle = "rgba(0,0,0,0.7)";
+        ctx.fillRect(midX - 20, midY - 18, 40, 18);
+        ctx.fillStyle = "#fff";
+        ctx.textAlign = "center";
+        ctx.fillText(`$${previewCost}`, midX, midY - 5);
+      }
     }
 
-    // Draw vehicle positions
+    // Vehicle start/end markers
+    // Start
     ctx.beginPath();
-    ctx.arc(level.vehicleStart.x, level.vehicleStart.y, 10, 0, Math.PI * 2);
+    ctx.arc(level.vehicleStart.x, level.vehicleStart.y, 12, 0, Math.PI * 2);
     ctx.fillStyle = "#ef4444";
     ctx.fill();
+    ctx.strokeStyle = "#b91c1c";
+    ctx.lineWidth = 2;
+    ctx.stroke();
     ctx.fillStyle = "#fff";
-    ctx.font = "10px sans-serif";
+    ctx.font = "bold 10px system-ui";
     ctx.textAlign = "center";
-    ctx.fillText("S", level.vehicleStart.x, level.vehicleStart.y + 3);
+    ctx.fillText("START", level.vehicleStart.x, level.vehicleStart.y + 4);
 
+    // End
     ctx.beginPath();
-    ctx.arc(level.vehicleEnd.x, level.vehicleEnd.y, 10, 0, Math.PI * 2);
+    ctx.arc(level.vehicleEnd.x, level.vehicleEnd.y, 12, 0, Math.PI * 2);
     ctx.fillStyle = "#22c55e";
     ctx.fill();
+    ctx.strokeStyle = "#15803d";
+    ctx.lineWidth = 2;
+    ctx.stroke();
     ctx.fillStyle = "#fff";
-    ctx.fillText("E", level.vehicleEnd.x, level.vehicleEnd.y + 3);
+    ctx.fillText("END", level.vehicleEnd.x, level.vehicleEnd.y + 4);
 
-  }, [level, structures, isDrawing, drawStart, drawEnd, selectedTool]);
+  }, [level, structures, isDrawing, drawStart, drawEnd, selectedTool, selectedMaterial]);
+
+  // Countdown effect
+  useEffect(() => {
+    if (testResult !== "countdown") return;
+
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 600);
+      return () => clearTimeout(timer);
+    }
+  }, [testResult, countdown]);
 
   // Mouse handlers
   const handleMouseDown = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (testResult === "testing") return;
+    if (testResult === "testing" || testResult === "countdown") return;
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -226,7 +542,6 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
     const y = e.clientY - rect.top;
 
     if (selectedTool === "delete") {
-      // Find and remove structure near click
       const clickPoint = { x, y };
       const structureToDelete = structures.find((s) => {
         const dist = pointToLineDistance(clickPoint, s.start, s.end);
@@ -262,13 +577,11 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
       return;
     }
 
-    // Calculate length and cost
     const dx = drawEnd.x - drawStart.x;
     const dy = drawEnd.y - drawStart.y;
     const length = Math.sqrt(dx * dx + dy * dy);
 
     if (length < 20) {
-      // Too short, ignore
       setIsDrawing(false);
       setDrawStart(null);
       setDrawEnd(null);
@@ -279,7 +592,6 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
     const cost = Math.ceil(length * MATERIAL_COSTS[material] / 10);
 
     if (budgetUsed + cost > level.budget) {
-      // Over budget
       setIsDrawing(false);
       setDrawStart(null);
       setDrawEnd(null);
@@ -302,12 +614,19 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
     setDrawEnd(null);
   }, [isDrawing, drawStart, drawEnd, selectedTool, selectedMaterial, budgetUsed, level.budget]);
 
+  // Start test with countdown
+  const startTest = useCallback(() => {
+    if (structures.length === 0) return;
+    setCountdown(3);
+    setTestResult("countdown");
+    setCanvasShake(true);
+    setTimeout(() => setCanvasShake(false), 500);
+  }, [structures.length]);
+
   // Run physics test
   const runTest = useCallback(() => {
-    if (structures.length === 0) return;
     setTestResult("testing");
 
-    // Create Matter.js engine
     const engine = Matter.Engine.create({
       gravity: { x: 0, y: 1 },
     });
@@ -324,7 +643,6 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
         const ground = Matter.Bodies.fromVertices(centroid.x, centroid.y, [vertices], {
           isStatic: true,
           friction: 0.8,
-          render: { fillStyle: "#4a7c34" },
         });
         Matter.Composite.add(world, ground);
       }
@@ -332,7 +650,6 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
 
     // Add structure bodies
     const structureBodies: Matter.Body[] = [];
-    const constraints: Matter.Constraint[] = [];
 
     for (const structure of structures) {
       const midX = (structure.start.x + structure.end.x) / 2;
@@ -343,7 +660,6 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
       const angle = Math.atan2(dy, dx);
 
       if (structure.type === "cable") {
-        // Cables are constraints, not bodies
         continue;
       }
 
@@ -351,9 +667,6 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
         angle,
         friction: 0.8,
         density: structure.material === "steel" ? 0.002 : 0.001,
-        render: {
-          fillStyle: MATERIAL_DISPLAY[structure.material].color,
-        },
       });
 
       (body as BodyWithStructureId).structureId = structure.id;
@@ -395,7 +708,6 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
               damping: 0.1,
               length: 0,
             });
-            constraints.push(constraint);
             Matter.Composite.add(world, constraint);
           }
         }
@@ -433,10 +745,6 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
           pointB: structure.end,
           stiffness: 0.01,
           damping: 0.1,
-          render: {
-            strokeStyle: "#1a1a1a",
-            lineWidth: 2,
-          },
         });
         Matter.Composite.add(world, constraint);
       }
@@ -451,7 +759,6 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
       {
         friction: 0.5,
         density: 0.003 * level.vehicleWeight,
-        render: { fillStyle: "#ef4444" },
       }
     );
     Matter.Composite.add(world, vehicle);
@@ -503,22 +810,18 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
     const checkInterval = setInterval(() => {
       elapsed += 100;
 
-      // Check if vehicle reached end
       const distToEnd = Math.sqrt(
         (vehicle.position.x - level.vehicleEnd.x) ** 2 +
         (vehicle.position.y - level.vehicleEnd.y) ** 2
       );
 
       if (distToEnd < 30) {
-        // WIN!
         clearInterval(checkInterval);
         clearInterval(forceInterval);
         Matter.Runner.stop(runner);
         setTestResult("passed");
-        setIsLevelComplete(true);
         onGameComplete?.({ won: true, level: levelIndex + 1, budget: budgetUsed });
       } else if (vehicle.position.y > level.height + 50 || elapsed > 15000) {
-        // FAIL - fell or timeout
         clearInterval(checkInterval);
         clearInterval(forceInterval);
         Matter.Runner.stop(runner);
@@ -526,7 +829,6 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
       }
     }, 100);
 
-    // Cleanup after test
     return () => {
       clearInterval(checkInterval);
       clearInterval(forceInterval);
@@ -539,7 +841,6 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
   const resetLevel = useCallback(() => {
     setStructures([]);
     setTestResult("untested");
-    setIsLevelComplete(false);
 
     if (runnerRef.current) {
       Matter.Runner.stop(runnerRef.current);
@@ -558,138 +859,128 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
   }, [levelIndex, resetLevel]);
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* Level info */}
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-5 max-w-[800px] mx-auto">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold">{level.name}</h2>
-          <p className="text-sm text-zinc-500">{level.description}</p>
-        </div>
-        <div className="text-right">
-          <div className="text-lg font-semibold">
-            Budget: ${budgetUsed} / ${level.budget}
+          <div className="flex items-center gap-2 mb-1">
+            <span className="px-2 py-0.5 bg-cyan-100 dark:bg-cyan-900/50 text-cyan-700 dark:text-cyan-300 text-xs font-bold rounded-full">
+              Level {levelIndex + 1}/{POLYBRIDGE_LEVELS.length}
+            </span>
           </div>
-          <div className="text-sm text-zinc-500">
-            Level {levelIndex + 1} / {POLYBRIDGE_LEVELS.length}
-          </div>
+          <h2 className="text-2xl font-black text-zinc-900 dark:text-white">{level.name}</h2>
+          <p className="text-sm text-zinc-500 mt-0.5">{level.description}</p>
         </div>
+        <BudgetBar used={budgetUsed} total={level.budget} />
       </div>
 
       {/* Canvas */}
       <div className="relative">
-        <canvas
-          ref={canvasRef}
-          width={level.width}
-          height={level.height}
-          className="border border-zinc-300 rounded-lg cursor-crosshair"
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={() => {
-            if (isDrawing) {
-              setIsDrawing(false);
-              setDrawStart(null);
-              setDrawEnd(null);
-            }
+        <div
+          className={cn(
+            "rounded-xl overflow-hidden shadow-xl border-2 border-zinc-200 dark:border-zinc-800 transition-all duration-100",
+            canvasShake && "animate-pulse",
+            testResult === "countdown" && "ring-4 ring-amber-400/50"
+          )}
+          style={{
+            transform: canvasShake ? "translateX(2px)" : "none",
           }}
-        />
+        >
+          <canvas
+            ref={canvasRef}
+            width={level.width}
+            height={level.height}
+            className={cn(
+              "cursor-crosshair block",
+              selectedTool === "delete" && "cursor-pointer"
+            )}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={() => {
+              if (isDrawing) {
+                setIsDrawing(false);
+                setDrawStart(null);
+                setDrawEnd(null);
+              }
+            }}
+          />
+        </div>
 
-        {/* Test result overlay */}
+        {/* Countdown Overlay */}
+        {testResult === "countdown" && (
+          <CountdownOverlay count={countdown} onComplete={runTest} />
+        )}
+
+        {/* Success Overlay */}
         {testResult === "passed" && (
-          <div className="absolute inset-0 flex items-center justify-center bg-green-500/20 rounded-lg">
-            <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-lg text-center">
-              <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold mb-2">Level Complete!</h3>
-              <p className="text-zinc-500 mb-4">Budget used: ${budgetUsed}</p>
-              {levelIndex < POLYBRIDGE_LEVELS.length - 1 ? (
-                <Button onClick={nextLevel}>
-                  Next Level <ChevronRight className="ml-2 h-4 w-4" />
-                </Button>
-              ) : (
-                <div className="text-green-600 font-semibold">
-                  All levels completed!
-                </div>
-              )}
-            </div>
-          </div>
+          <SuccessOverlay
+            budgetUsed={budgetUsed}
+            budgetTotal={level.budget}
+            hasNextLevel={levelIndex < POLYBRIDGE_LEVELS.length - 1}
+            onNextLevel={nextLevel}
+          />
         )}
 
+        {/* Failure Overlay */}
         {testResult === "failed" && (
-          <div className="absolute inset-0 flex items-center justify-center bg-red-500/20 rounded-lg">
-            <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-lg text-center">
-              <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold mb-2">Bridge Failed!</h3>
-              <p className="text-zinc-500 mb-4">Try a different design</p>
-              <Button onClick={() => setTestResult("untested")} variant="outline">
-                Try Again
-              </Button>
-            </div>
-          </div>
+          <FailureOverlay onRetry={() => setTestResult("untested")} />
         )}
       </div>
 
-      {/* Tools */}
-      <div className="flex items-center gap-4">
-        <div className="flex gap-2">
+      {/* Toolbar */}
+      <div className="flex items-center justify-between bg-zinc-100 dark:bg-zinc-900 rounded-2xl p-3 border border-zinc-200 dark:border-zinc-800">
+        {/* Tools */}
+        <div className="flex items-center gap-2">
           {(["beam", "cable", "road", "delete"] as ToolType[]).map((tool) => (
-            <Button
+            <ToolButton
               key={tool}
-              size="sm"
-              variant={selectedTool === tool ? "default" : "outline"}
+              tool={tool}
+              selected={selectedTool === tool}
               onClick={() => setSelectedTool(tool)}
-              className={cn(
-                selectedTool === tool && tool !== "delete" && "ring-2 ring-offset-2",
-                tool === "delete" && selectedTool === tool && "bg-red-500 hover:bg-red-600"
-              )}
-            >
-              {tool === "delete" ? (
-                <Trash2 className="h-4 w-4" />
-              ) : (
-                tool.charAt(0).toUpperCase() + tool.slice(1)
-              )}
-            </Button>
+            />
           ))}
+
+          {/* Material selector (for beam) */}
+          {selectedTool === "beam" && (
+            <div className="flex items-center gap-2 ml-3 pl-3 border-l border-zinc-300 dark:border-zinc-700">
+              {(["wood", "steel"] as const).map((mat) => (
+                <MaterialButton
+                  key={mat}
+                  material={mat}
+                  selected={selectedMaterial === mat}
+                  onClick={() => setSelectedMaterial(mat)}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
-        {selectedTool === "beam" && (
-          <div className="flex gap-2 ml-4">
-            {(["wood", "steel"] as MaterialType[]).map((mat) => (
-              <Button
-                key={mat}
-                size="sm"
-                variant={selectedMaterial === mat ? "default" : "outline"}
-                onClick={() => setSelectedMaterial(mat)}
-              >
-                {MATERIAL_DISPLAY[mat].label} (${MATERIAL_COSTS[mat]}/u)
-              </Button>
-            ))}
-          </div>
-        )}
-
-        <div className="ml-auto flex gap-2">
-          <Button
-            variant="outline"
+        {/* Action buttons */}
+        <div className="flex items-center gap-2">
+          <button
             onClick={resetLevel}
-            disabled={testResult === "testing"}
+            disabled={testResult === "testing" || testResult === "countdown"}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-semibold text-sm hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors disabled:opacity-50"
           >
-            <RotateCcw className="h-4 w-4 mr-2" />
+            <RotateCcw className="h-4 w-4" />
             Reset
-          </Button>
-          <Button
-            onClick={runTest}
-            disabled={structures.length === 0 || testResult === "testing"}
+          </button>
+          <button
+            onClick={startTest}
+            disabled={structures.length === 0 || testResult === "testing" || testResult === "countdown"}
+            className={cn(
+              "group flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all duration-200",
+              "bg-gradient-to-r from-emerald-500 to-green-500 text-white",
+              "shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50",
+              "hover:scale-[1.02] active:scale-[0.98]",
+              "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            )}
           >
-            <Play className="h-4 w-4 mr-2" />
+            <Play className="h-4 w-4 group-hover:scale-110 transition-transform" />
             Test Bridge
-          </Button>
+          </button>
         </div>
-      </div>
-
-      {/* Instructions */}
-      <div className="text-sm text-zinc-500 bg-zinc-100 dark:bg-zinc-800 p-3 rounded-lg">
-        <strong>How to play:</strong> Click and drag to place structures. Connect green anchor points.
-        Use beams for structure, road for vehicle surface, and cables for suspension.
-        Click Test Bridge when ready!
       </div>
     </div>
   );
