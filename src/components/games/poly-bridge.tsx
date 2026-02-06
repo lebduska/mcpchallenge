@@ -35,6 +35,11 @@ interface PolyBridgeGameProps {
   onGameComplete?: (result: { won: boolean; level: number; budget: number }) => void;
 }
 
+// Extended Matter.Body type with custom property
+interface BodyWithStructureId extends Matter.Body {
+  structureId?: string;
+}
+
 // =============================================================================
 // Constants
 // =============================================================================
@@ -52,6 +57,49 @@ const MATERIAL_DISPLAY: Record<MaterialType, { color: string; label: string }> =
   cable: { color: "#1a1a1a", label: "Cable" },
   road: { color: "#2d3748", label: "Road" },
 };
+
+// =============================================================================
+// Helper Functions (outside component to avoid hoisting issues)
+// =============================================================================
+
+function splitTerrainIntoPolygons(terrain: Point[]): Point[][] {
+  const chunks: Point[][] = [];
+  for (let i = 0; i < terrain.length; i += 4) {
+    const chunk = terrain.slice(i, i + 4);
+    if (chunk.length === 4) {
+      chunks.push(chunk);
+    }
+  }
+  return chunks;
+}
+
+function pointToLineDistance(point: Point, lineStart: Point, lineEnd: Point): number {
+  const A = point.x - lineStart.x;
+  const B = point.y - lineStart.y;
+  const C = lineEnd.x - lineStart.x;
+  const D = lineEnd.y - lineStart.y;
+
+  const dot = A * C + B * D;
+  const lenSq = C * C + D * D;
+  let param = -1;
+  if (lenSq !== 0) param = dot / lenSq;
+
+  let xx, yy;
+  if (param < 0) {
+    xx = lineStart.x;
+    yy = lineStart.y;
+  } else if (param > 1) {
+    xx = lineEnd.x;
+    yy = lineEnd.y;
+  } else {
+    xx = lineStart.x + param * C;
+    yy = lineStart.y + param * D;
+  }
+
+  const dx = point.x - xx;
+  const dy = point.y - yy;
+  return Math.sqrt(dx * dx + dy * dy);
+}
 
 // =============================================================================
 // Component
@@ -170,18 +218,6 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
 
   }, [level, structures, isDrawing, drawStart, drawEnd, selectedTool]);
 
-  // Split terrain into separate polygons (4 points each)
-  function splitTerrainIntoPolygons(terrain: Point[]): Point[][] {
-    const chunks: Point[][] = [];
-    for (let i = 0; i < terrain.length; i += 4) {
-      const chunk = terrain.slice(i, i + 4);
-      if (chunk.length === 4) {
-        chunks.push(chunk);
-      }
-    }
-    return chunks;
-  }
-
   // Mouse handlers
   const handleMouseDown = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     if (testResult === "testing") return;
@@ -270,35 +306,6 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
     setDrawEnd(null);
   }, [isDrawing, drawStart, drawEnd, selectedTool, selectedMaterial, budgetUsed, level.budget]);
 
-  // Point to line distance for delete detection
-  function pointToLineDistance(point: Point, lineStart: Point, lineEnd: Point): number {
-    const A = point.x - lineStart.x;
-    const B = point.y - lineStart.y;
-    const C = lineEnd.x - lineStart.x;
-    const D = lineEnd.y - lineStart.y;
-
-    const dot = A * C + B * D;
-    const lenSq = C * C + D * D;
-    let param = -1;
-    if (lenSq !== 0) param = dot / lenSq;
-
-    let xx, yy;
-    if (param < 0) {
-      xx = lineStart.x;
-      yy = lineStart.y;
-    } else if (param > 1) {
-      xx = lineEnd.x;
-      yy = lineEnd.y;
-    } else {
-      xx = lineStart.x + param * C;
-      yy = lineStart.y + param * D;
-    }
-
-    const dx = point.x - xx;
-    const dy = point.y - yy;
-    return Math.sqrt(dx * dx + dy * dy);
-  }
-
   // Run physics test
   const runTest = useCallback(() => {
     if (structures.length === 0) return;
@@ -353,7 +360,7 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
         },
       });
 
-      (body as any).structureId = structure.id;
+      (body as BodyWithStructureId).structureId = structure.id;
       structureBodies.push(body);
       Matter.Composite.add(world, body);
     }
@@ -364,8 +371,8 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
         const bodyA = structureBodies[i];
         const bodyB = structureBodies[j];
 
-        const structA = structures.find((s) => s.id === (bodyA as any).structureId)!;
-        const structB = structures.find((s) => s.id === (bodyB as any).structureId)!;
+        const structA = structures.find((s) => s.id === (bodyA as BodyWithStructureId).structureId)!;
+        const structB = structures.find((s) => s.id === (bodyB as BodyWithStructureId).structureId)!;
 
         const points = [
           { a: structA.start, b: structB.start },
@@ -402,7 +409,7 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
     // Pin structures to anchors
     for (const anchor of level.anchors) {
       for (const body of structureBodies) {
-        const struct = structures.find((s) => s.id === (body as any).structureId)!;
+        const struct = structures.find((s) => s.id === (body as BodyWithStructureId).structureId)!;
         for (const point of [struct.start, struct.end]) {
           const dist = Math.sqrt((anchor.x - point.x) ** 2 + (anchor.y - point.y) ** 2);
           if (dist < 15) {
