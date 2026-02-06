@@ -14,6 +14,7 @@ import {
   Bomb,
   Paintbrush,
   ChevronRight,
+  Package,
   // Construction, // Poly Bridge hidden
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -55,6 +56,18 @@ const challengeData = [
     icon: Bomb,
     gradient: "from-zinc-500/20 via-slate-500/10 to-gray-500/20",
     accentColor: "zinc",
+  },
+  {
+    id: "sokoban",
+    key: "sokoban",
+    difficulty: "intermediate",
+    points: 150,
+    type: "game",
+    completions: 0,
+    transport: "HTTP+SSE",
+    icon: Package,
+    gradient: "from-amber-500/20 via-yellow-500/10 to-orange-500/20",
+    accentColor: "amber",
   },
   {
     id: "canvas-draw",

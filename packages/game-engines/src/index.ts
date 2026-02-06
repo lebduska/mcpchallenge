@@ -33,6 +33,10 @@ export { polybridgeEngine } from './polybridge';
 export type { PolyBridgeState, PolyBridgeMove, PolyBridgeOptions, Structure, PolyBridgeMoveAction } from './polybridge';
 export { LEVELS as POLYBRIDGE_LEVELS, MATERIAL_COSTS } from './polybridge';
 
+// Sokoban engine
+export { sokobanEngine, SOKOBAN_LEVELS, TOTAL_LEVELS as SOKOBAN_TOTAL_LEVELS } from './sokoban';
+export type { SokobanState, SokobanMove, SokobanOptions, Direction as SokobanDirection, Position as SokobanPosition } from './sokoban';
+
 // Engine registry for dynamic access
 import { chessEngine } from './chess';
 import { tictactoeEngine } from './tictactoe';
@@ -40,6 +44,7 @@ import { snakeEngine } from './snake';
 import { minesweeperEngine } from './minesweeper';
 import { canvasEngine } from './canvas';
 import { polybridgeEngine } from './polybridge';
+import { sokobanEngine } from './sokoban';
 import type { GameEngine, GameState } from './types';
 
 export const engines = {
@@ -49,6 +54,7 @@ export const engines = {
   canvas: canvasEngine,
   minesweeper: minesweeperEngine,
   polybridge: polybridgeEngine,
+  sokoban: sokobanEngine,
 } as const;
 
 export type EngineId = keyof typeof engines;

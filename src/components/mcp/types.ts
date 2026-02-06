@@ -1,6 +1,6 @@
 // MCP Component Types
 
-export type GameType = "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "polybridge";
+export type GameType = "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "polybridge" | "sokoban";
 
 export interface CommandLogEntry {
   timestamp: number;
@@ -87,13 +87,30 @@ export interface PolyBridgeGameState {
   levelComplete: boolean;
 }
 
+export interface SokobanGameState {
+  gameType: "sokoban";
+  status: "waiting" | "playing" | "won";
+  board: string[][];
+  player: { row: number; col: number };
+  boxes: Array<{ row: number; col: number }>;
+  goals: Array<{ row: number; col: number }>;
+  rows: number;
+  cols: number;
+  levelIndex: number;
+  totalLevels: number;
+  moveCount: number;
+  pushCount: number;
+  boxesOnGoals: number;
+}
+
 export type GameState =
   | ChessGameState
   | TicTacToeGameState
   | SnakeGameState
   | CanvasGameState
   | MinesweeperGameState
-  | PolyBridgeGameState;
+  | PolyBridgeGameState
+  | SokobanGameState;
 
 export interface RoomState {
   roomId: string;
