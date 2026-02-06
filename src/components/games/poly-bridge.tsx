@@ -39,11 +39,16 @@ interface BodyWithStructureId extends Matter.Body {
   structureId?: string;
 }
 
+interface BreakableConstraint extends Matter.Constraint {
+  maxLength?: number;
+  broken?: boolean;
+}
+
 interface SimulationState {
   vehicle: Matter.Body;
   wheels: Matter.Body[];
   structureBodies: Matter.Body[];
-  constraints: Matter.Constraint[];
+  constraints: BreakableConstraint[];
 }
 
 // =============================================================================
@@ -462,6 +467,11 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
     ctx.textAlign = "center";
     ctx.fillText("START", level.vehicleStart.x, level.vehicleStart.y + 4);
 
+    // FINISH marker - bigger and more visible
+    ctx.beginPath();
+    ctx.arc(level.vehicleEnd.x, level.vehicleEnd.y, 16, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(34, 197, 94, 0.3)";
+    ctx.fill();
     ctx.beginPath();
     ctx.arc(level.vehicleEnd.x, level.vehicleEnd.y, 12, 0, Math.PI * 2);
     ctx.fillStyle = "#22c55e";
@@ -470,7 +480,8 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
     ctx.lineWidth = 2;
     ctx.stroke();
     ctx.fillStyle = "#fff";
-    ctx.fillText("END", level.vehicleEnd.x, level.vehicleEnd.y + 4);
+    ctx.font = "bold 9px system-ui";
+    ctx.fillText("FINISH", level.vehicleEnd.x, level.vehicleEnd.y + 3);
   }, [level, structures, isDrawing, drawStart, drawEnd, selectedTool, selectedMaterial]);
 
   // Draw simulation scene (when testing)
@@ -637,7 +648,11 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
       ctx.restore();
     }
 
-    // End marker
+    // FINISH marker
+    ctx.beginPath();
+    ctx.arc(level.vehicleEnd.x, level.vehicleEnd.y, 16, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(34, 197, 94, 0.3)";
+    ctx.fill();
     ctx.beginPath();
     ctx.arc(level.vehicleEnd.x, level.vehicleEnd.y, 12, 0, Math.PI * 2);
     ctx.fillStyle = "#22c55e";
@@ -646,9 +661,9 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
     ctx.lineWidth = 2;
     ctx.stroke();
     ctx.fillStyle = "#fff";
-    ctx.font = "bold 10px system-ui";
+    ctx.font = "bold 9px system-ui";
     ctx.textAlign = "center";
-    ctx.fillText("END", level.vehicleEnd.x, level.vehicleEnd.y + 4);
+    ctx.fillText("FINISH", level.vehicleEnd.x, level.vehicleEnd.y + 3);
 
   }, [level, structures]);
 
@@ -827,15 +842,26 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
         for (const { a, b } of points) {
           const dist = Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
           if (dist < 15) {
+            // Lower stiffness = more flexible = can break
+            // Wood is weaker than steel
+            const materialA = structures.find((s) => s.id === (bodyA as BodyWithStructureId).structureId)?.material;
+            const materialB = structures.find((s) => s.id === (bodyB as BodyWithStructureId).structureId)?.material;
+            const isSteel = materialA === "steel" || materialB === "steel";
+
             const constraint = Matter.Constraint.create({
               bodyA,
               bodyB,
               pointA: { x: a.x - bodyA.position.x, y: a.y - bodyA.position.y },
               pointB: { x: b.x - bodyB.position.x, y: b.y - bodyB.position.y },
-              stiffness: 0.9,
-              damping: 0.1,
+              stiffness: isSteel ? 0.4 : 0.15, // Much lower - allows flex
+              damping: 0.05,
               length: 0,
-            });
+            }) as BreakableConstraint;
+
+            // Set max stretch before breaking (steel stronger)
+            constraint.maxLength = isSteel ? 25 : 15;
+            constraint.broken = false;
+
             allConstraints.push(constraint);
             Matter.Composite.add(world, constraint);
           }
@@ -843,20 +869,26 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
       }
     }
 
-    // Pin to anchors
+    // Pin to anchors - these are fixed points, stronger but still breakable
     for (const anchor of level.anchors) {
       for (const body of structureBodies) {
         const struct = structures.find((s) => s.id === (body as BodyWithStructureId).structureId)!;
         for (const point of [struct.start, struct.end]) {
           const dist = Math.sqrt((anchor.x - point.x) ** 2 + (anchor.y - point.y) ** 2);
           if (dist < 15) {
+            const isSteel = struct.material === "steel";
             const constraint = Matter.Constraint.create({
               bodyA: body,
               pointA: { x: point.x - body.position.x, y: point.y - body.position.y },
               pointB: anchor,
-              stiffness: 1,
+              stiffness: isSteel ? 0.6 : 0.3, // Anchor points stronger but not rigid
+              damping: 0.1,
               length: 0,
-            });
+            }) as BreakableConstraint;
+
+            constraint.maxLength = isSteel ? 30 : 20;
+            constraint.broken = false;
+
             allConstraints.push(constraint);
             Matter.Composite.add(world, constraint);
           }
@@ -878,18 +910,18 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
       }
     }
 
-    // Vehicle
+    // Vehicle - much heavier to stress the bridge
     const vehicle = Matter.Bodies.rectangle(
       level.vehicleStart.x,
       level.vehicleStart.y - 15,
       30,
       20,
-      { friction: 0.5, density: 0.003 * level.vehicleWeight }
+      { friction: 0.5, density: 0.015 * level.vehicleWeight } // 5x heavier
     );
     Matter.Composite.add(world, vehicle);
 
-    const wheelLeft = Matter.Bodies.circle(level.vehicleStart.x - 10, level.vehicleStart.y - 5, 6, { friction: 1, density: 0.001 });
-    const wheelRight = Matter.Bodies.circle(level.vehicleStart.x + 10, level.vehicleStart.y - 5, 6, { friction: 1, density: 0.001 });
+    const wheelLeft = Matter.Bodies.circle(level.vehicleStart.x - 10, level.vehicleStart.y - 5, 6, { friction: 1, density: 0.005 });
+    const wheelRight = Matter.Bodies.circle(level.vehicleStart.x + 10, level.vehicleStart.y - 5, 6, { friction: 1, density: 0.005 });
     Matter.Composite.add(world, [wheelLeft, wheelRight]);
 
     Matter.Composite.add(world, [
@@ -922,6 +954,47 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
     };
     renderLoopRef.current = requestAnimationFrame(renderLoop);
 
+    // Stress check - break overstretched constraints
+    const stressInterval = setInterval(() => {
+      for (const constraint of allConstraints) {
+        if ((constraint as BreakableConstraint).broken) continue;
+
+        // Calculate current length
+        let pointA: { x: number; y: number };
+        let pointB: { x: number; y: number };
+
+        if (constraint.bodyA) {
+          pointA = {
+            x: constraint.bodyA.position.x + (constraint.pointA?.x || 0),
+            y: constraint.bodyA.position.y + (constraint.pointA?.y || 0),
+          };
+        } else {
+          pointA = constraint.pointA as { x: number; y: number };
+        }
+
+        if (constraint.bodyB) {
+          pointB = {
+            x: constraint.bodyB.position.x + (constraint.pointB?.x || 0),
+            y: constraint.bodyB.position.y + (constraint.pointB?.y || 0),
+          };
+        } else {
+          pointB = constraint.pointB as { x: number; y: number };
+        }
+
+        const currentLength = Math.sqrt(
+          (pointA.x - pointB.x) ** 2 + (pointA.y - pointB.y) ** 2
+        );
+
+        const maxLen = (constraint as BreakableConstraint).maxLength || 50;
+
+        // Break if stretched too much
+        if (currentLength > maxLen) {
+          (constraint as BreakableConstraint).broken = true;
+          Matter.Composite.remove(world, constraint);
+        }
+      }
+    }, 50);
+
     // Check win/fail
     let elapsed = 0;
     const checkInterval = setInterval(() => {
@@ -935,6 +1008,7 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
       if (distToEnd < 30) {
         clearInterval(checkInterval);
         clearInterval(forceInterval);
+        clearInterval(stressInterval);
         if (renderLoopRef.current) cancelAnimationFrame(renderLoopRef.current);
         Matter.Runner.stop(runner);
         simulationRef.current = null;
@@ -943,6 +1017,7 @@ export function PolyBridgeGame({ onGameComplete }: PolyBridgeGameProps) {
       } else if (vehicle.position.y > level.height + 50 || elapsed > 15000) {
         clearInterval(checkInterval);
         clearInterval(forceInterval);
+        clearInterval(stressInterval);
         if (renderLoopRef.current) cancelAnimationFrame(renderLoopRef.current);
         Matter.Runner.stop(runner);
         simulationRef.current = null;
