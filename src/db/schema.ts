@@ -92,6 +92,51 @@ export const userStats = sqliteTable("user_stats", {
   updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 });
 
+// ==================== CHALLENGE PROGRESS TABLES ====================
+
+export const challengeProgress = sqliteTable("challenge_progress", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  challengeId: text("challenge_id").notNull(),
+  maxLevelUnlocked: integer("max_level_unlocked").notNull().default(1),
+  lastLevel: integer("last_level").notNull().default(1),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
+export const levelBest = sqliteTable("level_best", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  challengeId: text("challenge_id").notNull(),
+  levelId: text("level_id").notNull(),
+  bestMoves: integer("best_moves"),
+  bestPushes: integer("best_pushes"),
+  bestTimeMs: integer("best_time_ms"),
+  bestReplayId: text("best_replay_id"),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
+// ==================== REPLAY TABLES ====================
+
+export const replays = sqliteTable("replays", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: text("user_id").references(() => users.id, { onDelete: "set null" }),
+  challengeId: text("challenge_id").notNull(),
+  levelId: text("level_id"),
+  seed: text("seed"),
+  movesJson: text("moves_json").notNull(),
+  resultJson: text("result_json"),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
+export const shareLinks = sqliteTable("share_links", {
+  id: text("id").primaryKey(), // short code (8 chars)
+  replayId: text("replay_id").notNull().references(() => replays.id, { onDelete: "cascade" }),
+  createdByUserId: text("created_by_user_id").references(() => users.id, { onDelete: "set null" }),
+  visibility: text("visibility").notNull().default("unlisted"),
+  expiresAt: integer("expires_at", { mode: "timestamp" }),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
 // ==================== TYPES ====================
 
 export type User = typeof users.$inferSelect;
@@ -100,3 +145,7 @@ export type Achievement = typeof achievements.$inferSelect;
 export type UserAchievement = typeof userAchievements.$inferSelect;
 export type ChallengeCompletion = typeof challengeCompletions.$inferSelect;
 export type UserStats = typeof userStats.$inferSelect;
+export type ChallengeProgress = typeof challengeProgress.$inferSelect;
+export type LevelBest = typeof levelBest.$inferSelect;
+export type Replay = typeof replays.$inferSelect;
+export type ShareLink = typeof shareLinks.$inferSelect;

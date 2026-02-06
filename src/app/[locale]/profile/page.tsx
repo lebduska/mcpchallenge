@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Trophy, Target, Star, User, Settings } from "lucide-react";
+import { Trophy, Target, Star, User, Settings, Gamepad2, CheckCircle } from "lucide-react";
 import Link from "next/link";
 
 interface UserStats {
@@ -27,13 +27,37 @@ interface UserData {
   stats: UserStats;
 }
 
+interface ChallengeProgress {
+  maxLevelUnlocked: number;
+  lastLevel: number;
+  updatedAt: string | null;
+}
+
+interface LevelBest {
+  levelId: string;
+  bestMoves: number | null;
+  bestPushes: number | null;
+  bestTimeMs: number | null;
+}
+
+interface ProgressData {
+  progress: ChallengeProgress;
+  levelBests: Record<string, LevelBest>;
+}
+
+const CHALLENGE_INFO: Record<string, { name: string; totalLevels: number; icon: string }> = {
+  sokoban: { name: "Sokoban", totalLevels: 60, icon: "📦" },
+};
+
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [challengeProgress, setChallengeProgress] = useState<Record<string, ProgressData>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (status === "authenticated") {
+      // Fetch user data
       fetch("/api/users/me")
         .then((res) => res.json() as Promise<UserData>)
         .then((data) => {
@@ -41,6 +65,19 @@ export default function ProfilePage() {
           setLoading(false);
         })
         .catch(() => setLoading(false));
+
+      // Fetch progress for each challenge
+      Object.keys(CHALLENGE_INFO).forEach((challengeId) => {
+        fetch(`/api/progress/me?challengeId=${challengeId}`)
+          .then((res) => res.json() as Promise<ProgressData>)
+          .then((data) => {
+            setChallengeProgress((prev) => ({
+              ...prev,
+              [challengeId]: data,
+            }));
+          })
+          .catch(console.error);
+      });
     }
   }, [status]);
 
@@ -116,6 +153,58 @@ export default function ProfilePage() {
                 </Button>
               </Link>
             </div>
+          </div>
+        </div>
+
+        {/* Challenge Progress */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+            <Gamepad2 className="h-5 w-5" />
+            Game Progress
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {Object.entries(CHALLENGE_INFO).map(([challengeId, info]) => {
+              const progress = challengeProgress[challengeId]?.progress;
+              const levelsCompleted = progress ? progress.maxLevelUnlocked - 1 : 0;
+              const percentage = Math.round((levelsCompleted / info.totalLevels) * 100);
+
+              return (
+                <Link key={challengeId} href={`/challenges/${challengeId}`}>
+                  <Card className="hover:border-zinc-500 transition-colors cursor-pointer">
+                    <CardContent className="pt-6">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <span className="text-2xl">{info.icon}</span>
+                          <span className="font-medium">{info.name}</span>
+                        </div>
+                        {levelsCompleted === info.totalLevels && (
+                          <CheckCircle className="h-5 w-5 text-emerald-500" />
+                        )}
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-zinc-500">Levels completed</span>
+                          <span className="font-medium">
+                            {levelsCompleted} / {info.totalLevels}
+                          </span>
+                        </div>
+                        <div className="h-2 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all"
+                            style={{ width: `${percentage}%` }}
+                          />
+                        </div>
+                        {progress?.lastLevel && progress.lastLevel > 1 && (
+                          <p className="text-xs text-zinc-500">
+                            Last played: Level {progress.lastLevel}
+                          </p>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              );
+            })}
           </div>
         </div>
 
