@@ -42,6 +42,7 @@ import {
 import { useStockfish, type Difficulty } from "@/hooks/use-stockfish";
 import { useGameCompletion } from "@/lib/game-completion";
 import { GameHUDBar } from "./game-hud";
+import { AiThinkingDepthBar } from "./ai-thinking-depth-bar";
 import { MoveTimeline } from "./move-timeline";
 import { cn } from "@/lib/utils";
 
@@ -635,6 +636,9 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
           moveCount={moveHistory.length}
           className="rounded-xl"
         />
+
+        {/* AI Thinking Depth Bar */}
+        <AiThinkingDepthBar isThinking={isThinking} />
 
         {/* Move Timeline - Premium Card */}
         <div
