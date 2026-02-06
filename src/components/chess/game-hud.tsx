@@ -24,15 +24,13 @@ const stateConfig: Record<GameState, {
   icon: typeof Crown;
   color: string;
   bgColor: string;
-  animate?: boolean;
-  pulse?: boolean;
+  animate?: boolean;  // Only for ai-thinking (spinner)
 }> = {
   "your-turn": {
     label: "Your Move",
     icon: Sparkles,
     color: "text-emerald-600 dark:text-emerald-400",
     bgColor: "from-emerald-100 dark:from-emerald-500/20 to-emerald-50 dark:to-emerald-600/10",
-    pulse: true,
   },
   "ai-thinking": {
     label: "AI Thinking",
@@ -70,7 +68,6 @@ const stateConfig: Record<GameState, {
     icon: Sparkles,
     color: "text-orange-600 dark:text-orange-400",
     bgColor: "from-orange-100 dark:from-orange-500/20 to-orange-50 dark:to-orange-600/10",
-    pulse: true,
   },
 };
 
@@ -93,7 +90,6 @@ export function GameHUD({ state, winner, playerColor, className }: GameHUDProps)
         "shadow-lg shadow-black/10 dark:shadow-black/20",
         "transition-all duration-300",
         config.bgColor,
-        config.pulse && "animate-pulse",
         className
       )}
     >
@@ -151,8 +147,8 @@ export function GameHUDBar({
         className
       )}
     >
-      {/* Subtle animated gradient overlay for active states */}
-      {(state === "your-turn" || state === "ai-thinking") && (
+      {/* Subtle animated gradient overlay - ONLY for AI thinking */}
+      {state === "ai-thinking" && (
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
       )}
 
@@ -166,10 +162,6 @@ export function GameHUDBar({
             state === "ai-thinking" && "ring-2 ring-amber-400/50 animate-pulse"
           )}
         >
-          {/* Glow effect for active states */}
-          {config.pulse && (
-            <div className="absolute inset-0 rounded-xl bg-current opacity-20 blur-sm animate-pulse" />
-          )}
           <Icon
             className={cn(
               "h-5 w-5 relative z-10",

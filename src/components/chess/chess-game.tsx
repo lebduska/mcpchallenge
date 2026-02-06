@@ -555,12 +555,12 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
             {/* Game over overlay - Premium celebration */}
             {isGameOver && (
               <div className="absolute inset-0 bg-white/85 dark:bg-black/70 flex items-center justify-center animate-in fade-in zoom-in-95 duration-500">
-                {/* Victory particles effect (CSS only) */}
+                {/* Victory accent dots - static */}
                 {winner === playerColor && (
                   <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-yellow-400 rounded-full animate-bounce delay-100" />
-                    <div className="absolute top-1/3 right-1/4 w-1.5 h-1.5 bg-amber-400 rounded-full animate-bounce delay-200" />
-                    <div className="absolute bottom-1/3 left-1/3 w-2 h-2 bg-yellow-300 rounded-full animate-bounce delay-300" />
+                    <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-yellow-400 rounded-full opacity-60" />
+                    <div className="absolute top-1/3 right-1/4 w-1.5 h-1.5 bg-amber-400 rounded-full opacity-50" />
+                    <div className="absolute bottom-1/3 left-1/3 w-2 h-2 bg-yellow-300 rounded-full opacity-60" />
                   </div>
                 )}
 
@@ -576,9 +576,9 @@ export function ChessGame({ onMoveForMCP, onGameComplete }: ChessGameProps) {
                         : "bg-gradient-to-br from-blue-500 to-blue-600 shadow-xl shadow-blue-500/30"
                     )}
                   >
-                    {/* Pulsing ring for victory */}
+                    {/* Glow ring for victory - static */}
                     {winner === playerColor && (
-                      <div className="absolute inset-0 rounded-full bg-yellow-400/30 animate-ping" />
+                      <div className="absolute inset-0 rounded-full bg-yellow-400/20 blur-sm" />
                     )}
                     {winner === playerColor ? (
                       <Trophy className="h-10 w-10 text-white drop-shadow-lg" />
