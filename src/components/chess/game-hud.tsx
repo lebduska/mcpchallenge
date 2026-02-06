@@ -144,31 +144,31 @@ export function GameHUDBar({
   const lastJumpRef = useRef<number>(0);
   const prevThinkingRef = useRef(false);
 
+  // Derive actual thinking state from both props
+  const isActuallyThinking = isThinking && state === "ai-thinking";
+
   // Handle thinking state transitions
   useEffect(() => {
     const wasThinking = prevThinkingRef.current;
-    prevThinkingRef.current = isThinking;
+    prevThinkingRef.current = isActuallyThinking;
 
-    if (isThinking && !wasThinking) {
+    if (isActuallyThinking && !wasThinking) {
       queueMicrotask(() => {
         setShowDepth(true);
         setProgress(10);
       });
-    } else if (!isThinking && wasThinking) {
+    } else if (!isActuallyThinking && wasThinking) {
+      // Immediately hide - no delay to avoid showing in wrong state
       queueMicrotask(() => {
-        setProgress(100);
-        // Hide after completion animation
-        setTimeout(() => {
-          setShowDepth(false);
-          setProgress(0);
-        }, 300);
+        setShowDepth(false);
+        setProgress(0);
       });
     }
-  }, [isThinking]);
+  }, [isActuallyThinking]);
 
   // Animation loop
   useEffect(() => {
-    if (!isThinking || !showDepth) return;
+    if (!isActuallyThinking || !showDepth) return;
 
     startTimeRef.current = 0;
     lastJumpRef.current = 0;
@@ -206,7 +206,7 @@ export function GameHUDBar({
         animationRef.current = null;
       }
     };
-  }, [isThinking, showDepth]);
+  }, [isActuallyThinking, showDepth]);
 
   const depth = Math.floor(6 + (progress / 100) * 14);
 
@@ -309,12 +309,12 @@ export function GameHUDBar({
             className={cn(
               "absolute inset-y-0 left-0 rounded-full",
               "bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500",
-              !isThinking ? "transition-all duration-200 ease-out" : "transition-[width] duration-75 ease-linear"
+              !isActuallyThinking ? "transition-all duration-200 ease-out" : "transition-[width] duration-75 ease-linear"
             )}
             style={{ width: `${progress}%` }}
           />
           {/* Shimmer */}
-          {isThinking && showDepth && (
+          {isActuallyThinking && showDepth && (
             <div
               className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"
               style={{ backgroundSize: "200% 100%" }}
