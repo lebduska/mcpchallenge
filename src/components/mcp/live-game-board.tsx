@@ -46,6 +46,7 @@ import type {
   ChessGameState,
   TicTacToeGameState,
   SnakeGameState,
+  MinesweeperGameState,
   CommandLogEntry,
   RoomInfo,
   RoomState,
@@ -192,6 +193,8 @@ export function LiveGameBoard({
         return renderTicTacToeBoard(gameState);
       case "snake":
         return renderSnakeBoard(gameState);
+      case "minesweeper":
+        return renderMinesweeperBoard(gameState);
       default:
         return null;
     }
@@ -358,6 +361,91 @@ export function LiveGameBoard({
     );
   };
 
+  const renderMinesweeperBoard = (state: MinesweeperGameState) => {
+    const { rows, cols, board, revealed, flagged, status, flagsRemaining, elapsedSeconds } = state;
+
+    // Number colors - classic Minesweeper
+    const numberColors: Record<number, string> = {
+      1: "text-blue-600", 2: "text-green-600", 3: "text-red-600",
+      4: "text-purple-800", 5: "text-amber-800", 6: "text-cyan-600",
+      7: "text-zinc-800", 8: "text-zinc-600",
+    };
+
+    return (
+      <div className="relative bg-zinc-200 dark:bg-zinc-800 rounded-xl p-3 border border-zinc-300 dark:border-zinc-700">
+        {/* Spectator badge */}
+        <div className="absolute top-2 left-2 z-10">
+          <Badge variant="outline" className="bg-white/80 dark:bg-black/50 border-zinc-200 dark:border-white/10 gap-1">
+            <Eye className="h-3 w-3" />
+            Spectating
+          </Badge>
+        </div>
+
+        {/* Header bar */}
+        <div className="flex items-center justify-between gap-4 p-2 bg-zinc-300 dark:bg-zinc-700 rounded-lg mb-2">
+          <div className="flex items-center gap-1 bg-black px-2 py-1 rounded font-mono text-red-500 min-w-[50px] justify-center">
+            <span>💣</span>
+            <span>{String(flagsRemaining).padStart(3, "0")}</span>
+          </div>
+          <div className="text-2xl">
+            {status === "won" ? "😎" : status === "lost" ? "😵" : "🙂"}
+          </div>
+          <div className="flex items-center gap-1 bg-black px-2 py-1 rounded font-mono text-red-500 min-w-[50px] justify-center">
+            <span>⏱️</span>
+            <span>{String(Math.min(elapsedSeconds || 0, 999)).padStart(3, "0")}</span>
+          </div>
+        </div>
+
+        {/* Board */}
+        <div
+          className="inline-grid gap-0 p-1 bg-zinc-400 dark:bg-zinc-600 rounded"
+          style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
+        >
+          {Array.from({ length: rows }, (_, row) =>
+            Array.from({ length: cols }, (_, col) => {
+              const isRevealed = revealed?.[row]?.[col];
+              const isFlagged = flagged?.[row]?.[col];
+              const value = board?.[row]?.[col] ?? 0;
+              const isMine = value === -1;
+              const showMine = status === "lost" && isMine;
+
+              return (
+                <div
+                  key={`${row}-${col}`}
+                  className={cn(
+                    "w-5 h-5 flex items-center justify-center text-[10px] font-bold select-none",
+                    !isRevealed && !showMine && "bg-zinc-300 dark:bg-zinc-500 border-t border-l border-white/40 border-b border-r border-zinc-500/60",
+                    isRevealed && !isMine && "bg-zinc-200 dark:bg-zinc-700 border border-zinc-400 dark:border-zinc-600",
+                    isRevealed && isMine && "bg-red-500",
+                    showMine && !isRevealed && "bg-zinc-200 dark:bg-zinc-700"
+                  )}
+                >
+                  {isFlagged && !showMine && "🚩"}
+                  {showMine && "💣"}
+                  {isRevealed && !isMine && value > 0 && (
+                    <span className={numberColors[value]}>{value}</span>
+                  )}
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        {/* Game over overlay */}
+        {(status === "won" || status === "lost") && (
+          <div className="absolute inset-0 bg-white/60 dark:bg-black/60 backdrop-blur-sm rounded-xl flex items-center justify-center">
+            <div className="bg-white/95 dark:bg-zinc-900/90 rounded-xl p-6 text-center border border-zinc-200 dark:border-white/10">
+              <div className="text-4xl mb-2">{status === "won" ? "😎" : "💥"}</div>
+              <h3 className="text-xl font-bold text-zinc-900 dark:text-white">
+                {status === "won" ? "Victory!" : "Game Over"}
+              </h3>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   // Render preview board based on game type
   const renderPreviewBoard = () => {
     switch (gameType) {
@@ -415,6 +503,39 @@ export function LiveGameBoard({
             </div>
           </div>
         );
+      case "minesweeper":
+        return (
+          <div className="aspect-square p-4 bg-zinc-200 dark:bg-zinc-800 rounded-xl flex flex-col items-center justify-center">
+            {/* Mini header */}
+            <div className="flex items-center gap-3 mb-3 text-lg">
+              <span className="bg-black px-2 py-1 rounded font-mono text-red-500">💣010</span>
+              <span className="text-2xl">🙂</span>
+              <span className="bg-black px-2 py-1 rounded font-mono text-red-500">⏱️000</span>
+            </div>
+            {/* Preview grid */}
+            <div className="grid grid-cols-9 gap-0 p-1 bg-zinc-400 dark:bg-zinc-600 rounded">
+              {Array(81).fill(null).map((_, i) => {
+                const revealed = [10, 11, 12, 19, 20, 21, 28, 29, 30].includes(i);
+                const flagged = i === 5;
+                const number = i === 11 ? 1 : i === 20 ? 2 : 0;
+                return (
+                  <div
+                    key={i}
+                    className={cn(
+                      "w-4 h-4 flex items-center justify-center text-[8px] font-bold",
+                      !revealed && !flagged && "bg-zinc-300 dark:bg-zinc-500 border-t border-l border-white/40",
+                      revealed && "bg-zinc-200 dark:bg-zinc-700 border border-zinc-400"
+                    )}
+                  >
+                    {flagged && "🚩"}
+                    {revealed && number === 1 && <span className="text-blue-600">1</span>}
+                    {revealed && number === 2 && <span className="text-green-600">2</span>}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
       default:
         return null;
     }
@@ -435,6 +556,7 @@ export function LiveGameBoard({
                 "absolute -inset-2 rounded-2xl blur-xl opacity-20 dark:opacity-30 transition-opacity",
                 gameType === "chess" ? "bg-gradient-to-br from-emerald-500/30 via-transparent to-amber-500/20" :
                 gameType === "tictactoe" ? "bg-gradient-to-br from-purple-500/30 via-transparent to-pink-500/20" :
+                gameType === "minesweeper" ? "bg-gradient-to-br from-zinc-500/30 via-transparent to-red-500/20" :
                 "bg-gradient-to-br from-green-500/30 via-transparent to-emerald-500/20",
                 "group-hover:opacity-40"
               )}

@@ -1,6 +1,6 @@
 // MCP Component Types
 
-export type GameType = "chess" | "tictactoe" | "snake" | "canvas";
+export type GameType = "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper";
 
 export interface CommandLogEntry {
   timestamp: number;
@@ -55,11 +55,25 @@ export interface CanvasGameState {
   }>;
 }
 
+export interface MinesweeperGameState {
+  gameType: "minesweeper";
+  status: "waiting" | "playing" | "won" | "lost";
+  board: number[][];        // -1=mine, 0-8=adjacent count (visible after reveal)
+  revealed: boolean[][];
+  flagged: boolean[][];
+  rows: number;
+  cols: number;
+  mineCount: number;
+  flagsRemaining: number;
+  elapsedSeconds: number;
+}
+
 export type GameState =
   | ChessGameState
   | TicTacToeGameState
   | SnakeGameState
-  | CanvasGameState;
+  | CanvasGameState
+  | MinesweeperGameState;
 
 export interface RoomState {
   roomId: string;
