@@ -163,7 +163,7 @@ function QBasicBuilding({ x, width, height, colorIndex, damage }: {
   }
 
   // Windows - only draw if building section not damaged
-  const windows: JSX.Element[] = [];
+  const windows: React.ReactElement[] = [];
   const windowCols = Math.floor((width - 4 * SCALE) / windowGapX);
   const windowRows = Math.floor((height - 6 * SCALE) / windowGapY);
 
