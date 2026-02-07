@@ -162,6 +162,31 @@ function convertToEngineState(
         canvasHeight: gorillasOldState.canvasHeight || 400,
       } as any;
 
+    case 'fractals':
+      const fractalsOldState = oldState as any;
+      return {
+        gameId: `${oldState.createdAt}`,
+        gameType: 'fractals',
+        status: fractalsOldState.status || 'playing',
+        turn: 'player',
+        moveCount: fractalsOldState.stats?.segmentsDrawn || 0,
+        axiom: fractalsOldState.axiom || 'F',
+        rules: fractalsOldState.rules || [],
+        iterations: fractalsOldState.iterations || 4,
+        angle: fractalsOldState.angle || 25,
+        length: fractalsOldState.length || 10,
+        decay: fractalsOldState.decay || 0.7,
+        expandedString: null,
+        canvas: {
+          width: fractalsOldState.canvasWidth || 512,
+          height: fractalsOldState.canvasHeight || 512,
+          pixels: [],
+        },
+        preset: fractalsOldState.preset || null,
+        stats: fractalsOldState.stats || { segmentsDrawn: 0, maxDepth: 0 },
+        colorScheme: fractalsOldState.colorScheme || 'monochrome',
+      } as any;
+
     default:
       return null;
   }
@@ -311,6 +336,27 @@ function convertToOldState(
         lastTrajectory: gorillasState.lastTrajectory,
         canvasWidth: gorillasState.canvasWidth || 800,
         canvasHeight: gorillasState.canvasHeight || 400,
+      } as GameState;
+
+    case 'fractals':
+      const fractalsState = engineState as any;
+      return {
+        gameType: 'fractals',
+        status: fractalsState.status || 'playing',
+        createdAt: now,
+        lastActivity: now,
+        axiom: fractalsState.axiom,
+        rules: fractalsState.rules,
+        iterations: fractalsState.iterations,
+        angle: fractalsState.angle,
+        length: fractalsState.length,
+        decay: fractalsState.decay,
+        preset: fractalsState.preset,
+        colorScheme: fractalsState.colorScheme,
+        expandedLength: fractalsState.expandedString?.length || 0,
+        stats: fractalsState.stats || { segmentsDrawn: 0, maxDepth: 0 },
+        canvasWidth: fractalsState.canvas?.width || 512,
+        canvasHeight: fractalsState.canvas?.height || 512,
       } as GameState;
 
     default:

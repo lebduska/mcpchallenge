@@ -67,6 +67,7 @@ import type {
   CanvasGameState,
   MinesweeperGameState,
   SokobanGameState,
+  FractalsGameState,
   CommandLogEntry,
   RoomInfo,
   RoomState,
@@ -272,6 +273,8 @@ export function LiveGameBoard({
         return renderMinesweeperBoard(gameState);
       case "sokoban":
         return renderSokobanBoard(gameState as SokobanGameState);
+      case "fractals":
+        return renderFractalsBoard(gameState as FractalsGameState);
       default:
         return null;
     }
@@ -654,6 +657,57 @@ export function LiveGameBoard({
     );
   };
 
+  const renderFractalsBoard = (state: FractalsGameState) => {
+    const { axiom, rules, iterations, angle, preset, colorScheme, stats } = state;
+
+    return (
+      <div className="relative bg-zinc-900 dark:bg-zinc-950 rounded-xl p-4 border border-purple-500/30">
+        {/* Spectator badge */}
+        <div className="absolute top-2 left-2 z-10">
+          <Badge variant="outline" className="bg-black/50 backdrop-blur-md border-white/10 text-white gap-1">
+            <Eye className="h-3 w-3" />
+            Spectating
+          </Badge>
+        </div>
+
+        {/* Preset badge */}
+        {preset && (
+          <div className="absolute top-2 right-2 z-10">
+            <Badge className="bg-purple-600/80 backdrop-blur-md border-0">
+              {preset}
+            </Badge>
+          </div>
+        )}
+
+        {/* Canvas placeholder */}
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="text-6xl mb-4">🌳</div>
+            <div className="text-purple-400 font-medium">L-System Fractal</div>
+            <div className="text-zinc-500 text-sm mt-2">
+              Axiom: <code className="text-purple-300">{axiom}</code>
+            </div>
+            <div className="text-zinc-500 text-sm">
+              Rules: {rules?.length || 0} | Iterations: {iterations} | Angle: {angle}°
+            </div>
+            {stats && (
+              <div className="text-zinc-600 text-xs mt-2">
+                Segments: {stats.segmentsDrawn} | Depth: {stats.maxDepth}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Color scheme indicator */}
+        <div className="absolute bottom-2 right-2">
+          <Badge variant="outline" className="bg-black/50 backdrop-blur-md border-purple-500/30 text-purple-300 text-xs">
+            {colorScheme || "monochrome"}
+          </Badge>
+        </div>
+      </div>
+    );
+  };
+
   // Render preview board based on game type
   const renderPreviewBoard = () => {
     switch (gameType) {
@@ -791,6 +845,24 @@ export function LiveGameBoard({
             </div>
           </div>
         );
+      case "fractals":
+        return (
+          <div className="aspect-square p-4 bg-zinc-900 dark:bg-zinc-950 rounded-xl flex flex-col items-center justify-center">
+            {/* Fractal preview */}
+            <div className="text-center">
+              <div className="text-6xl mb-4">🌳</div>
+              <div className="text-purple-400 font-medium">L-System Fractals</div>
+              <div className="text-zinc-500 text-sm mt-2">
+                Define rules, generate patterns
+              </div>
+              <div className="flex gap-2 mt-4 justify-center">
+                <Badge className="bg-purple-600/50 text-purple-200 text-xs">tree</Badge>
+                <Badge className="bg-green-600/50 text-green-200 text-xs">plant</Badge>
+                <Badge className="bg-red-600/50 text-red-200 text-xs">dragon</Badge>
+              </div>
+            </div>
+          </div>
+        );
       default:
         return null;
     }
@@ -814,6 +886,8 @@ export function LiveGameBoard({
                 gameType === "canvas" ? "bg-gradient-to-br from-pink-500/30 via-transparent to-purple-500/20" :
                 gameType === "minesweeper" ? "bg-gradient-to-br from-zinc-500/30 via-transparent to-red-500/20" :
                 gameType === "sokoban" ? "bg-gradient-to-br from-amber-500/30 via-transparent to-stone-500/20" :
+                gameType === "gorillas" ? "bg-gradient-to-br from-yellow-500/30 via-transparent to-amber-500/20" :
+                gameType === "fractals" ? "bg-gradient-to-br from-purple-500/30 via-transparent to-fuchsia-500/20" :
                 "bg-gradient-to-br from-green-500/30 via-transparent to-emerald-500/20",
                 "group-hover:opacity-40"
               )}
@@ -866,40 +940,42 @@ export function LiveGameBoard({
               Create a room, connect your AI agent, and watch the game live.
             </p>
 
-            {/* Mode dropdown - compact */}
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-sm text-zinc-500">Mode:</span>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="gap-2 h-8">
-                    {selectedMode === "ai" ? (
-                      <>
-                        <Bot className="h-3.5 w-3.5" />
-                        vs AI
-                      </>
-                    ) : (
-                      <>
-                        <Users className="h-3.5 w-3.5" />
-                        MCP vs MCP
-                      </>
-                    )}
-                    <ChevronDown className="h-3 w-3 opacity-50" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start">
-                  <DropdownMenuItem onClick={() => setSelectedMode("ai")}>
-                    <Bot className="h-4 w-4 mr-2" />
-                    vs AI
-                    <span className="text-xs text-zinc-500 ml-2">Single agent</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSelectedMode("pvp")}>
-                    <Users className="h-4 w-4 mr-2" />
-                    MCP vs MCP
-                    <span className="text-xs text-zinc-500 ml-2">Two agents</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+            {/* Mode dropdown - only for competitive games (chess, tictactoe) */}
+            {(gameType === "chess" || gameType === "tictactoe") && (
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-sm text-zinc-500">Mode:</span>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="gap-2 h-8">
+                      {selectedMode === "ai" ? (
+                        <>
+                          <Bot className="h-3.5 w-3.5" />
+                          vs AI
+                        </>
+                      ) : (
+                        <>
+                          <Users className="h-3.5 w-3.5" />
+                          MCP vs MCP
+                        </>
+                      )}
+                      <ChevronDown className="h-3 w-3 opacity-50" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start">
+                    <DropdownMenuItem onClick={() => setSelectedMode("ai")}>
+                      <Bot className="h-4 w-4 mr-2" />
+                      vs AI
+                      <span className="text-xs text-zinc-500 ml-2">Single agent</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSelectedMode("pvp")}>
+                      <Users className="h-4 w-4 mr-2" />
+                      MCP vs MCP
+                      <span className="text-xs text-zinc-500 ml-2">Two agents</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            )}
 
             <Button
               onClick={createRoom}
