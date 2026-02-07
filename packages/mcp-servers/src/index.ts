@@ -34,16 +34,16 @@ export default {
           status: "ok",
           service: "mcp-servers",
           version: "0.1.0",
-          games: ["chess", "tictactoe", "snake", "canvas", "minesweeper", "sokoban", "gorillas", "fractals"],
+          games: ["chess", "tictactoe", "snake", "canvas", "minesweeper", "sokoban", "gorillas", "fractals", "lightsout"],
         },
         { headers: corsHeaders }
       );
     }
 
     // Route to game endpoints
-    const gameMatch = path.match(/^\/(chess|tictactoe|snake|canvas|minesweeper|sokoban|gorillas|fractals)(\/.*)?$/);
+    const gameMatch = path.match(/^\/(chess|tictactoe|snake|canvas|minesweeper|sokoban|gorillas|fractals|lightsout)(\/.*)?$/);
     if (gameMatch) {
-      const gameType = gameMatch[1] as "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "sokoban" | "gorillas" | "fractals";
+      const gameType = gameMatch[1] as "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "sokoban" | "gorillas" | "fractals" | "lightsout";
       const subPath = gameMatch[2] || "";
 
       return handleGameRequest(request, env, gameType, subPath);
@@ -190,6 +190,8 @@ function getGameDescription(gameType: string): string {
       return "Gorillas MCP Server - Classic DOS artillery game with banana-throwing gorillas";
     case "fractals":
       return "Fractals MCP Server - L-System fractals with turtle graphics";
+    case "lightsout":
+      return "Lights Out MCP Server - Classic 90s puzzle game with XOR logic";
     default:
       return "MCP Game Server";
   }

@@ -45,6 +45,10 @@ export type { GorillasState, GorillasMove, GorillasOptions, Position as Gorillas
 export { fractalsEngine, FRACTAL_PRESETS } from './fractals';
 export type { FractalState, FractalMove, FractalOptions, FractalRule, ColorScheme } from './fractals';
 
+// Lights Out engine
+export { lightsOutEngine } from './lightsout';
+export type { LightsOutState, LightsOutMove, LightsOutOptions } from './lightsout';
+
 // Engine registry for dynamic access
 import { chessEngine } from './chess';
 import { tictactoeEngine } from './tictactoe';
@@ -55,6 +59,7 @@ import { polybridgeEngine } from './polybridge';
 import { sokobanEngine } from './sokoban';
 import { GorillasEngine } from './gorillas';
 import { fractalsEngine } from './fractals';
+import { lightsOutEngine } from './lightsout';
 import type { GameEngine, GameState } from './types';
 
 export const engines = {
@@ -67,6 +72,7 @@ export const engines = {
   sokoban: sokobanEngine,
   gorillas: GorillasEngine,
   fractals: fractalsEngine,
+  lightsout: lightsOutEngine,
 } as const;
 
 export type EngineId = keyof typeof engines;

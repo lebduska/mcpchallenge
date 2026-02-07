@@ -68,6 +68,7 @@ import type {
   MinesweeperGameState,
   SokobanGameState,
   FractalsGameState,
+  LightsOutGameState,
   CommandLogEntry,
   RoomInfo,
   RoomState,
@@ -275,6 +276,8 @@ export function LiveGameBoard({
         return renderSokobanBoard(gameState as SokobanGameState);
       case "fractals":
         return renderFractalsBoard(gameState as FractalsGameState);
+      case "lightsout":
+        return renderLightsOutBoard(gameState as LightsOutGameState);
       default:
         return null;
     }
@@ -708,6 +711,76 @@ export function LiveGameBoard({
     );
   };
 
+  const renderLightsOutBoard = (state: LightsOutGameState) => {
+    const { grid, size, toggleCount, status } = state;
+    const lightsOn = grid?.flat().filter(Boolean).length || 0;
+
+    return (
+      <div className="relative bg-zinc-950 rounded-xl p-4 border border-yellow-500/30">
+        {/* Spectator badge */}
+        <div className="absolute top-2 left-2 z-10">
+          <Badge variant="outline" className="bg-black/50 backdrop-blur-md border-white/10 text-white gap-1">
+            <Eye className="h-3 w-3" />
+            Spectating
+          </Badge>
+        </div>
+
+        {/* Status badge */}
+        <div className="absolute top-2 right-2 z-10">
+          <Badge className={cn(
+            "backdrop-blur-md border-0",
+            status === "won" ? "bg-green-600/80" : "bg-yellow-600/80"
+          )}>
+            {status === "won" ? "Solved!" : `${lightsOn} lights on`}
+          </Badge>
+        </div>
+
+        {/* Grid */}
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div
+            className="grid gap-2"
+            style={{
+              gridTemplateColumns: `repeat(${size || 5}, 1fr)`,
+            }}
+          >
+            {grid?.flat().map((isOn, i) => (
+              <div
+                key={i}
+                className={cn(
+                  "w-12 h-12 rounded-lg flex items-center justify-center border-2",
+                  isOn ? [
+                    "bg-yellow-300",
+                    "border-yellow-400",
+                    "shadow-[0_0_15px_rgba(250,204,21,0.8)]",
+                  ] : [
+                    "bg-zinc-800",
+                    "border-zinc-600",
+                  ]
+                )}
+              >
+                <div
+                  className={cn(
+                    "w-6 h-6 rounded-full",
+                    isOn
+                      ? "bg-gradient-to-br from-yellow-100 via-yellow-200 to-yellow-400"
+                      : "bg-gradient-to-br from-zinc-700 to-zinc-900"
+                  )}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Toggle counter */}
+        <div className="absolute bottom-2 right-2">
+          <Badge variant="outline" className="bg-black/50 backdrop-blur-md border-yellow-500/30 text-yellow-300 text-xs">
+            Toggles: {toggleCount || 0}
+          </Badge>
+        </div>
+      </div>
+    );
+  };
+
   // Render preview board based on game type
   const renderPreviewBoard = () => {
     switch (gameType) {
@@ -859,6 +932,48 @@ export function LiveGameBoard({
                 <Badge className="bg-purple-600/50 text-purple-200 text-xs">tree</Badge>
                 <Badge className="bg-green-600/50 text-green-200 text-xs">plant</Badge>
                 <Badge className="bg-red-600/50 text-red-200 text-xs">dragon</Badge>
+              </div>
+            </div>
+          </div>
+        );
+      case "lightsout":
+        return (
+          <div className="aspect-square p-4 bg-zinc-950 rounded-xl flex flex-col items-center justify-center">
+            {/* Lights Out preview */}
+            <div className="text-center">
+              <div className="grid grid-cols-5 gap-2 mb-4">
+                {Array(25).fill(null).map((_, i) => {
+                  const isOn = [2, 7, 11, 12, 13, 17, 22].includes(i); // Cross pattern
+                  return (
+                    <div
+                      key={i}
+                      className={cn(
+                        "w-8 h-8 rounded-lg flex items-center justify-center border-2",
+                        isOn ? [
+                          "bg-yellow-300",
+                          "border-yellow-400",
+                          "shadow-[0_0_10px_rgba(250,204,21,0.6)]",
+                        ] : [
+                          "bg-zinc-800",
+                          "border-zinc-700",
+                        ]
+                      )}
+                    >
+                      <div
+                        className={cn(
+                          "w-4 h-4 rounded-full",
+                          isOn
+                            ? "bg-gradient-to-br from-yellow-100 to-yellow-400"
+                            : "bg-gradient-to-br from-zinc-700 to-zinc-900"
+                        )}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="text-yellow-400 font-medium">Lights Out</div>
+              <div className="text-zinc-500 text-sm mt-2">
+                Toggle lights to turn them all off
               </div>
             </div>
           </div>

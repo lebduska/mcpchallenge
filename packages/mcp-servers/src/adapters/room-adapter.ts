@@ -187,6 +187,21 @@ function convertToEngineState(
         colorScheme: fractalsOldState.colorScheme || 'monochrome',
       } as any;
 
+    case 'lightsout':
+      const lightsoutOldState = oldState as any;
+      return {
+        gameId: `${oldState.createdAt}`,
+        gameType: 'lightsout',
+        status: lightsoutOldState.status || 'playing',
+        turn: 'player',
+        moveCount: lightsoutOldState.toggleCount || 0,
+        grid: lightsoutOldState.grid || [],
+        size: lightsoutOldState.size || 5,
+        toggleCount: lightsoutOldState.toggleCount || 0,
+        minSolution: lightsoutOldState.minSolution || 5,
+        difficulty: lightsoutOldState.difficulty || 'medium',
+      } as any;
+
     default:
       return null;
   }
@@ -357,6 +372,20 @@ function convertToOldState(
         stats: fractalsState.stats || { segmentsDrawn: 0, maxDepth: 0 },
         canvasWidth: fractalsState.canvas?.width || 512,
         canvasHeight: fractalsState.canvas?.height || 512,
+      } as GameState;
+
+    case 'lightsout':
+      const lightsoutState = engineState as any;
+      return {
+        gameType: 'lightsout',
+        status: lightsoutState.status || 'playing',
+        createdAt: now,
+        lastActivity: now,
+        grid: lightsoutState.grid,
+        size: lightsoutState.size,
+        toggleCount: lightsoutState.toggleCount,
+        minSolution: lightsoutState.minSolution,
+        difficulty: lightsoutState.difficulty,
       } as GameState;
 
     default:

@@ -17,6 +17,7 @@ import {
   Package,
   Banana,
   TreePine,
+  Lightbulb,
   // Construction, // Poly Bridge hidden
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -135,6 +136,19 @@ const challengeData = [
     icon: TreePine,
     gradient: "from-purple-500/20 via-pink-500/10 to-fuchsia-500/20",
     accentColor: "purple",
+  },
+  {
+    id: "lightsout",
+    key: "lightsout",
+    difficulty: "beginner",
+    points: 75,
+    type: "game",
+    completions: 0,
+    featured: true,
+    transport: "HTTP+SSE",
+    icon: Lightbulb,
+    gradient: "from-yellow-400/20 via-amber-500/10 to-orange-500/20",
+    accentColor: "yellow",
   },
   // Poly Bridge - hidden until physics is fixed
   // {

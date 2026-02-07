@@ -118,7 +118,7 @@ export interface PlayerSlot {
 }
 
 // Game state types
-export type GameType = "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "polybridge" | "sokoban" | "gorillas" | "fractals";
+export type GameType = "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "polybridge" | "sokoban" | "gorillas" | "fractals" | "lightsout";
 
 export interface BaseGameState {
   gameType: GameType;
@@ -279,4 +279,13 @@ export interface FractalsGameState extends BaseGameState {
   canvasHeight: number;
 }
 
-export type GameState = ChessGameState | TicTacToeGameState | SnakeGameState | CanvasGameState | MinesweeperGameState | PolyBridgeGameState | SokobanGameState | GorillasGameState | FractalsGameState;
+export interface LightsOutGameState extends BaseGameState {
+  gameType: "lightsout";
+  grid: boolean[][];
+  size: number;
+  toggleCount: number;
+  minSolution: number;
+  difficulty: "easy" | "medium" | "hard";
+}
+
+export type GameState = ChessGameState | TicTacToeGameState | SnakeGameState | CanvasGameState | MinesweeperGameState | PolyBridgeGameState | SokobanGameState | GorillasGameState | FractalsGameState | LightsOutGameState;
