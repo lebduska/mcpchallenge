@@ -3,6 +3,8 @@
 declare global {
   interface CloudflareEnv {
     DB: D1Database;
+    R2_GALLERY: R2Bucket;
+    RATE_LIMIT: KVNamespace;
     ENVIRONMENT: string;
     AUTH_SECRET: string;
     GOOGLE_CLIENT_ID: string;

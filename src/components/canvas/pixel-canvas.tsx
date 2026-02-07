@@ -3,7 +3,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Play, Trash2, Download } from "lucide-react";
+import { Play, Trash2, Download, Upload, Check, Loader2, ExternalLink } from "lucide-react";
 
 const WIDTH = 64;
 const HEIGHT = 64;
@@ -428,6 +428,8 @@ export function PixelCanvas() {
   const [currentColor, setCurrentColor] = useState<RGB>([0, 0, 0]);
   const [isDrawing, setIsDrawing] = useState(false);
   const [commandIndex, setCommandIndex] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const renderCanvas = useCallback(() => {
@@ -539,6 +541,40 @@ export function PixelCanvas() {
     link.click();
   }, []);
 
+  const uploadToGallery = useCallback(async () => {
+    const ctx = canvasRef.current?.getContext("2d");
+    if (!ctx || !canvasRef.current) return;
+
+    setIsUploading(true);
+    setUploadedUrl(null);
+
+    try {
+      const dataUrl = canvasRef.current.toDataURL("image/png");
+
+      const response = await fetch("/api/gallery/upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          challengeId: "canvas-draw",
+          imageData: dataUrl,
+          title: "Mona Lisa",
+        }),
+      });
+
+      const data = (await response.json()) as { shareUrl?: string; error?: string };
+
+      if (!response.ok) {
+        throw new Error(data.error || "Upload failed");
+      }
+
+      setUploadedUrl(data.shareUrl || null);
+    } catch (error) {
+      console.error("Upload failed:", error);
+    } finally {
+      setIsUploading(false);
+    }
+  }, []);
+
   return (
     <Card>
       <CardHeader>
@@ -570,23 +606,48 @@ export function PixelCanvas() {
             <span className="text-sm text-zinc-500">Current Color</span>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2 justify-center">
             <Button
               onClick={drawMonaLisa}
-              disabled={isDrawing}
+              disabled={isDrawing || isUploading}
               className="bg-pink-600 hover:bg-pink-700"
             >
               <Play className="h-4 w-4 mr-2" />
               {isDrawing ? "Drawing..." : "Draw Mona Lisa"}
             </Button>
-            <Button onClick={clearCanvas} variant="outline" disabled={isDrawing}>
+            <Button onClick={clearCanvas} variant="outline" disabled={isDrawing || isUploading}>
               <Trash2 className="h-4 w-4 mr-2" />
               Clear
             </Button>
-            <Button onClick={downloadImage} variant="outline" disabled={isDrawing}>
+            <Button onClick={downloadImage} variant="outline" disabled={isDrawing || isUploading}>
               <Download className="h-4 w-4 mr-2" />
               Save PNG
             </Button>
+            <Button
+              onClick={uploadToGallery}
+              variant="outline"
+              disabled={isDrawing || isUploading}
+              className={uploadedUrl ? "border-green-500 text-green-500" : ""}
+            >
+              {isUploading ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : uploadedUrl ? (
+                <Check className="h-4 w-4 mr-2" />
+              ) : (
+                <Upload className="h-4 w-4 mr-2" />
+              )}
+              {isUploading ? "Saving..." : uploadedUrl ? "Saved!" : "Save to Gallery"}
+            </Button>
+            {uploadedUrl && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => window.open(uploadedUrl, "_blank")}
+                title="Open in gallery"
+              >
+                <ExternalLink className="h-4 w-4" />
+              </Button>
+            )}
           </div>
         </div>
       </CardContent>

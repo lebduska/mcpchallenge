@@ -138,6 +138,61 @@ export const shareLinks = sqliteTable("share_links", {
   createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 });
 
+// ==================== CHALLENGE IDEAS TABLES ====================
+
+export const challengeIdeas = sqliteTable("challenge_ideas", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  category: text("category").notNull().default("game"), // "game" | "creative" | "puzzle" | "educational"
+  gameReference: text("game_reference"), // Reference to existing game/concept
+  status: text("status").notNull().default("pending"), // "pending" | "approved" | "in_progress" | "implemented" | "rejected"
+  isFeatured: integer("is_featured", { mode: "boolean" }).notNull().default(false),
+  voteCount: integer("vote_count").notNull().default(0),
+  commentCount: integer("comment_count").notNull().default(0),
+  adminNotes: text("admin_notes"),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
+export const ideaVotes = sqliteTable("idea_votes", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  ideaId: text("idea_id").notNull().references(() => challengeIdeas.id, { onDelete: "cascade" }),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  voteType: integer("vote_type").notNull().default(1), // 1 = upvote, -1 = downvote
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
+export const ideaComments = sqliteTable("idea_comments", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  ideaId: text("idea_id").notNull().references(() => challengeIdeas.id, { onDelete: "cascade" }),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  parentId: text("parent_id"), // Self-reference handled at DB level, not in Drizzle
+  content: text("content").notNull(),
+  isEdited: integer("is_edited", { mode: "boolean" }).notNull().default(false),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
+// ==================== GALLERY TABLES ====================
+
+export const galleryImages = sqliteTable("gallery_images", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: text("user_id").references(() => users.id, { onDelete: "set null" }),
+  challengeId: text("challenge_id").notNull(),
+  r2Key: text("r2_key").notNull().unique(),
+  title: text("title"),
+  width: integer("width").notNull().default(512),
+  height: integer("height").notNull().default(512),
+  fileSize: integer("file_size").notNull(),
+  mimeType: text("mime_type").notNull().default("image/png"),
+  isPublic: integer("is_public", { mode: "boolean" }).notNull().default(true),
+  viewCount: integer("view_count").notNull().default(0),
+  likeCount: integer("like_count").notNull().default(0),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
 // ==================== TYPES ====================
 
 export type User = typeof users.$inferSelect;
@@ -150,3 +205,9 @@ export type ChallengeProgress = typeof challengeProgress.$inferSelect;
 export type LevelBest = typeof levelBest.$inferSelect;
 export type Replay = typeof replays.$inferSelect;
 export type ShareLink = typeof shareLinks.$inferSelect;
+export type ChallengeIdea = typeof challengeIdeas.$inferSelect;
+export type NewChallengeIdea = typeof challengeIdeas.$inferInsert;
+export type IdeaVote = typeof ideaVotes.$inferSelect;
+export type IdeaComment = typeof ideaComments.$inferSelect;
+export type GalleryImage = typeof galleryImages.$inferSelect;
+export type NewGalleryImage = typeof galleryImages.$inferInsert;

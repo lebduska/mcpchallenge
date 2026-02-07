@@ -4,6 +4,13 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Copy, Check, Settings, Terminal, Wifi, Bot, Users } from "lucide-react";
 import type { RoomInfo } from "./types";
@@ -17,6 +24,24 @@ interface CopyButtonProps {
   type: string;
   copiedConfig: string | null;
   onCopy: (text: string, type: string) => void;
+}
+
+type ClientId =
+  | "claude"
+  | "cursor"
+  | "windsurf"
+  | "cline"
+  | "vscode"
+  | "jetbrains"
+  | "zed"
+  | "gemini"
+  | "curl";
+
+interface ClientInfo {
+  id: ClientId;
+  name: string;
+  configFile: string;
+  getConfig: (gameType: string, mcpUrl: string) => string;
 }
 
 function CopyButton({ text, type, copiedConfig, onCopy }: CopyButtonProps) {
@@ -44,46 +69,174 @@ function CopyButton({ text, type, copiedConfig, onCopy }: CopyButtonProps) {
 
 export function RoomConfig({ roomInfo }: RoomConfigProps) {
   const [copiedConfig, setCopiedConfig] = useState<string | null>(null);
+  const [selectedClient, setSelectedClient] = useState<ClientId>("claude");
 
-  const mcpBaseUrl = process.env.NEXT_PUBLIC_MCP_URL || "https://mcp.mcpchallenge.org";
+  const mcpBaseUrl =
+    process.env.NEXT_PUBLIC_MCP_URL || "https://mcp.mcpchallenge.org";
   const mcpUrl = `${mcpBaseUrl}/${roomInfo.gameType}?room=${roomInfo.roomId}`;
 
-  // Claude Desktop config
-  const claudeConfig = {
-    mcpServers: {
-      [roomInfo.gameType]: {
-        command: "npx",
-        args: [
-          "-y",
-          "@anthropic/mcp-proxy",
-          mcpUrl,
-        ],
-      },
+  // Client configurations
+  const clients: ClientInfo[] = [
+    {
+      id: "claude",
+      name: "Claude Desktop",
+      configFile: "claude_desktop_config.json",
+      getConfig: (gameType, url) =>
+        JSON.stringify(
+          {
+            mcpServers: {
+              [gameType]: {
+                command: "npx",
+                args: ["-y", "@anthropic/mcp-proxy", url],
+              },
+            },
+          },
+          null,
+          2
+        ),
     },
-  };
-
-  // Cursor config
-  const cursorConfig = {
-    mcp: {
-      servers: {
-        [roomInfo.gameType]: {
-          url: mcpUrl,
-          transport: "http",
-        },
-      },
+    {
+      id: "cursor",
+      name: "Cursor",
+      configFile: "Cursor Settings → MCP",
+      getConfig: (gameType, url) =>
+        JSON.stringify(
+          {
+            mcp: {
+              servers: {
+                [gameType]: {
+                  url: url,
+                  transport: "http",
+                },
+              },
+            },
+          },
+          null,
+          2
+        ),
     },
-  };
-
-  // Direct curl example
-  const curlExample = `# List available tools
-curl -X POST ${mcpUrl} \\
+    {
+      id: "windsurf",
+      name: "Windsurf",
+      configFile: "~/.codeium/windsurf/mcp_config.json",
+      getConfig: (gameType, url) =>
+        JSON.stringify(
+          {
+            mcpServers: {
+              [gameType]: {
+                serverUrl: url,
+              },
+            },
+          },
+          null,
+          2
+        ),
+    },
+    {
+      id: "cline",
+      name: "Cline",
+      configFile: "Cline MCP Settings",
+      getConfig: (gameType, url) =>
+        JSON.stringify(
+          {
+            mcpServers: {
+              [gameType]: {
+                url: url,
+              },
+            },
+          },
+          null,
+          2
+        ),
+    },
+    {
+      id: "vscode",
+      name: "VS Code + Copilot",
+      configFile: ".vscode/mcp.json",
+      getConfig: (gameType, url) =>
+        JSON.stringify(
+          {
+            servers: {
+              [gameType]: {
+                type: "sse",
+                url: url,
+              },
+            },
+          },
+          null,
+          2
+        ),
+    },
+    {
+      id: "jetbrains",
+      name: "JetBrains",
+      configFile: "Settings → AI Assistant → MCP",
+      getConfig: (gameType, url) =>
+        JSON.stringify(
+          {
+            mcpServers: {
+              [gameType]: {
+                url: url,
+              },
+            },
+          },
+          null,
+          2
+        ),
+    },
+    {
+      id: "zed",
+      name: "Zed",
+      configFile: "settings.json",
+      getConfig: (gameType, url) =>
+        JSON.stringify(
+          {
+            context_servers: {
+              [gameType]: {
+                url: url,
+              },
+            },
+          },
+          null,
+          2
+        ),
+    },
+    {
+      id: "gemini",
+      name: "Gemini CLI",
+      configFile: "~/.gemini/settings.json",
+      getConfig: (gameType, url) =>
+        JSON.stringify(
+          {
+            mcpServers: {
+              [gameType]: {
+                url: url,
+              },
+            },
+          },
+          null,
+          2
+        ),
+    },
+    {
+      id: "curl",
+      name: "cURL",
+      configFile: "Terminal",
+      getConfig: (_, url) =>
+        `# List available tools
+curl -X POST ${url} \\
   -H "Content-Type: application/json" \\
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
 
 # Call a tool (e.g., new_game)
-curl -X POST ${mcpUrl} \\
+curl -X POST ${url} \\
   -H "Content-Type: application/json" \\
-  -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"new_game","arguments":{}}}'`;
+  -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"new_game","arguments":{}}}'`,
+    },
+  ];
+
+  const selectedClientInfo = clients.find((c) => c.id === selectedClient)!;
+  const configText = selectedClientInfo.getConfig(roomInfo.gameType, mcpUrl);
 
   // Auto-Identify snippet
   const autoIdentifySnippet = `// Call immediately after connecting to identify your agent:
@@ -124,19 +277,20 @@ await mcp.call("agent.identify", {
             {roomInfo.sessionNonce && (
               <>
                 <span className="text-zinc-500 ml-2">Session:</span>
-                <Badge variant="outline" className="font-mono text-xs bg-purple-500/10 border-purple-500/30">
+                <Badge
+                  variant="outline"
+                  className="font-mono text-xs bg-purple-500/10 border-purple-500/30"
+                >
                   {roomInfo.sessionNonce.slice(0, 8)}...
                 </Badge>
               </>
             )}
           </div>
 
-          {/* Configuration Tabs */}
-          <Tabs defaultValue="claude" className="w-full">
-            <TabsList className="grid w-full grid-cols-5">
-              <TabsTrigger value="claude">Claude</TabsTrigger>
-              <TabsTrigger value="cursor">Cursor</TabsTrigger>
-              <TabsTrigger value="curl">cURL</TabsTrigger>
+          {/* Main Tabs: Config / Agent / PvP */}
+          <Tabs defaultValue="config" className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="config">Config</TabsTrigger>
               <TabsTrigger value="identify" className="gap-1">
                 <Bot className="h-3 w-3" />
                 Agent
@@ -147,62 +301,55 @@ await mcp.call("agent.identify", {
               </TabsTrigger>
             </TabsList>
 
-            {/* Claude Desktop */}
-            <TabsContent value="claude" className="space-y-2">
-              <p className="text-sm text-zinc-500">
-                Add this to your <code className="bg-zinc-100 dark:bg-zinc-800 px-1 rounded">claude_desktop_config.json</code>:
-              </p>
-              <div className="relative">
-                <pre className="bg-zinc-100 dark:bg-zinc-800 rounded-lg p-3 text-xs font-mono overflow-x-auto">
-                  {JSON.stringify(claudeConfig, null, 2)}
-                </pre>
-                <div className="absolute top-2 right-2">
-                  <CopyButton
-                    text={JSON.stringify(claudeConfig, null, 2)}
-                    type="claude"
-                    copiedConfig={copiedConfig}
-                    onCopy={copyToClipboard}
-                  />
-                </div>
+            {/* Client Config Tab */}
+            <TabsContent value="config" className="space-y-3">
+              {/* Client Selector */}
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-zinc-500">Client:</span>
+                <Select
+                  value={selectedClient}
+                  onValueChange={(v) => setSelectedClient(v as ClientId)}
+                >
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {clients.map((client) => (
+                      <SelectItem key={client.id} value={client.id}>
+                        {client.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-            </TabsContent>
 
-            {/* Cursor */}
-            <TabsContent value="cursor" className="space-y-2">
-              <p className="text-sm text-zinc-500">
-                Add this to your Cursor MCP settings:
-              </p>
-              <div className="relative">
-                <pre className="bg-zinc-100 dark:bg-zinc-800 rounded-lg p-3 text-xs font-mono overflow-x-auto">
-                  {JSON.stringify(cursorConfig, null, 2)}
-                </pre>
-                <div className="absolute top-2 right-2">
-                  <CopyButton
-                    text={JSON.stringify(cursorConfig, null, 2)}
-                    type="cursor"
-                    copiedConfig={copiedConfig}
-                    onCopy={copyToClipboard}
-                  />
-                </div>
-              </div>
-            </TabsContent>
-
-            {/* cURL */}
-            <TabsContent value="curl" className="space-y-2">
-              <p className="text-sm text-zinc-500">
-                Test the MCP server directly with cURL:
-              </p>
-              <div className="relative">
-                <pre className="bg-zinc-100 dark:bg-zinc-800 rounded-lg p-3 text-xs font-mono overflow-x-auto whitespace-pre-wrap">
-                  {curlExample}
-                </pre>
-                <div className="absolute top-2 right-2">
-                  <CopyButton
-                    text={curlExample}
-                    type="curl"
-                    copiedConfig={copiedConfig}
-                    onCopy={copyToClipboard}
-                  />
+              {/* Config Display */}
+              <div className="space-y-2">
+                <p className="text-sm text-zinc-500">
+                  {selectedClient === "curl" ? (
+                    "Test the MCP server directly:"
+                  ) : (
+                    <>
+                      Add to{" "}
+                      <code className="bg-zinc-100 dark:bg-zinc-800 px-1 rounded">
+                        {selectedClientInfo.configFile}
+                      </code>
+                      :
+                    </>
+                  )}
+                </p>
+                <div className="relative">
+                  <pre className="bg-zinc-100 dark:bg-zinc-800 rounded-lg p-3 text-xs font-mono overflow-x-auto whitespace-pre-wrap">
+                    {configText}
+                  </pre>
+                  <div className="absolute top-2 right-2">
+                    <CopyButton
+                      text={configText}
+                      type={selectedClient}
+                      copiedConfig={copiedConfig}
+                      onCopy={copyToClipboard}
+                    />
+                  </div>
                 </div>
               </div>
             </TabsContent>
@@ -226,8 +373,11 @@ await mcp.call("agent.identify", {
                 </div>
               </div>
               <p className="text-xs text-zinc-400 mt-2">
-                Call <code className="bg-zinc-800 px-1 rounded">agent.identify</code> once after connecting.
-                The <code className="bg-zinc-800 px-1 rounded">sessionNonce</code> prevents spoofing.
+                Call{" "}
+                <code className="bg-zinc-800 px-1 rounded">agent.identify</code>{" "}
+                once after connecting. The{" "}
+                <code className="bg-zinc-800 px-1 rounded">sessionNonce</code>{" "}
+                prevents spoofing.
               </p>
             </TabsContent>
 
@@ -241,10 +391,12 @@ await mcp.call("agent.identify", {
               </div>
 
               <div className="space-y-2">
-                <h4 className="text-sm font-medium text-zinc-300">Step 1: Create PvP room</h4>
+                <h4 className="text-sm font-medium text-zinc-300">
+                  Step 1: Create PvP room
+                </h4>
                 <div className="relative">
                   <pre className="bg-zinc-100 dark:bg-zinc-800 rounded-lg p-3 text-xs font-mono overflow-x-auto">
-{`curl -X POST ${mcpBaseUrl}/${roomInfo.gameType}/room/create \\
+                    {`curl -X POST ${mcpBaseUrl}/${roomInfo.gameType}/room/create \\
   -H "Content-Type: application/json" \\
   -d '{"mode":"pvp"}'`}
                   </pre>
@@ -252,10 +404,12 @@ await mcp.call("agent.identify", {
               </div>
 
               <div className="space-y-2">
-                <h4 className="text-sm font-medium text-zinc-300">Step 2: Join as Player (each agent)</h4>
+                <h4 className="text-sm font-medium text-zinc-300">
+                  Step 2: Join as Player (each agent)
+                </h4>
                 <div className="relative">
                   <pre className="bg-zinc-100 dark:bg-zinc-800 rounded-lg p-3 text-xs font-mono overflow-x-auto">
-{`# Each player calls /join to get their nonce and color
+                    {`# Each player calls /join to get their nonce and color
 curl -X POST ${mcpBaseUrl}/${roomInfo.gameType}/join?room=ROOM_ID
 
 # Response: { "playerNonce": "abc123", "color": "white" }`}
@@ -264,10 +418,12 @@ curl -X POST ${mcpBaseUrl}/${roomInfo.gameType}/join?room=ROOM_ID
               </div>
 
               <div className="space-y-2">
-                <h4 className="text-sm font-medium text-zinc-300">Step 3: Connect with player nonce</h4>
+                <h4 className="text-sm font-medium text-zinc-300">
+                  Step 3: Connect with player nonce
+                </h4>
                 <div className="relative">
                   <pre className="bg-zinc-100 dark:bg-zinc-800 rounded-lg p-3 text-xs font-mono overflow-x-auto">
-{`{
+                    {`{
   "mcpServers": {
     "${roomInfo.gameType}": {
       "command": "npx",
@@ -284,8 +440,11 @@ curl -X POST ${mcpBaseUrl}/${roomInfo.gameType}/join?room=ROOM_ID
               </div>
 
               <p className="text-xs text-zinc-400">
-                Each player uses their unique <code className="bg-zinc-800 px-1 rounded">player</code> nonce.
-                Game auto-starts when both players call <code className="bg-zinc-800 px-1 rounded">agent.identify</code>.
+                Each player uses their unique{" "}
+                <code className="bg-zinc-800 px-1 rounded">player</code> nonce.
+                Game auto-starts when both players call{" "}
+                <code className="bg-zinc-800 px-1 rounded">agent.identify</code>
+                .
               </p>
             </TabsContent>
           </Tabs>

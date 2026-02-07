@@ -17,6 +17,16 @@ database_name = "mcpchallenge-dev"
 database_id = "e09482e6-5a1a-461a-8d49-ff86c2ee0df5"
 migrations_dir = "drizzle/migrations"
 
+# R2 bucket for gallery images
+[[r2_buckets]]
+binding = "R2_GALLERY"
+bucket_name = "mcpchallenge-gallery"
+
+# KV namespace for rate limiting
+[[kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "cf8eabd0d7034cf6950ec7e41484a3f1"
+
 [vars]
 ENVIRONMENT = "production"
 NEXT_PUBLIC_GA_MEASUREMENT_ID = "G-FM35KECLVH"

@@ -441,12 +441,12 @@ export default function ChallengesPage() {
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 text-sm">
               <Sparkles className="h-4 w-4" />
               {t("comingSoon.title")} —{" "}
-              <a
-                href="https://github.com"
-                className="text-blue-600 dark:text-blue-400 hover:underline"
+              <Link
+                href="/ideas"
+                className="text-yellow-600 dark:text-yellow-400 hover:underline"
               >
                 {t("comingSoon.submitIdea")}
-              </a>
+              </Link>
             </div>
           </div>
         </div>

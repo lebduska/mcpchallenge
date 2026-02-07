@@ -480,5 +480,96 @@
       }
     },
     "footer": "By using MCP Challenge, you agree to this Privacy Policy. If you do not agree, please discontinue use of our services."
+  },
+  "ideas": {
+    "pageTitle": "Challenge Ideas",
+    "pageSubtitle": "Vote and discuss community-submitted challenge ideas",
+    "submitIdea": "Submit an Idea",
+    "submitTitle": "Submit Challenge Idea",
+    "submitDescription": "Share your idea for a new MCP challenge. The community can vote and comment!",
+    "signInRequired": "Please sign in to submit an idea",
+    "signIn": "Sign In",
+    "noIdeas": "No ideas yet",
+    "noIdeasDescription": "Be the first to submit a challenge idea!",
+    "beFirst": "Submit First Idea",
+    "basedOn": "Based on",
+    "form": {
+      "title": "Title",
+      "titlePlaceholder": "e.g., Tetris Challenge",
+      "description": "Description",
+      "descriptionPlaceholder": "Describe your challenge idea. What makes it interesting for MCP?",
+      "category": "Category",
+      "reference": "Based on",
+      "referencePlaceholder": "e.g., Tetris, 2048",
+      "cancel": "Cancel",
+      "submit": "Submit Idea",
+      "submitting": "Submitting..."
+    },
+    "categories": {
+      "game": "Game",
+      "creative": "Creative",
+      "puzzle": "Puzzle",
+      "educational": "Educational"
+    },
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "in_progress": "In Progress",
+      "implemented": "Implemented",
+      "rejected": "Rejected"
+    },
+    "sort": {
+      "top": "Top",
+      "new": "New",
+      "featured": "Featured"
+    },
+    "filter": {
+      "category": "Category",
+      "status": "Status",
+      "allCategories": "All Categories",
+      "allStatus": "All Status"
+    },
+    "backToIdeas": "Back to Ideas",
+    "comments": "Comments",
+    "addComment": "Add a comment...",
+    "submit": "Submit",
+    "signInToComment": "Sign in to leave a comment",
+    "noComments": "No comments yet. Be the first to share your thoughts!",
+    "edited": "edited",
+    "reply": "Reply",
+    "writeReply": "Write a reply...",
+    "cancel": "Cancel"
+  },
+  "gallery": {
+    "pageTitle": "Gallery",
+    "pageSubtitle": "Creations from the MCP Challenge community",
+    "sort": {
+      "new": "New",
+      "popular": "Popular",
+      "views": "Most Viewed"
+    },
+    "filter": {
+      "challenge": "Challenge",
+      "allChallenges": "All Challenges"
+    },
+    "challenges": {
+      "canvas-draw": "Canvas Draw",
+      "fractals": "Fractals"
+    },
+    "noImages": "No images yet",
+    "noImagesDescription": "Be the first to share your creation!",
+    "loadMore": "Load More",
+    "untitled": "Untitled",
+    "anonymous": "Anonymous",
+    "views": "views",
+    "likes": "likes",
+    "copyLink": "Copy Link",
+    "copied": "Copied!",
+    "share": "Share",
+    "saveToGallery": "Save to Gallery",
+    "saving": "Saving...",
+    "saved": "Saved!",
+    "shareSuccess": "Image saved to gallery!",
+    "shareFailed": "Failed to save image"
   }
 }

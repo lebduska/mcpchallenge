@@ -330,5 +330,96 @@
       "discord": "Discord"
     },
     "copyright": "© {year} MCP Challenge. Všechna práva vyhrazena."
+  },
+  "ideas": {
+    "pageTitle": "Nápady na výzvy",
+    "pageSubtitle": "Hlasujte a diskutujte o nápadech od komunity",
+    "submitIdea": "Navrhnout výzvu",
+    "submitTitle": "Navrhnout výzvu",
+    "submitDescription": "Sdílejte svůj nápad na novou MCP výzvu. Komunita může hlasovat a komentovat!",
+    "signInRequired": "Pro odeslání nápadu se prosím přihlaste",
+    "signIn": "Přihlásit se",
+    "noIdeas": "Zatím žádné nápady",
+    "noIdeasDescription": "Buďte první, kdo navrhne výzvu!",
+    "beFirst": "Navrhnout první výzvu",
+    "basedOn": "Inspirováno",
+    "form": {
+      "title": "Název",
+      "titlePlaceholder": "např. Tetris výzva",
+      "description": "Popis",
+      "descriptionPlaceholder": "Popište svůj nápad na výzvu. Co je na něm zajímavé pro MCP?",
+      "category": "Kategorie",
+      "reference": "Inspirováno",
+      "referencePlaceholder": "např. Tetris, 2048",
+      "cancel": "Zrušit",
+      "submit": "Odeslat nápad",
+      "submitting": "Odesílám..."
+    },
+    "categories": {
+      "game": "Hra",
+      "creative": "Kreativní",
+      "puzzle": "Logická",
+      "educational": "Vzdělávací"
+    },
+    "status": {
+      "pending": "Čeká",
+      "approved": "Schváleno",
+      "in_progress": "Ve vývoji",
+      "implemented": "Implementováno",
+      "rejected": "Zamítnuto"
+    },
+    "sort": {
+      "top": "Nejlepší",
+      "new": "Nejnovější",
+      "featured": "Doporučené"
+    },
+    "filter": {
+      "category": "Kategorie",
+      "status": "Stav",
+      "allCategories": "Všechny kategorie",
+      "allStatus": "Všechny stavy"
+    },
+    "backToIdeas": "Zpět na nápady",
+    "comments": "Komentáře",
+    "addComment": "Přidat komentář...",
+    "submit": "Odeslat",
+    "signInToComment": "Pro komentování se přihlaste",
+    "noComments": "Zatím žádné komentáře. Buďte první!",
+    "edited": "upraveno",
+    "reply": "Odpovědět",
+    "writeReply": "Napsat odpověď...",
+    "cancel": "Zrušit"
+  },
+  "gallery": {
+    "pageTitle": "Galerie",
+    "pageSubtitle": "Výtvory od MCP Challenge komunity",
+    "sort": {
+      "new": "Nejnovější",
+      "popular": "Oblíbené",
+      "views": "Nejsledovanější"
+    },
+    "filter": {
+      "challenge": "Výzva",
+      "allChallenges": "Všechny výzvy"
+    },
+    "challenges": {
+      "canvas-draw": "Kreslení",
+      "fractals": "Fraktály"
+    },
+    "noImages": "Zatím žádné obrázky",
+    "noImagesDescription": "Buďte první, kdo sdílí svůj výtvor!",
+    "loadMore": "Načíst další",
+    "untitled": "Bez názvu",
+    "anonymous": "Anonym",
+    "views": "zobrazení",
+    "likes": "líbí se",
+    "copyLink": "Kopírovat odkaz",
+    "copied": "Zkopírováno!",
+    "share": "Sdílet",
+    "saveToGallery": "Uložit do galerie",
+    "saving": "Ukládám...",
+    "saved": "Uloženo!",
+    "shareSuccess": "Obrázek uložen do galerie!",
+    "shareFailed": "Nepodařilo se uložit obrázek"
   }
 }
