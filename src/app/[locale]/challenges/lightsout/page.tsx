@@ -3,7 +3,6 @@
 export const runtime = "edge";
 
 import { useState, useCallback } from "react";
-import dynamic from "next/dynamic";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Accordion,
@@ -11,35 +10,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Lightbulb, Play, Plug, ArrowLeft, Terminal, Info, Loader2, Zap } from "lucide-react";
+import { Lightbulb, Play, Plug, ArrowLeft, Terminal, Info, Zap } from "lucide-react";
 import Link from "next/link";
 import { useGameCompletion } from "@/hooks/use-game-completion";
 import { AchievementToast } from "@/components/achievements/achievement-toast";
-
-// Dynamic imports to avoid SSR issues with game engines
-const LightsOutGame = dynamic(
-  () => import("@/components/games/lights-out").then(mod => mod.LightsOutGame),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="flex items-center justify-center h-[500px] text-zinc-500">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    )
-  }
-);
-
-const LiveGameBoard = dynamic(
-  () => import("@/components/mcp/live-game-board").then(mod => mod.LiveGameBoard),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="flex items-center justify-center h-[400px] text-zinc-500">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    )
-  }
-);
+import { LightsOutGame } from "@/components/games/lights-out";
+import { LiveGameBoard } from "@/components/mcp/live-game-board";
 
 interface Achievement {
   id: string;

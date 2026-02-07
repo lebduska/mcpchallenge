@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { RotateCcw, Lightbulb, LightbulbOff } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useGameCompletion } from "@/lib/game-completion";
+import { useGameCompletion } from "@/hooks/use-game-completion";
 import { useReplayShare } from "@/hooks/use-replay-share";
 import { ShareButton } from "@/components/games/share-button";
 
@@ -130,7 +130,7 @@ export function LightsOut({ onComplete }: LightsOutProps) {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const completionCalledRef = useRef(false);
 
-  const { submitCompletion, isAuthenticated } = useGameCompletion("lightsout");
+  const { submitCompletion, isLoggedIn } = useGameCompletion("lightsout");
 
   const replay = useReplayShare<LightsOutMove>({
     challengeId: "lightsout",
@@ -164,7 +164,7 @@ export function LightsOut({ onComplete }: LightsOutProps) {
       const efficiency = Math.round((gameState.minSolution / gameState.toggleCount) * 100);
       onComplete?.({ toggleCount: gameState.toggleCount, efficiency });
 
-      if (isAuthenticated) {
+      if (isLoggedIn) {
         submitCompletion({
           winner: "player",
           moves: gameState.toggleCount,
@@ -175,7 +175,7 @@ export function LightsOut({ onComplete }: LightsOutProps) {
     if (!gameState || gameState.status === "waiting") {
       completionCalledRef.current = false;
     }
-  }, [gameState, onComplete, isAuthenticated, submitCompletion]);
+  }, [gameState, onComplete, isLoggedIn, submitCompletion]);
 
   const startGame = useCallback((diff: Difficulty) => {
     const config = DIFFICULTY_CONFIG[diff];
