@@ -118,7 +118,7 @@ export interface PlayerSlot {
 }
 
 // Game state types
-export type GameType = "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "polybridge" | "sokoban";
+export type GameType = "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "polybridge" | "sokoban" | "gorillas";
 
 export interface BaseGameState {
   gameType: GameType;
@@ -218,4 +218,42 @@ export interface SokobanGameState extends BaseGameState {
   boxesOnGoals: number;
 }
 
-export type GameState = ChessGameState | TicTacToeGameState | SnakeGameState | CanvasGameState | MinesweeperGameState | PolyBridgeGameState | SokobanGameState;
+export interface GorillasGameState extends BaseGameState {
+  gameType: "gorillas";
+  buildings: Array<{
+    x: number;
+    width: number;
+    height: number;
+    color: string;
+    destroyed: boolean;
+  }>;
+  player1: {
+    x: number;
+    y: number;
+    score: number;
+    isAI: boolean;
+  };
+  player2: {
+    x: number;
+    y: number;
+    score: number;
+    isAI: boolean;
+  };
+  currentPlayer: 1 | 2;
+  wind: number;
+  gravity: number;
+  levelIndex: number;
+  totalLevels: number;
+  pointsToWin: number;
+  isVsAI: boolean;
+  aiDifficulty: "easy" | "medium" | "hard";
+  lastTrajectory?: {
+    points: Array<{ x: number; y: number }>;
+    hit: "player1" | "player2" | "building" | "miss" | null;
+    explosionCenter?: { x: number; y: number };
+  };
+  canvasWidth: number;
+  canvasHeight: number;
+}
+
+export type GameState = ChessGameState | TicTacToeGameState | SnakeGameState | CanvasGameState | MinesweeperGameState | PolyBridgeGameState | SokobanGameState | GorillasGameState;

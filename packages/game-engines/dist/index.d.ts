@@ -20,6 +20,8 @@ export type { PolyBridgeState, PolyBridgeMove, PolyBridgeOptions, Structure, Pol
 export { LEVELS as POLYBRIDGE_LEVELS, MATERIAL_COSTS } from './polybridge';
 export { sokobanEngine, SOKOBAN_LEVELS, TOTAL_LEVELS as SOKOBAN_TOTAL_LEVELS } from './sokoban';
 export type { SokobanState, SokobanMove, SokobanOptions, Direction as SokobanDirection, Position as SokobanPosition } from './sokoban';
+export { GorillasEngine, LEVELS as GORILLAS_LEVELS } from './gorillas';
+export type { GorillasState, GorillasMove, GorillasOptions, Position as GorillasPosition, Building, Gorilla, Trajectory, LevelConfig as GorillasLevelConfig } from './gorillas';
 import type { GameEngine, GameState } from './types';
 export declare const engines: {
     readonly chess: GameEngine<import("./chess").ChessState, import("./chess").ChessMove, import("./chess").ChessOptions>;
@@ -29,6 +31,7 @@ export declare const engines: {
     readonly minesweeper: GameEngine<import("./minesweeper").MinesweeperState, import("./minesweeper").MinesweeperMove, import("./minesweeper").MinesweeperOptions>;
     readonly polybridge: GameEngine<import("./polybridge").PolyBridgeState, import("./polybridge").PolyBridgeMove, import("./polybridge").PolyBridgeOptions>;
     readonly sokoban: GameEngine<import("./sokoban").SokobanState, import("./sokoban").SokobanMove, import("./sokoban").SokobanOptions>;
+    readonly gorillas: GameEngine<import("./gorillas").GorillasState, import("./gorillas").GorillasMove, import("./gorillas").GorillasOptions>;
 };
 export type EngineId = keyof typeof engines;
 /**

@@ -138,6 +138,30 @@ function convertToEngineState(
         pushCount: sokobanOldState.pushCount || 0,
       } as any;
 
+    case 'gorillas':
+      const gorillasOldState = oldState as any;
+      return {
+        gameId: `${oldState.createdAt}`,
+        gameType: 'gorillas',
+        status: gorillasOldState.status,
+        turn: gorillasOldState.currentPlayer === 1 ? 'player' : 'opponent',
+        moveCount: gorillasOldState.player1?.score + gorillasOldState.player2?.score || 0,
+        buildings: gorillasOldState.buildings,
+        player1: gorillasOldState.player1,
+        player2: gorillasOldState.player2,
+        currentPlayer: gorillasOldState.currentPlayer,
+        wind: gorillasOldState.wind,
+        gravity: gorillasOldState.gravity,
+        levelIndex: gorillasOldState.levelIndex || 0,
+        totalLevels: gorillasOldState.totalLevels || 10,
+        pointsToWin: gorillasOldState.pointsToWin || 3,
+        isVsAI: gorillasOldState.isVsAI ?? true,
+        aiDifficulty: gorillasOldState.aiDifficulty || 'medium',
+        lastTrajectory: gorillasOldState.lastTrajectory,
+        canvasWidth: gorillasOldState.canvasWidth || 800,
+        canvasHeight: gorillasOldState.canvasHeight || 400,
+      } as any;
+
     default:
       return null;
   }
@@ -264,6 +288,29 @@ function convertToOldState(
         boxesOnGoals: sokobanState.boxes?.filter((b: any) =>
           sokobanState.goals?.some((g: any) => g.row === b.row && g.col === b.col)
         ).length || 0,
+      } as GameState;
+
+    case 'gorillas':
+      const gorillasState = engineState as any;
+      return {
+        gameType: 'gorillas',
+        status: gorillasState.status,
+        createdAt: now,
+        lastActivity: now,
+        buildings: gorillasState.buildings,
+        player1: gorillasState.player1,
+        player2: gorillasState.player2,
+        currentPlayer: gorillasState.currentPlayer,
+        wind: gorillasState.wind,
+        gravity: gorillasState.gravity,
+        levelIndex: gorillasState.levelIndex,
+        totalLevels: gorillasState.totalLevels,
+        pointsToWin: gorillasState.pointsToWin,
+        isVsAI: gorillasState.isVsAI,
+        aiDifficulty: gorillasState.aiDifficulty,
+        lastTrajectory: gorillasState.lastTrajectory,
+        canvasWidth: gorillasState.canvasWidth || 800,
+        canvasHeight: gorillasState.canvasHeight || 400,
       } as GameState;
 
     default:

@@ -1,0 +1,585 @@
+/**
+ * Gorillas Game Engine
+ *
+ * Classic artillery game inspired by GORILLA.BAS (MS-DOS 1991)
+ * Two gorillas throw explosive bananas at each other across a cityscape
+ *
+ * Physics: Projectile motion with gravity and wind
+ * Players input: angle (0-360°) and velocity (1-200)
+ */
+import { generateGameId, } from '../types';
+const LEVELS = [
+    {
+        name: "Tutorial",
+        buildingCount: 8,
+        minHeight: 100,
+        maxHeight: 200,
+        windRange: [0, 0], // No wind
+        gravity: 9.8,
+        description: "No wind - learn the basics",
+    },
+    {
+        name: "Light Breeze",
+        buildingCount: 10,
+        minHeight: 100,
+        maxHeight: 250,
+        windRange: [-3, 3],
+        gravity: 9.8,
+        description: "Light wind conditions",
+    },
+    {
+        name: "City Center",
+        buildingCount: 12,
+        minHeight: 150,
+        maxHeight: 300,
+        windRange: [-5, 5],
+        gravity: 9.8,
+        description: "Taller buildings, moderate wind",
+    },
+    {
+        name: "Windy Day",
+        buildingCount: 10,
+        minHeight: 100,
+        maxHeight: 250,
+        windRange: [-8, 8],
+        gravity: 9.8,
+        description: "Strong wind gusts",
+    },
+    {
+        name: "Skyscraper District",
+        buildingCount: 14,
+        minHeight: 200,
+        maxHeight: 350,
+        windRange: [-6, 6],
+        gravity: 9.8,
+        description: "Very tall buildings",
+    },
+    {
+        name: "Storm Front",
+        buildingCount: 12,
+        minHeight: 150,
+        maxHeight: 280,
+        windRange: [-12, 12],
+        gravity: 9.8,
+        description: "Extreme wind conditions",
+    },
+    {
+        name: "Low Gravity",
+        buildingCount: 10,
+        minHeight: 100,
+        maxHeight: 200,
+        windRange: [-4, 4],
+        gravity: 4.0,
+        description: "Moon-like gravity",
+    },
+    {
+        name: "High Gravity",
+        buildingCount: 10,
+        minHeight: 80,
+        maxHeight: 180,
+        windRange: [-4, 4],
+        gravity: 15.0,
+        description: "Jupiter-like gravity",
+    },
+    {
+        name: "Urban Canyon",
+        buildingCount: 16,
+        minHeight: 180,
+        maxHeight: 320,
+        windRange: [-10, 10],
+        gravity: 9.8,
+        description: "Dense cityscape with varying wind",
+    },
+    {
+        name: "Final Challenge",
+        buildingCount: 14,
+        minHeight: 200,
+        maxHeight: 380,
+        windRange: [-15, 15],
+        gravity: 9.8,
+        description: "Maximum difficulty!",
+    },
+];
+// =============================================================================
+// Constants
+// =============================================================================
+const CANVAS_WIDTH = 800;
+const CANVAS_HEIGHT = 500;
+const GORILLA_SIZE = 30;
+const BANANA_RADIUS = 5;
+const EXPLOSION_RADIUS = 25;
+const SUN_RADIUS = 30;
+const BUILDING_MIN_WIDTH = 40;
+const BUILDING_MAX_WIDTH = 70;
+const TIME_STEP = 0.05; // Physics simulation time step
+// =============================================================================
+// Helper Functions
+// =============================================================================
+function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function randomFloat(min, max) {
+    return Math.random() * (max - min) + min;
+}
+function degToRad(degrees) {
+    return (degrees * Math.PI) / 180;
+}
+function generateBuildings(level) {
+    const buildings = [];
+    let x = 0;
+    const gapBetween = 2;
+    while (x < CANVAS_WIDTH && buildings.length < level.buildingCount) {
+        const width = randomInt(BUILDING_MIN_WIDTH, BUILDING_MAX_WIDTH);
+        const height = randomInt(level.minHeight, level.maxHeight);
+        buildings.push({
+            x,
+            width,
+            height,
+            damage: new Array(width).fill(0), // No damage initially
+        });
+        x += width + gapBetween;
+    }
+    return buildings;
+}
+function generateWind(range) {
+    return randomFloat(range[0], range[1]);
+}
+function placeGorilla(buildings, isLeft, canvasHeight) {
+    // Pick a building on the left or right side
+    const buildingCount = buildings.length;
+    const buildingIndex = isLeft
+        ? randomInt(0, Math.floor(buildingCount / 3))
+        : randomInt(Math.floor(2 * buildingCount / 3), buildingCount - 1);
+    const building = buildings[buildingIndex];
+    return {
+        position: {
+            x: building.x + building.width / 2,
+            y: canvasHeight - building.height - GORILLA_SIZE / 2,
+        },
+        buildingIndex,
+    };
+}
+function simulateThrow(state, angle, velocity, thrower) {
+    const gorilla = thrower === 'player1' ? state.player1 : state.player2;
+    const opponent = thrower === 'player1' ? state.player2 : state.player1;
+    // Adjust angle for player 2 (throwing left)
+    const effectiveAngle = thrower === 'player2' ? 180 - angle : angle;
+    const radians = degToRad(effectiveAngle);
+    // Initial velocity components
+    const vx = velocity * Math.cos(radians);
+    const vy = -velocity * Math.sin(radians); // Negative because y increases downward
+    // Starting position (from gorilla's hand)
+    let x = gorilla.position.x;
+    let y = gorilla.position.y - GORILLA_SIZE / 2;
+    const points = [{ x, y }];
+    let t = 0;
+    let hit = null;
+    let hitPosition;
+    const maxTime = 20; // Max simulation time
+    while (t < maxTime && !hit) {
+        t += TIME_STEP;
+        // Apply physics: x = x0 + vx*t + wind*t, y = y0 + vy*t + 0.5*g*t²
+        const windEffect = state.wind * TIME_STEP;
+        x += vx * TIME_STEP + windEffect;
+        y += vy * TIME_STEP + 0.5 * state.gravity * TIME_STEP * TIME_STEP;
+        // vy updates each step (implicit in position calculation)
+        points.push({ x, y });
+        // Check bounds
+        if (x < 0 || x > state.width || y > state.height) {
+            hit = 'out-of-bounds';
+            hitPosition = { x, y };
+            break;
+        }
+        // Check sun collision
+        const sunDist = Math.sqrt(Math.pow(x - state.sunPosition.x, 2) +
+            Math.pow(y - state.sunPosition.y, 2));
+        if (sunDist < SUN_RADIUS + BANANA_RADIUS) {
+            hit = 'sun';
+            hitPosition = { x, y };
+            break;
+        }
+        // Check opponent gorilla collision
+        const gorillaDistX = Math.abs(x - opponent.position.x);
+        const gorillaDistY = Math.abs(y - opponent.position.y);
+        if (gorillaDistX < GORILLA_SIZE / 2 + BANANA_RADIUS &&
+            gorillaDistY < GORILLA_SIZE / 2 + BANANA_RADIUS) {
+            hit = 'gorilla';
+            hitPosition = { x, y };
+            break;
+        }
+        // Check building collision
+        for (const building of state.buildings) {
+            if (x >= building.x && x < building.x + building.width) {
+                const col = Math.floor(x - building.x);
+                const effectiveHeight = building.height - (building.damage[col] || 0);
+                const buildingTop = state.height - effectiveHeight;
+                if (y >= buildingTop) {
+                    hit = 'building';
+                    hitPosition = { x, y };
+                    break;
+                }
+            }
+        }
+    }
+    return {
+        points,
+        hit,
+        hitPosition,
+        explosionRadius: EXPLOSION_RADIUS,
+    };
+}
+function applyExplosionDamage(state, position) {
+    const newBuildings = state.buildings.map(building => {
+        // Check if explosion affects this building
+        if (position.x < building.x - EXPLOSION_RADIUS ||
+            position.x > building.x + building.width + EXPLOSION_RADIUS) {
+            return building;
+        }
+        // Apply damage to affected columns
+        const newDamage = [...building.damage];
+        for (let col = 0; col < building.width; col++) {
+            const colX = building.x + col;
+            const dist = Math.abs(colX - position.x);
+            if (dist < EXPLOSION_RADIUS) {
+                // Calculate damage based on distance from explosion center
+                const damageAmount = EXPLOSION_RADIUS - dist;
+                newDamage[col] = Math.min(building.height, (newDamage[col] || 0) + damageAmount);
+            }
+        }
+        return { ...building, damage: newDamage };
+    });
+    return { ...state, buildings: newBuildings };
+}
+function checkGorillaFall(state) {
+    // Check if either gorilla's building has been destroyed under them
+    const checkGorilla = (gorilla) => {
+        const building = state.buildings[gorilla.buildingIndex];
+        const col = Math.floor(gorilla.position.x - building.x);
+        const effectiveHeight = building.height - (building.damage[col] || 0);
+        // If building is too damaged, gorilla falls
+        if (effectiveHeight < GORILLA_SIZE) {
+            return { ...gorilla, score: gorilla.score - 1 }; // Lose a point for falling
+        }
+        return gorilla;
+    };
+    return {
+        ...state,
+        player1: checkGorilla(state.player1),
+        player2: checkGorilla(state.player2),
+    };
+}
+function generateAIMove(state, difficulty) {
+    const ai = state.player2;
+    const target = state.player1;
+    // Calculate distance and height difference
+    const dx = target.position.x - ai.position.x; // Negative (target is left)
+    const dy = target.position.y - ai.position.y; // Positive if target is lower
+    const distance = Math.abs(dx);
+    // For ballistic trajectory, use ~45° as base (optimal for max range)
+    // Adjust for height difference: aim higher if target is above, lower if below
+    const heightAdjustment = Math.atan2(-dy, distance) * 180 / Math.PI;
+    let idealAngle = 45 + heightAdjustment * 0.5;
+    // Clamp to reasonable throwing angles (10-80 degrees)
+    idealAngle = Math.max(10, Math.min(80, idealAngle));
+    // Estimate velocity needed based on distance
+    // v = sqrt(distance * g / sin(2*angle))
+    const angleRad = degToRad(idealAngle);
+    let idealVelocity = Math.sqrt(Math.abs(distance * state.gravity) / Math.sin(2 * angleRad));
+    idealVelocity = Math.min(180, Math.max(40, idealVelocity));
+    // Apply wind compensation - positive wind blows right, so we need to aim more left (higher angle)
+    // For player2, wind compensation is reversed since we're throwing left
+    const windCompensation = -state.wind * (distance / 300);
+    idealAngle += windCompensation;
+    // Add randomness based on difficulty
+    let angleError;
+    let velocityError;
+    switch (difficulty) {
+        case 'easy':
+            angleError = randomFloat(-25, 25);
+            velocityError = randomFloat(-40, 40);
+            break;
+        case 'medium':
+            angleError = randomFloat(-12, 12);
+            velocityError = randomFloat(-20, 20);
+            break;
+        case 'hard':
+            angleError = randomFloat(-5, 5);
+            velocityError = randomFloat(-10, 10);
+            break;
+    }
+    const angle = Math.max(0, Math.min(180, idealAngle + angleError));
+    const velocity = Math.max(1, Math.min(200, idealVelocity + velocityError));
+    return { angle: Math.round(angle), velocity: Math.round(velocity) };
+}
+// =============================================================================
+// Game Engine Implementation
+// =============================================================================
+export const GorillasEngine = {
+    metadata: {
+        id: 'gorillas',
+        name: 'Gorillas',
+        description: 'Classic artillery game - throw bananas at your opponent!',
+        difficulty: 'medium',
+        points: 150,
+        transport: 'sse',
+        minPlayers: 1,
+        maxPlayers: 2,
+    },
+    newGame(options) {
+        const levelIndex = options?.levelIndex ?? 0;
+        const level = LEVELS[Math.min(levelIndex, LEVELS.length - 1)];
+        const buildings = generateBuildings(level);
+        const wind = generateWind(level.windRange);
+        const sunPosition = {
+            x: CANVAS_WIDTH / 2,
+            y: 40,
+        };
+        const player1Pos = placeGorilla(buildings, true, CANVAS_HEIGHT);
+        const player2Pos = placeGorilla(buildings, false, CANVAS_HEIGHT);
+        return {
+            gameId: generateGameId(),
+            gameType: 'gorillas',
+            status: 'playing',
+            turn: 'player',
+            moveCount: 0,
+            buildings,
+            player1: {
+                ...player1Pos,
+                score: 0,
+                name: options?.player1Name ?? 'Player 1',
+            },
+            player2: {
+                ...player2Pos,
+                score: 0,
+                name: options?.player2Name ?? (options?.vsAI ? 'AI' : 'Player 2'),
+            },
+            wind,
+            gravity: options?.gravity ?? level.gravity,
+            levelIndex,
+            totalLevels: LEVELS.length,
+            pointsToWin: options?.pointsToWin ?? 3,
+            width: CANVAS_WIDTH,
+            height: CANVAS_HEIGHT,
+            sunPosition,
+            isVsAI: options?.vsAI ?? true,
+            aiDifficulty: options?.aiDifficulty ?? 'medium',
+        };
+    },
+    validateState(state) {
+        if (!state || typeof state !== 'object')
+            return false;
+        const s = state;
+        return (s.gameType === 'gorillas' &&
+            typeof s.gameId === 'string' &&
+            Array.isArray(s.buildings) &&
+            typeof s.player1 === 'object' &&
+            typeof s.player2 === 'object');
+    },
+    getLegalMoves(_state) {
+        // All angle/velocity combinations are technically legal
+        // Return some example moves
+        const moves = [];
+        for (let angle = 20; angle <= 80; angle += 10) {
+            for (let velocity = 50; velocity <= 150; velocity += 25) {
+                moves.push({ angle, velocity });
+            }
+        }
+        return moves;
+    },
+    isLegalMove(_state, move) {
+        return (typeof move.angle === 'number' &&
+            typeof move.velocity === 'number' &&
+            move.angle >= 0 && move.angle <= 360 &&
+            move.velocity >= 1 && move.velocity <= 200);
+    },
+    makeMove(state, move) {
+        if (!this.isLegalMove(state, move)) {
+            return {
+                state,
+                valid: false,
+                error: `Invalid move. Angle must be 0-360, velocity must be 1-200.`,
+            };
+        }
+        if (state.status !== 'playing') {
+            return {
+                state,
+                valid: false,
+                error: 'Game is not in progress.',
+            };
+        }
+        const thrower = state.turn === 'player' ? 'player1' : 'player2';
+        const trajectory = simulateThrow(state, move.angle, move.velocity, thrower);
+        let newState = {
+            ...state,
+            lastTrajectory: trajectory,
+            lastThrower: thrower,
+            moveCount: state.moveCount + 1,
+        };
+        let message = '';
+        if (trajectory.hit === 'gorilla') {
+            // Score!
+            const scorer = thrower === 'player1' ? 'player1' : 'player2';
+            const scorerGorilla = newState[scorer];
+            newState = {
+                ...newState,
+                [scorer]: { ...scorerGorilla, score: scorerGorilla.score + 1 },
+            };
+            message = `${scorerGorilla.name} hit! Score: ${scorerGorilla.score + 1}`;
+            // Check for win
+            if (scorerGorilla.score + 1 >= state.pointsToWin) {
+                return {
+                    state: { ...newState, status: 'won', message },
+                    valid: true,
+                    result: {
+                        status: thrower === 'player1' ? 'won' : 'lost',
+                        totalMoves: newState.moveCount,
+                        metadata: {
+                            winner: scorerGorilla.name,
+                            finalScore: `${newState.player1.score}-${newState.player2.score}`,
+                        },
+                    },
+                };
+            }
+            // New round - regenerate wind
+            const level = LEVELS[Math.min(state.levelIndex, LEVELS.length - 1)];
+            newState = { ...newState, wind: generateWind(level.windRange) };
+        }
+        else if (trajectory.hit === 'building' && trajectory.hitPosition) {
+            // Apply explosion damage
+            newState = applyExplosionDamage(newState, trajectory.hitPosition);
+            newState = checkGorillaFall(newState);
+            message = 'Building hit!';
+        }
+        else if (trajectory.hit === 'sun') {
+            message = 'You hit the sun! It got angry!';
+        }
+        else {
+            message = 'Missed! Out of bounds.';
+        }
+        // Switch turns
+        newState = {
+            ...newState,
+            turn: state.turn === 'player' ? 'opponent' : 'player',
+            message,
+        };
+        return { state: newState, valid: true };
+    },
+    getAIMove(state, difficulty) {
+        if (state.status !== 'playing')
+            return null;
+        return generateAIMove(state, difficulty ?? state.aiDifficulty);
+    },
+    isGameOver(state) {
+        return state.status === 'won' || state.status === 'lost' || state.status === 'draw';
+    },
+    getResult(state) {
+        if (!this.isGameOver(state))
+            return null;
+        const player1Won = state.player1.score >= state.pointsToWin;
+        const player2Won = state.player2.score >= state.pointsToWin;
+        return {
+            status: player1Won ? 'won' : player2Won ? 'lost' : 'draw',
+            totalMoves: state.moveCount,
+            metadata: {
+                player1Score: state.player1.score,
+                player2Score: state.player2.score,
+                winner: player1Won ? state.player1.name : state.player2.name,
+            },
+        };
+    },
+    serialize(state) {
+        return JSON.stringify(state);
+    },
+    deserialize(data) {
+        const state = JSON.parse(data);
+        if (!this.validateState(state)) {
+            throw new Error('Invalid Gorillas state data');
+        }
+        return state;
+    },
+    renderText(state) {
+        const level = LEVELS[Math.min(state.levelIndex, LEVELS.length - 1)];
+        const windDir = state.wind > 0 ? '→' : state.wind < 0 ? '←' : '-';
+        const windStr = `${windDir} ${Math.abs(state.wind).toFixed(1)}`;
+        let text = `
+🦍 GORILLAS - Level ${state.levelIndex + 1}: ${level.name}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+${state.player1.name}: ${'🍌'.repeat(state.player1.score)} (${state.player1.score}/${state.pointsToWin})
+${state.player2.name}: ${'🍌'.repeat(state.player2.score)} (${state.player2.score}/${state.pointsToWin})
+
+Wind: ${windStr}  |  Gravity: ${state.gravity} m/s²
+
+Current turn: ${state.turn === 'player' ? state.player1.name : state.player2.name}
+`;
+        if (state.message) {
+            text += `\n📢 ${state.message}\n`;
+        }
+        if (state.lastTrajectory) {
+            text += `\nLast throw: ${state.lastTrajectory.hit || 'in flight'}`;
+        }
+        text += `\n\n💡 Use throw_banana(angle, velocity) to throw!
+   Angle: 0-90 degrees (higher = more vertical)
+   Velocity: 1-200 (higher = further)`;
+        return text;
+    },
+    renderJSON(state) {
+        const level = LEVELS[Math.min(state.levelIndex, LEVELS.length - 1)];
+        return {
+            gameType: 'gorillas',
+            gameId: state.gameId,
+            status: state.status,
+            turn: state.turn,
+            moveCount: state.moveCount,
+            legalMoves: ['throw_banana(angle: 0-360, velocity: 1-200)'],
+            board: {
+                width: state.width,
+                height: state.height,
+                buildings: state.buildings,
+                player1: state.player1,
+                player2: state.player2,
+                sunPosition: state.sunPosition,
+                wind: state.wind,
+                gravity: state.gravity,
+                lastTrajectory: state.lastTrajectory,
+            },
+            extra: {
+                levelIndex: state.levelIndex,
+                levelName: level.name,
+                levelDescription: level.description,
+                totalLevels: state.totalLevels,
+                pointsToWin: state.pointsToWin,
+                isVsAI: state.isVsAI,
+                message: state.message,
+            },
+        };
+    },
+    formatMove(move) {
+        return `angle=${move.angle}°, velocity=${move.velocity}`;
+    },
+    parseMove(input) {
+        // Parse formats:
+        // "45, 100" or "45 100" or "angle=45, velocity=100"
+        const cleanInput = input.toLowerCase().replace(/[°]/g, '');
+        // Try "angle=X, velocity=Y" format
+        const namedMatch = cleanInput.match(/angle\s*[=:]\s*(\d+).*velocity\s*[=:]\s*(\d+)/);
+        if (namedMatch) {
+            return {
+                angle: parseInt(namedMatch[1]),
+                velocity: parseInt(namedMatch[2]),
+            };
+        }
+        // Try "X, Y" or "X Y" format
+        const simpleMatch = cleanInput.match(/(\d+)\s*[,\s]\s*(\d+)/);
+        if (simpleMatch) {
+            return {
+                angle: parseInt(simpleMatch[1]),
+                velocity: parseInt(simpleMatch[2]),
+            };
+        }
+        return null;
+    },
+};
+// Export level data for UI
+export { LEVELS };
+//# sourceMappingURL=index.js.map

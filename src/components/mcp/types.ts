@@ -1,6 +1,6 @@
 // MCP Component Types
 
-export type GameType = "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "polybridge" | "sokoban";
+export type GameType = "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "polybridge" | "sokoban" | "gorillas";
 
 export interface CommandLogEntry {
   timestamp: number;
@@ -103,6 +103,45 @@ export interface SokobanGameState {
   boxesOnGoals: number;
 }
 
+export interface GorillasGameState {
+  gameType: "gorillas";
+  status: "waiting" | "playing" | "won" | "lost";
+  buildings: Array<{
+    x: number;
+    width: number;
+    height: number;
+    color: string;
+    destroyed: boolean;
+  }>;
+  player1: {
+    x: number;
+    y: number;
+    score: number;
+    isAI: boolean;
+  };
+  player2: {
+    x: number;
+    y: number;
+    score: number;
+    isAI: boolean;
+  };
+  currentPlayer: 1 | 2;
+  wind: number;
+  gravity: number;
+  levelIndex: number;
+  totalLevels: number;
+  pointsToWin: number;
+  isVsAI: boolean;
+  aiDifficulty: "easy" | "medium" | "hard";
+  lastTrajectory?: {
+    points: Array<{ x: number; y: number }>;
+    hit: "player1" | "player2" | "building" | "miss" | null;
+    explosionCenter?: { x: number; y: number };
+  };
+  canvasWidth: number;
+  canvasHeight: number;
+}
+
 export type GameState =
   | ChessGameState
   | TicTacToeGameState
@@ -110,7 +149,8 @@ export type GameState =
   | CanvasGameState
   | MinesweeperGameState
   | PolyBridgeGameState
-  | SokobanGameState;
+  | SokobanGameState
+  | GorillasGameState;
 
 export interface RoomState {
   roomId: string;

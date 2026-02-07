@@ -21,6 +21,8 @@ export { polybridgeEngine } from './polybridge';
 export { LEVELS as POLYBRIDGE_LEVELS, MATERIAL_COSTS } from './polybridge';
 // Sokoban engine
 export { sokobanEngine, SOKOBAN_LEVELS, TOTAL_LEVELS as SOKOBAN_TOTAL_LEVELS } from './sokoban';
+// Gorillas engine
+export { GorillasEngine, LEVELS as GORILLAS_LEVELS } from './gorillas';
 // Engine registry for dynamic access
 import { chessEngine } from './chess';
 import { tictactoeEngine } from './tictactoe';
@@ -29,6 +31,7 @@ import { minesweeperEngine } from './minesweeper';
 import { canvasEngine } from './canvas';
 import { polybridgeEngine } from './polybridge';
 import { sokobanEngine } from './sokoban';
+import { GorillasEngine } from './gorillas';
 export const engines = {
     chess: chessEngine,
     tictactoe: tictactoeEngine,
@@ -37,6 +40,7 @@ export const engines = {
     minesweeper: minesweeperEngine,
     polybridge: polybridgeEngine,
     sokoban: sokobanEngine,
+    gorillas: GorillasEngine,
 };
 /**
  * Get an engine by ID

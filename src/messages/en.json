@@ -178,6 +178,10 @@
         "title": "Sokoban",
         "description": "Classic DOS puzzle game! Push all boxes onto goal positions. Plan carefully - boxes can get stuck!"
       },
+      "gorillas": {
+        "title": "Gorillas",
+        "description": "Classic DOS artillery game! Two gorillas throw bananas across a cityscape. Account for wind and gravity!"
+      },
       "polyBridge": {
         "title": "Poly Bridge",
         "description": "Build bridges with beams and cables, then test if vehicles can cross! Physics-based puzzle game."

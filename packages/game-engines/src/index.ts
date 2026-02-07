@@ -37,6 +37,10 @@ export { LEVELS as POLYBRIDGE_LEVELS, MATERIAL_COSTS } from './polybridge';
 export { sokobanEngine, SOKOBAN_LEVELS, TOTAL_LEVELS as SOKOBAN_TOTAL_LEVELS } from './sokoban';
 export type { SokobanState, SokobanMove, SokobanOptions, Direction as SokobanDirection, Position as SokobanPosition } from './sokoban';
 
+// Gorillas engine
+export { GorillasEngine, LEVELS as GORILLAS_LEVELS } from './gorillas';
+export type { GorillasState, GorillasMove, GorillasOptions, Position as GorillasPosition, Building, Gorilla, Trajectory, LevelConfig as GorillasLevelConfig } from './gorillas';
+
 // Engine registry for dynamic access
 import { chessEngine } from './chess';
 import { tictactoeEngine } from './tictactoe';
@@ -45,6 +49,7 @@ import { minesweeperEngine } from './minesweeper';
 import { canvasEngine } from './canvas';
 import { polybridgeEngine } from './polybridge';
 import { sokobanEngine } from './sokoban';
+import { GorillasEngine } from './gorillas';
 import type { GameEngine, GameState } from './types';
 
 export const engines = {
@@ -55,6 +60,7 @@ export const engines = {
   minesweeper: minesweeperEngine,
   polybridge: polybridgeEngine,
   sokoban: sokobanEngine,
+  gorillas: GorillasEngine,
 } as const;
 
 export type EngineId = keyof typeof engines;
