@@ -34,16 +34,16 @@ export default {
           status: "ok",
           service: "mcp-servers",
           version: "0.1.0",
-          games: ["chess", "tictactoe", "snake", "canvas", "minesweeper", "sokoban"],
+          games: ["chess", "tictactoe", "snake", "canvas", "minesweeper", "sokoban", "gorillas", "fractals"],
         },
         { headers: corsHeaders }
       );
     }
 
     // Route to game endpoints
-    const gameMatch = path.match(/^\/(chess|tictactoe|snake|canvas|minesweeper|sokoban)(\/.*)?$/);
+    const gameMatch = path.match(/^\/(chess|tictactoe|snake|canvas|minesweeper|sokoban|gorillas|fractals)(\/.*)?$/);
     if (gameMatch) {
-      const gameType = gameMatch[1] as "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "sokoban";
+      const gameType = gameMatch[1] as "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "sokoban" | "gorillas" | "fractals";
       const subPath = gameMatch[2] || "";
 
       return handleGameRequest(request, env, gameType, subPath);
@@ -186,6 +186,10 @@ function getGameDescription(gameType: string): string {
       return "Minesweeper MCP Server - Classic minesweeper game via MCP tools";
     case "sokoban":
       return "Sokoban MCP Server - Classic box-pushing puzzle with 60 DOS levels";
+    case "gorillas":
+      return "Gorillas MCP Server - Classic DOS artillery game with banana-throwing gorillas";
+    case "fractals":
+      return "Fractals MCP Server - L-System fractals with turtle graphics";
     default:
       return "MCP Game Server";
   }
