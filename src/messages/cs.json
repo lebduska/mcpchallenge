@@ -178,6 +178,14 @@
         "title": "Sokoban",
         "description": "Klasická DOSová logická hra! Zatlačte všechny bedny na cílové pozice. Plánujte dopředu - bedny se mohou zaseknout!"
       },
+      "gorillas": {
+        "title": "Gorillas",
+        "description": "Klasická DOSová dělostřelecká hra! Dvě gorily hází banány přes městskou krajinu. Počítejte s větrem a gravitací!"
+      },
+      "fractals": {
+        "title": "L-System Fraktály",
+        "description": "Vytvářejte nádherné fraktály definováním gramatických pravidel! Stromy, kapradiny, dračí křivky a další z jednoduchých L-System vzorů."
+      },
       "polyBridge": {
         "title": "Poly Bridge",
         "description": "Stavte mosty z trámů a lan, pak otestujte zda vozidlo přejede! Fyzikální puzzle hra."

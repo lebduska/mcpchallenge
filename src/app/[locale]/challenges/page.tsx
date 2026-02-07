@@ -16,6 +16,7 @@ import {
   ChevronRight,
   Package,
   Banana,
+  TreePine,
   // Construction, // Poly Bridge hidden
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -121,6 +122,19 @@ const challengeData = [
     icon: Banana,
     gradient: "from-yellow-500/20 via-amber-500/10 to-orange-500/20",
     accentColor: "yellow",
+  },
+  {
+    id: "fractals",
+    key: "fractals",
+    difficulty: "intermediate",
+    points: 200,
+    type: "creative",
+    completions: 0,
+    featured: true,
+    transport: "HTTP+SSE",
+    icon: TreePine,
+    gradient: "from-purple-500/20 via-pink-500/10 to-fuchsia-500/20",
+    accentColor: "purple",
   },
   // Poly Bridge - hidden until physics is fixed
   // {

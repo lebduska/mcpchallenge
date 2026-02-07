@@ -72,6 +72,14 @@ export const challengeCovers: Record<string, ChallengeCover> = {
     dominantColor: "yellow",
     alt: "Two gorillas on city buildings throwing bananas in 3D clay style",
   },
+  fractals: {
+    image: "/images/challenges/fractals-cover.jpg",
+    unsplashFallback: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1200&h=800&fit=crop&q=80",
+    unsplashCredit: "AI Generated",
+    overlayGradient: "from-purple-950/90 via-fuchsia-950/70 to-transparent",
+    dominantColor: "purple",
+    alt: "Fractal tree patterns in 3D clay style",
+  },
 };
 
 /**

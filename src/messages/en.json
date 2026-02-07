@@ -182,6 +182,10 @@
         "title": "Gorillas",
         "description": "Classic DOS artillery game! Two gorillas throw bananas across a cityscape. Account for wind and gravity!"
       },
+      "fractals": {
+        "title": "L-System Fractals",
+        "description": "Create beautiful fractals by defining grammar rules! Trees, ferns, dragon curves and more from simple L-System patterns."
+      },
       "polyBridge": {
         "title": "Poly Bridge",
         "description": "Build bridges with beams and cables, then test if vehicles can cross! Physics-based puzzle game."

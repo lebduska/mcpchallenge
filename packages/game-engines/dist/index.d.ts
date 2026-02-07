@@ -22,6 +22,8 @@ export { sokobanEngine, SOKOBAN_LEVELS, TOTAL_LEVELS as SOKOBAN_TOTAL_LEVELS } f
 export type { SokobanState, SokobanMove, SokobanOptions, Direction as SokobanDirection, Position as SokobanPosition } from './sokoban';
 export { GorillasEngine, LEVELS as GORILLAS_LEVELS } from './gorillas';
 export type { GorillasState, GorillasMove, GorillasOptions, Position as GorillasPosition, Building, Gorilla, Trajectory, LevelConfig as GorillasLevelConfig } from './gorillas';
+export { fractalsEngine, FRACTAL_PRESETS } from './fractals';
+export type { FractalState, FractalMove, FractalOptions, FractalRule, ColorScheme } from './fractals';
 import type { GameEngine, GameState } from './types';
 export declare const engines: {
     readonly chess: GameEngine<import("./chess").ChessState, import("./chess").ChessMove, import("./chess").ChessOptions>;
@@ -32,6 +34,7 @@ export declare const engines: {
     readonly polybridge: GameEngine<import("./polybridge").PolyBridgeState, import("./polybridge").PolyBridgeMove, import("./polybridge").PolyBridgeOptions>;
     readonly sokoban: GameEngine<import("./sokoban").SokobanState, import("./sokoban").SokobanMove, import("./sokoban").SokobanOptions>;
     readonly gorillas: GameEngine<import("./gorillas").GorillasState, import("./gorillas").GorillasMove, import("./gorillas").GorillasOptions>;
+    readonly fractals: GameEngine<import("./fractals").FractalState, import("./fractals").FractalMove, import("./fractals").FractalOptions>;
 };
 export type EngineId = keyof typeof engines;
 /**

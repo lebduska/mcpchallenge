@@ -128,8 +128,16 @@ function generateBuildings(level) {
     const buildings = [];
     let x = 0;
     const gapBetween = 2;
-    while (x < CANVAS_WIDTH && buildings.length < level.buildingCount) {
-        const width = randomInt(BUILDING_MIN_WIDTH, BUILDING_MAX_WIDTH);
+    // Generate buildings until they fill the entire canvas width
+    // buildingCount from level is now a minimum, not a maximum
+    while (x < CANVAS_WIDTH - BUILDING_MIN_WIDTH) {
+        const remainingWidth = CANVAS_WIDTH - x;
+        // Make sure last building fits
+        const maxW = Math.min(BUILDING_MAX_WIDTH, remainingWidth - gapBetween);
+        const minW = Math.min(BUILDING_MIN_WIDTH, maxW);
+        if (minW < 20)
+            break; // Don't create too narrow buildings
+        const width = randomInt(minW, maxW);
         const height = randomInt(level.minHeight, level.maxHeight);
         buildings.push({
             x,
@@ -165,9 +173,9 @@ function simulateThrow(state, angle, velocity, thrower) {
     // Adjust angle for player 2 (throwing left)
     const effectiveAngle = thrower === 'player2' ? 180 - angle : angle;
     const radians = degToRad(effectiveAngle);
-    // Initial velocity components
-    const vx = velocity * Math.cos(radians);
-    const vy = -velocity * Math.sin(radians); // Negative because y increases downward
+    // Initial velocity components (mutable - updated each step)
+    let vx = velocity * Math.cos(radians);
+    let vy = -velocity * Math.sin(radians); // Negative because y increases downward
     // Starting position (from gorilla's hand)
     let x = gorilla.position.x;
     let y = gorilla.position.y - GORILLA_SIZE / 2;
@@ -178,11 +186,14 @@ function simulateThrow(state, angle, velocity, thrower) {
     const maxTime = 20; // Max simulation time
     while (t < maxTime && !hit) {
         t += TIME_STEP;
-        // Apply physics: x = x0 + vx*t + wind*t, y = y0 + vy*t + 0.5*g*t²
-        const windEffect = state.wind * TIME_STEP;
-        x += vx * TIME_STEP + windEffect;
-        y += vy * TIME_STEP + 0.5 * state.gravity * TIME_STEP * TIME_STEP;
-        // vy updates each step (implicit in position calculation)
+        // Euler integration: update velocity first, then position
+        // Wind affects horizontal velocity
+        vx += state.wind * TIME_STEP * 0.5; // Wind as horizontal acceleration
+        // Gravity affects vertical velocity
+        vy += state.gravity * TIME_STEP;
+        // Update position based on current velocity
+        x += vx * TIME_STEP;
+        y += vy * TIME_STEP;
         points.push({ x, y });
         // Check bounds
         if (x < 0 || x > state.width || y > state.height) {
@@ -198,13 +209,14 @@ function simulateThrow(state, angle, velocity, thrower) {
             hitPosition = { x, y };
             break;
         }
-        // Check opponent gorilla collision
+        // Check opponent gorilla collision - larger hitbox for better gameplay
         const gorillaDistX = Math.abs(x - opponent.position.x);
         const gorillaDistY = Math.abs(y - opponent.position.y);
-        if (gorillaDistX < GORILLA_SIZE / 2 + BANANA_RADIUS &&
-            gorillaDistY < GORILLA_SIZE / 2 + BANANA_RADIUS) {
+        // Hitbox is GORILLA_SIZE wide and tall (30x30), plus banana radius
+        if (gorillaDistX < GORILLA_SIZE &&
+            gorillaDistY < GORILLA_SIZE) {
             hit = 'gorilla';
-            hitPosition = { x, y };
+            hitPosition = { x: opponent.position.x, y: opponent.position.y };
             break;
         }
         // Check building collision
