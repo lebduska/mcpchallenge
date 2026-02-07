@@ -24,6 +24,8 @@ export { GorillasEngine, LEVELS as GORILLAS_LEVELS } from './gorillas';
 export type { GorillasState, GorillasMove, GorillasOptions, Position as GorillasPosition, Building, Gorilla, Trajectory, LevelConfig as GorillasLevelConfig } from './gorillas';
 export { fractalsEngine, FRACTAL_PRESETS } from './fractals';
 export type { FractalState, FractalMove, FractalOptions, FractalRule, ColorScheme } from './fractals';
+export { lightsOutEngine } from './lightsout';
+export type { LightsOutState, LightsOutMove, LightsOutOptions } from './lightsout';
 import type { GameEngine, GameState } from './types';
 export declare const engines: {
     readonly chess: GameEngine<import("./chess").ChessState, import("./chess").ChessMove, import("./chess").ChessOptions>;
@@ -35,6 +37,7 @@ export declare const engines: {
     readonly sokoban: GameEngine<import("./sokoban").SokobanState, import("./sokoban").SokobanMove, import("./sokoban").SokobanOptions>;
     readonly gorillas: GameEngine<import("./gorillas").GorillasState, import("./gorillas").GorillasMove, import("./gorillas").GorillasOptions>;
     readonly fractals: GameEngine<import("./fractals").FractalState, import("./fractals").FractalMove, import("./fractals").FractalOptions>;
+    readonly lightsout: GameEngine<import("./lightsout").LightsOutState, import("./lightsout").LightsOutMove, import("./lightsout").LightsOutOptions>;
 };
 export type EngineId = keyof typeof engines;
 /**

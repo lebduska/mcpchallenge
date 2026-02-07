@@ -25,6 +25,8 @@ export { sokobanEngine, SOKOBAN_LEVELS, TOTAL_LEVELS as SOKOBAN_TOTAL_LEVELS } f
 export { GorillasEngine, LEVELS as GORILLAS_LEVELS } from './gorillas';
 // Fractals engine
 export { fractalsEngine, FRACTAL_PRESETS } from './fractals';
+// Lights Out engine
+export { lightsOutEngine } from './lightsout';
 // Engine registry for dynamic access
 import { chessEngine } from './chess';
 import { tictactoeEngine } from './tictactoe';
@@ -35,6 +37,7 @@ import { polybridgeEngine } from './polybridge';
 import { sokobanEngine } from './sokoban';
 import { GorillasEngine } from './gorillas';
 import { fractalsEngine } from './fractals';
+import { lightsOutEngine } from './lightsout';
 export const engines = {
     chess: chessEngine,
     tictactoe: tictactoeEngine,
@@ -45,6 +48,7 @@ export const engines = {
     sokoban: sokobanEngine,
     gorillas: GorillasEngine,
     fractals: fractalsEngine,
+    lightsout: lightsOutEngine,
 };
 /**
  * Get an engine by ID

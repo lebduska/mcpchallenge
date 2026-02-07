@@ -80,6 +80,14 @@ export const challengeCovers: Record<string, ChallengeCover> = {
     dominantColor: "purple",
     alt: "Fractal tree patterns in 3D clay style",
   },
+  lightsout: {
+    image: "/images/challenges/lightsout-cover.jpg",
+    unsplashFallback: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200&h=800&fit=crop&q=80",
+    unsplashCredit: "AI Generated",
+    overlayGradient: "from-yellow-950/90 via-amber-950/70 to-transparent",
+    dominantColor: "yellow",
+    alt: "Retro electronic puzzle game with glowing LED buttons",
+  },
 };
 
 /**

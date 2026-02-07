@@ -186,6 +186,10 @@
         "title": "L-System Fractals",
         "description": "Create beautiful fractals by defining grammar rules! Trees, ferns, dragon curves and more from simple L-System patterns."
       },
+      "lightsout": {
+        "title": "Lights Out",
+        "description": "Classic 90s electronic puzzle! Toggle lights in a grid - each press affects neighbors. Turn all lights off to win!"
+      },
       "polyBridge": {
         "title": "Poly Bridge",
         "description": "Build bridges with beams and cables, then test if vehicles can cross! Physics-based puzzle game."

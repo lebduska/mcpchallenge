@@ -186,6 +186,10 @@
         "title": "L-System Fraktály",
         "description": "Vytvářejte nádherné fraktály definováním gramatických pravidel! Stromy, kapradiny, dračí křivky a další z jednoduchých L-System vzorů."
       },
+      "lightsout": {
+        "title": "Lights Out",
+        "description": "Klasická elektronická hlavolamka z 90. let! Přepínejte světla v mřížce - každé stisknutí ovlivní sousedy. Zhasněte všechna světla!"
+      },
       "polyBridge": {
         "title": "Poly Bridge",
         "description": "Stavte mosty z trámů a lan, pak otestujte zda vozidlo přejede! Fyzikální puzzle hra."
