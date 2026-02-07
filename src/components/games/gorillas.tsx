@@ -139,7 +139,7 @@ function QBasicBuilding({ x, width, height, colorIndex, damage }: {
   // Use 2px wide columns for efficiency
   const colWidth = 2;
   const numCols = Math.ceil(width / colWidth);
-  const columns: JSX.Element[] = [];
+  const columns: React.ReactElement[] = [];
 
   for (let i = 0; i < numCols; i++) {
     const screenX = x + i * colWidth;
