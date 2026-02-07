@@ -15,7 +15,7 @@ import {
   Paintbrush,
   ChevronRight,
   Package,
-  // Banana, // Gorillas hidden
+  Banana,
   // Construction, // Poly Bridge hidden
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -109,20 +109,19 @@ const challengeData = [
     gradient: "from-pink-500/20 via-rose-500/10 to-fuchsia-500/20",
     accentColor: "pink",
   },
-  // Gorillas - hidden until AI aiming is fixed
-  // {
-  //   id: "gorillas",
-  //   key: "gorillas",
-  //   difficulty: "intermediate",
-  //   points: 175,
-  //   type: "game",
-  //   completions: 0,
-  //   featured: true,
-  //   transport: "HTTP+SSE",
-  //   icon: Banana,
-  //   gradient: "from-yellow-500/20 via-amber-500/10 to-orange-500/20",
-  //   accentColor: "yellow",
-  // },
+  {
+    id: "gorillas",
+    key: "gorillas",
+    difficulty: "intermediate",
+    points: 175,
+    type: "game",
+    completions: 0,
+    featured: true,
+    transport: "HTTP+SSE",
+    icon: Banana,
+    gradient: "from-yellow-500/20 via-amber-500/10 to-orange-500/20",
+    accentColor: "yellow",
+  },
   // Poly Bridge - hidden until physics is fixed
   // {
   //   id: "poly-bridge",

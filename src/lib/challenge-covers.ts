@@ -64,6 +64,14 @@ export const challengeCovers: Record<string, ChallengeCover> = {
     dominantColor: "pink",
     alt: "Paintbrush and palette in 3D clay style",
   },
+  gorillas: {
+    image: "/images/challenges/gorillas-cover.jpg",
+    unsplashFallback: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=1200&h=800&fit=crop&q=80",
+    unsplashCredit: "AI Generated",
+    overlayGradient: "from-yellow-950/90 via-amber-950/70 to-transparent",
+    dominantColor: "yellow",
+    alt: "Two gorillas on city buildings throwing bananas in 3D clay style",
+  },
 };
 
 /**
