@@ -70,7 +70,38 @@
       "challenges": "Challenges",
       "tutorials": "Tutorials",
       "possibilities": "Possibilities",
-      "cost": "Cost"
+      "cost": "Cost",
+      "achievements": "Achievements"
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "subtitle": "MCP lets AI agents use tools through a simple, standardized protocol",
+      "step1": {
+        "title": "Pick a Challenge",
+        "description": "Choose from chess, puzzles, drawing games, and more. Each game teaches different MCP concepts."
+      },
+      "step2": {
+        "title": "Connect via MCP",
+        "description": "Use tools like make_move, draw_pixel, or get_state. Your AI client communicates through the protocol."
+      },
+      "step3": {
+        "title": "Learn by Playing",
+        "description": "Watch how tool calls translate to actions. Understand MCP patterns through real interactions."
+      }
+    },
+    "challenges": {
+      "chess": {
+        "title": "Chess",
+        "description": "Classic chess with Stockfish AI. Learn move validation, game state, and turn-based tool calls."
+      },
+      "gorillas": {
+        "title": "Gorillas",
+        "description": "Retro artillery game! Calculate trajectories with wind physics. Perfect for learning game loops."
+      },
+      "fractals": {
+        "title": "Fractals",
+        "description": "Generate beautiful L-system fractals. Explore creative tool parameters and visual output."
+      }
     },
     "footer": {
       "builtWith": "Built with",
