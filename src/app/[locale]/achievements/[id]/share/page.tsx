@@ -1,9 +1,12 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getDb } from "@/db";
+import { getRequestContext } from "@cloudflare/next-on-pages";
+import { createDb } from "@/db";
 import { achievements, userAchievements, users } from "@/db/schema";
 import { eq, count } from "drizzle-orm";
 import { AchievementShareClient } from "./share-client";
+
+export const runtime = "edge";
 
 interface PageProps {
   params: Promise<{ id: string; locale: string }>;
@@ -11,7 +14,8 @@ interface PageProps {
 }
 
 async function getAchievementData(id: string, userId?: string) {
-  const db = getDb();
+  const { env } = getRequestContext();
+  const db = createDb(env.DB);
 
   // Get achievement
   const [achievement] = await db
