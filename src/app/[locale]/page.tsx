@@ -383,6 +383,14 @@ server.tool(
             </p>
             <div className="flex gap-6">
               <a
+                href="https://discord.gg/mcp-challenge"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50 text-sm"
+              >
+                Discord
+              </a>
+              <a
                 href="https://modelcontextprotocol.io"
                 target="_blank"
                 rel="noopener noreferrer"
