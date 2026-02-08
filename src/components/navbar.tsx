@@ -45,6 +45,8 @@ export function Navbar() {
 
   const navItems = [
     { href: "/challenges", label: t("challenges") },
+    { href: "/gallery", label: t("gallery") },
+    { href: "/leaderboard", label: t("leaderboard") },
   ];
 
   // Remove locale prefix from pathname for comparison

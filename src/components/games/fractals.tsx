@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Play, RotateCcw, Download, Sparkles, TreePine, Snowflake, FlameKindling } from "lucide-react";
+import { Play, RotateCcw, Download, Upload, Check, Loader2, ExternalLink, Sparkles, TreePine, Snowflake, FlameKindling } from "lucide-react";
 import {
   fractalsEngine,
   FRACTAL_PRESETS,
@@ -50,6 +50,8 @@ export function FractalsGame({ onComplete }: FractalsGameProps) {
   const [colorScheme, setColorScheme] = useState<ColorScheme>("depth");
   const [iterations, setIterations] = useState(4);
   const [angle, setAngle] = useState(22.5);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
 
   // Render pixels to canvas
   const renderToCanvas = useCallback((state: FractalState) => {
@@ -144,6 +146,41 @@ export function FractalsGame({ onComplete }: FractalsGameProps) {
     link.download = `fractal-${selectedPreset}-${Date.now()}.png`;
     link.href = canvas.toDataURL("image/png");
     link.click();
+  }, [selectedPreset]);
+
+  // Upload to gallery
+  const uploadToGallery = useCallback(async () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    setIsUploading(true);
+    setUploadedUrl(null);
+
+    try {
+      const dataUrl = canvas.toDataURL("image/png");
+
+      const response = await fetch("/api/gallery/upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          challengeId: "fractals",
+          imageData: dataUrl,
+          title: `${selectedPreset.charAt(0).toUpperCase() + selectedPreset.slice(1)} Fractal`,
+        }),
+      });
+
+      const data = (await response.json()) as { shareUrl?: string; error?: string };
+
+      if (!response.ok) {
+        throw new Error(data.error || "Upload failed");
+      }
+
+      setUploadedUrl(data.shareUrl || null);
+    } catch (error) {
+      console.error("Upload failed:", error);
+    } finally {
+      setIsUploading(false);
+    }
   }, [selectedPreset]);
 
   // Initial render
@@ -295,6 +332,32 @@ export function FractalsGame({ onComplete }: FractalsGameProps) {
           <Download className="h-4 w-4 mr-2" />
           Download
         </Button>
+        <Button
+          variant="outline"
+          onClick={uploadToGallery}
+          disabled={isRendering || isUploading}
+          size="lg"
+          className={uploadedUrl ? "border-green-500 text-green-600 dark:text-green-400" : ""}
+        >
+          {isUploading ? (
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+          ) : uploadedUrl ? (
+            <Check className="h-4 w-4 mr-2" />
+          ) : (
+            <Upload className="h-4 w-4 mr-2" />
+          )}
+          {isUploading ? "Saving..." : uploadedUrl ? "Saved!" : "Save to Gallery"}
+        </Button>
+        {uploadedUrl && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => window.open(uploadedUrl, "_blank")}
+            title="Open in gallery"
+          >
+            <ExternalLink className="h-4 w-4" />
+          </Button>
+        )}
       </div>
 
       {/* Grammar Info */}

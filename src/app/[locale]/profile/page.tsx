@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Target, Star, User, Settings, Gamepad2, CheckCircle, Lock, Award } from "lucide-react";
+import { Trophy, Target, Star, User, Settings, Gamepad2, CheckCircle, Lock, Award, Image, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -72,14 +72,31 @@ const rarityBg: Record<string, string> = {
 };
 
 const CHALLENGE_INFO: Record<string, { name: string; totalLevels: number; icon: string }> = {
+  chess: { name: "Chess", totalLevels: 1, icon: "♟️" },
+  "tic-tac-toe": { name: "Tic-Tac-Toe", totalLevels: 1, icon: "⭕" },
+  snake: { name: "Snake", totalLevels: 1, icon: "🐍" },
+  minesweeper: { name: "Minesweeper", totalLevels: 3, icon: "💣" },
   sokoban: { name: "Sokoban", totalLevels: 60, icon: "📦" },
+  gorillas: { name: "Gorillas", totalLevels: 10, icon: "🍌" },
+  "lights-out": { name: "Lights Out", totalLevels: 1, icon: "💡" },
+  fractals: { name: "Fractals", totalLevels: 1, icon: "✨" },
+  "canvas-draw": { name: "Canvas Draw", totalLevels: 1, icon: "🎨" },
 };
+
+interface GalleryImage {
+  id: string;
+  url: string;
+  challengeId: string;
+  title: string | null;
+  createdAt: string | null;
+}
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [challengeProgress, setChallengeProgress] = useState<Record<string, ProgressData>>({});
   const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -112,6 +129,16 @@ export default function ProfilePage() {
         .then((data) => {
           if (data.achievements) {
             setAchievements(data.achievements.map(a => ({ ...a, unlocked: true })));
+          }
+        })
+        .catch(console.error);
+
+      // Fetch user's gallery images
+      fetch("/api/gallery?userId=me&limit=8")
+        .then((res) => res.json() as Promise<{ images: GalleryImage[] }>)
+        .then((data) => {
+          if (data.images) {
+            setGalleryImages(data.images);
           }
         })
         .catch(console.error);
@@ -297,6 +324,55 @@ export default function ProfilePage() {
                       >
                         +{achievement.points}
                       </Badge>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* My Gallery */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold flex items-center gap-2">
+              <Image className="h-5 w-5 text-pink-500" />
+              My Gallery
+            </h2>
+            <Link href="/gallery">
+              <Button variant="outline" size="sm">View All</Button>
+            </Link>
+          </div>
+
+          {galleryImages.length === 0 ? (
+            <Card>
+              <CardContent className="py-8 text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+                  <Image className="h-8 w-8 text-zinc-400" />
+                </div>
+                <p className="text-zinc-500 mb-4">No creations yet</p>
+                <div className="flex gap-2 justify-center">
+                  <Link href="/challenges/canvas-draw">
+                    <Button size="sm" variant="outline">🎨 Canvas Draw</Button>
+                  </Link>
+                  <Link href="/challenges/fractals">
+                    <Button size="sm" variant="outline">✨ Fractals</Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              {galleryImages.map((image) => (
+                <Link key={image.id} href={`/gallery/${image.id}`}>
+                  <div className="relative aspect-square rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600 transition-all hover:scale-[1.02]">
+                    <img
+                      src={image.url}
+                      alt={image.title || "Gallery image"}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+                      <p className="text-xs text-white truncate">{image.title || CHALLENGE_INFO[image.challengeId]?.name || "Creation"}</p>
                     </div>
                   </div>
                 </Link>
