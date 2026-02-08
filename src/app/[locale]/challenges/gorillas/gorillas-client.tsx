@@ -9,7 +9,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Banana, Play, Plug, ArrowLeft, Terminal, Info, Loader2 } from "lucide-react";
+import { Banana, Play, Plug, ArrowLeft, Terminal, Info, Loader2, BookOpen, Cpu } from "lucide-react";
 import Link from "next/link";
 import { useGameCompletion } from "@/hooks/use-game-completion";
 import { AchievementToast } from "@/components/achievements/achievement-toast";
@@ -131,36 +131,92 @@ export function GorillasClientPage() {
               <GorillasGame onGameComplete={handleGameComplete} />
             </div>
 
-            {/* How to Play */}
-            <Accordion type="single" collapsible className="w-full mt-8">
-              <AccordionItem value="howto" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4">
-                <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
-                  <div className="flex items-center gap-2">
-                    <Info className="h-4 w-4" />
-                    How to Play
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="pb-4 space-y-3 text-sm text-zinc-600 dark:text-zinc-400">
-                    <p>
-                      <strong className="text-zinc-900 dark:text-white">Goal:</strong> Hit the opponent gorilla with bananas before they hit you!
-                    </p>
-                    <p>
-                      <strong className="text-zinc-900 dark:text-white">Throwing:</strong> Set the angle (0-90°) and power (10-200) to throw your banana.
-                    </p>
-                    <p>
-                      <strong className="text-zinc-900 dark:text-white">Wind:</strong> Pay attention to the wind indicator - it affects your banana trajectory!
-                    </p>
-                    <p>
-                      <strong className="text-zinc-900 dark:text-white">Scoring:</strong> First to reach the target score (shown at top) wins the level.
-                    </p>
-                    <p>
-                      <strong className="text-zinc-900 dark:text-white">Tip:</strong> Higher angles for nearby targets, lower angles with more power for distant ones.
-                    </p>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+            {/* Educational Content */}
+            <div className="mt-8 max-w-3xl mx-auto">
+              <Accordion type="single" collapsible>
+                <AccordionItem value="howto" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 mb-2">
+                  <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <Info className="h-4 w-4" />
+                      How to Play
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="pb-2 space-y-3 text-sm text-zinc-600 dark:text-zinc-400">
+                      <p><strong className="text-zinc-900 dark:text-white">Goal:</strong> Hit the opponent gorilla with bananas before they hit you!</p>
+                      <p><strong className="text-zinc-900 dark:text-white">Throwing:</strong> Set the angle (0-90°) and power (10-200) to throw your banana.</p>
+                      <p><strong className="text-zinc-900 dark:text-white">Wind:</strong> Pay attention to the wind indicator - it affects your banana trajectory!</p>
+                      <p><strong className="text-zinc-900 dark:text-white">Tip:</strong> Higher angles for nearby targets, lower angles with more power for distant ones.</p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="history" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 mb-2">
+                  <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <BookOpen className="h-4 w-4" />
+                      The DOS Era
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="text-sm text-zinc-600 dark:text-zinc-400 space-y-3 pb-2">
+                      <p>
+                        <strong className="text-zinc-900 dark:text-white">1991:</strong> Gorillas was included with MS-DOS 5.0 as a QBasic sample program.
+                        Along with Nibbles (Snake), it taught millions their first programming concepts.
+                      </p>
+                      <p>
+                        <strong className="text-zinc-900 dark:text-white">Artillery Genre:</strong> Part of a genre dating back to &quot;Artillery&quot; (1976) on PLATO.
+                        Worms, Angry Birds, and countless mobile games owe their existence to this formula.
+                      </p>
+                      <p>
+                        <strong className="text-zinc-900 dark:text-white">Source Available:</strong> The original GORILLA.BAS was ~500 lines of QBasic,
+                        making it a popular learning example. Many programmers&apos; first game was a Gorillas clone.
+                      </p>
+                      <p className="text-zinc-500 dark:text-zinc-500 text-xs">
+                        Fun fact: The exploding banana animation used XOR graphics for smooth animation on slow hardware.
+                      </p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="physics" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4">
+                  <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <Cpu className="h-4 w-4" />
+                      The Physics
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-3 pb-2">
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
+                        <div className="font-medium text-yellow-600 dark:text-yellow-400 text-sm">Projectile Motion</div>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                          Classic physics: x = v₀·cos(θ)·t, y = v₀·sin(θ)·t - ½gt².
+                          Gravity pulls the banana down while initial velocity carries it forward.
+                        </p>
+                      </div>
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
+                        <div className="font-medium text-yellow-600 dark:text-yellow-400 text-sm">Wind Effects</div>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                          Wind adds horizontal acceleration: x += ½·wind·t².
+                          Positive wind pushes right, negative pushes left. Stronger wind = bigger adjustment needed.
+                        </p>
+                      </div>
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
+                        <div className="font-medium text-yellow-600 dark:text-yellow-400 text-sm">AI Strategy</div>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                          For an AI: calculate the required angle and velocity to hit a target,
+                          then adjust for wind. Use binary search or solve the quadratic equation directly.
+                        </p>
+                      </div>
+                      <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                        Perfect for teaching physics simulation and iterative refinement through trial-and-error.
+                      </p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
           </TabsContent>
 
           {/* MCP MODE */}

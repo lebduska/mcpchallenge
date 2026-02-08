@@ -8,7 +8,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Bomb, Play, Plug, ArrowLeft, Terminal, Info } from "lucide-react";
+import { Bomb, Play, Plug, ArrowLeft, Terminal, Info, BookOpen, Cpu } from "lucide-react";
 import Link from "next/link";
 import { Minesweeper } from "@/components/games/minesweeper";
 import { LiveGameBoard } from "@/components/mcp/live-game-board";
@@ -107,33 +107,92 @@ export function MinesweeperClientPage() {
               <Minesweeper onGameComplete={handleGameComplete} />
             </div>
 
-            {/* How to Play */}
-            <Accordion type="single" collapsible className="w-full mt-8">
-              <AccordionItem value="howto" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4">
-                <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
-                  <div className="flex items-center gap-2">
-                    <Info className="h-4 w-4" />
-                    How to Play
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="pb-4 space-y-3 text-sm text-zinc-600 dark:text-zinc-400">
-                    <p>
-                      <strong className="text-zinc-900 dark:text-white">Goal:</strong> Reveal all cells without hitting a mine.
-                    </p>
-                    <p>
-                      <strong className="text-zinc-900 dark:text-white">Left-click:</strong> Reveal a cell. Numbers indicate adjacent mines.
-                    </p>
-                    <p>
-                      <strong className="text-zinc-900 dark:text-white">Right-click:</strong> Place or remove a flag to mark suspected mines.
-                    </p>
-                    <p>
-                      <strong className="text-zinc-900 dark:text-white">Tip:</strong> The first click is always safe!
-                    </p>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+            {/* Educational Content */}
+            <div className="mt-8 max-w-3xl mx-auto">
+              <Accordion type="single" collapsible>
+                <AccordionItem value="howto" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 mb-2">
+                  <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <Info className="h-4 w-4" />
+                      How to Play
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="pb-2 space-y-3 text-sm text-zinc-600 dark:text-zinc-400">
+                      <p><strong className="text-zinc-900 dark:text-white">Goal:</strong> Reveal all cells without hitting a mine.</p>
+                      <p><strong className="text-zinc-900 dark:text-white">Left-click:</strong> Reveal a cell. Numbers indicate adjacent mines.</p>
+                      <p><strong className="text-zinc-900 dark:text-white">Right-click:</strong> Place or remove a flag to mark suspected mines.</p>
+                      <p><strong className="text-zinc-900 dark:text-white">Tip:</strong> The first click is always safe!</p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="history" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 mb-2">
+                  <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <BookOpen className="h-4 w-4" />
+                      The Windows Era
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="text-sm text-zinc-600 dark:text-zinc-400 space-y-3 pb-2">
+                      <p>
+                        <strong className="text-zinc-900 dark:text-white">1989:</strong> Robert Donner created Minesweeper for Windows 3.1.
+                        Originally designed to teach users mouse skills — left-click, right-click, and precision clicking.
+                      </p>
+                      <p>
+                        <strong className="text-zinc-900 dark:text-white">Windows 95-XP:</strong> Became the most-played computer game in history.
+                        Almost every Windows user has played it, making it a cultural phenomenon.
+                      </p>
+                      <p>
+                        <strong className="text-zinc-900 dark:text-white">Competitive Scene:</strong> World records are tracked for each difficulty.
+                        Expert level (99 mines on 30×16) has been solved in under 30 seconds by top players.
+                      </p>
+                      <p className="text-zinc-500 dark:text-zinc-500 text-xs">
+                        Fun fact: Minesweeper was removed from Windows 8 due to its addictive nature in workplaces.
+                      </p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="mathematics" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4">
+                  <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <Cpu className="h-4 w-4" />
+                      The Mathematics
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-3 pb-2">
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
+                        <div className="font-medium text-red-600 dark:text-red-400 text-sm">NP-complete</div>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                          Determining if a Minesweeper configuration is solvable was proven NP-complete in 2000.
+                          This means no efficient algorithm exists for arbitrary boards.
+                        </p>
+                      </div>
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
+                        <div className="font-medium text-red-600 dark:text-red-400 text-sm">Constraint Satisfaction</div>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                          Each number creates a constraint: exactly N neighbors are mines.
+                          Solving requires propagating these constraints — similar to Sudoku or SAT problems.
+                        </p>
+                      </div>
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
+                        <div className="font-medium text-red-600 dark:text-red-400 text-sm">Probability Theory</div>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                          When logic fails, players must guess. Optimal play involves calculating the probability
+                          each cell is a mine based on remaining constraints. Expert players intuit these odds.
+                        </p>
+                      </div>
+                      <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                        AI approaches: CSP solvers, probabilistic models, and even neural networks for pattern recognition.
+                      </p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
           </TabsContent>
 
           {/* MCP MODE */}

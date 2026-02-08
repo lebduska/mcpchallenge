@@ -9,7 +9,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Crown, Play, Plug, Bug, Terminal, ArrowLeft } from "lucide-react";
+import { Crown, Play, Plug, Bug, Terminal, ArrowLeft, Info, Cpu, BookOpen } from "lucide-react";
 import Link from "next/link";
 import { ChessGame } from "@/components/chess/chess-game";
 import { LiveGameBoard } from "@/components/mcp/live-game-board";
@@ -107,6 +107,93 @@ export function ChessClientPage() {
           {/* PLAY MODE */}
           <TabsContent value="play" className="mt-0">
             <ChessGame onGameComplete={handleGameComplete} />
+
+            {/* Educational Content */}
+            <div className="mt-8 max-w-3xl mx-auto">
+              <Accordion type="single" collapsible>
+                <AccordionItem value="history" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 mb-2">
+                  <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <BookOpen className="h-4 w-4" />
+                      History of Chess
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="text-sm text-zinc-600 dark:text-zinc-400 space-y-3 pb-2">
+                      <p>
+                        <strong className="text-zinc-900 dark:text-white">~600 AD:</strong> Chess originated in India as <em>chaturanga</em>,
+                        spreading to Persia where it became <em>shatranj</em>, then to Europe via the Islamic world.
+                      </p>
+                      <p>
+                        <strong className="text-zinc-900 dark:text-white">1997:</strong> IBM&apos;s Deep Blue defeated world champion Garry Kasparov —
+                        a landmark moment in AI history. It evaluated 200 million positions per second.
+                      </p>
+                      <p>
+                        <strong className="text-zinc-900 dark:text-white">2017:</strong> DeepMind&apos;s AlphaZero learned chess from scratch in 4 hours,
+                        then defeated Stockfish 28-0 (72 draws). It discovered creative strategies humans had never seen.
+                      </p>
+                      <p className="text-zinc-500 dark:text-zinc-500 text-xs">
+                        Today, chess engines like Stockfish (used here) are rated ~3600 ELO — far beyond any human.
+                      </p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="algorithms" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 mb-2">
+                  <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <Cpu className="h-4 w-4" />
+                      The Algorithms
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-3 pb-2">
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
+                        <div className="font-medium text-amber-600 dark:text-amber-400 text-sm">Minimax</div>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                          Assumes both players play optimally. Builds a game tree, evaluates leaf positions,
+                          and propagates scores up — maximizing for self, minimizing for opponent.
+                        </p>
+                      </div>
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
+                        <div className="font-medium text-amber-600 dark:text-amber-400 text-sm">Alpha-Beta Pruning</div>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                          Optimization that skips branches that can&apos;t affect the final decision.
+                          Reduces search from O(b^d) to O(b^(d/2)) — exploring √n nodes instead of n.
+                        </p>
+                      </div>
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
+                        <div className="font-medium text-amber-600 dark:text-amber-400 text-sm">Neural Network Evaluation</div>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                          Modern engines like Leela Chess Zero use NNUE (Efficiently Updatable Neural Network)
+                          for position evaluation, combining traditional search with learned patterns.
+                        </p>
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="tips" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4">
+                  <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <Info className="h-4 w-4" />
+                      Strategy Tips
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="text-sm text-zinc-600 dark:text-zinc-400 space-y-2 pb-2">
+                      <p><strong className="text-zinc-900 dark:text-white">Control the center:</strong> e4, d4, e5, d5 are the most important squares.</p>
+                      <p><strong className="text-zinc-900 dark:text-white">Develop pieces:</strong> Get knights and bishops out before moving the same piece twice.</p>
+                      <p><strong className="text-zinc-900 dark:text-white">Castle early:</strong> Protect your king and connect your rooks.</p>
+                      <p><strong className="text-zinc-900 dark:text-white">Think in plans:</strong> Don&apos;t just react — have a strategic goal for each phase.</p>
+                      <p className="text-xs text-zinc-500 dark:text-zinc-500 mt-3">
+                        Against Stockfish, try setting a lower difficulty level to practice fundamentals!
+                      </p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
           </TabsContent>
 
           {/* MCP MODE */}

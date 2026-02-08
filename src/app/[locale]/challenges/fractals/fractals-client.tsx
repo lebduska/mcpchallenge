@@ -9,7 +9,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Sparkles, Play, Plug, ArrowLeft, Terminal, Info, Loader2 } from "lucide-react";
+import { Sparkles, Play, Plug, ArrowLeft, Terminal, Info, Loader2, BookOpen, Cpu } from "lucide-react";
 import Link from "next/link";
 import { useGameCompletion } from "@/hooks/use-game-completion";
 import { AchievementToast } from "@/components/achievements/achievement-toast";
@@ -127,24 +127,24 @@ export function FractalsClientPage() {
 
             {/* How to Play */}
             <div className="mt-8 max-w-3xl mx-auto">
-              <Accordion type="single" collapsible defaultValue="how-to-play">
-                <AccordionItem value="how-to-play">
-                  <AccordionTrigger className="text-sm font-medium">
+              <Accordion type="single" collapsible>
+                <AccordionItem value="how-to-play" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 mb-2">
+                  <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
                     <div className="flex items-center gap-2">
                       <Info className="h-4 w-4" />
                       How L-Systems Work
                     </div>
                   </AccordionTrigger>
                   <AccordionContent>
-                    <div className="space-y-4 text-sm text-zinc-600 dark:text-zinc-400">
+                    <div className="space-y-4 text-sm text-zinc-600 dark:text-zinc-400 pb-2">
                       <p>
-                        <strong>L-Systems</strong> (Lindenmayer Systems) generate complex patterns from simple rules.
-                        Start with an <strong>axiom</strong> (initial string) and apply <strong>production rules</strong>
+                        <strong className="text-zinc-900 dark:text-white">L-Systems</strong> (Lindenmayer Systems) generate complex patterns from simple rules.
+                        Start with an <strong className="text-zinc-900 dark:text-white">axiom</strong> (initial string) and apply <strong className="text-zinc-900 dark:text-white">production rules</strong>
                         repeatedly to expand it.
                       </p>
                       <div>
-                        <strong>Example - Tree:</strong>
-                        <div className="font-mono text-xs mt-1 p-2 bg-zinc-100 dark:bg-zinc-800 rounded">
+                        <strong className="text-zinc-900 dark:text-white">Example - Tree:</strong>
+                        <div className="font-mono text-xs mt-1 p-2 bg-zinc-100 dark:bg-zinc-900 rounded">
                           Axiom: F<br />
                           Rule: F → FF+[+F-F-F]-[-F+F+F]<br />
                           After 1 iteration: FF+[+F-F-F]-[-F+F+F]<br />
@@ -152,11 +152,11 @@ export function FractalsClientPage() {
                         </div>
                       </div>
                       <p>
-                        The expanded string is then interpreted as <strong>turtle graphics</strong> commands:
+                        The expanded string is then interpreted as <strong className="text-zinc-900 dark:text-white">turtle graphics</strong> commands:
                       </p>
                       <div className="grid grid-cols-2 gap-2 font-mono text-xs">
                         {turtleSymbols.map((s) => (
-                          <div key={s.symbol} className="p-2 bg-zinc-100 dark:bg-zinc-800 rounded">
+                          <div key={s.symbol} className="p-2 bg-zinc-100 dark:bg-zinc-900 rounded">
                             <span className="text-purple-600 dark:text-purple-400">{s.symbol}</span>
                             <span className="text-zinc-500 ml-2">{s.description}</span>
                           </div>
@@ -166,39 +166,104 @@ export function FractalsClientPage() {
                   </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="presets">
-                  <AccordionTrigger className="text-sm font-medium">
+                <AccordionItem value="presets" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 mb-2">
+                  <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
                     <div className="flex items-center gap-2">
                       <Sparkles className="h-4 w-4" />
                       Available Presets
                     </div>
                   </AccordionTrigger>
                   <AccordionContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                      <div className="p-3 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm pb-2">
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
                         <div className="font-medium text-green-600 dark:text-green-400">🌳 Tree</div>
                         <div className="text-xs text-zinc-500 mt-1">Classic branching tree pattern</div>
                       </div>
-                      <div className="p-3 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
                         <div className="font-medium text-green-600 dark:text-green-400">🌿 Plant</div>
                         <div className="text-xs text-zinc-500 mt-1">Barnsley-style fern structure</div>
                       </div>
-                      <div className="p-3 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
                         <div className="font-medium text-red-600 dark:text-red-400">🐉 Dragon</div>
                         <div className="text-xs text-zinc-500 mt-1">Dragon curve fractal</div>
                       </div>
-                      <div className="p-3 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
                         <div className="font-medium text-blue-600 dark:text-blue-400">❄️ Koch</div>
                         <div className="text-xs text-zinc-500 mt-1">Koch curve / snowflake</div>
                       </div>
-                      <div className="p-3 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
                         <div className="font-medium text-purple-600 dark:text-purple-400">△ Sierpinski</div>
                         <div className="text-xs text-zinc-500 mt-1">Sierpinski triangle</div>
                       </div>
-                      <div className="p-3 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
                         <div className="font-medium text-cyan-600 dark:text-cyan-400">⬡ Hilbert</div>
                         <div className="text-xs text-zinc-500 mt-1">Hilbert space-filling curve</div>
                       </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="history" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 mb-2">
+                  <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <BookOpen className="h-4 w-4" />
+                      Origins in Biology
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="text-sm text-zinc-600 dark:text-zinc-400 space-y-3 pb-2">
+                      <p>
+                        <strong className="text-zinc-900 dark:text-white">1968:</strong> Aristid Lindenmayer, a Hungarian biologist, invented L-Systems
+                        to model the growth of algae and plants. His goal was to describe cell development mathematically.
+                      </p>
+                      <p>
+                        <strong className="text-zinc-900 dark:text-white">1984:</strong> &quot;The Algorithmic Beauty of Plants&quot; by Prusinkiewicz & Lindenmayer
+                        became the seminal work, showing how simple rules create realistic botanical forms.
+                      </p>
+                      <p>
+                        <strong className="text-zinc-900 dark:text-white">Hollywood:</strong> L-Systems generated the forests in Avatar, Game of Thrones,
+                        and countless films. SpeedTree and other tools use L-System variants for procedural vegetation.
+                      </p>
+                      <p className="text-zinc-500 dark:text-zinc-500 text-xs">
+                        Fun fact: The Dragon curve was discovered independently in 1966 by NASA physicists studying paper-folding patterns.
+                      </p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="mathematics" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4">
+                  <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <Cpu className="h-4 w-4" />
+                      The Mathematics
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-3 pb-2">
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
+                        <div className="font-medium text-purple-600 dark:text-purple-400 text-sm">Formal Grammar</div>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                          L-Systems are a type of parallel rewriting system — all symbols are replaced simultaneously
+                          in each step. This differs from sequential Chomsky grammars where one rule applies at a time.
+                        </p>
+                      </div>
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
+                        <div className="font-medium text-purple-600 dark:text-purple-400 text-sm">Self-Similarity</div>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                          Fractals exhibit self-similarity — zoom in and you see the same patterns.
+                          The Koch curve has infinite length contained in a finite area. Its fractal dimension is ~1.26.
+                        </p>
+                      </div>
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
+                        <div className="font-medium text-purple-600 dark:text-purple-400 text-sm">Stochastic L-Systems</div>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                          Adding probability to rules creates natural variation. Multiple productions for the same symbol
+                          are chosen randomly, yielding unique trees each render while maintaining overall structure.
+                        </p>
+                      </div>
+                      <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                        Extensions: Parametric L-Systems add numerical values; context-sensitive L-Systems consider neighbors.
+                      </p>
                     </div>
                   </AccordionContent>
                 </AccordionItem>

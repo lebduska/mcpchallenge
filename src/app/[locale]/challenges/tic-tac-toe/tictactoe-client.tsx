@@ -9,7 +9,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Grid3X3, Play, Plug, Bug, Terminal, ArrowLeft } from "lucide-react";
+import { Grid3X3, Play, Plug, Bug, Terminal, ArrowLeft, Info, BookOpen, Cpu } from "lucide-react";
 import Link from "next/link";
 import { TicTacToe } from "@/components/games/tic-tac-toe";
 import { LiveGameBoard } from "@/components/mcp/live-game-board";
@@ -107,6 +107,92 @@ export function TicTacToeClientPage() {
           {/* PLAY MODE */}
           <TabsContent value="play" className="mt-0">
             <TicTacToe onGameComplete={handleGameComplete} />
+
+            {/* Educational Content */}
+            <div className="mt-8 max-w-3xl mx-auto">
+              <Accordion type="single" collapsible>
+                <AccordionItem value="howto" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 mb-2">
+                  <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <Info className="h-4 w-4" />
+                      How to Play
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="pb-2 space-y-3 text-sm text-zinc-600 dark:text-zinc-400">
+                      <p><strong className="text-zinc-900 dark:text-white">Goal:</strong> Get three of your marks in a row (horizontally, vertically, or diagonally).</p>
+                      <p><strong className="text-zinc-900 dark:text-white">Play:</strong> Click any empty cell to place your mark. X always goes first.</p>
+                      <p><strong className="text-zinc-900 dark:text-white">Win:</strong> First player to get three in a row wins. If all cells fill up, it&apos;s a draw.</p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="history" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 mb-2">
+                  <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <BookOpen className="h-4 w-4" />
+                      Ancient Origins
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="text-sm text-zinc-600 dark:text-zinc-400 space-y-3 pb-2">
+                      <p>
+                        <strong className="text-zinc-900 dark:text-white">~1300 BCE:</strong> Ancient Egyptians played a similar three-in-a-row game.
+                        Boards have been found carved into roofing tiles of temples.
+                      </p>
+                      <p>
+                        <strong className="text-zinc-900 dark:text-white">Roman Empire:</strong> Called &quot;Terni Lapilli&quot; — each player had three pieces
+                        and could move them, making it more like a positional game.
+                      </p>
+                      <p>
+                        <strong className="text-zinc-900 dark:text-white">Modern Name:</strong> &quot;Noughts and Crosses&quot; in Britain, &quot;Tic-Tac-Toe&quot; in America.
+                        The X&apos;s and O&apos;s version with paper became popular in the early 20th century.
+                      </p>
+                      <p className="text-zinc-500 dark:text-zinc-500 text-xs">
+                        Fun fact: The name &quot;Tic-Tac-Toe&quot; comes from a game where players drew marks on a slate while saying the words.
+                      </p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="gametheory" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4">
+                  <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <Cpu className="h-4 w-4" />
+                      Game Theory
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-3 pb-2">
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
+                        <div className="font-medium text-purple-600 dark:text-purple-400 text-sm">Solved Game</div>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                          Tic-Tac-Toe is fully solved — with perfect play from both sides, it always ends in a draw.
+                          There are exactly 255,168 possible games, but only 138 unique positions to analyze.
+                        </p>
+                      </div>
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
+                        <div className="font-medium text-purple-600 dark:text-purple-400 text-sm">Minimax Algorithm</div>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                          The classic AI approach: assume your opponent plays perfectly. Build a tree of all possible moves,
+                          score end states (+1 win, -1 loss, 0 draw), and pick the move that maximizes your minimum outcome.
+                        </p>
+                      </div>
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
+                        <div className="font-medium text-purple-600 dark:text-purple-400 text-sm">Perfect Strategy</div>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                          X should start in a corner (not center!) for the best winning chances against imperfect play.
+                          O must respond in center to have any chance. One mistake = loss against optimal play.
+                        </p>
+                      </div>
+                      <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                        Tic-Tac-Toe is often the first game used to teach game tree search and the minimax algorithm.
+                      </p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
           </TabsContent>
 
           {/* MCP MODE */}

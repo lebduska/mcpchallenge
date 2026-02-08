@@ -9,7 +9,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Play, Plug, Bug, Terminal, ArrowLeft, Wifi } from "lucide-react";
+import { Play, Plug, Bug, Terminal, ArrowLeft, Wifi, Info, BookOpen, Cpu } from "lucide-react";
 import Link from "next/link";
 import { SnakeGame } from "@/components/games/snake-game";
 import { LiveGameBoard } from "@/components/mcp/live-game-board";
@@ -103,6 +103,93 @@ export function SnakeClientPage() {
           {/* PLAY MODE */}
           <TabsContent value="play" className="mt-0">
             <SnakeGame onGameComplete={handleGameComplete} />
+
+            {/* Educational Content */}
+            <div className="mt-8 max-w-3xl mx-auto">
+              <Accordion type="single" collapsible>
+                <AccordionItem value="howto" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 mb-2">
+                  <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <Info className="h-4 w-4" />
+                      How to Play
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="pb-2 space-y-3 text-sm text-zinc-600 dark:text-zinc-400">
+                      <p><strong className="text-zinc-900 dark:text-white">Goal:</strong> Eat food to grow longer. Survive as long as possible!</p>
+                      <p><strong className="text-zinc-900 dark:text-white">Controls:</strong> Arrow keys or WASD to change direction.</p>
+                      <p><strong className="text-zinc-900 dark:text-white">Game Over:</strong> Hitting the wall or your own body ends the game.</p>
+                      <p><strong className="text-zinc-900 dark:text-white">Tip:</strong> Plan ahead — the longer you get, the harder it becomes!</p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="history" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 mb-2">
+                  <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <BookOpen className="h-4 w-4" />
+                      The Nokia Era
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="text-sm text-zinc-600 dark:text-zinc-400 space-y-3 pb-2">
+                      <p>
+                        <strong className="text-zinc-900 dark:text-white">1976:</strong> The concept originated with &quot;Blockade&quot; arcade game —
+                        two snakes competing to trap each other. Inspired by the light cycles in Tron (1982).
+                      </p>
+                      <p>
+                        <strong className="text-zinc-900 dark:text-white">1991:</strong> &quot;Nibbles&quot; was included with MS-DOS as a QBasic sample program,
+                        alongside Gorillas. Many programmers first learned coding by modifying Nibbles.
+                      </p>
+                      <p>
+                        <strong className="text-zinc-900 dark:text-white">1997:</strong> Nokia pre-installed Snake on the Nokia 6110.
+                        It became the most-played mobile game ever — over 400 million devices shipped with it.
+                      </p>
+                      <p className="text-zinc-500 dark:text-zinc-500 text-xs">
+                        Fun fact: Taneli Armanto programmed the Nokia Snake in just a few weeks. It had only 15 levels of speed.
+                      </p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="ai" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4">
+                  <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <Cpu className="h-4 w-4" />
+                      The AI Challenge
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-3 pb-2">
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
+                        <div className="font-medium text-green-600 dark:text-green-400 text-sm">Hamiltonian Cycle</div>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                          A perfect Snake AI follows a Hamiltonian path — visiting every cell exactly once.
+                          This guarantees no collision but is slow. The challenge: optimize the path dynamically.
+                        </p>
+                      </div>
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
+                        <div className="font-medium text-green-600 dark:text-green-400 text-sm">Path-Finding</div>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                          BFS or A* can find the shortest path to food, but naive pathfinding leads to traps.
+                          Smart AIs verify escape routes exist before committing to a path.
+                        </p>
+                      </div>
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
+                        <div className="font-medium text-green-600 dark:text-green-400 text-sm">Reinforcement Learning</div>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                          Modern approaches use deep Q-learning. The AI learns to balance short-term gains (food)
+                          against long-term survival. State: grid vision. Actions: four directions.
+                        </p>
+                      </div>
+                      <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                        Perfect play fills the entire board. On a 15×15 grid, that&apos;s a snake 225 segments long!
+                      </p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
           </TabsContent>
 
           {/* MCP MODE */}

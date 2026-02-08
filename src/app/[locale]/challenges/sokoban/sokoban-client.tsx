@@ -8,7 +8,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Package, Play, Plug, ArrowLeft, Terminal, Info } from "lucide-react";
+import { Package, Play, Plug, ArrowLeft, Terminal, Info, BookOpen, Cpu } from "lucide-react";
 import Link from "next/link";
 import { SokobanGame } from "@/components/games/sokoban";
 import { LiveGameBoard } from "@/components/mcp/live-game-board";
@@ -108,36 +108,92 @@ export function SokobanClientPage() {
               <SokobanGame onGameComplete={handleGameComplete} />
             </div>
 
-            {/* How to Play */}
-            <Accordion type="single" collapsible className="w-full mt-8">
-              <AccordionItem value="howto" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4">
-                <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
-                  <div className="flex items-center gap-2">
-                    <Info className="h-4 w-4" />
-                    How to Play
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="pb-4 space-y-3 text-sm text-zinc-600 dark:text-zinc-400">
-                    <p>
-                      <strong className="text-zinc-900 dark:text-white">Goal:</strong> Push all boxes onto the goal positions (marked in yellow).
-                    </p>
-                    <p>
-                      <strong className="text-zinc-900 dark:text-white">Movement:</strong> Use arrow keys or WASD to move the player.
-                    </p>
-                    <p>
-                      <strong className="text-zinc-900 dark:text-white">Pushing:</strong> Walk into a box to push it. You can only push one box at a time.
-                    </p>
-                    <p>
-                      <strong className="text-zinc-900 dark:text-white">Undo:</strong> Press U or Ctrl+Z to undo your last move.
-                    </p>
-                    <p>
-                      <strong className="text-zinc-900 dark:text-white">Tip:</strong> Plan ahead! Boxes can get stuck in corners or against walls.
-                    </p>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+            {/* Educational Content */}
+            <div className="mt-8 max-w-3xl mx-auto">
+              <Accordion type="single" collapsible>
+                <AccordionItem value="howto" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 mb-2">
+                  <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <Info className="h-4 w-4" />
+                      How to Play
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="pb-2 space-y-3 text-sm text-zinc-600 dark:text-zinc-400">
+                      <p><strong className="text-zinc-900 dark:text-white">Goal:</strong> Push all boxes onto the goal positions (marked in yellow).</p>
+                      <p><strong className="text-zinc-900 dark:text-white">Movement:</strong> Use arrow keys or WASD to move the player.</p>
+                      <p><strong className="text-zinc-900 dark:text-white">Pushing:</strong> Walk into a box to push it. You can only push one box at a time.</p>
+                      <p><strong className="text-zinc-900 dark:text-white">Undo:</strong> Press U or Ctrl+Z to undo your last move.</p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="history" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 mb-2">
+                  <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <BookOpen className="h-4 w-4" />
+                      History
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="text-sm text-zinc-600 dark:text-zinc-400 space-y-3 pb-2">
+                      <p>
+                        <strong className="text-zinc-900 dark:text-white">1982:</strong> Created by Hiroyuki Imabayashi in Japan.
+                        The name means &quot;warehouse keeper&quot; (倉庫番). Originally published by Thinking Rabbit.
+                      </p>
+                      <p>
+                        <strong className="text-zinc-900 dark:text-white">Legacy:</strong> One of the most influential puzzle games ever made.
+                        Ported to virtually every platform from MSX to modern smartphones.
+                      </p>
+                      <p>
+                        <strong className="text-zinc-900 dark:text-white">Competitions:</strong> Annual Sokoban competitions exist where
+                        players compete to solve levels in the fewest moves or pushes.
+                      </p>
+                      <p className="text-zinc-500 dark:text-zinc-500 text-xs">
+                        Over 1,000 level collections exist online with varying difficulty from trivial to impossibly hard.
+                      </p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="complexity" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4">
+                  <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <Cpu className="h-4 w-4" />
+                      Computational Complexity
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-3 pb-2">
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
+                        <div className="font-medium text-amber-600 dark:text-amber-400 text-sm">PSPACE-complete</div>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                          Sokoban was proven PSPACE-complete in 1997. This means solving arbitrary puzzles
+                          is at least as hard as any problem solvable with polynomial space.
+                        </p>
+                      </div>
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
+                        <div className="font-medium text-amber-600 dark:text-amber-400 text-sm">State Space Explosion</div>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                          A 10×10 level with 5 boxes has billions of possible states.
+                          Naive brute-force is impossible — smart heuristics are required.
+                        </p>
+                      </div>
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
+                        <div className="font-medium text-amber-600 dark:text-amber-400 text-sm">Deadlock Detection</div>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                          Key AI challenge: detecting when a position is unsolvable (box stuck in corner,
+                          two boxes blocking each other). Early pruning is essential.
+                        </p>
+                      </div>
+                      <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                        AI techniques: BFS with deadlock detection, pattern databases, IDA* with domain-specific heuristics.
+                      </p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
           </TabsContent>
 
           {/* MCP MODE */}
