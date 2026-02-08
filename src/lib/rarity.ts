@@ -147,8 +147,6 @@ export function getRarityBorder(rarity: string, animated = false): string {
  * Confetti configuration based on rarity
  */
 export function getConfettiConfig(rarity: string) {
-  const config = getRarityConfig(rarity);
-
   const baseConfig = {
     particleCount: 30,
     spread: 60,

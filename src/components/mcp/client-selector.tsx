@@ -7,7 +7,7 @@
  * shortcuts for popular clients.
  */
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, Copy, ExternalLink, ChevronDown, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -79,15 +79,15 @@ export function ClientSelector({ mcpUrl, className }: ClientSelectorProps) {
   const [copied, setCopied] = useState(false);
   const [copiedConfig, setCopiedConfig] = useState(false);
   const [selectedClient, setSelectedClient] = useState<ClientFormat | null>(null);
-  const [lastUsedClient, setLastUsedClient] = useState<ClientFormat | null>(null);
-
-  // Load last used client from localStorage
-  useEffect(() => {
+  const [lastUsedClient, setLastUsedClient] = useState<ClientFormat | null>(() => {
+    // Lazy initialization - runs only on first render
+    if (typeof window === "undefined") return null;
     const stored = localStorage.getItem(LAST_USED_KEY) as ClientFormat | null;
     if (stored && clients.some((c) => c.id === stored)) {
-      setLastUsedClient(stored);
+      return stored;
     }
-  }, []);
+    return null;
+  });
 
   // Sort clients with last used first
   const sortedClients = useMemo(() => {
