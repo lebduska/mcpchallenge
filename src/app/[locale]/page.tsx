@@ -6,12 +6,10 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Wrench, Trophy, Heart } from "lucide-react";
+import { Trophy, Heart } from "lucide-react";
 import { HeroSlider } from "@/components/hero-slider";
 
 const featureIcons = {
-  learn: BookOpen,
-  playground: Wrench,
   challenges: Trophy,
 };
 
@@ -19,8 +17,6 @@ export default function Home() {
   const t = useTranslations("home");
 
   const features = [
-    { key: "learn", href: "/learn" },
-    { key: "playground", href: "/playground" },
     { key: "challenges", href: "/challenges" },
   ];
 
@@ -58,7 +54,7 @@ server.tool(
         <h2 className="text-3xl font-bold text-center text-zinc-900 dark:text-zinc-50 mb-12">
           {t("journey.title")}
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <div className="max-w-md mx-auto">
           {features.map((feature) => {
             const Icon = featureIcons[feature.key as keyof typeof featureIcons];
             return (

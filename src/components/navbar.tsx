@@ -44,8 +44,6 @@ export function Navbar() {
   const t = useTranslations("nav");
 
   const navItems = [
-    { href: "/learn", label: t("learn") },
-    { href: "/playground", label: t("playground") },
     { href: "/challenges", label: t("challenges") },
   ];
 

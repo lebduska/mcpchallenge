@@ -12,7 +12,7 @@ const slides = [
     image: "/images/banners/banner-mcp.jpg",
     title: "MCP Challenge",
     subtitle: "Master your MCP skills",
-    cta: { label: "Start Learning", href: "/learn" },
+    cta: { label: "Start Playing", href: "/challenges" },
   },
   {
     id: "chess",
