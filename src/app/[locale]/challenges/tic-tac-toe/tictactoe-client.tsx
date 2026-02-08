@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,7 +9,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Grid3X3, Play, Plug, Bug, Terminal, ArrowLeft, Info, BookOpen, Cpu } from "lucide-react";
+import { Grid3X3, Play, Plug, Bug, Terminal, ArrowLeft, Info, BookOpen, Cpu, Rocket } from "lucide-react";
 import Link from "next/link";
 import { TicTacToe } from "@/components/games/tic-tac-toe";
 import { LiveGameBoard } from "@/components/mcp/live-game-board";
@@ -17,6 +17,7 @@ import { MCPSessionDemo } from "@/components/mcp/mcp-session-demo";
 import { DebugDrawer } from "@/components/mcp/debug-drawer";
 import { useGameCompletion } from "@/hooks/use-game-completion";
 import { AchievementToast } from "@/components/achievements/achievement-toast";
+import { SetupWizard, SuccessCelebration, HintsSystem, tictactoeHints } from "@/components/onboarding";
 import { cn } from "@/lib/utils";
 
 interface Achievement {
@@ -36,10 +37,38 @@ const tools = [
   { name: "resign", description: "Resign the current game" },
 ];
 
+const MCP_WIZARD_KEY = "mcp-tictactoe-wizard-seen";
+
 export function TicTacToeClientPage() {
   const [unlockedAchievements, setUnlockedAchievements] = useState<Achievement[]>([]);
   const [debugOpen, setDebugOpen] = useState(false);
+  const [showWizard, setShowWizard] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [isFirstWin, setIsFirstWin] = useState(false);
+  const [pointsEarned, setPointsEarned] = useState(0);
+  const [activeTab, setActiveTab] = useState("play");
   const { submitCompletion } = useGameCompletion("tic-tac-toe");
+
+  // Show wizard when switching to MCP tab for the first time
+  const handleTabChange = useCallback((value: string) => {
+    setActiveTab(value);
+    if (value === "mcp") {
+      const hasSeenWizard = localStorage.getItem(MCP_WIZARD_KEY);
+      if (!hasSeenWizard) {
+        setShowWizard(true);
+      }
+    }
+  }, []);
+
+  const handleWizardComplete = useCallback(() => {
+    localStorage.setItem(MCP_WIZARD_KEY, "true");
+    setShowWizard(false);
+  }, []);
+
+  const handleWizardSkip = useCallback(() => {
+    localStorage.setItem(MCP_WIZARD_KEY, "true");
+    setShowWizard(false);
+  }, []);
 
   const handleGameComplete = useCallback(
     async (result: { winner: "player" | "ai" | "draw"; moves: number }) => {
@@ -47,6 +76,18 @@ export function TicTacToeClientPage() {
         winner: result.winner,
         moves: result.moves,
       });
+
+      // Show celebration for player wins
+      if (result.winner === "player") {
+        const hasWonBefore = localStorage.getItem("mcp-tictactoe-won");
+        setIsFirstWin(!hasWonBefore);
+        if (!hasWonBefore) {
+          localStorage.setItem("mcp-tictactoe-won", "true");
+        }
+        setPointsEarned(response?.pointsEarned || 50);
+        setShowCelebration(true);
+      }
+
       if (response?.newAchievements && response.newAchievements.length > 0) {
         setUnlockedAchievements(response.newAchievements);
       }
@@ -57,7 +98,7 @@ export function TicTacToeClientPage() {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <div className="max-w-6xl mx-auto px-4 py-6">
-        <Tabs defaultValue="play" className="w-full">
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
           {/* Compact Header with integrated segmented control */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
@@ -270,6 +311,40 @@ export function TicTacToeClientPage() {
           onClose={() => setUnlockedAchievements([])}
         />
       )}
+
+      {/* Onboarding: Setup Wizard for first-time visitors */}
+      {showWizard && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <SetupWizard
+            challengeId="tic-tac-toe"
+            onComplete={handleWizardComplete}
+            onSkip={handleWizardSkip}
+            className="max-w-xl w-full"
+          />
+        </div>
+      )}
+
+      {/* Onboarding: Success Celebration */}
+      <SuccessCelebration
+        challengeId="tic-tac-toe"
+        challengeName="Tic-Tac-Toe"
+        isFirstCompletion={isFirstWin}
+        pointsEarned={pointsEarned}
+        show={showCelebration}
+        onClose={() => setShowCelebration(false)}
+        onContinue={() => {
+          setShowCelebration(false);
+          window.location.href = "/challenges/chess";
+        }}
+      />
+
+      {/* Onboarding: Contextual Hints */}
+      <HintsSystem
+        challengeId="tic-tac-toe"
+        hints={tictactoeHints}
+        position="bottom-left"
+        autoShow={!showWizard}
+      />
     </div>
   );
 }

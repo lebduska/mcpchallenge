@@ -390,6 +390,66 @@
     "writeReply": "Napsat odpověď...",
     "cancel": "Zrušit"
   },
+  "onboarding": {
+    "wizard": {
+      "title": "Rychlý průvodce",
+      "subtitle": "Připoj se ve 3 krocích",
+      "skipForNow": "Přeskočit",
+      "nextStep": "Další krok",
+      "startPlaying": "Začít hrát",
+      "fullDocs": "Kompletní dokumentace",
+      "steps": {
+        "install": {
+          "title": "Nainstaluj MCP SDK",
+          "description": "Přidej MCP klienta do projektu"
+        },
+        "connect": {
+          "title": "Připoj se k serveru",
+          "description": "Zkopíruj tento kód pro připojení"
+        },
+        "play": {
+          "title": "Udělej první tah",
+          "description": "Zavolej nástroj a sleduj výsledek"
+        }
+      }
+    },
+    "celebration": {
+      "firstVictory": "První vítězství!",
+      "challengeComplete": "Výzva splněna!",
+      "mastered": "Zvládl jsi",
+      "challenge": "výzvu",
+      "pointsEarned": "získané body",
+      "shareAchievement": "Sdílej svůj úspěch",
+      "tweet": "Tweet",
+      "copyLink": "Kopírovat odkaz",
+      "copied": "Zkopírováno!",
+      "nextChallenge": "Další výzva",
+      "continuePlaying": "Pokračovat ve hře"
+    },
+    "hints": {
+      "gotIt": "Rozumím",
+      "next": "Další",
+      "showHints": "Zobrazit nápovědu",
+      "tictactoe": {
+        "welcome": {
+          "title": "Vítej!",
+          "content": "Toto je Piškvorky s MCP integrací. Můžeš hrát manuálně nebo připojit svého AI agenta přes MCP protokol."
+        },
+        "mcpTab": {
+          "title": "MCP režim",
+          "content": "Přepni na záložku MCP pro zobrazení detailů připojení a sledování hry tvého AI agenta v reálném čase."
+        },
+        "tools": {
+          "title": "Dostupné nástroje",
+          "content": "Tvůj agent může používat nástroje jako get_board, make_move a get_legal_moves pro interakci se hrou."
+        },
+        "proTip": {
+          "title": "Tip",
+          "content": "X by měl začít v rohu pro nejlepší šance na výhru. Střed je častý, ale suboptimální začátek!"
+        }
+      }
+    }
+  },
   "gallery": {
     "pageTitle": "Galerie",
     "pageSubtitle": "Výtvory od MCP Challenge komunity",

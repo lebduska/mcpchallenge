@@ -572,6 +572,66 @@
     "writeReply": "Write a reply...",
     "cancel": "Cancel"
   },
+  "onboarding": {
+    "wizard": {
+      "title": "Quick Start Guide",
+      "subtitle": "Get connected in 3 steps",
+      "skipForNow": "Skip for now",
+      "nextStep": "Next Step",
+      "startPlaying": "Start Playing",
+      "fullDocs": "Full MCP Docs",
+      "steps": {
+        "install": {
+          "title": "Install MCP SDK",
+          "description": "Add the MCP client to your project"
+        },
+        "connect": {
+          "title": "Connect to Server",
+          "description": "Copy this code to connect"
+        },
+        "play": {
+          "title": "Make Your First Move",
+          "description": "Call a tool and see the result"
+        }
+      }
+    },
+    "celebration": {
+      "firstVictory": "First Victory!",
+      "challengeComplete": "Challenge Complete!",
+      "mastered": "You've mastered the",
+      "challenge": "challenge",
+      "pointsEarned": "points earned",
+      "shareAchievement": "Share your achievement",
+      "tweet": "Tweet",
+      "copyLink": "Copy Link",
+      "copied": "Copied!",
+      "nextChallenge": "Next Challenge",
+      "continuePlaying": "Continue Playing"
+    },
+    "hints": {
+      "gotIt": "Got it",
+      "next": "Next",
+      "showHints": "Show hints",
+      "tictactoe": {
+        "welcome": {
+          "title": "Welcome!",
+          "content": "This is Tic-Tac-Toe with MCP integration. You can play manually or connect your AI agent to play through the MCP protocol."
+        },
+        "mcpTab": {
+          "title": "MCP Mode",
+          "content": "Switch to the MCP tab to see connection details and watch your AI agent play in real-time."
+        },
+        "tools": {
+          "title": "Available Tools",
+          "content": "Your agent can use tools like get_board, make_move, and get_legal_moves to interact with the game."
+        },
+        "proTip": {
+          "title": "Pro Tip",
+          "content": "X should start in a corner for the best winning chances. The center is a common but suboptimal opening!"
+        }
+      }
+    }
+  },
   "gallery": {
     "pageTitle": "Gallery",
     "pageSubtitle": "Creations from the MCP Challenge community",

@@ -31,11 +31,6 @@ import {
   Eye,
   RefreshCw,
   Plus,
-  Wifi,
-  WifiOff,
-  Loader2,
-  Copy,
-  Check,
   Users,
   Bot,
   ChevronDown,
@@ -55,9 +50,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MCPCommandLog } from "./mcp-command-log";
 import { RoomConfig } from "./room-config";
+import { ConnectionStatus, deriveConnectionState } from "./connection-status";
+import { ClientSelector } from "./client-selector";
 import type { AgentIdentity } from "./agent-chip";
 import { PvPAgents, type PvPPlayersState } from "./pvp-agents";
 import { cn } from "@/lib/utils";
+import { formatRoomId } from "@/lib/room-name";
+import { SuccessCelebration } from "@/components/onboarding";
 import type {
   GameType,
   GameState,
@@ -93,16 +92,19 @@ export function LiveGameBoard({
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [isCreatingRoom, setIsCreatingRoom] = useState(false);
-  const [copied, setCopied] = useState(false);
   // PvP mode state
   const [gameMode, setGameMode] = useState<"ai" | "pvp">("ai");
   const [pvpPlayers, setPvpPlayers] = useState<PvPPlayersState>({ white: null, black: null });
   // Selected mode for room creation
   const [selectedMode, setSelectedMode] = useState<"ai" | "pvp">("ai");
-  // Config format selection (for quick copy)
-  const [configFormat, setConfigFormat] = useState<"claude" | "cursor" | "curl">("claude");
   // Advanced drawer state
   const [advancedOpen, setAdvancedOpen] = useState(false);
+  // First command celebration
+  const [showFirstCommandCelebration, setShowFirstCommandCelebration] = useState(false);
+  const [hasShownCelebration, setHasShownCelebration] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem(`mcp-first-command-${gameType}`) === "true";
+  });
 
   const mcpBaseUrl =
     process.env.NEXT_PUBLIC_MCP_URL || "https://mcp.mcpchallenge.org";
@@ -197,7 +199,18 @@ export function LiveGameBoard({
     eventSource.addEventListener("command", (event) => {
       try {
         const cmd = JSON.parse(event.data) as CommandLogEntry;
-        setCommands((prev) => [...prev.slice(-99), cmd]);
+        setCommands((prev) => {
+          // Trigger celebration on first command (if not shown before)
+          if (prev.length === 0) {
+            const celebrationKey = `mcp-first-command-${gameType}`;
+            if (localStorage.getItem(celebrationKey) !== "true") {
+              localStorage.setItem(celebrationKey, "true");
+              setHasShownCelebration(true);
+              setShowFirstCommandCelebration(true);
+            }
+          }
+          return [...prev.slice(-99), cmd];
+        });
       } catch (error) {
         console.error("Failed to parse command:", error);
       }
@@ -1144,82 +1157,26 @@ export function LiveGameBoard({
   // RENDER: Active room - Simplified 2-step onboarding
   // ==========================================================================
 
-  // Generate config snippets
+  // MCP URL for this room
   const mcpUrl = roomInfo?.mcpUrl || `${mcpBaseUrl}/${gameType}?room=${roomId}`;
 
-  const getConfigSnippet = () => {
-    switch (configFormat) {
-      case "claude":
-        return `{
-  "mcpServers": {
-    "${gameType}": {
-      "command": "npx",
-      "args": ["-y", "@anthropic/mcp-proxy", "${mcpUrl}"]
-    }
-  }
-}`;
-      case "cursor":
-        return `{
-  "mcp": {
-    "servers": {
-      "${gameType}": { "url": "${mcpUrl}", "transport": "http" }
-    }
-  }
-}`;
-      case "curl":
-        return `curl -X POST "${mcpUrl}" \\
-  -H "Content-Type: application/json" \\
-  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'`;
-    }
-  };
+  // Derive connection state for the new animated status component
+  const hasAgent = !!(agentIdentity || pvpPlayers.white || pvpPlayers.black);
+  const hasCommands = commands.length > 0;
+  const connectionState = deriveConnectionState({
+    isConnecting,
+    isConnected,
+    hasAgent,
+    hasCommands,
+  });
 
-  const copyConfig = async () => {
-    await navigator.clipboard.writeText(getConfigSnippet());
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+  // Get agent name for display
+  const currentAgentName = gameMode === "pvp"
+    ? (pvpPlayers.white?.name || pvpPlayers.black?.name)
+    : agentIdentity?.name;
 
-  // Connection status helper - consistent height to avoid layout shifts
-  const renderConnectionStatus = () => {
-    const baseClasses = "flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium border min-w-[140px] justify-center";
-
-    if (isConnecting) {
-      return (
-        <div className={cn(baseClasses, "bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-500/30")}>
-          <Loader2 className="h-3.5 w-3.5 animate-spin" />
-          Waiting...
-        </div>
-      );
-    }
-
-    if (isConnected && (agentIdentity || (pvpPlayers.white || pvpPlayers.black))) {
-      const agentName = gameMode === "pvp"
-        ? (pvpPlayers.white?.name || pvpPlayers.black?.name || "Agent")
-        : (agentIdentity?.name || "Agent");
-      return (
-        <div className={cn(baseClasses, "bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/30")}>
-          <Wifi className="h-3.5 w-3.5" />
-          <span className="truncate max-w-[100px]">{agentName}</span>
-        </div>
-      );
-    }
-
-    if (isConnected) {
-      return (
-        <div className={cn(baseClasses, "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-500/30")}>
-          <Wifi className="h-3.5 w-3.5" />
-          Waiting for agent
-        </div>
-      );
-    }
-
-    return (
-      <div className={cn(baseClasses, "bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-300 border-red-200 dark:border-red-500/30")}>
-        <WifiOff className="h-3.5 w-3.5" />
-        Disconnected
-      </div>
-    );
-  };
+  // Human-readable room name
+  const roomDisplay = roomId ? formatRoomId(roomId) : null;
 
   return (
     <div className="space-y-4">
@@ -1233,7 +1190,14 @@ export function LiveGameBoard({
             </div>
             <div className="flex-1">
               <h3 className="font-semibold text-emerald-800 dark:text-emerald-300">Room Created</h3>
-              <code className="text-xs text-emerald-600 dark:text-emerald-400 font-mono">{roomId}</code>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
+                  {roomDisplay?.name}
+                </span>
+                <code className="text-xs text-emerald-500 dark:text-emerald-500 font-mono opacity-60">
+                  ({roomDisplay?.shortId})
+                </code>
+              </div>
             </div>
           </div>
         </div>
@@ -1247,45 +1211,8 @@ export function LiveGameBoard({
             <h3 className="font-semibold text-zinc-900 dark:text-white">Connect your agent</h3>
           </div>
 
-          {/* Format selector + Copy button */}
-          <div className="flex items-center gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-1 h-8 text-xs">
-                  {configFormat === "claude" && "Claude"}
-                  {configFormat === "cursor" && "Cursor"}
-                  {configFormat === "curl" && "cURL"}
-                  <ChevronDown className="h-3 w-3 opacity-50" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start">
-                <DropdownMenuItem onClick={() => setConfigFormat("claude")}>Claude Desktop</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setConfigFormat("cursor")}>Cursor</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setConfigFormat("curl")}>cURL</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            <Button
-              onClick={copyConfig}
-              size="sm"
-              className={cn(
-                "gap-2 h-8 flex-1",
-                copied && "bg-emerald-600 hover:bg-emerald-600"
-              )}
-            >
-              {copied ? (
-                <>
-                  <Check className="h-3.5 w-3.5" />
-                  Copied!
-                </>
-              ) : (
-                <>
-                  <Copy className="h-3.5 w-3.5" />
-                  Copy Config
-                </>
-              )}
-            </Button>
-          </div>
+          {/* URL-first client selector */}
+          <ClientSelector mcpUrl={mcpUrl} />
         </div>
       </div>
 
@@ -1295,8 +1222,8 @@ export function LiveGameBoard({
         <div className="lg:col-span-2">
           {/* Header bar above board */}
           <div className="flex items-center justify-between mb-3">
-            {/* Connection status chip - fixed width */}
-            {renderConnectionStatus()}
+            {/* Connection status chip - animated multi-stage */}
+            <ConnectionStatus state={connectionState} agentName={currentAgentName} />
 
             {/* Agent display - PvP mode */}
             {gameMode === "pvp" && (pvpPlayers.white || pvpPlayers.black) && (
@@ -1314,9 +1241,9 @@ export function LiveGameBoard({
                   PvP
                 </Badge>
               )}
-              <code className="text-xs text-zinc-400 font-mono hidden sm:block">
-                {roomId.slice(0, 8)}...
-              </code>
+              <span className="text-xs text-zinc-500 dark:text-zinc-400 hidden sm:block">
+                {roomDisplay?.name}
+              </span>
             </div>
           </div>
 
@@ -1355,6 +1282,16 @@ export function LiveGameBoard({
           </CollapsibleContent>
         </Collapsible>
       )}
+
+      {/* First command celebration */}
+      <SuccessCelebration
+        challengeId={gameType}
+        challengeName={gameType.charAt(0).toUpperCase() + gameType.slice(1)}
+        isFirstCompletion={true}
+        pointsEarned={25}
+        show={showFirstCommandCelebration}
+        onClose={() => setShowFirstCommandCelebration(false)}
+      />
     </div>
   );
 }

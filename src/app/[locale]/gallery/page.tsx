@@ -92,38 +92,38 @@ export default function GalleryPage() {
   }, [sort, challengeId]);
 
   return (
-    <div className="min-h-screen bg-zinc-950">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Image className="h-6 w-6 text-purple-400" />
+          <h1 className="text-2xl font-bold text-zinc-900 dark:text-white flex items-center gap-2">
+            <Image className="h-6 w-6 text-purple-500 dark:text-purple-400" />
             {t("pageTitle")}
           </h1>
-          <p className="text-zinc-400 mt-1">{t("pageSubtitle")}</p>
+          <p className="text-zinc-600 dark:text-zinc-400 mt-1">{t("pageSubtitle")}</p>
         </div>
 
         {/* Filters */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <Tabs value={sort} onValueChange={setSort}>
-            <TabsList className="bg-zinc-800/50">
+            <TabsList className="bg-zinc-100 dark:bg-zinc-800/50">
               <TabsTrigger
                 value="new"
-                className="gap-1.5 data-[state=active]:bg-zinc-700"
+                className="gap-1.5 text-zinc-600 dark:text-zinc-400 data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 data-[state=active]:text-zinc-900 dark:data-[state=active]:text-white"
               >
                 <Clock className="h-3.5 w-3.5" />
                 {t("sort.new")}
               </TabsTrigger>
               <TabsTrigger
                 value="popular"
-                className="gap-1.5 data-[state=active]:bg-zinc-700"
+                className="gap-1.5 text-zinc-600 dark:text-zinc-400 data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 data-[state=active]:text-zinc-900 dark:data-[state=active]:text-white"
               >
                 <TrendingUp className="h-3.5 w-3.5" />
                 {t("sort.popular")}
               </TabsTrigger>
               <TabsTrigger
                 value="views"
-                className="gap-1.5 data-[state=active]:bg-zinc-700"
+                className="gap-1.5 text-zinc-600 dark:text-zinc-400 data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 data-[state=active]:text-zinc-900 dark:data-[state=active]:text-white"
               >
                 <Eye className="h-3.5 w-3.5" />
                 {t("sort.views")}
@@ -132,10 +132,10 @@ export default function GalleryPage() {
           </Tabs>
 
           <Select value={challengeId} onValueChange={setChallengeId}>
-            <SelectTrigger className="w-[180px] bg-zinc-800 border-zinc-700 text-white">
+            <SelectTrigger className="w-[180px] bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white">
               <SelectValue placeholder={t("filter.challenge")} />
             </SelectTrigger>
-            <SelectContent className="bg-zinc-800 border-zinc-700">
+            <SelectContent className="bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700">
               <SelectItem value="all">{t("filter.allChallenges")}</SelectItem>
               <SelectItem value="canvas-draw">
                 <div className="flex items-center gap-2">
@@ -156,15 +156,15 @@ export default function GalleryPage() {
         {/* Gallery grid */}
         {isLoading && images.length === 0 ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-zinc-500" />
+            <Loader2 className="h-8 w-8 animate-spin text-zinc-400 dark:text-zinc-500" />
           </div>
         ) : images.length === 0 ? (
           <div className="text-center py-12">
-            <Image className="h-12 w-12 text-zinc-600 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-white mb-2">
+            <Image className="h-12 w-12 text-zinc-400 dark:text-zinc-600 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-zinc-900 dark:text-white mb-2">
               {t("noImages")}
             </h3>
-            <p className="text-zinc-400">{t("noImagesDescription")}</p>
+            <p className="text-zinc-600 dark:text-zinc-400">{t("noImagesDescription")}</p>
           </div>
         ) : (
           <>
@@ -181,7 +181,7 @@ export default function GalleryPage() {
                   variant="outline"
                   onClick={() => fetchImages(false)}
                   disabled={isLoading}
-                  className="border-zinc-700 text-zinc-300"
+                  className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
                 >
                   {isLoading ? (
                     <Loader2 className="h-4 w-4 animate-spin mr-2" />

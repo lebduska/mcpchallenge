@@ -1213,7 +1213,7 @@ export function GorillasGame({ onGameComplete }: GorillasGameProps) {
 
   return (
     <div
-      className="flex flex-col items-center gap-0 font-mono"
+      className="flex flex-col items-center gap-0 font-mono w-full max-w-[1400px] mx-auto"
       onKeyDown={handleKeyDown}
       tabIndex={0}
     >
@@ -1256,9 +1256,9 @@ export function GorillasGame({ onGameComplete }: GorillasGameProps) {
         Wind: {wind > 0 ? ">>>" : wind < 0 ? "<<<" : "---"} {Math.abs(wind).toFixed(1)} mph
       </div>
 
-      {/* Game canvas - responsive container */}
+      {/* Game canvas - responsive container, scales to fit screen */}
       <div
-        className="relative border-4 overflow-hidden w-full max-w-[960px]"
+        className="relative border-4 overflow-hidden w-full max-w-[1400px] mx-auto"
         style={{
           borderColor: COLORS.blue,
           aspectRatio: `${CANVAS_WIDTH} / ${CANVAS_HEIGHT}`,

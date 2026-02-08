@@ -41,6 +41,7 @@
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.45.1",
     "flag-icons": "^7.5.0",
+    "framer-motion": "^12.33.0",
     "lucide-react": "^0.563.0",
     "matter-js": "^0.20.0",
     "next": "15.5.2",
