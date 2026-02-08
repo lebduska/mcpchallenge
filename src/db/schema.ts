@@ -193,6 +193,44 @@ export const galleryImages = sqliteTable("gallery_images", {
   createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 });
 
+// ==================== CODE SNIPPETS ====================
+
+export const codeSnippets = sqliteTable("code_snippets", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: text("user_id").references(() => users.id, { onDelete: "set null" }),
+  title: text("title").notNull(),
+  description: text("description"),
+  language: text("language").notNull().default("json"),
+  code: text("code").notNull(),
+  challengeId: text("challenge_id"),
+  isPublic: integer("is_public", { mode: "boolean" }).notNull().default(true),
+  viewCount: integer("view_count").notNull().default(0),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
+// ==================== CHALLENGE COMMENTS ====================
+
+export const challengeComments = sqliteTable("challenge_comments", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  challengeId: text("challenge_id").notNull(),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  parentId: text("parent_id"),
+  content: text("content").notNull(),
+  isTip: integer("is_tip", { mode: "boolean" }).notNull().default(false),
+  likeCount: integer("like_count").notNull().default(0),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
+export const commentLikes = sqliteTable("comment_likes", {
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  commentId: text("comment_id").notNull().references(() => challengeComments.id, { onDelete: "cascade" }),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+}, (table) => [
+  primaryKey({ columns: [table.userId, table.commentId] }),
+]);
+
 // ==================== TYPES ====================
 
 export type User = typeof users.$inferSelect;
@@ -211,3 +249,7 @@ export type IdeaVote = typeof ideaVotes.$inferSelect;
 export type IdeaComment = typeof ideaComments.$inferSelect;
 export type GalleryImage = typeof galleryImages.$inferSelect;
 export type NewGalleryImage = typeof galleryImages.$inferInsert;
+export type CodeSnippet = typeof codeSnippets.$inferSelect;
+export type NewCodeSnippet = typeof codeSnippets.$inferInsert;
+export type ChallengeComment = typeof challengeComments.$inferSelect;
+export type NewChallengeComment = typeof challengeComments.$inferInsert;

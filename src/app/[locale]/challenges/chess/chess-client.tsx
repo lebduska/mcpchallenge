@@ -17,6 +17,7 @@ import { MCPSessionDemo } from "@/components/mcp/mcp-session-demo";
 import { DebugDrawer } from "@/components/mcp/debug-drawer";
 import { useGameCompletion } from "@/hooks/use-game-completion";
 import { AchievementToast } from "@/components/achievements/achievement-toast";
+import { ChallengeComments } from "@/components/comments/challenge-comments";
 import { cn } from "@/lib/utils";
 
 interface Achievement {
@@ -193,6 +194,11 @@ export function ChessClientPage() {
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
+
+              {/* Discussion */}
+              <div className="mt-8">
+                <ChallengeComments challengeId="chess" />
+              </div>
             </div>
           </TabsContent>
 

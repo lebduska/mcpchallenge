@@ -32,6 +32,7 @@
     "challenges": "Challenges",
     "playground": "Playground",
     "gallery": "Gallery",
+    "snippets": "Code Share",
     "leaderboard": "Leaderboard",
     "achievements": "Achievements",
     "profile": "Profile",
@@ -663,5 +664,50 @@
     "saved": "Saved!",
     "shareSuccess": "Image saved to gallery!",
     "shareFailed": "Failed to save image"
+  },
+  "snippets": {
+    "pageTitle": "Code Share",
+    "pageSubtitle": "Share MCP configs, code snippets, and solutions",
+    "share": "Share Code",
+    "noSnippets": "No snippets yet",
+    "noSnippetsDescription": "Be the first to share your MCP configuration!",
+    "shareFirst": "Share Your First Snippet",
+    "loadMore": "Load More",
+    "backToSnippets": "Back to Snippets",
+    "newSnippet": "Share Code",
+    "newSnippetDescription": "Share your MCP configuration, code snippet, or solution with the community",
+    "notFound": "Snippet not found",
+    "notFoundDescription": "This snippet may have been deleted or never existed",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "shareBtn": "Share",
+    "deleteTitle": "Delete Snippet?",
+    "deleteDescription": "This action cannot be undone. Your snippet will be permanently deleted.",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "form": {
+      "title": "Title",
+      "titlePlaceholder": "My MCP Config",
+      "description": "Description (optional)",
+      "descriptionPlaceholder": "Describe what this snippet does...",
+      "language": "Language",
+      "code": "Code",
+      "codePlaceholder": "Paste your code here...",
+      "public": "Make public",
+      "submit": "Share Snippet"
+    }
+  },
+  "comments": {
+    "title": "Discussion",
+    "placeholder": "Share a tip or ask a question...",
+    "submit": "Post",
+    "reply": "Reply",
+    "replyPlaceholder": "Write a reply...",
+    "noComments": "No comments yet",
+    "noCommentsDescription": "Be the first to share a tip!",
+    "signInToComment": "Sign in to comment",
+    "markAsTip": "This is a tip",
+    "tipLabel": "Tip",
+    "loadMore": "Load More Comments"
   }
 }
