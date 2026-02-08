@@ -38,7 +38,7 @@ export { sokobanEngine, SOKOBAN_LEVELS, TOTAL_LEVELS as SOKOBAN_TOTAL_LEVELS } f
 export type { SokobanState, SokobanMove, SokobanOptions, Direction as SokobanDirection, Position as SokobanPosition } from './sokoban';
 
 // Gorillas engine
-export { GorillasEngine, LEVELS as GORILLAS_LEVELS } from './gorillas';
+export { GorillasEngine, LEVELS as GORILLAS_LEVELS, simulateThrowPreview, getStrategicHints } from './gorillas';
 export type { GorillasState, GorillasMove, GorillasOptions, Position as GorillasPosition, Building, Gorilla, Trajectory, LevelConfig as GorillasLevelConfig } from './gorillas';
 
 // Fractals engine
