@@ -45,9 +45,10 @@ export function Navbar() {
 
   const navItems = [
     { href: "/challenges", label: t("challenges") },
-    { href: "/snippets", label: t("snippets") },
-    { href: "/gallery", label: t("gallery") },
-    { href: "/leaderboard", label: t("leaderboard") },
+    // Hidden until 100+ records:
+    // { href: "/snippets", label: t("snippets") },
+    // { href: "/gallery", label: t("gallery") },
+    // { href: "/leaderboard", label: t("leaderboard") },
   ];
 
   // Remove locale prefix from pathname for comparison
