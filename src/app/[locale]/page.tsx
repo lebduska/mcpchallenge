@@ -71,75 +71,85 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       {/* HERO SECTION */}
-      <section className="relative overflow-hidden">
-        {/* Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 dark:from-violet-900 dark:via-purple-900 dark:to-indigo-950" />
+      <section className="relative overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-900 to-purple-950">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center min-h-[600px] py-16">
+            {/* Left: Text Content */}
+            <div className="relative z-10">
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-300 text-sm mb-6">
+                <Sparkles className="h-4 w-4" />
+                <span>Learn MCP through games</span>
+              </div>
 
-        {/* Subtle pattern overlay */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          }} />
-        </div>
+              {/* Main Heading */}
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+                Master{" "}
+                <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  MCP
+                </span>{" "}
+                by Playing
+              </h1>
 
-        {/* Floating orbs for visual interest */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-purple-300/10 rounded-full blur-3xl" />
+              {/* Subheading */}
+              <p className="text-lg text-zinc-400 mb-8 max-w-lg">
+                Interactive challenges that teach you how AI agents communicate with tools.
+                Play games, solve puzzles, learn the protocol.
+              </p>
 
-        <div className="relative container mx-auto px-4 py-24 md:py-32">
-          <div className="max-w-3xl">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white/90 text-sm mb-6">
-              <Sparkles className="h-4 w-4" />
-              <span>Learn MCP through interactive games</span>
-            </div>
-
-            {/* Main Heading */}
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-              Master the{" "}
-              <span className="bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">
-                Model Context Protocol
-              </span>{" "}
-              by Playing
-            </h1>
-
-            {/* Subheading */}
-            <p className="text-xl text-white/80 mb-8 max-w-2xl">
-              Interactive challenges that teach you how AI agents communicate with tools.
-              Play games, solve puzzles, and learn the protocol that powers modern AI applications.
-            </p>
-
-            {/* CTAs */}
-            <div className="flex flex-wrap gap-4">
-              <Button asChild size="lg" className="text-lg px-8 bg-white text-purple-700 hover:bg-white/90">
+              {/* CTA */}
+              <Button asChild size="lg" className="text-lg px-8 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white border-0">
                 <Link href="/challenges">
                   Start Playing
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="text-lg px-8 border-white/30 text-white hover:bg-white/10">
-                <a href="https://modelcontextprotocol.io" target="_blank" rel="noopener noreferrer">
-                  Learn about MCP
-                </a>
-              </Button>
+
+              {/* Quick stats */}
+              <div className="flex gap-8 mt-12">
+                <div>
+                  <div className="text-2xl font-bold text-white">9+</div>
+                  <div className="text-zinc-500 text-sm">Challenges</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-white">Free</div>
+                  <div className="text-zinc-500 text-sm">Forever</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-white">Open</div>
+                  <div className="text-zinc-500 text-sm">Source</div>
+                </div>
+              </div>
             </div>
 
-            {/* Quick stats */}
-            <div className="flex gap-8 mt-12 pt-8 border-t border-white/20">
-              <div>
-                <div className="text-3xl font-bold text-white">9+</div>
-                <div className="text-white/60 text-sm">Challenges</div>
+            {/* Right: Hero Image */}
+            <div className="relative hidden lg:block">
+              <div className="relative w-full h-[500px] rounded-2xl overflow-hidden">
+                <Image
+                  src="/images/hero-bg.jpg"
+                  alt="MCP Challenge - AI Gaming Concept"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+                {/* Gradient overlay for blending */}
+                <div className="absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-zinc-900/80" />
               </div>
-              <div>
-                <div className="text-3xl font-bold text-white">100%</div>
-                <div className="text-white/60 text-sm">Free</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-white">∞</div>
-                <div className="text-white/60 text-sm">Possibilities</div>
-              </div>
+              {/* Decorative glow */}
+              <div className="absolute -top-10 -right-10 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl" />
+              <div className="absolute -bottom-10 -left-10 w-72 h-72 bg-pink-500/20 rounded-full blur-3xl" />
             </div>
           </div>
+        </div>
+
+        {/* Mobile background image */}
+        <div className="absolute inset-0 lg:hidden opacity-20">
+          <Image
+            src="/images/hero-bg.jpg"
+            alt=""
+            fill
+            className="object-cover"
+          />
         </div>
       </section>
 
