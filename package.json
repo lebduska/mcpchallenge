@@ -34,6 +34,7 @@
     "@radix-ui/react-tabs": "^1.1.13",
     "@swc/helpers": "^0.5.18",
     "@types/matter-js": "^0.20.2",
+    "@vercel/og": "^0.8.6",
     "bcryptjs": "^3.0.3",
     "canvas-confetti": "^1.9.4",
     "chess.js": "^1.4.0",
