@@ -173,6 +173,7 @@ export async function GET(request: NextRequest) {
             >
               <div
                 style={{
+                  display: "flex",
                   fontSize: "48px",
                   fontWeight: 800,
                   color: "#18181b",
@@ -181,17 +182,16 @@ export async function GET(request: NextRequest) {
               >
                 {name}
               </div>
-              {description && (
-                <div
-                  style={{
-                    fontSize: "24px",
-                    color: "#52525b",
-                    lineHeight: 1.4,
-                  }}
-                >
-                  {description}
-                </div>
-              )}
+              <div
+                style={{
+                  display: description ? "flex" : "none",
+                  fontSize: "24px",
+                  color: "#52525b",
+                  lineHeight: 1.4,
+                }}
+              >
+                {description || ""}
+              </div>
             </div>
           </div>
 
@@ -214,27 +214,25 @@ export async function GET(request: NextRequest) {
                 gap: "16px",
               }}
             >
-              {username && (
-                <div
-                  style={{
-                    fontSize: "20px",
-                    color: "#71717a",
-                    fontWeight: 500,
-                  }}
-                >
-                  @{username}
-                </div>
-              )}
-              {date && (
-                <div
-                  style={{
-                    fontSize: "18px",
-                    color: "#a1a1aa",
-                  }}
-                >
-                  {date}
-                </div>
-              )}
+              <div
+                style={{
+                  display: "flex",
+                  fontSize: "20px",
+                  color: "#71717a",
+                  fontWeight: 500,
+                }}
+              >
+                {username ? `@${username}` : ""}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  fontSize: "18px",
+                  color: "#a1a1aa",
+                }}
+              >
+                {date || ""}
+              </div>
             </div>
 
             {/* Stats */}
@@ -245,40 +243,36 @@ export async function GET(request: NextRequest) {
                 gap: "24px",
               }}
             >
-              {percentile && (
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    padding: "8px 16px",
-                    borderRadius: "12px",
-                    background: "rgba(0,0,0,0.05)",
-                    color: style.text,
-                    fontSize: "18px",
-                    fontWeight: 600,
-                  }}
-                >
-                  📊 Top {percentile}%
-                </div>
-              )}
-              {rank && (
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    padding: "8px 16px",
-                    borderRadius: "12px",
-                    background: "rgba(0,0,0,0.05)",
-                    color: style.text,
-                    fontSize: "18px",
-                    fontWeight: 600,
-                  }}
-                >
-                  #{rank} to unlock
-                </div>
-              )}
+              <div
+                style={{
+                  display: percentile ? "flex" : "none",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "8px 16px",
+                  borderRadius: "12px",
+                  background: "rgba(0,0,0,0.05)",
+                  color: style.text,
+                  fontSize: "18px",
+                  fontWeight: 600,
+                }}
+              >
+                📊 Top {percentile}%
+              </div>
+              <div
+                style={{
+                  display: rank ? "flex" : "none",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "8px 16px",
+                  borderRadius: "12px",
+                  background: "rgba(0,0,0,0.05)",
+                  color: style.text,
+                  fontSize: "18px",
+                  fontWeight: 600,
+                }}
+              >
+                #{rank} to unlock
+              </div>
             </div>
           </div>
         </div>
