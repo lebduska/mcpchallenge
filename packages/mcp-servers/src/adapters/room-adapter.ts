@@ -202,6 +202,30 @@ function convertToEngineState(
         difficulty: lightsoutOldState.difficulty || 'medium',
       } as any;
 
+    case 'pathfinding':
+      const pathfindingOldState = oldState as any;
+      return {
+        gameId: `${oldState.createdAt}`,
+        gameType: 'pathfinding',
+        status: pathfindingOldState.status || 'playing',
+        turn: 'player',
+        moveCount: pathfindingOldState.nodesExpanded || 0,
+        grid: pathfindingOldState.grid || [],
+        width: pathfindingOldState.width || 20,
+        height: pathfindingOldState.height || 15,
+        start: pathfindingOldState.start || null,
+        goal: pathfindingOldState.goal || null,
+        algorithm: pathfindingOldState.algorithm || 'astar',
+        pathFound: pathfindingOldState.pathFound ?? null,
+        pathLength: pathfindingOldState.pathLength || 0,
+        pathCost: pathfindingOldState.pathCost || 0,
+        nodesExpanded: pathfindingOldState.nodesExpanded || 0,
+        path: pathfindingOldState.path || [],
+        levelIndex: pathfindingOldState.levelIndex || 0,
+        totalLevels: pathfindingOldState.totalLevels || 10,
+        difficulty: pathfindingOldState.difficulty || 'medium',
+      } as any;
+
     default:
       return null;
   }
@@ -386,6 +410,29 @@ function convertToOldState(
         toggleCount: lightsoutState.toggleCount,
         minSolution: lightsoutState.minSolution,
         difficulty: lightsoutState.difficulty,
+      } as GameState;
+
+    case 'pathfinding':
+      const pathfindingState = engineState as any;
+      return {
+        gameType: 'pathfinding',
+        status: pathfindingState.status || 'playing',
+        createdAt: now,
+        lastActivity: now,
+        grid: pathfindingState.grid,
+        width: pathfindingState.width,
+        height: pathfindingState.height,
+        start: pathfindingState.start,
+        goal: pathfindingState.goal,
+        algorithm: pathfindingState.algorithm || 'astar',
+        pathFound: pathfindingState.pathFound ?? null,
+        pathLength: pathfindingState.pathLength || 0,
+        pathCost: pathfindingState.pathCost || 0,
+        nodesExpanded: pathfindingState.nodesExpanded || 0,
+        path: pathfindingState.path || [],
+        levelIndex: pathfindingState.levelIndex || 0,
+        totalLevels: pathfindingState.totalLevels || 10,
+        difficulty: pathfindingState.difficulty || 'medium',
       } as GameState;
 
     default:

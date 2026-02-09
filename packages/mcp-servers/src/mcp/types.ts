@@ -118,7 +118,7 @@ export interface PlayerSlot {
 }
 
 // Game state types
-export type GameType = "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "polybridge" | "sokoban" | "gorillas" | "fractals" | "lightsout";
+export type GameType = "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "polybridge" | "sokoban" | "gorillas" | "fractals" | "lightsout" | "pathfinding";
 
 export interface BaseGameState {
   gameType: GameType;
@@ -288,4 +288,23 @@ export interface LightsOutGameState extends BaseGameState {
   difficulty: "easy" | "medium" | "hard";
 }
 
-export type GameState = ChessGameState | TicTacToeGameState | SnakeGameState | CanvasGameState | MinesweeperGameState | PolyBridgeGameState | SokobanGameState | GorillasGameState | FractalsGameState | LightsOutGameState;
+export interface PathfindingGameState extends BaseGameState {
+  gameType: "pathfinding";
+  status: "waiting" | "playing" | "won";
+  grid: string[][];  // 'empty' | 'wall' | 'start' | 'goal' | 'mud' | 'water'
+  width: number;
+  height: number;
+  start: { row: number; col: number } | null;
+  goal: { row: number; col: number } | null;
+  algorithm: "bfs" | "dijkstra" | "astar";
+  pathFound: boolean | null;
+  pathLength: number;
+  pathCost: number;
+  nodesExpanded: number;
+  path: Array<{ row: number; col: number }>;
+  levelIndex: number;
+  totalLevels: number;
+  difficulty: "easy" | "medium" | "hard";
+}
+
+export type GameState = ChessGameState | TicTacToeGameState | SnakeGameState | CanvasGameState | MinesweeperGameState | PolyBridgeGameState | SokobanGameState | GorillasGameState | FractalsGameState | LightsOutGameState | PathfindingGameState;
