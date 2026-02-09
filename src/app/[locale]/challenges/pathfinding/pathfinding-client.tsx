@@ -7,6 +7,13 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import {
   Select,
   SelectContent,
@@ -27,7 +34,14 @@ import {
   Eraser,
   Flag,
   MapPin,
+  Plug,
+  ArrowLeft,
+  Terminal,
+  Info,
+  Cpu,
 } from "lucide-react";
+import Link from "next/link";
+import { LiveGameBoard } from "@/components/mcp/live-game-board";
 import { cn } from "@/lib/utils";
 
 // Types
@@ -73,6 +87,18 @@ const COST: Record<CellType, number> = {
   mud: 5,
   water: 10,
 };
+
+// MCP Tools definition
+const mcpTools = [
+  { name: "get_state", description: "Get current grid state (board, start, goal, path)" },
+  { name: "set_cell", params: "row, col, type", description: "Set cell type (empty/wall/mud/water)" },
+  { name: "set_start", params: "row, col", description: "Set start position" },
+  { name: "set_goal", params: "row, col", description: "Set goal position" },
+  { name: "find_path", params: "algorithm?", description: "Find path using BFS/Dijkstra/A*" },
+  { name: "clear", description: "Clear all cells except start and goal" },
+  { name: "generate_maze", params: "density?", description: "Generate random maze" },
+  { name: "reset", description: "Reset to empty grid" },
+];
 
 // Helper functions
 function createEmptyGrid(): Cell[][] {
@@ -616,21 +642,62 @@ export function PathfindingClientPage() {
 
   return (
     <div
-      className="min-h-screen bg-zinc-50 dark:bg-zinc-950 py-8"
+      className="min-h-screen bg-zinc-50 dark:bg-zinc-950"
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
     >
-      <div className="container mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold text-zinc-900 dark:text-white flex items-center justify-center gap-3">
-            <Compass className="h-8 w-8 text-cyan-500" />
-            {t("title")}
-          </h1>
-          <p className="text-zinc-600 dark:text-zinc-400 mt-2">{t("description")}</p>
-        </div>
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <Tabs defaultValue="play" className="w-full">
+          {/* Header with integrated mode switch */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <Link
+                href="/challenges"
+                className="flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Challenges
+              </Link>
+              <div className="h-4 w-px bg-zinc-300 dark:bg-zinc-700" />
+              <div className="flex items-center gap-2">
+                <Compass className="h-5 w-5 text-cyan-500" />
+                <h1 className="text-lg font-semibold text-zinc-900 dark:text-white">{t("title")}</h1>
+              </div>
+            </div>
 
-        <div className="flex flex-col lg:flex-row gap-6">
+            {/* Mode Switch */}
+            <TabsList className="h-9 p-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg">
+              <TabsTrigger
+                value="play"
+                className={cn(
+                  "h-7 px-4 text-sm font-medium rounded-md transition-all",
+                  "data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800",
+                  "data-[state=active]:text-cyan-600 dark:data-[state=active]:text-cyan-400",
+                  "data-[state=active]:shadow-sm"
+                )}
+              >
+                <Play className="h-3.5 w-3.5 mr-1.5" />
+                Play
+              </TabsTrigger>
+              <TabsTrigger
+                value="mcp"
+                className={cn(
+                  "h-7 px-4 text-sm font-medium rounded-md transition-all",
+                  "data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800",
+                  "data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400",
+                  "data-[state=active]:shadow-sm"
+                )}
+              >
+                <Plug className="h-3.5 w-3.5 mr-1.5" />
+                MCP
+              </TabsTrigger>
+            </TabsList>
+          </div>
+
+          {/* PLAY MODE */}
+          <TabsContent value="play" className="mt-0">
+            <p className="text-zinc-600 dark:text-zinc-400 mb-4 text-center">{t("description")}</p>
+            <div className="flex flex-col lg:flex-row gap-6">
           {/* Controls */}
           <Card className="lg:w-72 p-4 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
             <div className="space-y-4">
@@ -895,7 +962,101 @@ export function PathfindingClientPage() {
               <p>1-3: Algorithm</p>
             </div>
           </Card>
-        </div>
+            </div>
+
+            {/* Educational Content */}
+            <div className="mt-8 max-w-3xl mx-auto">
+              <Accordion type="single" collapsible>
+                <AccordionItem value="howto" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 mb-2">
+                  <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <Info className="h-4 w-4" />
+                      How to Play
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="pb-2 space-y-3 text-sm text-zinc-600 dark:text-zinc-400">
+                      <p><strong className="text-zinc-900 dark:text-white">Goal:</strong> Create a maze with walls and weighted terrain, then run pathfinding algorithms.</p>
+                      <p><strong className="text-zinc-900 dark:text-white">Tools:</strong> Select Wall, Mud, Water, Start, or Goal tools and click/drag on the grid.</p>
+                      <p><strong className="text-zinc-900 dark:text-white">Algorithms:</strong> BFS ignores weights, Dijkstra uses exact costs, A* adds heuristic guidance.</p>
+                      <p><strong className="text-zinc-900 dark:text-white">Visualization:</strong> Blue = visited, cyan = frontier (next candidates), yellow = final path.</p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="complexity" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4">
+                  <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <Cpu className="h-4 w-4" />
+                      Algorithm Complexity
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-3 pb-2">
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
+                        <div className="font-medium text-cyan-600 dark:text-cyan-400 text-sm">BFS - O(V + E)</div>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                          Explores all neighbors at equal depth. Guaranteed shortest path for unweighted graphs. Uses a queue.
+                        </p>
+                      </div>
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
+                        <div className="font-medium text-cyan-600 dark:text-cyan-400 text-sm">Dijkstra - O((V + E) log V)</div>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                          Always expands lowest-cost node. Uses a priority queue. Handles weighted edges correctly.
+                        </p>
+                      </div>
+                      <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg">
+                        <div className="font-medium text-cyan-600 dark:text-cyan-400 text-sm">A* - O((V + E) log V)</div>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                          Dijkstra + heuristic. Uses f(n) = g(n) + h(n). With admissible heuristic, guarantees optimal path faster.
+                        </p>
+                      </div>
+                      <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                        V = vertices (cells), E = edges (connections). A* is generally fastest for point-to-point pathfinding.
+                      </p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
+          </TabsContent>
+
+          {/* MCP MODE */}
+          <TabsContent value="mcp" className="mt-0 space-y-6">
+            {/* Live Game Board */}
+            <LiveGameBoard gameType="pathfinding" />
+
+            {/* MCP Tools */}
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="tools" className="border border-zinc-200 dark:border-zinc-800 rounded-xl px-4">
+                <AccordionTrigger className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:no-underline">
+                  <div className="flex items-center gap-2">
+                    <Terminal className="h-4 w-4" />
+                    Available MCP Tools
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pb-2">
+                    {mcpTools.map((tool) => (
+                      <div
+                        key={tool.name}
+                        className="flex flex-col p-2.5 bg-zinc-50 dark:bg-zinc-900/50 rounded-lg border border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors"
+                      >
+                        <code className="text-cyan-600 dark:text-cyan-400 font-mono text-sm font-semibold">
+                          {tool.name}
+                          {tool.params && (
+                            <span className="text-zinc-400 dark:text-zinc-600">({tool.params})</span>
+                          )}
+                        </code>
+                        <span className="text-xs text-zinc-500 dark:text-zinc-500 mt-0.5">{tool.description}</span>
+                      </div>
+                    ))}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

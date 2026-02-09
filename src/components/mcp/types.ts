@@ -1,6 +1,6 @@
 // MCP Component Types
 
-export type GameType = "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "polybridge" | "sokoban" | "gorillas" | "fractals" | "lightsout";
+export type GameType = "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "polybridge" | "sokoban" | "gorillas" | "fractals" | "lightsout" | "pathfinding";
 
 export interface CommandLogEntry {
   timestamp: number;
@@ -176,6 +176,25 @@ export interface LightsOutGameState {
   difficulty: "easy" | "medium" | "hard";
 }
 
+export interface PathfindingGameState {
+  gameType: "pathfinding";
+  status: "waiting" | "playing" | "won";
+  grid: string[][]; // 'empty' | 'wall' | 'start' | 'goal' | 'mud' | 'water' | 'path' | 'visited'
+  width: number;
+  height: number;
+  start: { row: number; col: number } | null;
+  goal: { row: number; col: number } | null;
+  algorithm: "bfs" | "dijkstra" | "astar";
+  pathFound: boolean | null;
+  pathLength: number;
+  pathCost: number;
+  nodesExpanded: number;
+  path: Array<{ row: number; col: number }>;
+  levelIndex: number;
+  totalLevels: number;
+  difficulty: "easy" | "medium" | "hard";
+}
+
 export type GameState =
   | ChessGameState
   | TicTacToeGameState
@@ -186,7 +205,8 @@ export type GameState =
   | SokobanGameState
   | GorillasGameState
   | FractalsGameState
-  | LightsOutGameState;
+  | LightsOutGameState
+  | PathfindingGameState;
 
 export interface RoomState {
   roomId: string;

@@ -68,6 +68,7 @@ import type {
   SokobanGameState,
   FractalsGameState,
   LightsOutGameState,
+  PathfindingGameState,
   CommandLogEntry,
   RoomInfo,
   RoomState,
@@ -291,6 +292,8 @@ export function LiveGameBoard({
         return renderFractalsBoard(gameState as FractalsGameState);
       case "lightsout":
         return renderLightsOutBoard(gameState as LightsOutGameState);
+      case "pathfinding":
+        return renderPathfindingBoard(gameState as PathfindingGameState);
       default:
         return null;
     }
@@ -794,6 +797,77 @@ export function LiveGameBoard({
     );
   };
 
+  const renderPathfindingBoard = (state: PathfindingGameState) => {
+    const { grid, width, height, pathFound, pathLength, pathCost, nodesExpanded, status, algorithm } = state;
+
+    const getCellColor = (cellType: string) => {
+      switch (cellType) {
+        case "wall": return "bg-zinc-800";
+        case "start": return "bg-emerald-500";
+        case "goal": return "bg-red-500";
+        case "mud": return "bg-amber-600/70";
+        case "water": return "bg-blue-500/70";
+        case "path": return "bg-yellow-400";
+        case "visited": return "bg-cyan-300/50";
+        default: return "bg-zinc-100 dark:bg-zinc-800/30";
+      }
+    };
+
+    return (
+      <div className="relative bg-zinc-900 rounded-xl p-4 border border-cyan-500/30">
+        {/* Spectator badge */}
+        <div className="absolute top-2 left-2 z-10">
+          <Badge variant="outline" className="bg-black/50 backdrop-blur-md border-white/10 text-white gap-1">
+            <Eye className="h-3 w-3" />
+            Spectating
+          </Badge>
+        </div>
+
+        {/* Algorithm badge */}
+        <div className="absolute top-2 right-2 z-10">
+          <Badge className={cn(
+            "backdrop-blur-md border-0",
+            status === "won" ? "bg-green-600/80" : "bg-cyan-600/80"
+          )}>
+            {algorithm?.toUpperCase() || "A*"}
+          </Badge>
+        </div>
+
+        {/* Grid */}
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div
+            className="grid gap-[1px] bg-zinc-700 p-[1px] rounded"
+            style={{
+              gridTemplateColumns: `repeat(${width || 20}, 1fr)`,
+            }}
+          >
+            {grid?.flat().map((cellType, i) => (
+              <div
+                key={i}
+                className={cn(
+                  "w-3 h-3",
+                  getCellColor(cellType)
+                )}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Stats */}
+        {pathFound !== null && (
+          <div className="absolute bottom-2 right-2 flex gap-2">
+            <Badge variant="outline" className="bg-black/50 backdrop-blur-md border-cyan-500/30 text-cyan-300 text-xs">
+              {pathFound ? `Path: ${pathLength}` : "No path"}
+            </Badge>
+            <Badge variant="outline" className="bg-black/50 backdrop-blur-md border-cyan-500/30 text-cyan-300 text-xs">
+              Nodes: {nodesExpanded}
+            </Badge>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   // Render preview board based on game type
   const renderPreviewBoard = () => {
     switch (gameType) {
@@ -991,6 +1065,41 @@ export function LiveGameBoard({
             </div>
           </div>
         );
+      case "pathfinding":
+        return (
+          <div className="aspect-square p-4 bg-zinc-900 rounded-xl flex flex-col items-center justify-center">
+            {/* Pathfinding preview */}
+            <div className="text-center">
+              <div className="grid grid-cols-10 gap-[2px] mb-4 bg-zinc-700 p-1 rounded">
+                {Array(100).fill(null).map((_, i) => {
+                  const row = Math.floor(i / 10);
+                  const col = i % 10;
+                  const isStart = row === 1 && col === 1;
+                  const isGoal = row === 8 && col === 8;
+                  const isWall = [12, 22, 32, 42, 52, 62, 35, 36, 37, 38, 45, 55, 65, 75].includes(i);
+                  const isPath = [11, 21, 31, 41, 51, 61, 71, 72, 73, 74, 84, 85, 86, 87, 88].includes(i);
+                  return (
+                    <div
+                      key={i}
+                      className={cn(
+                        "w-4 h-4 rounded-sm",
+                        isStart ? "bg-emerald-500" :
+                        isGoal ? "bg-red-500" :
+                        isWall ? "bg-zinc-800" :
+                        isPath ? "bg-yellow-400" :
+                        "bg-zinc-600"
+                      )}
+                    />
+                  );
+                })}
+              </div>
+              <div className="text-cyan-400 font-medium">Pathfinding</div>
+              <div className="text-zinc-500 text-sm mt-2">
+                BFS • Dijkstra • A*
+              </div>
+            </div>
+          </div>
+        );
       default:
         return null;
     }
@@ -1016,6 +1125,7 @@ export function LiveGameBoard({
                 gameType === "sokoban" ? "bg-gradient-to-br from-amber-500/30 via-transparent to-stone-500/20" :
                 gameType === "gorillas" ? "bg-gradient-to-br from-yellow-500/30 via-transparent to-amber-500/20" :
                 gameType === "fractals" ? "bg-gradient-to-br from-purple-500/30 via-transparent to-fuchsia-500/20" :
+                gameType === "pathfinding" ? "bg-gradient-to-br from-cyan-500/30 via-transparent to-teal-500/20" :
                 "bg-gradient-to-br from-green-500/30 via-transparent to-emerald-500/20",
                 "group-hover:opacity-40"
               )}
