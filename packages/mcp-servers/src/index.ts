@@ -34,16 +34,16 @@ export default {
           status: "ok",
           service: "mcp-servers",
           version: "0.1.0",
-          games: ["chess", "tictactoe", "snake", "canvas", "minesweeper", "sokoban", "gorillas", "fractals", "lightsout"],
+          games: ["chess", "tictactoe", "snake", "canvas", "minesweeper", "sokoban", "gorillas", "fractals", "lightsout", "pathfinding", "sorting"],
         },
         { headers: corsHeaders }
       );
     }
 
     // Route to game endpoints
-    const gameMatch = path.match(/^\/(chess|tictactoe|snake|canvas|minesweeper|sokoban|gorillas|fractals|lightsout)(\/.*)?$/);
+    const gameMatch = path.match(/^\/(chess|tictactoe|snake|canvas|minesweeper|sokoban|gorillas|fractals|lightsout|pathfinding|sorting)(\/.*)?$/);
     if (gameMatch) {
-      const gameType = gameMatch[1] as "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "sokoban" | "gorillas" | "fractals" | "lightsout";
+      const gameType = gameMatch[1] as "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "sokoban" | "gorillas" | "fractals" | "lightsout" | "pathfinding" | "sorting";
       const subPath = gameMatch[2] || "";
 
       return handleGameRequest(request, env, gameType, subPath);
@@ -192,6 +192,10 @@ function getGameDescription(gameType: string): string {
       return "Fractals MCP Server - L-System fractals with turtle graphics";
     case "lightsout":
       return "Lights Out MCP Server - Classic 90s puzzle game with XOR logic";
+    case "pathfinding":
+      return "Pathfinding MCP Server - A* and Dijkstra pathfinding algorithms on grid mazes";
+    case "sorting":
+      return "Sorting MCP Server - Sort arrays using only compare and swap operations";
     default:
       return "MCP Game Server";
   }
