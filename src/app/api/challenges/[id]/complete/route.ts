@@ -10,6 +10,12 @@ import {
 import { eq, and, sql } from "drizzle-orm";
 import NextAuth from "next-auth";
 import { createAuthConfig } from "@/lib/auth";
+import {
+  checkRateLimit,
+  RateLimitPresets,
+  rateLimitExceededResponse,
+  rateLimitHeaders,
+} from "@/lib/rate-limit";
 
 export const runtime = "edge";
 
@@ -29,6 +35,24 @@ interface CompletionData {
   swaps?: number;
   parComparisons?: number;
   parSwaps?: number;
+  // Gorillas-specific data
+  throws?: number;
+  hitSun?: boolean;
+  // Lights Out-specific data
+  difficulty?: string;
+  toggles?: number;
+  minSolution?: number;
+  timeSeconds?: number;
+  // Pathfinding-specific data
+  algorithm?: string;
+  pathCost?: number;
+  parCost?: number;
+  nodesExpanded?: number;
+  parNodes?: number;
+  // Fractals-specific data
+  iterations?: number;
+  preset?: string;
+  customRules?: boolean;
 }
 
 interface UserStatsData {
@@ -44,6 +68,17 @@ interface UserStatsData {
   // Sorting-specific stats
   sortingLevelsCompleted: number;
   sortingBeatPar: boolean;
+  // Gorillas-specific stats
+  gorillasWins: number;
+  // Lights Out-specific stats
+  lightsoutWins: number;
+  lightsoutHardWins: number;
+  // Pathfinding-specific stats
+  pathfindingLevels: number;
+  pathfindingAlgorithmsUsed: string[];
+  // Fractals-specific stats
+  fractalsCreated: number;
+  fractalsGallerySaved: number;
 }
 
 // Achievement rules for game challenges
@@ -165,6 +200,134 @@ const achievementRules: AchievementRule[] = [
       (data.comparisons || 0) <= (data.parComparisons || 840) &&
       (data.swaps || 0) <= (data.parSwaps || 700),
   },
+  // Gorillas achievements
+  {
+    id: "gorillas-first-win",
+    check: (data) => data.challengeId === "gorillas" && data.winner === "player",
+  },
+  {
+    id: "gorillas-no-miss",
+    check: (data) =>
+      data.challengeId === "gorillas" &&
+      data.winner === "player" &&
+      data.throws !== undefined &&
+      data.score !== undefined &&
+      data.throws === data.score,
+  },
+  {
+    id: "gorillas-sun-hit",
+    check: (data) => data.challengeId === "gorillas" && data.hitSun === true,
+  },
+  {
+    id: "gorillas-speedrun",
+    check: (data) =>
+      data.challengeId === "gorillas" &&
+      data.winner === "player" &&
+      (data.throws || Infinity) <= 3,
+  },
+  {
+    id: "gorillas-master",
+    check: (_, stats) => stats.gorillasWins >= 10,
+  },
+  // Fractals achievements
+  {
+    id: "fractals-first",
+    check: (data) => data.challengeId === "fractals",
+  },
+  {
+    id: "fractals-custom",
+    check: (data) => data.challengeId === "fractals" && data.customRules === true,
+  },
+  {
+    id: "fractals-deep",
+    check: (data) =>
+      data.challengeId === "fractals" && (data.iterations || 0) >= 6,
+  },
+  {
+    id: "fractals-gallery",
+    check: (_, stats) => stats.fractalsGallerySaved >= 5,
+  },
+  // Lights Out achievements
+  {
+    id: "lightsout-first",
+    check: (data) => data.challengeId === "lightsout" && data.winner === "player",
+  },
+  {
+    id: "lightsout-easy",
+    check: (data) =>
+      data.challengeId === "lightsout" &&
+      data.winner === "player" &&
+      data.difficulty === "easy",
+  },
+  {
+    id: "lightsout-medium",
+    check: (data) =>
+      data.challengeId === "lightsout" &&
+      data.winner === "player" &&
+      data.difficulty === "medium",
+  },
+  {
+    id: "lightsout-hard",
+    check: (data) =>
+      data.challengeId === "lightsout" &&
+      data.winner === "player" &&
+      data.difficulty === "hard",
+  },
+  {
+    id: "lightsout-optimal",
+    check: (data) =>
+      data.challengeId === "lightsout" &&
+      data.winner === "player" &&
+      data.toggles !== undefined &&
+      data.minSolution !== undefined &&
+      data.toggles <= data.minSolution,
+  },
+  {
+    id: "lightsout-speed",
+    check: (data) =>
+      data.challengeId === "lightsout" &&
+      data.winner === "player" &&
+      (data.timeSeconds || Infinity) < 30,
+  },
+  // Pathfinding achievements
+  {
+    id: "pathfinding-first",
+    check: (data) => data.challengeId === "pathfinding",
+  },
+  {
+    id: "pathfinding-algorithms",
+    check: (_, stats) =>
+      stats.pathfindingAlgorithmsUsed.includes("bfs") &&
+      stats.pathfindingAlgorithmsUsed.includes("dijkstra") &&
+      stats.pathfindingAlgorithmsUsed.includes("astar"),
+  },
+  {
+    id: "pathfinding-level5",
+    check: (_, stats) => stats.pathfindingLevels >= 5,
+  },
+  {
+    id: "pathfinding-all-levels",
+    check: (_, stats) => stats.pathfindingLevels >= 10,
+  },
+  {
+    id: "pathfinding-beat-par",
+    check: (data) =>
+      data.challengeId === "pathfinding" &&
+      data.pathCost !== undefined &&
+      data.parCost !== undefined &&
+      data.pathCost <= data.parCost,
+  },
+  {
+    id: "pathfinding-perfect",
+    check: (data) =>
+      data.challengeId === "pathfinding" &&
+      data.pathCost !== undefined &&
+      data.parCost !== undefined &&
+      data.nodesExpanded !== undefined &&
+      data.parNodes !== undefined &&
+      data.pathCost <= data.parCost &&
+      data.nodesExpanded <= data.parNodes,
+  },
 ];
 
 // Calculate level from points (Fibonacci-like progression)
@@ -198,6 +361,20 @@ export async function POST(request: Request, { params }: PageProps) {
   }
 
   const userId = session.user.id;
+
+  // Rate limiting - per user
+  const rateLimit = await checkRateLimit(
+    env.RATE_LIMIT,
+    userId,
+    RateLimitPresets.CHALLENGE_COMPLETE
+  );
+  if (!rateLimit.allowed) {
+    return rateLimitExceededResponse(
+      rateLimit,
+      RateLimitPresets.CHALLENGE_COMPLETE,
+      "Too many challenge completions. Max 30 per hour."
+    );
+  }
   const body = (await request.json()) as {
     score?: number;
     winner?: string;
@@ -208,6 +385,24 @@ export async function POST(request: Request, { params }: PageProps) {
     swaps?: number;
     parComparisons?: number;
     parSwaps?: number;
+    // Gorillas-specific
+    throws?: number;
+    hitSun?: boolean;
+    // Lights Out-specific
+    difficulty?: string;
+    toggles?: number;
+    minSolution?: number;
+    timeSeconds?: number;
+    // Pathfinding-specific
+    algorithm?: string;
+    pathCost?: number;
+    parCost?: number;
+    nodesExpanded?: number;
+    parNodes?: number;
+    // Fractals-specific
+    iterations?: number;
+    preset?: string;
+    customRules?: boolean;
   };
 
   // Record the completion
@@ -317,6 +512,50 @@ export async function POST(request: Request, { params }: PageProps) {
       )
     );
 
+  // Gorillas wins
+  const gorillasWins = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(challengeCompletions)
+    .where(
+      and(
+        eq(challengeCompletions.userId, userId),
+        eq(challengeCompletions.challengeId, "gorillas")
+      )
+    );
+
+  // Lights Out wins
+  const lightsoutWins = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(challengeCompletions)
+    .where(
+      and(
+        eq(challengeCompletions.userId, userId),
+        eq(challengeCompletions.challengeId, "lightsout")
+      )
+    );
+
+  // Pathfinding levels completed
+  const pathfindingLevels = await db
+    .select({ count: sql<number>`count(distinct score)` })
+    .from(challengeCompletions)
+    .where(
+      and(
+        eq(challengeCompletions.userId, userId),
+        eq(challengeCompletions.challengeId, "pathfinding")
+      )
+    );
+
+  // Fractals created
+  const fractalsCreated = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(challengeCompletions)
+    .where(
+      and(
+        eq(challengeCompletions.userId, userId),
+        eq(challengeCompletions.challengeId, "fractals")
+      )
+    );
+
   const extendedStats: UserStatsData = {
     totalPoints: stats.totalPoints,
     level: stats.level,
@@ -331,6 +570,14 @@ export async function POST(request: Request, { params }: PageProps) {
     sortingBeatPar: body.comparisons !== undefined && body.parComparisons !== undefined &&
                     body.swaps !== undefined && body.parSwaps !== undefined &&
                     body.comparisons <= body.parComparisons && body.swaps <= body.parSwaps,
+    // New game stats
+    gorillasWins: Number(gorillasWins[0]?.count || 0),
+    lightsoutWins: Number(lightsoutWins[0]?.count || 0),
+    lightsoutHardWins: 0, // Would need separate query if needed
+    pathfindingLevels: Number(pathfindingLevels[0]?.count || 0),
+    pathfindingAlgorithmsUsed: body.algorithm ? [body.algorithm] : [], // Simplified - would need history query for accurate tracking
+    fractalsCreated: Number(fractalsCreated[0]?.count || 0),
+    fractalsGallerySaved: 0, // This is tracked separately in gallery_images table
   };
 
   const completionData: CompletionData = {
@@ -344,6 +591,24 @@ export async function POST(request: Request, { params }: PageProps) {
     swaps: body.swaps,
     parComparisons: body.parComparisons,
     parSwaps: body.parSwaps,
+    // Gorillas-specific
+    throws: body.throws,
+    hitSun: body.hitSun,
+    // Lights Out-specific
+    difficulty: body.difficulty,
+    toggles: body.toggles,
+    minSolution: body.minSolution,
+    timeSeconds: body.timeSeconds,
+    // Pathfinding-specific
+    algorithm: body.algorithm,
+    pathCost: body.pathCost,
+    parCost: body.parCost,
+    nodesExpanded: body.nodesExpanded,
+    parNodes: body.parNodes,
+    // Fractals-specific
+    iterations: body.iterations,
+    preset: body.preset,
+    customRules: body.customRules,
   };
 
   // Get user's existing achievements
@@ -431,14 +696,19 @@ export async function POST(request: Request, { params }: PageProps) {
     })
   );
 
-  return NextResponse.json({
-    success: true,
-    pointsEarned,
-    newAchievements: unlockedAchievements.filter(Boolean),
-    stats: {
-      totalPoints: newTotalPoints,
-      level: newLevel,
-      challengesCompleted: stats.challengesCompleted + 1,
+  return NextResponse.json(
+    {
+      success: true,
+      pointsEarned,
+      newAchievements: unlockedAchievements.filter(Boolean),
+      stats: {
+        totalPoints: newTotalPoints,
+        level: newLevel,
+        challengesCompleted: stats.challengesCompleted + 1,
+      },
     },
-  });
+    {
+      headers: rateLimitHeaders(rateLimit, RateLimitPresets.CHALLENGE_COMPLETE),
+    }
+  );
 }

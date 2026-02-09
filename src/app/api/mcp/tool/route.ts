@@ -6,8 +6,16 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { getRequestContext } from '@cloudflare/next-on-pages';
 import type { DomainEvent, DomainSessionId } from '@mcpchallenge/challenge-registry';
 import { pushEventsToSession } from '@/lib/mcp-events';
+import {
+  checkRateLimit,
+  getClientIP,
+  RateLimitPresets,
+  rateLimitExceededResponse,
+  rateLimitHeaders,
+} from '@/lib/rate-limit';
 
 export const runtime = 'edge';
 
@@ -53,6 +61,22 @@ async function handleToolCall(
 
 export async function POST(request: NextRequest): Promise<NextResponse<ToolCallResponse>> {
   try {
+    // Rate limiting - per IP for MCP proxy
+    const { env } = getRequestContext();
+    const clientIP = getClientIP(request);
+    const rateLimit = await checkRateLimit(
+      env.RATE_LIMIT,
+      clientIP,
+      RateLimitPresets.MCP_PROXY
+    );
+    if (!rateLimit.allowed) {
+      return rateLimitExceededResponse(
+        rateLimit,
+        RateLimitPresets.MCP_PROXY,
+        'Too many MCP requests. Max 100 per minute.'
+      ) as NextResponse<ToolCallResponse>;
+    }
+
     const body = (await request.json()) as ToolCallRequest;
 
     if (!body.tool || typeof body.tool !== 'string') {
@@ -77,6 +101,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ToolCallR
 
     return NextResponse.json(result, {
       status: result.success ? 200 : 400,
+      headers: rateLimitHeaders(rateLimit, RateLimitPresets.MCP_PROXY),
     });
   } catch (err) {
     return NextResponse.json(

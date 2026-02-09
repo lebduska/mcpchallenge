@@ -5,6 +5,12 @@ import { eq, desc, and, isNull, sql } from "drizzle-orm";
 import NextAuth from "next-auth";
 import { createAuthConfig } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
+import {
+  checkRateLimit,
+  RateLimitPresets,
+  rateLimitExceededResponse,
+  rateLimitHeaders,
+} from "@/lib/rate-limit";
 
 export const runtime = "edge";
 
@@ -130,6 +136,20 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
   const { env } = getRequestContext();
   const db = createDb(env.DB);
 
+  // Rate limiting - per user for comments
+  const rateLimit = await checkRateLimit(
+    env.RATE_LIMIT,
+    session.user.id,
+    RateLimitPresets.COMMENTS
+  );
+  if (!rateLimit.allowed) {
+    return rateLimitExceededResponse(
+      rateLimit,
+      RateLimitPresets.COMMENTS,
+      "Too many comments. Max 20 per hour."
+    );
+  }
+
   const body = await request.json() as { content?: string; parentId?: string; isTip?: boolean };
   const { content, parentId, isTip } = body;
 
@@ -171,17 +191,22 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     .where(eq(challengeComments.id, id))
     .limit(1);
 
-  return NextResponse.json({
-    comment: {
-      ...comment,
-      author: {
-        id: comment.userId,
-        name: comment.userName,
-        image: comment.userImage,
-        username: comment.userUsername,
+  return NextResponse.json(
+    {
+      comment: {
+        ...comment,
+        author: {
+          id: comment.userId,
+          name: comment.userName,
+          image: comment.userImage,
+          username: comment.userUsername,
+        },
+        replies: [],
+        isLiked: false,
       },
-      replies: [],
-      isLiked: false,
     },
-  });
+    {
+      headers: rateLimitHeaders(rateLimit, RateLimitPresets.COMMENTS),
+    }
+  );
 }

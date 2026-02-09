@@ -5,69 +5,21 @@ import { galleryImages } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import NextAuth from "next-auth";
 import { createAuthConfig } from "@/lib/auth";
+import {
+  checkRateLimit,
+  getClientIP,
+  RateLimitPresets,
+  rateLimitExceededResponse,
+  rateLimitHeaders,
+} from "@/lib/rate-limit";
 
 export const runtime = "edge";
-
-// Rate limit config
-const RATE_LIMIT_MAX = 10; // max uploads
-const RATE_LIMIT_WINDOW = 3600; // per hour (seconds)
 
 async function getSession() {
   const { env } = getRequestContext();
   const db = createDb(env.DB);
   const { auth } = NextAuth(createAuthConfig(db));
   return auth();
-}
-
-/**
- * Get client IP from request headers
- */
-function getClientIP(request: Request): string {
-  // Cloudflare provides the real IP
-  const cfIP = request.headers.get("CF-Connecting-IP");
-  if (cfIP) return cfIP;
-
-  // Fallback to X-Forwarded-For
-  const xff = request.headers.get("X-Forwarded-For");
-  if (xff) return xff.split(",")[0].trim();
-
-  // Last resort
-  return "unknown";
-}
-
-/**
- * Check and update rate limit using KV
- * Returns { allowed: boolean, remaining: number, resetAt: number }
- */
-async function checkRateLimit(
-  kv: KVNamespace,
-  identifier: string
-): Promise<{ allowed: boolean; remaining: number; resetAt: number }> {
-  const now = Math.floor(Date.now() / 1000);
-  const windowStart = now - (now % RATE_LIMIT_WINDOW);
-  const key = `upload:${identifier}:${windowStart}`;
-
-  const currentStr = await kv.get(key);
-  const current = currentStr ? parseInt(currentStr, 10) : 0;
-
-  if (current >= RATE_LIMIT_MAX) {
-    return {
-      allowed: false,
-      remaining: 0,
-      resetAt: windowStart + RATE_LIMIT_WINDOW,
-    };
-  }
-
-  // Increment counter with TTL
-  await kv.put(key, String(current + 1), {
-    expirationTtl: RATE_LIMIT_WINDOW,
-  });
-
-  return {
-    allowed: true,
-    remaining: RATE_LIMIT_MAX - current - 1,
-    resetAt: windowStart + RATE_LIMIT_WINDOW,
-  };
 }
 
 /**
@@ -89,25 +41,17 @@ export async function POST(request: Request) {
 
   // Rate limiting - check before expensive operations
   const clientIP = getClientIP(request);
-  const rateLimit = await checkRateLimit(env.RATE_LIMIT, clientIP);
+  const rateLimit = await checkRateLimit(
+    env.RATE_LIMIT,
+    clientIP,
+    RateLimitPresets.GALLERY_UPLOAD
+  );
 
   if (!rateLimit.allowed) {
-    return NextResponse.json(
-      {
-        error: "Rate limit exceeded. Maximum 10 uploads per hour.",
-        retryAfter: rateLimit.resetAt - Math.floor(Date.now() / 1000),
-      },
-      {
-        status: 429,
-        headers: {
-          "Retry-After": String(
-            rateLimit.resetAt - Math.floor(Date.now() / 1000)
-          ),
-          "X-RateLimit-Limit": String(RATE_LIMIT_MAX),
-          "X-RateLimit-Remaining": "0",
-          "X-RateLimit-Reset": String(rateLimit.resetAt),
-        },
-      }
+    return rateLimitExceededResponse(
+      rateLimit,
+      RateLimitPresets.GALLERY_UPLOAD,
+      "Rate limit exceeded. Maximum 10 uploads per hour."
     );
   }
 
@@ -237,11 +181,7 @@ export async function POST(request: Request) {
     },
     {
       status: 201,
-      headers: {
-        "X-RateLimit-Limit": String(RATE_LIMIT_MAX),
-        "X-RateLimit-Remaining": String(rateLimit.remaining),
-        "X-RateLimit-Reset": String(rateLimit.resetAt),
-      },
+      headers: rateLimitHeaders(rateLimit, RateLimitPresets.GALLERY_UPLOAD),
     }
   );
 }

@@ -5,6 +5,12 @@ import { challengeIdeas, ideaVotes, users } from "@/db/schema";
 import { eq, desc, sql, and } from "drizzle-orm";
 import NextAuth from "next-auth";
 import { createAuthConfig } from "@/lib/auth";
+import {
+  checkRateLimit,
+  RateLimitPresets,
+  rateLimitExceededResponse,
+  rateLimitHeaders,
+} from "@/lib/rate-limit";
 
 export const runtime = "edge";
 
@@ -147,6 +153,20 @@ export async function POST(request: Request) {
   const { env } = getRequestContext();
   const db = createDb(env.DB);
 
+  // Rate limiting - per user for ideas
+  const rateLimit = await checkRateLimit(
+    env.RATE_LIMIT,
+    session.user.id,
+    RateLimitPresets.IDEAS
+  );
+  if (!rateLimit.allowed) {
+    return rateLimitExceededResponse(
+      rateLimit,
+      RateLimitPresets.IDEAS,
+      "Too many idea submissions. Max 50 per hour."
+    );
+  }
+
   const body = await request.json() as { title?: string; description?: string; category?: string; gameReference?: string };
   const { title, description, category, gameReference } = body;
 
@@ -177,19 +197,25 @@ export async function POST(request: Request) {
     updatedAt: now,
   });
 
-  return NextResponse.json({
-    success: true,
-    idea: {
-      id: ideaId,
-      title: title.trim(),
-      description: description.trim(),
-      category: category || "game",
-      gameReference: gameReference?.trim() || null,
-      status: "pending",
-      isFeatured: false,
-      voteCount: 0,
-      commentCount: 0,
-      createdAt: now,
+  return NextResponse.json(
+    {
+      success: true,
+      idea: {
+        id: ideaId,
+        title: title.trim(),
+        description: description.trim(),
+        category: category || "game",
+        gameReference: gameReference?.trim() || null,
+        status: "pending",
+        isFeatured: false,
+        voteCount: 0,
+        commentCount: 0,
+        createdAt: now,
+      },
     },
-  }, { status: 201 });
+    {
+      status: 201,
+      headers: rateLimitHeaders(rateLimit, RateLimitPresets.IDEAS),
+    }
+  );
 }
