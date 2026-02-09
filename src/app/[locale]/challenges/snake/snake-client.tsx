@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import {
   Accordion,
@@ -9,15 +9,15 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Play, Plug, Bug, Terminal, ArrowLeft, Wifi, Info, BookOpen, Cpu } from "lucide-react";
-import Link from "next/link";
+import { Bug, Terminal, Wifi, Info, BookOpen, Cpu } from "lucide-react";
 import { SnakeGame } from "@/components/games/snake-game";
 import { LiveGameBoard } from "@/components/mcp/live-game-board";
 import { MCPSessionDemo } from "@/components/mcp/mcp-session-demo";
 import { DebugDrawer } from "@/components/mcp/debug-drawer";
 import { useGameCompletion } from "@/hooks/use-game-completion";
 import { AchievementToast } from "@/components/achievements/achievement-toast";
-import { cn } from "@/lib/utils";
+import { ChallengeHeader } from "@/components/challenges";
+import { getChallengeConfig } from "@/lib/challenge-config";
 
 interface Achievement {
   id: string;
@@ -28,12 +28,9 @@ interface Achievement {
   rarity: string;
 }
 
-const tools = [
-  { name: "get_state", description: "Get full game state (snake position, food, score, vision)" },
-  { name: "look", description: "See what's in each direction (wall, food, body, empty)" },
-  { name: "move", params: "direction", description: "Move snake (up/down/left/right)" },
-  { name: "new_game", description: "Start a new game" },
-];
+// Get tools from central config
+const challengeConfig = getChallengeConfig("snake");
+const tools = challengeConfig?.mcpTools || [];
 
 export function SnakeClientPage() {
   const [unlockedAchievements, setUnlockedAchievements] = useState<Achievement[]>([]);
@@ -54,51 +51,7 @@ export function SnakeClientPage() {
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <div className="max-w-6xl mx-auto px-4 py-6">
         <Tabs defaultValue="play" className="w-full">
-          {/* Compact Header with integrated segmented control */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <Link
-                href="/challenges"
-                className="flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Challenges
-              </Link>
-              <div className="h-4 w-px bg-zinc-300 dark:bg-zinc-700" />
-              <div className="flex items-center gap-2">
-                <span className="text-xl">🐍</span>
-                <h1 className="text-lg font-semibold text-zinc-900 dark:text-white">Snake</h1>
-              </div>
-            </div>
-
-            {/* Segmented Control - Mode Switch */}
-            <TabsList className="h-9 p-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg">
-              <TabsTrigger
-                value="play"
-                className={cn(
-                  "h-7 px-4 text-sm font-medium rounded-md transition-all",
-                  "data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800",
-                  "data-[state=active]:text-green-600 dark:data-[state=active]:text-green-400",
-                  "data-[state=active]:shadow-sm"
-                )}
-              >
-                <Play className="h-3.5 w-3.5 mr-1.5" />
-                Play
-              </TabsTrigger>
-              <TabsTrigger
-                value="mcp"
-                className={cn(
-                  "h-7 px-4 text-sm font-medium rounded-md transition-all",
-                  "data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800",
-                  "data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400",
-                  "data-[state=active]:shadow-sm"
-                )}
-              >
-                <Plug className="h-3.5 w-3.5 mr-1.5" />
-                MCP
-              </TabsTrigger>
-            </TabsList>
-          </div>
+          <ChallengeHeader challengeId="snake" />
 
           {/* PLAY MODE */}
           <TabsContent value="play" className="mt-0">

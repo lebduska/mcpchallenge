@@ -2,18 +2,18 @@
 
 import { useState, useCallback } from "react";
 import dynamic from "next/dynamic";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Banana, Play, Plug, ArrowLeft, Terminal, Info, Loader2, BookOpen, Cpu } from "lucide-react";
-import Link from "next/link";
+import { Terminal, Info, Loader2, BookOpen, Cpu } from "lucide-react";
 import { useGameCompletion } from "@/hooks/use-game-completion";
 import { AchievementToast } from "@/components/achievements/achievement-toast";
-import { cn } from "@/lib/utils";
+import { ChallengeHeader } from "@/components/challenges";
+import { getChallengeConfig } from "@/lib/challenge-config";
 
 // Dynamic imports to avoid SSR issues with game engines
 const GorillasGame = dynamic(
@@ -49,12 +49,9 @@ interface Achievement {
   rarity: string;
 }
 
-const tools = [
-  { name: "get_state", description: "Get current game state (buildings, gorillas, wind)" },
-  { name: "throw_banana", params: "angle, velocity", description: "Throw banana with angle (0-90) and velocity (10-200)" },
-  { name: "get_level", description: "Get current level info and wind conditions" },
-  { name: "new_game", params: "level?, difficulty?", description: "Start new game (optional level 1-10, difficulty easy/medium/hard)" },
-];
+// Get tools from central config
+const challengeConfig = getChallengeConfig("gorillas");
+const tools = challengeConfig?.mcpTools || [];
 
 export function GorillasClientPage() {
   const [unlockedAchievements, setUnlockedAchievements] = useState<Achievement[]>([]);
@@ -79,51 +76,7 @@ export function GorillasClientPage() {
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <div className="max-w-6xl mx-auto px-4 py-6">
         <Tabs defaultValue="play" className="w-full">
-          {/* Header with integrated segmented control */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <Link
-                href="/challenges"
-                className="flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Challenges
-              </Link>
-              <div className="h-4 w-px bg-zinc-300 dark:bg-zinc-700" />
-              <div className="flex items-center gap-2">
-                <Banana className="h-5 w-5 text-yellow-500" />
-                <h1 className="text-lg font-semibold text-zinc-900 dark:text-white">Gorillas</h1>
-              </div>
-            </div>
-
-            {/* Mode Switch */}
-            <TabsList className="h-9 p-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg">
-              <TabsTrigger
-                value="play"
-                className={cn(
-                  "h-7 px-4 text-sm font-medium rounded-md transition-all",
-                  "data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800",
-                  "data-[state=active]:text-emerald-600 dark:data-[state=active]:text-emerald-400",
-                  "data-[state=active]:shadow-sm"
-                )}
-              >
-                <Play className="h-3.5 w-3.5 mr-1.5" />
-                Play
-              </TabsTrigger>
-              <TabsTrigger
-                value="mcp"
-                className={cn(
-                  "h-7 px-4 text-sm font-medium rounded-md transition-all",
-                  "data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800",
-                  "data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400",
-                  "data-[state=active]:shadow-sm"
-                )}
-              >
-                <Plug className="h-3.5 w-3.5 mr-1.5" />
-                MCP
-              </TabsTrigger>
-            </TabsList>
-          </div>
+          <ChallengeHeader challengeId="gorillas" />
 
           {/* PLAY MODE */}
           <TabsContent value="play" className="mt-0">

@@ -1,20 +1,20 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Bomb, Play, Plug, ArrowLeft, Terminal, Info, BookOpen, Cpu } from "lucide-react";
-import Link from "next/link";
+import { Terminal, Info, BookOpen, Cpu } from "lucide-react";
 import { Minesweeper } from "@/components/games/minesweeper";
 import { LiveGameBoard } from "@/components/mcp/live-game-board";
 import { useGameCompletion } from "@/hooks/use-game-completion";
 import { AchievementToast } from "@/components/achievements/achievement-toast";
-import { cn } from "@/lib/utils";
+import { ChallengeHeader } from "@/components/challenges";
+import { getChallengeConfig } from "@/lib/challenge-config";
 
 interface Achievement {
   id: string;
@@ -25,12 +25,9 @@ interface Achievement {
   rarity: string;
 }
 
-const tools = [
-  { name: "get_board", description: "Current board state (revealed cells, flags)" },
-  { name: "reveal", params: "row, col", description: "Reveal a cell" },
-  { name: "flag", params: "row, col", description: "Toggle flag on a cell" },
-  { name: "new_game", params: "difficulty?", description: "Start new game (easy/medium/hard)" },
-];
+// Get tools from central config
+const challengeConfig = getChallengeConfig("minesweeper");
+const tools = challengeConfig?.mcpTools || [];
 
 export function MinesweeperClientPage() {
   const [unlockedAchievements, setUnlockedAchievements] = useState<Achievement[]>([]);
@@ -55,51 +52,7 @@ export function MinesweeperClientPage() {
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <div className="max-w-6xl mx-auto px-4 py-6">
         <Tabs defaultValue="play" className="w-full">
-          {/* Header with integrated segmented control */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <Link
-                href="/challenges"
-                className="flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Challenges
-              </Link>
-              <div className="h-4 w-px bg-zinc-300 dark:bg-zinc-700" />
-              <div className="flex items-center gap-2">
-                <Bomb className="h-5 w-5 text-red-500" />
-                <h1 className="text-lg font-semibold text-zinc-900 dark:text-white">Minesweeper</h1>
-              </div>
-            </div>
-
-            {/* Mode Switch */}
-            <TabsList className="h-9 p-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg">
-              <TabsTrigger
-                value="play"
-                className={cn(
-                  "h-7 px-4 text-sm font-medium rounded-md transition-all",
-                  "data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800",
-                  "data-[state=active]:text-emerald-600 dark:data-[state=active]:text-emerald-400",
-                  "data-[state=active]:shadow-sm"
-                )}
-              >
-                <Play className="h-3.5 w-3.5 mr-1.5" />
-                Play
-              </TabsTrigger>
-              <TabsTrigger
-                value="mcp"
-                className={cn(
-                  "h-7 px-4 text-sm font-medium rounded-md transition-all",
-                  "data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800",
-                  "data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400",
-                  "data-[state=active]:shadow-sm"
-                )}
-              >
-                <Plug className="h-3.5 w-3.5 mr-1.5" />
-                MCP
-              </TabsTrigger>
-            </TabsList>
-          </div>
+          <ChallengeHeader challengeId="minesweeper" />
 
           {/* PLAY MODE */}
           <TabsContent value="play" className="mt-0">
