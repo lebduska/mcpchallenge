@@ -2,17 +2,18 @@
 
 import { useState, useCallback } from "react";
 import dynamic from "next/dynamic";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Sparkles, Play, Plug, ArrowLeft, Terminal, Info, Loader2, BookOpen, Cpu } from "lucide-react";
-import Link from "next/link";
+import { Sparkles, Terminal, Info, Loader2, BookOpen, Cpu } from "lucide-react";
 import { useGameCompletion } from "@/hooks/use-game-completion";
 import { AchievementToast } from "@/components/achievements/achievement-toast";
+import { ChallengeHeader } from "@/components/challenges";
+import { getChallengeConfig } from "@/lib/challenge-config";
 
 // Dynamic imports to avoid SSR issues with game engines
 const FractalsGame = dynamic(
@@ -48,16 +49,9 @@ interface Achievement {
   rarity: string;
 }
 
-const tools = [
-  { name: "new_fractal", params: "preset?", description: "Start with a preset (tree, plant, dragon, koch, sierpinski, snowflake, hilbert, custom)" },
-  { name: "set_axiom", params: "axiom", description: "Set the starting symbol sequence (e.g., 'F', 'FX', 'X')" },
-  { name: "add_rule", params: "symbol, replacement, probability?", description: "Add production rule: symbol → replacement. Optional probability for stochastic fractals" },
-  { name: "remove_rule", params: "symbol", description: "Remove all rules for a symbol" },
-  { name: "set_parameters", params: "angle?, length?, iterations?, decay?", description: "Set turtle parameters: angle (0-180°), length (1-100), iterations (1-12), decay (0-1)" },
-  { name: "generate", description: "Expand the L-System string (apply rules N times)" },
-  { name: "render", params: "colorScheme?", description: "Render to canvas. Schemes: monochrome, depth, rainbow, forest, fire, ocean" },
-  { name: "get_state", description: "Get current axiom, rules, parameters, and stats" },
-];
+// Get tools from central config
+const challengeConfig = getChallengeConfig("fractals");
+const tools = challengeConfig?.mcpTools || [];
 
 const turtleSymbols = [
   { symbol: "F", description: "Move forward, draw line" },
@@ -92,34 +86,7 @@ export function FractalsClientPage() {
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <div className="max-w-6xl mx-auto px-4 py-6">
         <Tabs defaultValue="play" className="w-full">
-          {/* Header with integrated segmented control */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <Link
-                href="/challenges"
-                className="flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Challenges
-              </Link>
-              <div className="h-4 w-px bg-zinc-300 dark:bg-zinc-700" />
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-purple-500" />
-                <h1 className="text-lg font-semibold text-zinc-900 dark:text-white">L-System Fractals</h1>
-              </div>
-            </div>
-
-            <TabsList className="bg-zinc-200/50 dark:bg-zinc-800/50">
-              <TabsTrigger value="play" className="gap-1.5">
-                <Play className="h-3.5 w-3.5" />
-                Play
-              </TabsTrigger>
-              <TabsTrigger value="mcp" className="gap-1.5">
-                <Plug className="h-3.5 w-3.5" />
-                MCP
-              </TabsTrigger>
-            </TabsList>
-          </div>
+          <ChallengeHeader challengeId="fractals" />
 
           {/* Play Tab */}
           <TabsContent value="play" className="mt-0">

@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import {
   Accordion,
   AccordionContent,
@@ -27,22 +27,20 @@ import {
   RotateCcw,
   Trash2,
   SkipForward,
-  Compass,
   Grid3x3,
   Droplets,
   Mountain,
   Eraser,
   Flag,
   MapPin,
-  Plug,
-  ArrowLeft,
   Terminal,
   Info,
   Cpu,
 } from "lucide-react";
-import Link from "next/link";
 import { LiveGameBoard } from "@/components/mcp/live-game-board";
 import { cn } from "@/lib/utils";
+import { ChallengeHeader } from "@/components/challenges";
+import { getChallengeConfig } from "@/lib/challenge-config";
 
 // Types
 type CellType = "empty" | "wall" | "start" | "goal" | "mud" | "water";
@@ -88,17 +86,9 @@ const COST: Record<CellType, number> = {
   water: 10,
 };
 
-// MCP Tools definition
-const mcpTools = [
-  { name: "get_state", description: "Get current grid state (board, start, goal, path)" },
-  { name: "set_cell", params: "row, col, type", description: "Set cell type (empty/wall/mud/water)" },
-  { name: "set_start", params: "row, col", description: "Set start position" },
-  { name: "set_goal", params: "row, col", description: "Set goal position" },
-  { name: "find_path", params: "algorithm?", description: "Find path using BFS/Dijkstra/A*" },
-  { name: "clear", description: "Clear all cells except start and goal" },
-  { name: "generate_maze", params: "density?", description: "Generate random maze" },
-  { name: "reset", description: "Reset to empty grid" },
-];
+// Get tools from central config
+const challengeConfig = getChallengeConfig("pathfinding");
+const mcpTools = challengeConfig?.mcpTools || [];
 
 // Helper functions
 function createEmptyGrid(): Cell[][] {
@@ -648,51 +638,7 @@ export function PathfindingClientPage() {
     >
       <div className="max-w-7xl mx-auto px-4 py-6">
         <Tabs defaultValue="play" className="w-full">
-          {/* Header with integrated mode switch */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <Link
-                href="/challenges"
-                className="flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Challenges
-              </Link>
-              <div className="h-4 w-px bg-zinc-300 dark:bg-zinc-700" />
-              <div className="flex items-center gap-2">
-                <Compass className="h-5 w-5 text-cyan-500" />
-                <h1 className="text-lg font-semibold text-zinc-900 dark:text-white">{t("title")}</h1>
-              </div>
-            </div>
-
-            {/* Mode Switch */}
-            <TabsList className="h-9 p-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg">
-              <TabsTrigger
-                value="play"
-                className={cn(
-                  "h-7 px-4 text-sm font-medium rounded-md transition-all",
-                  "data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800",
-                  "data-[state=active]:text-cyan-600 dark:data-[state=active]:text-cyan-400",
-                  "data-[state=active]:shadow-sm"
-                )}
-              >
-                <Play className="h-3.5 w-3.5 mr-1.5" />
-                Play
-              </TabsTrigger>
-              <TabsTrigger
-                value="mcp"
-                className={cn(
-                  "h-7 px-4 text-sm font-medium rounded-md transition-all",
-                  "data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800",
-                  "data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400",
-                  "data-[state=active]:shadow-sm"
-                )}
-              >
-                <Plug className="h-3.5 w-3.5 mr-1.5" />
-                MCP
-              </TabsTrigger>
-            </TabsList>
-          </div>
+          <ChallengeHeader challengeId="pathfinding" />
 
           {/* PLAY MODE */}
           <TabsContent value="play" className="mt-0">

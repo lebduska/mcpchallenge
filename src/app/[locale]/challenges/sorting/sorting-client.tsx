@@ -6,24 +6,17 @@ import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {
-  Play,
-  Plug,
-  ArrowLeft,
-  Terminal,
-  Info,
-  Cpu,
-  BarChart3,
-} from "lucide-react";
-import Link from "next/link";
+import { Terminal, Info, Cpu } from "lucide-react";
 import { LiveGameBoard } from "@/components/mcp/live-game-board";
+import { ChallengeHeader } from "@/components/challenges";
+import { getChallengeConfig } from "@/lib/challenge-config";
 import { cn } from "@/lib/utils";
 
 // Level info from the engine
@@ -40,13 +33,9 @@ const LEVELS = [
   { id: 10, name: "The Gauntlet", size: 100, parComparisons: 840, parSwaps: 700 },
 ];
 
-// MCP Tools
-const mcpTools = [
-  { name: "compare", params: "i, j", description: "Compare array[i] with array[j]. Returns -1 (less), 0 (equal), or 1 (greater)" },
-  { name: "swap", params: "i, j", description: "Swap elements at positions i and j" },
-  { name: "check_sorted", params: "", description: "Check if the array is sorted. If yes, you win!" },
-  { name: "load_level", params: "N", description: "Load level N (1-10). Higher levels = larger arrays" },
-];
+// Get tools from central config
+const challengeConfig = getChallengeConfig("sorting");
+const mcpTools = challengeConfig?.mcpTools || [];
 
 // Seeded pseudo-random number generator for deterministic demo bars
 function seededRandom(seed: number): () => number {
@@ -70,51 +59,13 @@ export function SortingClientPage() {
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <div className="max-w-7xl mx-auto px-4 py-6">
         <Tabs defaultValue="mcp" className="w-full">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <Link
-                href="/challenges"
-                className="flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Challenges
-              </Link>
-              <div className="h-4 w-px bg-zinc-300 dark:bg-zinc-700" />
-              <div className="flex items-center gap-2">
-                <BarChart3 className="h-5 w-5 text-purple-500" />
-                <h1 className="text-lg font-semibold text-zinc-900 dark:text-white">{t("title")}</h1>
-              </div>
-            </div>
-
-            {/* Mode Switch */}
-            <TabsList className="h-9 p-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg">
-              <TabsTrigger
-                value="learn"
-                className={cn(
-                  "h-7 px-4 text-sm font-medium rounded-md transition-all",
-                  "data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800",
-                  "data-[state=active]:text-purple-600 dark:data-[state=active]:text-purple-400",
-                  "data-[state=active]:shadow-sm"
-                )}
-              >
-                <Play className="h-3.5 w-3.5 mr-1.5" />
-                Learn
-              </TabsTrigger>
-              <TabsTrigger
-                value="mcp"
-                className={cn(
-                  "h-7 px-4 text-sm font-medium rounded-md transition-all",
-                  "data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800",
-                  "data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400",
-                  "data-[state=active]:shadow-sm"
-                )}
-              >
-                <Plug className="h-3.5 w-3.5 mr-1.5" />
-                MCP
-              </TabsTrigger>
-            </TabsList>
-          </div>
+          <ChallengeHeader
+            challengeId="sorting"
+            tabs={[
+              { value: "learn", label: "Learn", icon: "learn" },
+              { value: "mcp", label: "MCP", icon: "mcp" },
+            ]}
+          />
 
           {/* LEARN MODE */}
           <TabsContent value="learn" className="mt-0">

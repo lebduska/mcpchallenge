@@ -1,19 +1,20 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Lightbulb, Play, Plug, ArrowLeft, Terminal, Info, Zap } from "lucide-react";
-import Link from "next/link";
+import { Lightbulb, Terminal, Info, Zap } from "lucide-react";
 import { useGameCompletion } from "@/hooks/use-game-completion";
 import { AchievementToast } from "@/components/achievements/achievement-toast";
 import { LightsOutGame } from "@/components/games/lights-out";
 import { LiveGameBoard } from "@/components/mcp/live-game-board";
+import { ChallengeHeader } from "@/components/challenges";
+import { getChallengeConfig } from "@/lib/challenge-config";
 
 interface Achievement {
   id: string;
@@ -24,11 +25,9 @@ interface Achievement {
   rarity: string;
 }
 
-const tools = [
-  { name: "new_game", params: "difficulty?", description: "Start a new puzzle. Difficulty: easy (~5 moves), medium (~10), hard (~15)" },
-  { name: "toggle", params: "row, col", description: "Toggle the light at position (row, col). Also toggles 4 neighbors (cross pattern)" },
-  { name: "get_state", description: "Get current grid state, toggle count, and lights remaining" },
-];
+// Get tools from central config
+const challengeConfig = getChallengeConfig("lightsout");
+const tools = challengeConfig?.mcpTools || [];
 
 const xorExplanation = [
   { concept: "XOR Logic", description: "Toggling a light twice returns it to its original state" },
@@ -55,37 +54,10 @@ export function LightsOutClientPage() {
   );
 
   return (
-    <div className="min-h-screen bg-zinc-950">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <div className="max-w-6xl mx-auto px-4 py-6">
         <Tabs defaultValue="play" className="w-full">
-          {/* Header with integrated segmented control */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <Link
-                href="/challenges"
-                className="flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Challenges
-              </Link>
-              <div className="h-4 w-px bg-zinc-700" />
-              <div className="flex items-center gap-2">
-                <Lightbulb className="h-5 w-5 text-yellow-400" />
-                <h1 className="text-lg font-semibold text-white">Lights Out</h1>
-              </div>
-            </div>
-
-            <TabsList className="bg-zinc-800/50">
-              <TabsTrigger value="play" className="gap-1.5 data-[state=active]:bg-zinc-700">
-                <Play className="h-3.5 w-3.5" />
-                Play
-              </TabsTrigger>
-              <TabsTrigger value="mcp" className="gap-1.5 data-[state=active]:bg-zinc-700">
-                <Plug className="h-3.5 w-3.5" />
-                MCP
-              </TabsTrigger>
-            </TabsList>
-          </div>
+          <ChallengeHeader challengeId="lightsout" />
 
           {/* Play Tab */}
           <TabsContent value="play" className="mt-0">

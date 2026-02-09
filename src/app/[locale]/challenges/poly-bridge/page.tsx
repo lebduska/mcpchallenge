@@ -2,80 +2,29 @@
 
 export const runtime = "edge";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Construction, Play, Plug, Terminal, ArrowLeft, Info } from "lucide-react";
-import Link from "next/link";
+import { Terminal, Info } from "lucide-react";
 import { PolyBridgeGame } from "@/components/games/poly-bridge";
 import { LiveGameBoard } from "@/components/mcp/live-game-board";
-import { cn } from "@/lib/utils";
+import { ChallengeHeader } from "@/components/challenges";
+import { getChallengeConfig } from "@/lib/challenge-config";
 
-const tools = [
-  { name: "get_level", description: "Get current level info, anchors, and structures" },
-  { name: "add_structure", params: "type, x1, y1, x2, y2, material?", description: "Add beam/cable/road between points" },
-  { name: "remove_structure", params: "id", description: "Remove structure by ID" },
-  { name: "start_test", description: "Run physics simulation test" },
-  { name: "test_passed", description: "Called when vehicle reaches end (internal)" },
-  { name: "test_failed", description: "Called when bridge collapses (internal)" },
-  { name: "reset", description: "Clear all structures" },
-  { name: "next_level", description: "Advance to next level (after completion)" },
-];
+// Get tools from central config
+const challengeConfig = getChallengeConfig("poly-bridge");
+const tools = challengeConfig?.mcpTools || [];
 
 export default function PolyBridgeChallengePage() {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <div className="max-w-6xl mx-auto px-4 py-6">
         <Tabs defaultValue="play" className="w-full">
-          {/* Header with integrated segmented control */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <Link
-                href="/challenges"
-                className="flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Challenges
-              </Link>
-              <div className="h-4 w-px bg-zinc-300 dark:bg-zinc-700" />
-              <div className="flex items-center gap-2">
-                <Construction className="h-5 w-5 text-cyan-500" />
-                <h1 className="text-lg font-semibold text-zinc-900 dark:text-white">Poly Bridge</h1>
-              </div>
-            </div>
-
-            {/* Mode Switch */}
-            <TabsList className="h-9 p-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg">
-              <TabsTrigger
-                value="play"
-                className={cn(
-                  "h-7 px-4 text-sm font-medium rounded-md transition-all",
-                  "data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800",
-                  "data-[state=active]:text-cyan-600 dark:data-[state=active]:text-cyan-400",
-                  "data-[state=active]:shadow-sm"
-                )}
-              >
-                <Play className="h-3.5 w-3.5 mr-1.5" />
-                Play
-              </TabsTrigger>
-              <TabsTrigger
-                value="mcp"
-                className={cn(
-                  "h-7 px-4 text-sm font-medium rounded-md transition-all",
-                  "data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800",
-                  "data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400",
-                  "data-[state=active]:shadow-sm"
-                )}
-              >
-                <Plug className="h-3.5 w-3.5 mr-1.5" />
-                MCP
-              </TabsTrigger>
-            </TabsList>
-          </div>
+          <ChallengeHeader challengeId="poly-bridge" />
 
           {/* PLAY MODE */}
           <TabsContent value="play" className="mt-0">
