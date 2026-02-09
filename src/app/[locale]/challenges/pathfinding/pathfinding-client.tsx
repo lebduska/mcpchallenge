@@ -649,6 +649,10 @@ export function PathfindingClientPage() {
                     <SelectItem value="astar">A* (3)</SelectItem>
                   </SelectContent>
                 </Select>
+                {/* Algorithm info tooltip */}
+                <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                  {t(`algorithmInfo.${algorithm}`)}
+                </p>
               </div>
 
               {/* Directions */}

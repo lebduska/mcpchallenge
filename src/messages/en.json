@@ -236,6 +236,38 @@
       "title": "More Challenges Coming Soon",
       "description": "We're working on new challenges. Want to contribute?",
       "submitIdea": "Submit a challenge idea"
+    },
+    "pathfinding": {
+      "title": "Pathfinding Playground",
+      "description": "Build grids with walls and weights, then watch algorithms find the optimal path!",
+      "algorithm": "Algorithm",
+      "movement": "Movement",
+      "speed": "Speed",
+      "tools": "Tools",
+      "run": "Run",
+      "pause": "Pause",
+      "step": "Step",
+      "reset": "Reset",
+      "clearWalls": "Clear Walls",
+      "clearWeights": "Clear Weights",
+      "placeStartGoal": "Click to place start (green) and goal (red) points",
+      "statistics": "Statistics",
+      "pathFound": "Path Found",
+      "pathLength": "Path Length",
+      "pathCost": "Path Cost",
+      "nodesExpanded": "Nodes Expanded",
+      "runtime": "Runtime",
+      "score": "Score",
+      "legend": "Legend",
+      "shortcuts": "Shortcuts",
+      "yes": "Yes",
+      "no": "No",
+      "noPath": "No path",
+      "algorithmInfo": {
+        "bfs": "BFS explores all neighbors at equal depth before moving deeper. Best for unweighted graphs.",
+        "dijkstra": "Dijkstra considers edge costs, always expanding the lowest-cost node first.",
+        "astar": "A* uses a heuristic to estimate distance to goal, making it faster than Dijkstra for most cases."
+      }
     }
   },
   "playground": {

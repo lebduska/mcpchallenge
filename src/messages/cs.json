@@ -205,6 +205,38 @@
       "title": "Další výzvy již brzy",
       "description": "Pracujeme na nových výzvách. Chcete přispět?",
       "submitIdea": "Navrhnout výzvu"
+    },
+    "pathfinding": {
+      "title": "Hledání cesty",
+      "description": "Vytvářejte mřížky s překážkami a váhami, pak sledujte jak algoritmy hledají optimální cestu!",
+      "algorithm": "Algoritmus",
+      "movement": "Pohyb",
+      "speed": "Rychlost",
+      "tools": "Nástroje",
+      "run": "Spustit",
+      "pause": "Pozastavit",
+      "step": "Krok",
+      "reset": "Reset",
+      "clearWalls": "Smazat zdi",
+      "clearWeights": "Smazat váhy",
+      "placeStartGoal": "Kliknutím umístěte start (zelený) a cíl (červený)",
+      "statistics": "Statistiky",
+      "pathFound": "Cesta nalezena",
+      "pathLength": "Délka cesty",
+      "pathCost": "Cena cesty",
+      "nodesExpanded": "Expandované uzly",
+      "runtime": "Doba běhu",
+      "score": "Skóre",
+      "legend": "Legenda",
+      "shortcuts": "Klávesové zkratky",
+      "yes": "Ano",
+      "no": "Ne",
+      "noPath": "Žádná cesta",
+      "algorithmInfo": {
+        "bfs": "BFS prozkoumává všechny sousedy ve stejné hloubce před postupem dál. Nejlepší pro grafy bez vah.",
+        "dijkstra": "Dijkstra zohledňuje ceny hran, vždy expanduje uzel s nejnižší cenou.",
+        "astar": "A* používá heuristiku k odhadu vzdálenosti k cíli, což ho činí rychlejším než Dijkstru."
+      }
     }
   },
   "playground": {
