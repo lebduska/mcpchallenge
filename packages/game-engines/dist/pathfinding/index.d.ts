@@ -31,18 +31,41 @@ export interface PathfindingState extends GameState {
     nodesExpanded: number;
     path: Position[];
     difficulty: Difficulty;
+    levelIndex: number;
+    totalLevels: number;
+    parCost: number;
+    parNodes: number;
+    levelName: string;
+    mode: 'sandbox' | 'challenge';
 }
 export interface PathfindingMove {
-    action: 'set_cell' | 'set_start' | 'set_goal' | 'find_path' | 'clear' | 'generate_maze';
+    action: 'set_cell' | 'set_start' | 'set_goal' | 'find_path' | 'clear' | 'generate_maze' | 'load_level' | 'next_level';
     row?: number;
     col?: number;
     cellType?: CellType;
     algorithm?: Algorithm;
+    level?: number;
 }
 export interface PathfindingOptions {
     width?: number;
     height?: number;
     difficulty?: Difficulty;
+    level?: number;
+    mode?: 'sandbox' | 'challenge';
 }
+export interface PathfindingLevel {
+    id: number;
+    name: string;
+    description: string;
+    width: number;
+    height: number;
+    map: string;
+    parCost: number;
+    parNodes: number;
+    difficulty: Difficulty;
+    hint?: string;
+}
+export declare const PATHFINDING_LEVELS: PathfindingLevel[];
+export declare const TOTAL_LEVELS: number;
 export declare const pathfindingEngine: GameEngine<PathfindingState, PathfindingMove, PathfindingOptions>;
 //# sourceMappingURL=index.d.ts.map

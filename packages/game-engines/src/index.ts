@@ -50,8 +50,8 @@ export { lightsOutEngine } from './lightsout';
 export type { LightsOutState, LightsOutMove, LightsOutOptions } from './lightsout';
 
 // Pathfinding engine
-export { pathfindingEngine } from './pathfinding';
-export type { PathfindingState, PathfindingMove, PathfindingOptions, CellType as PathfindingCellType, Algorithm as PathfindingAlgorithm } from './pathfinding';
+export { pathfindingEngine, PATHFINDING_LEVELS, TOTAL_LEVELS as PATHFINDING_TOTAL_LEVELS } from './pathfinding';
+export type { PathfindingState, PathfindingMove, PathfindingOptions, CellType as PathfindingCellType, Algorithm as PathfindingAlgorithm, PathfindingLevel } from './pathfinding';
 
 // Engine registry for dynamic access
 import { chessEngine } from './chess';

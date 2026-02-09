@@ -26,8 +26,8 @@ export { fractalsEngine, FRACTAL_PRESETS } from './fractals';
 export type { FractalState, FractalMove, FractalOptions, FractalRule, ColorScheme } from './fractals';
 export { lightsOutEngine } from './lightsout';
 export type { LightsOutState, LightsOutMove, LightsOutOptions } from './lightsout';
-export { pathfindingEngine } from './pathfinding';
-export type { PathfindingState, PathfindingMove, PathfindingOptions, CellType as PathfindingCellType, Algorithm as PathfindingAlgorithm } from './pathfinding';
+export { pathfindingEngine, PATHFINDING_LEVELS, TOTAL_LEVELS as PATHFINDING_TOTAL_LEVELS } from './pathfinding';
+export type { PathfindingState, PathfindingMove, PathfindingOptions, CellType as PathfindingCellType, Algorithm as PathfindingAlgorithm, PathfindingLevel } from './pathfinding';
 import type { GameEngine, GameState } from './types';
 export declare const engines: {
     readonly chess: GameEngine<import("./chess").ChessState, import("./chess").ChessMove, import("./chess").ChessOptions>;

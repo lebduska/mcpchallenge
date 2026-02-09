@@ -28,7 +28,7 @@ export { fractalsEngine, FRACTAL_PRESETS } from './fractals';
 // Lights Out engine
 export { lightsOutEngine } from './lightsout';
 // Pathfinding engine
-export { pathfindingEngine } from './pathfinding';
+export { pathfindingEngine, PATHFINDING_LEVELS, TOTAL_LEVELS as PATHFINDING_TOTAL_LEVELS } from './pathfinding';
 // Engine registry for dynamic access
 import { chessEngine } from './chess';
 import { tictactoeEngine } from './tictactoe';

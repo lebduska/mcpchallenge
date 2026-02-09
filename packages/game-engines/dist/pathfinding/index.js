@@ -24,6 +24,265 @@ const DIFFICULTY_CONFIG = {
     medium: { width: 20, height: 15 },
     hard: { width: 30, height: 20 },
 };
+// Legend: . = empty, # = wall, ~ = mud, ≈ = water, S = start, G = goal
+export const PATHFINDING_LEVELS = [
+    // Level 1: Simple straight path
+    {
+        id: 1,
+        name: "First Steps",
+        description: "Find the shortest path with no obstacles",
+        width: 10,
+        height: 5,
+        map: `
+..........
+..........
+S........G
+..........
+..........
+`.trim(),
+        parCost: 9,
+        parNodes: 25,
+        difficulty: "easy",
+        hint: "BFS and A* perform equally well here",
+    },
+    // Level 2: Simple wall
+    {
+        id: 2,
+        name: "First Wall",
+        description: "Navigate around a simple obstacle",
+        width: 10,
+        height: 7,
+        map: `
+..........
+..........
+S...####..
+..........
+......####
+..........
+.........G
+`.trim(),
+        parCost: 14,
+        parNodes: 40,
+        difficulty: "easy",
+    },
+    // Level 3: Maze introduction
+    {
+        id: 3,
+        name: "Mini Maze",
+        description: "Find your way through a small maze",
+        width: 11,
+        height: 7,
+        map: `
+S.#.......
+..#.###.#.
+..#...#.#.
+..###.#.#.
+......#.#.
+.####.#...
+.........G
+`.trim(),
+        parCost: 18,
+        parNodes: 35,
+        difficulty: "easy",
+    },
+    // Level 4: Weighted terrain introduction
+    {
+        id: 4,
+        name: "Muddy Path",
+        description: "Mud costs 5x - is the shortcut worth it?",
+        width: 12,
+        height: 6,
+        map: `
+S...........
+.###########
+.#~~~~~~~~~~
+.#~~~~~~~~~~
+.#..........
+............G
+`.trim(),
+        parCost: 16,
+        parNodes: 45,
+        difficulty: "easy",
+        hint: "Going through mud costs 5 per cell",
+    },
+    // Level 5: Strategic choice
+    {
+        id: 5,
+        name: "Choose Wisely",
+        description: "Short muddy path or long clear path?",
+        width: 15,
+        height: 8,
+        map: `
+S..............
+.##############
+.#~~~~~~~~~~~~#
+.#~~~~~~~~~~~~#
+.#~~~~~~~~~~~~#
+.#~~~~~~~~~~~~#
+.##############
+..............G
+`.trim(),
+        parCost: 28,
+        parNodes: 50,
+        difficulty: "medium",
+        hint: "Dijkstra finds the optimal weighted path",
+    },
+    // Level 6: Water hazard
+    {
+        id: 6,
+        name: "River Crossing",
+        description: "Water costs 10x - find the bridge!",
+        width: 15,
+        height: 8,
+        map: `
+S..............
+≈≈≈≈≈≈≈.≈≈≈≈≈≈≈
+≈≈≈≈≈≈≈.≈≈≈≈≈≈≈
+≈≈≈≈≈≈≈.≈≈≈≈≈≈≈
+≈≈≈≈≈≈≈.≈≈≈≈≈≈≈
+≈≈≈≈≈≈≈.≈≈≈≈≈≈≈
+≈≈≈≈≈≈≈.≈≈≈≈≈≈≈
+..............G
+`.trim(),
+        parCost: 21,
+        parNodes: 60,
+        difficulty: "medium",
+    },
+    // Level 7: Complex maze
+    {
+        id: 7,
+        name: "Labyrinth",
+        description: "Navigate a complex maze efficiently",
+        width: 17,
+        height: 11,
+        map: `
+S.#............#.
+..#.###.#####..#.
+..#.#.....#....#.
+###.#.###.#.####.
+....#.#.#.#......
+.####.#.#.#####.#
+.#....#.#.......#
+.#.####.#######.#
+.#.............#.
+.###############.
+................G
+`.trim(),
+        parCost: 32,
+        parNodes: 80,
+        difficulty: "medium",
+    },
+    // Level 8: Mixed terrain maze
+    {
+        id: 8,
+        name: "Terrain Challenge",
+        description: "Walls, mud, and water - optimize your path!",
+        width: 15,
+        height: 10,
+        map: `
+S..#..≈≈≈......
+...#..≈≈≈..###.
+...#..≈≈≈..#...
+...#..≈≈≈..#.#.
+...#.......#.#.
+...####~~###.#.
+......#~~#...#.
+.####.#~~#.###.
+.#....#..#.....
+.#....#.......G
+`.trim(),
+        parCost: 26,
+        parNodes: 70,
+        difficulty: "medium",
+    },
+    // Level 9: A* showcase
+    {
+        id: 9,
+        name: "Heuristic Advantage",
+        description: "A* shines with good heuristics",
+        width: 20,
+        height: 12,
+        map: `
+S...................
+....................
+....................
+....................
+....................
+################....
+....................
+....................
+....................
+....................
+....................
+...................G
+`.trim(),
+        parCost: 30,
+        parNodes: 45,
+        difficulty: "hard",
+        hint: "A* explores fewer nodes than BFS here",
+    },
+    // Level 10: Ultimate challenge
+    {
+        id: 10,
+        name: "The Gauntlet",
+        description: "Master all terrain types in one challenge",
+        width: 20,
+        height: 12,
+        map: `
+S..#....≈≈≈≈.....#..
+...#....≈≈≈≈.....#..
+...#....≈≈≈≈.....#..
+...#....≈≈≈≈.....#..
+...#...........###..
+...####~~~~~####....
+.......~~~~~........
+.####..~~~~~..####..
+.#.....~~~~~.....#..
+.#...............#..
+.#...............#..
+.#.................G
+`.trim(),
+        parCost: 35,
+        parNodes: 90,
+        difficulty: "hard",
+    },
+];
+export const TOTAL_LEVELS = PATHFINDING_LEVELS.length;
+function parseLevel(level) {
+    const lines = level.map.split('\n').filter(l => l.length > 0);
+    const height = lines.length;
+    const width = level.width;
+    const grid = createEmptyGrid(width, height);
+    let start = null;
+    let goal = null;
+    for (let row = 0; row < height; row++) {
+        for (let col = 0; col < width && col < lines[row].length; col++) {
+            const char = lines[row][col];
+            switch (char) {
+                case '#':
+                    grid[row][col].type = 'wall';
+                    break;
+                case '~':
+                    grid[row][col].type = 'mud';
+                    break;
+                case '≈':
+                    grid[row][col].type = 'water';
+                    break;
+                case 'S':
+                    grid[row][col].type = 'start';
+                    start = { row, col };
+                    break;
+                case 'G':
+                    grid[row][col].type = 'goal';
+                    goal = { row, col };
+                    break;
+                default:
+                    grid[row][col].type = 'empty';
+            }
+        }
+    }
+    return { grid, start, goal };
+}
 // =============================================================================
 // Helper Functions
 // =============================================================================
@@ -286,6 +545,38 @@ function createPathfindingEngine() {
             maxPlayers: 1,
         },
         newGame(options = {}) {
+            const mode = options.mode ?? 'challenge';
+            const levelIndex = options.level ?? 1;
+            // Challenge mode: load level
+            if (mode === 'challenge' && levelIndex >= 1 && levelIndex <= TOTAL_LEVELS) {
+                const level = PATHFINDING_LEVELS[levelIndex - 1];
+                const { grid, start, goal } = parseLevel(level);
+                return {
+                    gameId: generateGameId(),
+                    status: 'playing',
+                    turn: 'player',
+                    moveCount: 0,
+                    grid,
+                    width: level.width,
+                    height: grid.length,
+                    start,
+                    goal,
+                    algorithm: 'astar',
+                    pathFound: null,
+                    pathLength: 0,
+                    pathCost: 0,
+                    nodesExpanded: 0,
+                    path: [],
+                    difficulty: level.difficulty,
+                    levelIndex,
+                    totalLevels: TOTAL_LEVELS,
+                    parCost: level.parCost,
+                    parNodes: level.parNodes,
+                    levelName: level.name,
+                    mode: 'challenge',
+                };
+            }
+            // Sandbox mode
             const difficulty = options.difficulty ?? 'medium';
             const config = DIFFICULTY_CONFIG[difficulty];
             const width = options.width ?? config.width;
@@ -308,6 +599,12 @@ function createPathfindingEngine() {
                 nodesExpanded: 0,
                 path: [],
                 difficulty,
+                levelIndex: 0,
+                totalLevels: TOTAL_LEVELS,
+                parCost: 0,
+                parNodes: 0,
+                levelName: 'Sandbox',
+                mode: 'sandbox',
             };
         },
         validateState(state) {
@@ -321,23 +618,32 @@ function createPathfindingEngine() {
         },
         getLegalMoves(state) {
             const moves = [];
-            // Cell placement moves
-            for (let row = 0; row < state.height; row++) {
-                for (let col = 0; col < state.width; col++) {
-                    moves.push({ action: 'set_cell', row, col, cellType: 'wall' });
-                    moves.push({ action: 'set_cell', row, col, cellType: 'mud' });
-                    moves.push({ action: 'set_cell', row, col, cellType: 'water' });
-                    moves.push({ action: 'set_cell', row, col, cellType: 'empty' });
+            // Level management (in challenge mode)
+            for (let i = 1; i <= TOTAL_LEVELS; i++) {
+                moves.push({ action: 'load_level', level: i });
+            }
+            if (state.mode === 'challenge' && state.levelIndex < TOTAL_LEVELS && state.pathFound) {
+                moves.push({ action: 'next_level' });
+            }
+            // Cell placement moves (sandbox mode only)
+            if (state.mode === 'sandbox') {
+                for (let row = 0; row < state.height; row++) {
+                    for (let col = 0; col < state.width; col++) {
+                        moves.push({ action: 'set_cell', row, col, cellType: 'wall' });
+                        moves.push({ action: 'set_cell', row, col, cellType: 'mud' });
+                        moves.push({ action: 'set_cell', row, col, cellType: 'water' });
+                        moves.push({ action: 'set_cell', row, col, cellType: 'empty' });
+                    }
+                }
+                // Start and goal placement
+                if (!state.start) {
+                    moves.push({ action: 'set_start', row: 0, col: 0 });
+                }
+                if (!state.goal) {
+                    moves.push({ action: 'set_goal', row: state.height - 1, col: state.width - 1 });
                 }
             }
-            // Start and goal placement
-            if (!state.start) {
-                moves.push({ action: 'set_start', row: 0, col: 0 });
-            }
-            if (!state.goal) {
-                moves.push({ action: 'set_goal', row: state.height - 1, col: state.width - 1 });
-            }
-            // Find path
+            // Find path (both modes)
             if (state.start && state.goal) {
                 moves.push({ action: 'find_path', algorithm: 'bfs' });
                 moves.push({ action: 'find_path', algorithm: 'dijkstra' });
@@ -483,6 +789,76 @@ function createPathfindingEngine() {
                             pathCost: 0,
                             nodesExpanded: 0,
                             path: [],
+                            mode: 'sandbox',
+                            levelIndex: 0,
+                            levelName: 'Random Maze',
+                            parCost: 0,
+                            parNodes: 0,
+                        },
+                        valid: true,
+                    };
+                }
+                case 'load_level': {
+                    const levelNum = move.level ?? 1;
+                    if (levelNum < 1 || levelNum > TOTAL_LEVELS) {
+                        return { state, valid: false, error: `Level must be 1-${TOTAL_LEVELS}` };
+                    }
+                    const level = PATHFINDING_LEVELS[levelNum - 1];
+                    const { grid, start, goal } = parseLevel(level);
+                    return {
+                        state: {
+                            ...newState,
+                            grid,
+                            width: level.width,
+                            height: grid.length,
+                            start,
+                            goal,
+                            pathFound: null,
+                            pathLength: 0,
+                            pathCost: 0,
+                            nodesExpanded: 0,
+                            path: [],
+                            difficulty: level.difficulty,
+                            levelIndex: levelNum,
+                            levelName: level.name,
+                            parCost: level.parCost,
+                            parNodes: level.parNodes,
+                            mode: 'challenge',
+                            status: 'playing',
+                        },
+                        valid: true,
+                    };
+                }
+                case 'next_level': {
+                    if (state.mode !== 'challenge') {
+                        return { state, valid: false, error: 'Not in challenge mode' };
+                    }
+                    const nextLevel = state.levelIndex + 1;
+                    if (nextLevel > TOTAL_LEVELS) {
+                        return { state, valid: false, error: 'No more levels - you completed all challenges!' };
+                    }
+                    const level = PATHFINDING_LEVELS[nextLevel - 1];
+                    const { grid, start, goal } = parseLevel(level);
+                    return {
+                        state: {
+                            ...newState,
+                            grid,
+                            width: level.width,
+                            height: grid.length,
+                            start,
+                            goal,
+                            pathFound: null,
+                            pathLength: 0,
+                            pathCost: 0,
+                            nodesExpanded: 0,
+                            path: [],
+                            difficulty: level.difficulty,
+                            levelIndex: nextLevel,
+                            levelName: level.name,
+                            parCost: level.parCost,
+                            parNodes: level.parNodes,
+                            mode: 'challenge',
+                            status: 'playing',
                         },
                         valid: true,
                     };
@@ -500,13 +876,39 @@ function createPathfindingEngine() {
         getResult(state) {
             if (!state.pathFound)
                 return null;
-            // Score based on path efficiency and nodes expanded
-            const optimalLength = state.start && state.goal
-                ? manhattan(state.start, state.goal)
-                : state.pathLength;
-            const lengthEfficiency = optimalLength / state.pathLength;
-            const expansionPenalty = Math.max(0, 1 - (state.nodesExpanded / (state.width * state.height)));
-            const score = Math.round((lengthEfficiency * 0.7 + expansionPenalty * 0.3) * 100);
+            let score;
+            let stars = 0;
+            if (state.mode === 'challenge' && state.parCost > 0) {
+                // Challenge mode: score based on par
+                const costRatio = state.parCost / state.pathCost;
+                const nodesRatio = state.parNodes / Math.max(state.nodesExpanded, 1);
+                // Stars based on performance
+                if (state.pathCost <= state.parCost && state.nodesExpanded <= state.parNodes) {
+                    stars = 3; // Perfect: at or under par on both
+                }
+                else if (state.pathCost <= state.parCost * 1.2) {
+                    stars = 2; // Good: within 20% of par cost
+                }
+                else {
+                    stars = 1; // Completed
+                }
+                // Score: base 100 * stars, bonus for efficiency
+                score = stars * 100;
+                if (costRatio >= 1)
+                    score += Math.round((costRatio - 1) * 50);
+                if (nodesRatio >= 1)
+                    score += Math.round((nodesRatio - 1) * 25);
+            }
+            else {
+                // Sandbox mode: score based on efficiency
+                const optimalLength = state.start && state.goal
+                    ? manhattan(state.start, state.goal)
+                    : state.pathLength;
+                const lengthEfficiency = optimalLength / state.pathLength;
+                const expansionPenalty = Math.max(0, 1 - (state.nodesExpanded / (state.width * state.height)));
+                score = Math.round((lengthEfficiency * 0.7 + expansionPenalty * 0.3) * 100);
+                stars = score >= 80 ? 3 : score >= 50 ? 2 : 1;
+            }
             return {
                 status: 'won',
                 score,
@@ -517,6 +919,12 @@ function createPathfindingEngine() {
                     pathCost: state.pathCost,
                     nodesExpanded: state.nodesExpanded,
                     gridSize: `${state.width}x${state.height}`,
+                    level: state.levelIndex,
+                    levelName: state.levelName,
+                    parCost: state.parCost,
+                    parNodes: state.parNodes,
+                    stars,
+                    mode: state.mode,
                 },
             };
         },
@@ -531,21 +939,57 @@ function createPathfindingEngine() {
             return parsed;
         },
         renderText(state) {
-            let text = formatGrid(state);
+            let text = '';
+            // Level header for challenge mode
+            if (state.mode === 'challenge' && state.levelIndex > 0) {
+                const level = PATHFINDING_LEVELS[state.levelIndex - 1];
+                text += `═══ Level ${state.levelIndex}/${TOTAL_LEVELS}: ${state.levelName} ═══\n`;
+                text += `${level.description}\n`;
+                text += `Par: Cost ≤${state.parCost}, Nodes ≤${state.parNodes}\n\n`;
+            }
+            else {
+                text += `═══ Sandbox Mode ═══\n\n`;
+            }
+            text += formatGrid(state);
             text += '\n\n';
             text += `Legend: · empty  █ wall  ~ mud(5)  ≋ water(10)  S start  G goal  ★ path\n`;
             text += `Algorithm: ${state.algorithm.toUpperCase()}\n`;
             if (state.pathFound !== null) {
                 if (state.pathFound) {
                     text += `\n✓ Path found! Length: ${state.pathLength}, Cost: ${state.pathCost}, Nodes: ${state.nodesExpanded}`;
+                    if (state.mode === 'challenge' && state.parCost > 0) {
+                        const costOk = state.pathCost <= state.parCost;
+                        const nodesOk = state.nodesExpanded <= state.parNodes;
+                        if (costOk && nodesOk) {
+                            text += `\n⭐⭐⭐ PERFECT! Under par on both metrics!`;
+                        }
+                        else if (costOk) {
+                            text += `\n⭐⭐ Good! Cost at par, but ${state.nodesExpanded - state.parNodes} extra nodes expanded`;
+                        }
+                        else {
+                            text += `\n⭐ Completed! Cost ${state.pathCost - state.parCost} over par`;
+                        }
+                        if (state.levelIndex < TOTAL_LEVELS) {
+                            text += `\n\nUse 'next_level' to continue!`;
+                        }
+                        else {
+                            text += `\n\n🎉 Congratulations! All levels completed!`;
+                        }
+                    }
                 }
                 else {
                     text += `\n✗ No path found. Nodes expanded: ${state.nodesExpanded}`;
                 }
             }
             else {
-                text += '\nSet start (S), goal (G), add obstacles, then run find_path';
+                if (state.mode === 'challenge') {
+                    text += '\nUse find_path to solve the level!';
+                }
+                else {
+                    text += '\nSet start (S), goal (G), add obstacles, then run find_path';
+                }
             }
+            text += `\n\nTools: find_path [bfs|dijkstra|astar], load_level N, next_level, generate_maze, clear`;
             return text;
         },
         renderJSON(state) {
@@ -555,7 +999,9 @@ function createPathfindingEngine() {
                 status: state.status,
                 turn: state.turn,
                 moveCount: state.moveCount,
-                legalMoves: ['set_cell', 'set_start', 'set_goal', 'find_path', 'clear', 'generate_maze'],
+                legalMoves: state.mode === 'sandbox'
+                    ? ['set_cell', 'set_start', 'set_goal', 'find_path', 'clear', 'generate_maze', 'load_level']
+                    : ['find_path', 'load_level', 'next_level'],
                 board: {
                     grid: state.grid.map(row => row.map(c => c.type)),
                     width: state.width,
@@ -564,6 +1010,12 @@ function createPathfindingEngine() {
                     goal: state.goal,
                 },
                 extra: {
+                    mode: state.mode,
+                    levelIndex: state.levelIndex,
+                    totalLevels: state.totalLevels,
+                    levelName: state.levelName,
+                    parCost: state.parCost,
+                    parNodes: state.parNodes,
                     algorithm: state.algorithm,
                     pathFound: state.pathFound,
                     pathLength: state.pathLength,
@@ -634,6 +1086,16 @@ function createPathfindingEngine() {
                 case 'generate_maze':
                 case 'maze':
                     return { action: 'generate_maze' };
+                case 'load_level':
+                case 'level': {
+                    const levelNum = parseInt(parts[1], 10);
+                    if (isNaN(levelNum))
+                        return null;
+                    return { action: 'load_level', level: levelNum };
+                }
+                case 'next_level':
+                case 'next':
+                    return { action: 'next_level' };
                 default:
                     return null;
             }
