@@ -709,5 +709,51 @@
     "markAsTip": "This is a tip",
     "tipLabel": "Tip",
     "loadMore": "Load More Comments"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Everything you need to know about MCP Challenge and the Model Context Protocol",
+    "basics": {
+      "title": "Getting Started",
+      "q1": "What is MCP?",
+      "a1": "MCP (Model Context Protocol) is an open standard that enables AI assistants to securely connect with external data sources and tools. It provides a universal way for AI agents to interact with APIs, databases, and other services.",
+      "q2": "Is MCP Challenge free?",
+      "a2": "Yes! MCP Challenge is completely free and open source. You can play all challenges, earn achievements, and compete on the leaderboard without any cost.",
+      "q3": "Do I need an account to play?",
+      "a3": "No account is needed to play the challenges. However, if you want to save your progress, appear on the leaderboard, and earn achievements, you'll need to sign in with GitHub or Google."
+    },
+    "technical": {
+      "title": "Technical Questions",
+      "q1": "Which AI clients can I use?",
+      "a1": "MCP Challenge works with any MCP-compatible client including Claude Desktop, Cursor, Cline, Zed, and custom implementations. You can also use the built-in playground.",
+      "q2": "How do I connect my AI agent?",
+      "a2": "Each challenge provides an MCP server URL. Add this URL to your AI client's MCP configuration, and your agent will be able to use the challenge's tools.",
+      "q3": "Does it work offline?",
+      "a3": "The MCP servers can run locally for some challenges, but the web interface and leaderboard require an internet connection."
+    },
+    "gameplay": {
+      "title": "Gameplay",
+      "q1": "How do I earn points?",
+      "a1": "Complete challenges to earn points. Faster completions and optimal solutions can earn bonus points. Each challenge has a base point value shown on the card.",
+      "q2": "What are achievements?",
+      "a2": "Achievements are special badges you can earn for unique accomplishments - like winning your first game, completing all challenges, or achieving specific goals within games.",
+      "q3": "Can I play without AI?",
+      "a3": "Yes! Most challenges have a manual mode where you can play directly in the browser. This is great for learning the game mechanics before connecting your AI agent."
+    },
+    "developers": {
+      "title": "For Developers",
+      "q1": "Can I contribute a new challenge?",
+      "a1": "Absolutely! MCP Challenge is open source. You can submit a pull request on GitHub with your challenge idea. Check the contribution guidelines in the repository.",
+      "q2": "Where is the source code?",
+      "a2": "The entire platform is open source on GitHub. You can find it at github.com/anthropics/mcp-challenge.",
+      "q3": "What tech stack is used?",
+      "a3": "MCP Challenge is built with Next.js, runs on Cloudflare Pages with Workers, uses D1 for the database, and implements the official MCP TypeScript SDK."
+    },
+    "contact": {
+      "title": "Still have questions?",
+      "description": "Join our Discord community to get help, share your creations, and connect with other MCP developers.",
+      "discord": "Join Discord"
+    },
+    "backHome": "← Back to Home"
   }
 }

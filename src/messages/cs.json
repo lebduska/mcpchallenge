@@ -528,5 +528,51 @@
     "markAsTip": "Toto je tip",
     "tipLabel": "Tip",
     "loadMore": "Načíst další komentáře"
+  },
+  "faq": {
+    "title": "Často kladené otázky",
+    "subtitle": "Vše, co potřebujete vědět o MCP Challenge a Model Context Protocol",
+    "basics": {
+      "title": "Začínáme",
+      "q1": "Co je MCP?",
+      "a1": "MCP (Model Context Protocol) je otevřený standard, který umožňuje AI asistentům bezpečně se připojovat k externím datovým zdrojům a nástrojům. Poskytuje univerzální způsob, jak AI agenti mohou komunikovat s API, databázemi a dalšími službami.",
+      "q2": "Je MCP Challenge zdarma?",
+      "a2": "Ano! MCP Challenge je zcela zdarma a open source. Můžete hrát všechny výzvy, získávat achievementy a soutěžit v žebříčku bez jakýchkoli nákladů.",
+      "q3": "Potřebuji účet k hraní?",
+      "a3": "K hraní výzev nepotřebujete účet. Pokud však chcete ukládat svůj postup, objevit se v žebříčku a získávat achievementy, budete se muset přihlásit přes GitHub nebo Google."
+    },
+    "technical": {
+      "title": "Technické otázky",
+      "q1": "Jaké AI klienty mohu použít?",
+      "a1": "MCP Challenge funguje s jakýmkoli klientem kompatibilním s MCP, včetně Claude Desktop, Cursor, Cline, Zed a vlastních implementací. Můžete také použít vestavěné hřiště.",
+      "q2": "Jak připojím svého AI agenta?",
+      "a2": "Každá výzva poskytuje URL MCP serveru. Přidejte tuto URL do konfigurace MCP vašeho AI klienta a váš agent bude moci používat nástroje výzvy.",
+      "q3": "Funguje to offline?",
+      "a3": "MCP servery mohou běžet lokálně pro některé výzvy, ale webové rozhraní a žebříček vyžadují připojení k internetu."
+    },
+    "gameplay": {
+      "title": "Hraní",
+      "q1": "Jak získám body?",
+      "a1": "Dokončujte výzvy a získávejte body. Rychlejší dokončení a optimální řešení mohou přinést bonusové body. Každá výzva má základní bodovou hodnotu zobrazenou na kartě.",
+      "q2": "Co jsou achievementy?",
+      "a2": "Achievementy jsou speciální odznaky, které můžete získat za unikátní úspěchy - jako výhra v první hře, dokončení všech výzev nebo dosažení specifických cílů ve hrách.",
+      "q3": "Mohu hrát bez AI?",
+      "a3": "Ano! Většina výzev má manuální režim, kde můžete hrát přímo v prohlížeči. To je skvělé pro naučení herních mechanik před připojením vašeho AI agenta."
+    },
+    "developers": {
+      "title": "Pro vývojáře",
+      "q1": "Mohu přispět novou výzvou?",
+      "a1": "Rozhodně! MCP Challenge je open source. Můžete odeslat pull request na GitHubu s vaším nápadem na výzvu. Podívejte se na pokyny pro přispívání v repozitáři.",
+      "q2": "Kde je zdrojový kód?",
+      "a2": "Celá platforma je open source na GitHubu. Najdete ji na github.com/anthropics/mcp-challenge.",
+      "q3": "Jaký tech stack se používá?",
+      "a3": "MCP Challenge je postavena na Next.js, běží na Cloudflare Pages s Workers, používá D1 pro databázi a implementuje oficiální MCP TypeScript SDK."
+    },
+    "contact": {
+      "title": "Máte další otázky?",
+      "description": "Připojte se k naší Discord komunitě, získejte pomoc, sdílejte své výtvory a spojte se s ostatními MCP vývojáři.",
+      "discord": "Připojit se na Discord"
+    },
+    "backHome": "← Zpět na hlavní stránku"
   }
 }
