@@ -60,6 +60,8 @@ export interface MoveResult<TState extends GameState> {
   error?: string;
   /** Game result if game ended */
   result?: GameResult;
+  /** Optional message to return (e.g., compare result) */
+  message?: string;
 }
 
 // =============================================================================

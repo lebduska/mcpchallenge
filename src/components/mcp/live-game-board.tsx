@@ -69,6 +69,7 @@ import type {
   FractalsGameState,
   LightsOutGameState,
   PathfindingGameState,
+  SortingGameState,
   CommandLogEntry,
   RoomInfo,
   RoomState,
@@ -294,6 +295,8 @@ export function LiveGameBoard({
         return renderLightsOutBoard(gameState as LightsOutGameState);
       case "pathfinding":
         return renderPathfindingBoard(gameState as PathfindingGameState);
+      case "sorting":
+        return renderSortingBoard(gameState as SortingGameState);
       default:
         return null;
     }
@@ -868,6 +871,84 @@ export function LiveGameBoard({
     );
   };
 
+  const renderSortingBoard = (state: SortingGameState) => {
+    const {
+      length,
+      comparisons,
+      swaps,
+      isSorted,
+      parComparisons,
+      parSwaps,
+      levelIndex,
+      totalLevels,
+      lastCompared,
+      lastSwapped,
+      relativeHeights,
+    } = state;
+
+    const bars = relativeHeights || Array(length).fill(0.5);
+
+    return (
+      <div className="relative bg-zinc-900 rounded-xl p-4 border border-purple-500/30">
+        {/* Spectator badge */}
+        <div className="absolute top-2 left-2 z-10">
+          <Badge variant="outline" className="bg-black/50 backdrop-blur-md border-white/10 text-white gap-1">
+            <Eye className="h-3 w-3" />
+            Spectating
+          </Badge>
+        </div>
+
+        {/* Level badge */}
+        <div className="absolute top-2 right-2 z-10">
+          <Badge className={cn(
+            "backdrop-blur-md border-0",
+            isSorted ? "bg-green-600/80" : "bg-purple-600/80"
+          )}>
+            Level {levelIndex}/{totalLevels}
+          </Badge>
+        </div>
+
+        {/* Bar chart visualization */}
+        <div className="flex items-end justify-center gap-1 min-h-[300px] pt-10 pb-4">
+          {bars.map((height, i) => {
+            const isCompared = lastCompared && (lastCompared[0] === i || lastCompared[1] === i);
+            const isSwapped = lastSwapped && (lastSwapped[0] === i || lastSwapped[1] === i);
+            const barHeight = Math.max(10, height * 250);
+
+            return (
+              <div
+                key={i}
+                className={cn(
+                  "transition-all duration-150 rounded-t",
+                  isSwapped
+                    ? "bg-yellow-400"
+                    : isCompared
+                    ? "bg-cyan-400"
+                    : "bg-purple-500",
+                  isSorted && "bg-green-500"
+                )}
+                style={{
+                  width: Math.max(8, Math.min(30, 300 / length)),
+                  height: barHeight,
+                }}
+              />
+            );
+          })}
+        </div>
+
+        {/* Stats */}
+        <div className="absolute bottom-2 left-2 right-2 flex justify-between">
+          <Badge variant="outline" className="bg-black/50 backdrop-blur-md border-purple-500/30 text-purple-300 text-xs">
+            Comparisons: {comparisons}/{parComparisons}
+          </Badge>
+          <Badge variant="outline" className="bg-black/50 backdrop-blur-md border-purple-500/30 text-purple-300 text-xs">
+            Swaps: {swaps}/{parSwaps}
+          </Badge>
+        </div>
+      </div>
+    );
+  };
+
   // Render preview board based on game type
   const renderPreviewBoard = () => {
     switch (gameType) {
@@ -1100,6 +1181,27 @@ export function LiveGameBoard({
             </div>
           </div>
         );
+      case "sorting":
+        return (
+          <div className="aspect-square p-4 bg-zinc-900 rounded-xl flex flex-col items-center justify-center">
+            {/* Sorting preview - bar chart */}
+            <div className="text-center">
+              <div className="flex items-end justify-center gap-1 mb-4 h-32">
+                {[8, 3, 6, 1, 9, 4, 7, 2, 5].map((height, i) => (
+                  <div
+                    key={i}
+                    className="w-6 bg-purple-500 rounded-t transition-all"
+                    style={{ height: `${height * 12}px` }}
+                  />
+                ))}
+              </div>
+              <div className="text-purple-400 font-medium">Sorting Algorithm</div>
+              <div className="text-zinc-500 text-sm mt-2">
+                compare(i,j) • swap(i,j)
+              </div>
+            </div>
+          </div>
+        );
       default:
         return null;
     }
@@ -1126,6 +1228,7 @@ export function LiveGameBoard({
                 gameType === "gorillas" ? "bg-gradient-to-br from-yellow-500/30 via-transparent to-amber-500/20" :
                 gameType === "fractals" ? "bg-gradient-to-br from-purple-500/30 via-transparent to-fuchsia-500/20" :
                 gameType === "pathfinding" ? "bg-gradient-to-br from-cyan-500/30 via-transparent to-teal-500/20" :
+                gameType === "sorting" ? "bg-gradient-to-br from-purple-500/30 via-transparent to-violet-500/20" :
                 "bg-gradient-to-br from-green-500/30 via-transparent to-emerald-500/20",
                 "group-hover:opacity-40"
               )}

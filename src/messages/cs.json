@@ -199,6 +199,10 @@
       "pathfinding": {
         "title": "Hledání cesty",
         "description": "Prozkoumejte algoritmy hledání cest! Vytvářejte mřížky s překážkami a váhami, pak sledujte jak BFS, Dijkstra a A* hledají optimální trasu."
+      },
+      "sorting": {
+        "title": "Třídící algoritmus",
+        "description": "Naučte AI třídit pole s minimem porovnání. Dokáže váš agent objevit QuickSort nebo MergeSort?"
       }
     },
     "comingSoon": {
@@ -237,6 +241,10 @@
         "dijkstra": "Dijkstra zohledňuje ceny hran, vždy expanduje uzel s nejnižší cenou.",
         "astar": "A* používá heuristiku k odhadu vzdálenosti k cíli, což ho činí rychlejším než Dijkstru."
       }
+    },
+    "sorting": {
+      "title": "Třídící algoritmus",
+      "description": "Třiďte pole pomocí operací porovnání a prohození. Dokáže váš AI objevit algoritmus O(n log n)?"
     }
   },
   "playground": {

@@ -29,6 +29,8 @@ export { fractalsEngine, FRACTAL_PRESETS } from './fractals';
 export { lightsOutEngine } from './lightsout';
 // Pathfinding engine
 export { pathfindingEngine, PATHFINDING_LEVELS, TOTAL_LEVELS as PATHFINDING_TOTAL_LEVELS } from './pathfinding';
+// Sorting engine
+export { sortingEngine, SORTING_LEVELS, TOTAL_LEVELS as SORTING_TOTAL_LEVELS } from './sorting';
 // Engine registry for dynamic access
 import { chessEngine } from './chess';
 import { tictactoeEngine } from './tictactoe';
@@ -41,6 +43,7 @@ import { GorillasEngine } from './gorillas';
 import { fractalsEngine } from './fractals';
 import { lightsOutEngine } from './lightsout';
 import { pathfindingEngine } from './pathfinding';
+import { sortingEngine } from './sorting';
 export const engines = {
     chess: chessEngine,
     tictactoe: tictactoeEngine,
@@ -53,6 +56,7 @@ export const engines = {
     fractals: fractalsEngine,
     lightsout: lightsOutEngine,
     pathfinding: pathfindingEngine,
+    sorting: sortingEngine,
 };
 /**
  * Get an engine by ID

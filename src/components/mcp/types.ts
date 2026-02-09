@@ -1,6 +1,6 @@
 // MCP Component Types
 
-export type GameType = "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "polybridge" | "sokoban" | "gorillas" | "fractals" | "lightsout" | "pathfinding";
+export type GameType = "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "polybridge" | "sokoban" | "gorillas" | "fractals" | "lightsout" | "pathfinding" | "sorting";
 
 export interface CommandLogEntry {
   timestamp: number;
@@ -195,6 +195,24 @@ export interface PathfindingGameState {
   difficulty: "easy" | "medium" | "hard";
 }
 
+export interface SortingGameState {
+  gameType: "sorting";
+  status: "waiting" | "playing" | "won";
+  length: number;
+  comparisons: number;
+  swaps: number;
+  isSorted: boolean;
+  parComparisons: number;
+  parSwaps: number;
+  levelIndex: number;
+  totalLevels: number;
+  difficulty: "easy" | "medium" | "hard";
+  lastCompared: [number, number] | null;
+  lastSwapped: [number, number] | null;
+  // For UI visualization - relative bar heights (normalized 0-1)
+  relativeHeights: number[];
+}
+
 export type GameState =
   | ChessGameState
   | TicTacToeGameState
@@ -206,7 +224,8 @@ export type GameState =
   | GorillasGameState
   | FractalsGameState
   | LightsOutGameState
-  | PathfindingGameState;
+  | PathfindingGameState
+  | SortingGameState;
 
 export interface RoomState {
   roomId: string;

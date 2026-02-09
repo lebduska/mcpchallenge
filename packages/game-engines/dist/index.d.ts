@@ -28,6 +28,8 @@ export { lightsOutEngine } from './lightsout';
 export type { LightsOutState, LightsOutMove, LightsOutOptions } from './lightsout';
 export { pathfindingEngine, PATHFINDING_LEVELS, TOTAL_LEVELS as PATHFINDING_TOTAL_LEVELS } from './pathfinding';
 export type { PathfindingState, PathfindingMove, PathfindingOptions, CellType as PathfindingCellType, Algorithm as PathfindingAlgorithm, PathfindingLevel } from './pathfinding';
+export { sortingEngine, SORTING_LEVELS, TOTAL_LEVELS as SORTING_TOTAL_LEVELS } from './sorting';
+export type { SortingState, SortingMove, SortingOptions, SortingLevel } from './sorting';
 import type { GameEngine, GameState } from './types';
 export declare const engines: {
     readonly chess: GameEngine<import("./chess").ChessState, import("./chess").ChessMove, import("./chess").ChessOptions>;
@@ -41,6 +43,7 @@ export declare const engines: {
     readonly fractals: GameEngine<import("./fractals").FractalState, import("./fractals").FractalMove, import("./fractals").FractalOptions>;
     readonly lightsout: GameEngine<import("./lightsout").LightsOutState, import("./lightsout").LightsOutMove, import("./lightsout").LightsOutOptions>;
     readonly pathfinding: GameEngine<import("./pathfinding").PathfindingState, import("./pathfinding").PathfindingMove, import("./pathfinding").PathfindingOptions>;
+    readonly sorting: GameEngine<import("./sorting").SortingState, import("./sorting").SortingMove, import("./sorting").SortingOptions>;
 };
 export type EngineId = keyof typeof engines;
 /**

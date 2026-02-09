@@ -226,6 +226,29 @@ function convertToEngineState(
         difficulty: pathfindingOldState.difficulty || 'medium',
       } as any;
 
+    case 'sorting':
+      const sortingOldState = oldState as any;
+      return {
+        gameId: `${oldState.createdAt}`,
+        gameType: 'sorting',
+        status: sortingOldState.status || 'playing',
+        turn: 'player',
+        moveCount: (sortingOldState.comparisons || 0) + (sortingOldState.swaps || 0),
+        array: [],  // Hidden from agent
+        length: sortingOldState.length || 10,
+        comparisons: sortingOldState.comparisons || 0,
+        swaps: sortingOldState.swaps || 0,
+        isSorted: sortingOldState.isSorted || false,
+        difficulty: sortingOldState.difficulty || 'medium',
+        levelIndex: sortingOldState.levelIndex || 1,
+        totalLevels: sortingOldState.totalLevels || 10,
+        parComparisons: sortingOldState.parComparisons || 20,
+        parSwaps: sortingOldState.parSwaps || 10,
+        history: sortingOldState.history || [],
+        lastCompared: sortingOldState.lastCompared || null,
+        lastSwapped: sortingOldState.lastSwapped || null,
+      } as any;
+
     default:
       return null;
   }
@@ -433,6 +456,29 @@ function convertToOldState(
         levelIndex: pathfindingState.levelIndex || 0,
         totalLevels: pathfindingState.totalLevels || 10,
         difficulty: pathfindingState.difficulty || 'medium',
+      } as GameState;
+
+    case 'sorting':
+      const sortingState = engineState as any;
+      const maxVal = Math.max(...(sortingState.array || [1]));
+      return {
+        gameType: 'sorting',
+        status: sortingState.status || 'playing',
+        createdAt: now,
+        lastActivity: now,
+        length: sortingState.length || sortingState.array?.length || 10,
+        comparisons: sortingState.comparisons || 0,
+        swaps: sortingState.swaps || 0,
+        isSorted: sortingState.isSorted || false,
+        parComparisons: sortingState.parComparisons || 20,
+        parSwaps: sortingState.parSwaps || 10,
+        levelIndex: sortingState.levelIndex || 1,
+        totalLevels: sortingState.totalLevels || 10,
+        difficulty: sortingState.difficulty || 'medium',
+        lastCompared: sortingState.lastCompared || null,
+        lastSwapped: sortingState.lastSwapped || null,
+        // For UI visualization - relative bar heights (normalized 0-1)
+        relativeHeights: (sortingState.array || []).map((v: number) => v / maxVal),
       } as GameState;
 
     default:

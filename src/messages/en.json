@@ -230,6 +230,10 @@
       "pathfinding": {
         "title": "Pathfinding Playground",
         "description": "Explore pathfinding algorithms! Build grids with walls and weights, then watch BFS, Dijkstra, and A* find the optimal route."
+      },
+      "sorting": {
+        "title": "Sorting Algorithm",
+        "description": "Teach AI to sort arrays with minimum comparisons. Can your agent discover QuickSort or MergeSort?"
       }
     },
     "comingSoon": {
@@ -268,6 +272,10 @@
         "dijkstra": "Dijkstra considers edge costs, always expanding the lowest-cost node first.",
         "astar": "A* uses a heuristic to estimate distance to goal, making it faster than Dijkstra for most cases."
       }
+    },
+    "sorting": {
+      "title": "Sorting Algorithm Challenge",
+      "description": "Sort arrays using only compare and swap operations. Can your AI discover an O(n log n) algorithm?"
     }
   },
   "playground": {

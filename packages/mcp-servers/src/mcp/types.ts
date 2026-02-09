@@ -118,7 +118,7 @@ export interface PlayerSlot {
 }
 
 // Game state types
-export type GameType = "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "polybridge" | "sokoban" | "gorillas" | "fractals" | "lightsout" | "pathfinding";
+export type GameType = "chess" | "tictactoe" | "snake" | "canvas" | "minesweeper" | "polybridge" | "sokoban" | "gorillas" | "fractals" | "lightsout" | "pathfinding" | "sorting";
 
 export interface BaseGameState {
   gameType: GameType;
@@ -307,4 +307,22 @@ export interface PathfindingGameState extends BaseGameState {
   difficulty: "easy" | "medium" | "hard";
 }
 
-export type GameState = ChessGameState | TicTacToeGameState | SnakeGameState | CanvasGameState | MinesweeperGameState | PolyBridgeGameState | SokobanGameState | GorillasGameState | FractalsGameState | LightsOutGameState | PathfindingGameState;
+export interface SortingGameState extends BaseGameState {
+  gameType: "sorting";
+  status: "waiting" | "playing" | "won";
+  length: number;
+  comparisons: number;
+  swaps: number;
+  isSorted: boolean;
+  parComparisons: number;
+  parSwaps: number;
+  levelIndex: number;
+  totalLevels: number;
+  difficulty: "easy" | "medium" | "hard";
+  lastCompared: [number, number] | null;
+  lastSwapped: [number, number] | null;
+  // For UI visualization - relative bar heights
+  relativeHeights: number[];
+}
+
+export type GameState = ChessGameState | TicTacToeGameState | SnakeGameState | CanvasGameState | MinesweeperGameState | PolyBridgeGameState | SokobanGameState | GorillasGameState | FractalsGameState | LightsOutGameState | PathfindingGameState | SortingGameState;

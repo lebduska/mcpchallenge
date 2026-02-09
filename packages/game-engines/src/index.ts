@@ -53,6 +53,10 @@ export type { LightsOutState, LightsOutMove, LightsOutOptions } from './lightsou
 export { pathfindingEngine, PATHFINDING_LEVELS, TOTAL_LEVELS as PATHFINDING_TOTAL_LEVELS } from './pathfinding';
 export type { PathfindingState, PathfindingMove, PathfindingOptions, CellType as PathfindingCellType, Algorithm as PathfindingAlgorithm, PathfindingLevel } from './pathfinding';
 
+// Sorting engine
+export { sortingEngine, SORTING_LEVELS, TOTAL_LEVELS as SORTING_TOTAL_LEVELS } from './sorting';
+export type { SortingState, SortingMove, SortingOptions, SortingLevel } from './sorting';
+
 // Engine registry for dynamic access
 import { chessEngine } from './chess';
 import { tictactoeEngine } from './tictactoe';
@@ -65,6 +69,7 @@ import { GorillasEngine } from './gorillas';
 import { fractalsEngine } from './fractals';
 import { lightsOutEngine } from './lightsout';
 import { pathfindingEngine } from './pathfinding';
+import { sortingEngine } from './sorting';
 import type { GameEngine, GameState } from './types';
 
 export const engines = {
@@ -79,6 +84,7 @@ export const engines = {
   fractals: fractalsEngine,
   lightsout: lightsOutEngine,
   pathfinding: pathfindingEngine,
+  sorting: sortingEngine,
 } as const;
 
 export type EngineId = keyof typeof engines;
