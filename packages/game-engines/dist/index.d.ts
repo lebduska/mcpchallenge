@@ -20,12 +20,14 @@ export type { PolyBridgeState, PolyBridgeMove, PolyBridgeOptions, Structure, Pol
 export { LEVELS as POLYBRIDGE_LEVELS, MATERIAL_COSTS } from './polybridge';
 export { sokobanEngine, SOKOBAN_LEVELS, TOTAL_LEVELS as SOKOBAN_TOTAL_LEVELS } from './sokoban';
 export type { SokobanState, SokobanMove, SokobanOptions, Direction as SokobanDirection, Position as SokobanPosition } from './sokoban';
-export { GorillasEngine, LEVELS as GORILLAS_LEVELS } from './gorillas';
+export { GorillasEngine, LEVELS as GORILLAS_LEVELS, simulateThrowPreview, getStrategicHints } from './gorillas';
 export type { GorillasState, GorillasMove, GorillasOptions, Position as GorillasPosition, Building, Gorilla, Trajectory, LevelConfig as GorillasLevelConfig } from './gorillas';
 export { fractalsEngine, FRACTAL_PRESETS } from './fractals';
 export type { FractalState, FractalMove, FractalOptions, FractalRule, ColorScheme } from './fractals';
 export { lightsOutEngine } from './lightsout';
 export type { LightsOutState, LightsOutMove, LightsOutOptions } from './lightsout';
+export { pathfindingEngine } from './pathfinding';
+export type { PathfindingState, PathfindingMove, PathfindingOptions, CellType as PathfindingCellType, Algorithm as PathfindingAlgorithm } from './pathfinding';
 import type { GameEngine, GameState } from './types';
 export declare const engines: {
     readonly chess: GameEngine<import("./chess").ChessState, import("./chess").ChessMove, import("./chess").ChessOptions>;
@@ -38,6 +40,7 @@ export declare const engines: {
     readonly gorillas: GameEngine<import("./gorillas").GorillasState, import("./gorillas").GorillasMove, import("./gorillas").GorillasOptions>;
     readonly fractals: GameEngine<import("./fractals").FractalState, import("./fractals").FractalMove, import("./fractals").FractalOptions>;
     readonly lightsout: GameEngine<import("./lightsout").LightsOutState, import("./lightsout").LightsOutMove, import("./lightsout").LightsOutOptions>;
+    readonly pathfinding: GameEngine<import("./pathfinding").PathfindingState, import("./pathfinding").PathfindingMove, import("./pathfinding").PathfindingOptions>;
 };
 export type EngineId = keyof typeof engines;
 /**

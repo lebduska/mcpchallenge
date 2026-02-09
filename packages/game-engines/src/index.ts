@@ -49,6 +49,10 @@ export type { FractalState, FractalMove, FractalOptions, FractalRule, ColorSchem
 export { lightsOutEngine } from './lightsout';
 export type { LightsOutState, LightsOutMove, LightsOutOptions } from './lightsout';
 
+// Pathfinding engine
+export { pathfindingEngine } from './pathfinding';
+export type { PathfindingState, PathfindingMove, PathfindingOptions, CellType as PathfindingCellType, Algorithm as PathfindingAlgorithm } from './pathfinding';
+
 // Engine registry for dynamic access
 import { chessEngine } from './chess';
 import { tictactoeEngine } from './tictactoe';
@@ -60,6 +64,7 @@ import { sokobanEngine } from './sokoban';
 import { GorillasEngine } from './gorillas';
 import { fractalsEngine } from './fractals';
 import { lightsOutEngine } from './lightsout';
+import { pathfindingEngine } from './pathfinding';
 import type { GameEngine, GameState } from './types';
 
 export const engines = {
@@ -73,6 +78,7 @@ export const engines = {
   gorillas: GorillasEngine,
   fractals: fractalsEngine,
   lightsout: lightsOutEngine,
+  pathfinding: pathfindingEngine,
 } as const;
 
 export type EngineId = keyof typeof engines;

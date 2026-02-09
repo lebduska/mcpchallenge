@@ -22,11 +22,13 @@ export { LEVELS as POLYBRIDGE_LEVELS, MATERIAL_COSTS } from './polybridge';
 // Sokoban engine
 export { sokobanEngine, SOKOBAN_LEVELS, TOTAL_LEVELS as SOKOBAN_TOTAL_LEVELS } from './sokoban';
 // Gorillas engine
-export { GorillasEngine, LEVELS as GORILLAS_LEVELS } from './gorillas';
+export { GorillasEngine, LEVELS as GORILLAS_LEVELS, simulateThrowPreview, getStrategicHints } from './gorillas';
 // Fractals engine
 export { fractalsEngine, FRACTAL_PRESETS } from './fractals';
 // Lights Out engine
 export { lightsOutEngine } from './lightsout';
+// Pathfinding engine
+export { pathfindingEngine } from './pathfinding';
 // Engine registry for dynamic access
 import { chessEngine } from './chess';
 import { tictactoeEngine } from './tictactoe';
@@ -38,6 +40,7 @@ import { sokobanEngine } from './sokoban';
 import { GorillasEngine } from './gorillas';
 import { fractalsEngine } from './fractals';
 import { lightsOutEngine } from './lightsout';
+import { pathfindingEngine } from './pathfinding';
 export const engines = {
     chess: chessEngine,
     tictactoe: tictactoeEngine,
@@ -49,6 +52,7 @@ export const engines = {
     gorillas: GorillasEngine,
     fractals: fractalsEngine,
     lightsout: lightsOutEngine,
+    pathfinding: pathfindingEngine,
 };
 /**
  * Get an engine by ID

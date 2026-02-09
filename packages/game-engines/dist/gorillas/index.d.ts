@@ -89,6 +89,20 @@ interface LevelConfig {
     description: string;
 }
 declare const LEVELS: LevelConfig[];
+/**
+ * Simulate a throw without making a move (for AI trajectory planning)
+ */
+export declare function simulateThrowPreview(state: GorillasState, angle: number, velocity: number): Trajectory;
+/**
+ * Get strategic hints for the current situation
+ */
+export declare function getStrategicHints(state: GorillasState): {
+    distance: number;
+    heightDiff: number;
+    suggestedAngle: number;
+    suggestedVelocity: number;
+    windCompensation: string;
+};
 export declare const GorillasEngine: GameEngine<GorillasState, GorillasMove, GorillasOptions>;
 export { LEVELS };
 export type { LevelConfig };

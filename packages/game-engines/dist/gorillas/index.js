@@ -324,6 +324,48 @@ function generateAIMove(state, difficulty) {
     return { angle: Math.round(angle), velocity: Math.round(velocity) };
 }
 // =============================================================================
+// Helper Functions for AI/MCP
+// =============================================================================
+/**
+ * Simulate a throw without making a move (for AI trajectory planning)
+ */
+export function simulateThrowPreview(state, angle, velocity) {
+    return simulateThrow(state, angle, velocity, state.turn === 'player' ? 'player1' : 'player2');
+}
+/**
+ * Get strategic hints for the current situation
+ */
+export function getStrategicHints(state) {
+    const thrower = state.turn === 'player' ? state.player1 : state.player2;
+    const target = state.turn === 'player' ? state.player2 : state.player1;
+    const dx = Math.abs(target.position.x - thrower.position.x);
+    const dy = target.position.y - thrower.position.y;
+    // Basic trajectory calculation
+    const heightAdjustment = Math.atan2(-dy, dx) * 180 / Math.PI;
+    let suggestedAngle = Math.max(20, Math.min(70, 45 + heightAdjustment * 0.3));
+    // Velocity estimate
+    const angleRad = (suggestedAngle * Math.PI) / 180;
+    let suggestedVelocity = Math.sqrt(Math.abs(dx * state.gravity) / Math.sin(2 * angleRad));
+    suggestedVelocity = Math.min(180, Math.max(40, suggestedVelocity));
+    // Wind compensation hint
+    let windCompensation = 'none';
+    if (Math.abs(state.wind) > 2) {
+        if (state.wind > 0) {
+            windCompensation = state.turn === 'player' ? 'aim slightly left (wind pushing right)' : 'wind helping you';
+        }
+        else {
+            windCompensation = state.turn === 'player' ? 'wind helping you' : 'aim slightly right (wind pushing left)';
+        }
+    }
+    return {
+        distance: Math.round(dx),
+        heightDiff: Math.round(dy),
+        suggestedAngle: Math.round(suggestedAngle),
+        suggestedVelocity: Math.round(suggestedVelocity),
+        windCompensation,
+    };
+}
+// =============================================================================
 // Game Engine Implementation
 // =============================================================================
 export const GorillasEngine = {
@@ -513,6 +555,7 @@ export const GorillasEngine = {
         const level = LEVELS[Math.min(state.levelIndex, LEVELS.length - 1)];
         const windDir = state.wind > 0 ? '→' : state.wind < 0 ? '←' : '-';
         const windStr = `${windDir} ${Math.abs(state.wind).toFixed(1)}`;
+        const hints = getStrategicHints(state);
         let text = `
 🦍 GORILLAS - Level ${state.levelIndex + 1}: ${level.name}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -520,40 +563,64 @@ export const GorillasEngine = {
 ${state.player1.name}: ${'🍌'.repeat(state.player1.score)} (${state.player1.score}/${state.pointsToWin})
 ${state.player2.name}: ${'🍌'.repeat(state.player2.score)} (${state.player2.score}/${state.pointsToWin})
 
-Wind: ${windStr}  |  Gravity: ${state.gravity} m/s²
+🌬️ Wind: ${windStr} mph  |  ⬇️ Gravity: ${state.gravity} m/s²
 
-Current turn: ${state.turn === 'player' ? state.player1.name : state.player2.name}
+📍 Distance to target: ${hints.distance} units
+📐 Height difference: ${hints.heightDiff > 0 ? 'target is lower' : hints.heightDiff < 0 ? 'target is higher' : 'same height'} (${Math.abs(hints.heightDiff)} units)
+
+🎯 Current turn: ${state.turn === 'player' ? state.player1.name : state.player2.name}
 `;
         if (state.message) {
             text += `\n📢 ${state.message}\n`;
         }
         if (state.lastTrajectory) {
-            text += `\nLast throw: ${state.lastTrajectory.hit || 'in flight'}`;
+            text += `\n🍌 Last throw result: ${state.lastTrajectory.hit || 'out of bounds'}`;
         }
-        text += `\n\n💡 Use throw_banana(angle, velocity) to throw!
-   Angle: 0-90 degrees (higher = more vertical)
-   Velocity: 1-200 (higher = further)`;
+        text += `\n
+💡 STRATEGY HINTS:
+   • Suggested angle: ~${hints.suggestedAngle}° (adjust based on obstacles)
+   • Suggested velocity: ~${hints.suggestedVelocity} (adjust for wind)
+   • Wind effect: ${hints.windCompensation}
+
+📝 Commands:
+   throw_banana(angle, velocity) - angle: 0-90°, velocity: 10-200
+   Example: throw_banana(${hints.suggestedAngle}, ${hints.suggestedVelocity})`;
         return text;
     },
     renderJSON(state) {
         const level = LEVELS[Math.min(state.levelIndex, LEVELS.length - 1)];
+        const hints = getStrategicHints(state);
         return {
             gameType: 'gorillas',
             gameId: state.gameId,
             status: state.status,
             turn: state.turn,
             moveCount: state.moveCount,
-            legalMoves: ['throw_banana(angle: 0-360, velocity: 1-200)'],
+            legalMoves: ['throw_banana(angle: 0-90, velocity: 10-200)'],
             board: {
                 width: state.width,
                 height: state.height,
-                buildings: state.buildings,
-                player1: state.player1,
-                player2: state.player2,
+                buildings: state.buildings.map(b => ({
+                    x: b.x,
+                    width: b.width,
+                    height: b.height,
+                    // Simplified damage info - just max damage
+                    maxDamage: Math.max(...(b.damage || [0])),
+                })),
+                player1: {
+                    position: state.player1.position,
+                    score: state.player1.score,
+                    name: state.player1.name,
+                },
+                player2: {
+                    position: state.player2.position,
+                    score: state.player2.score,
+                    name: state.player2.name,
+                },
                 sunPosition: state.sunPosition,
                 wind: state.wind,
                 gravity: state.gravity,
-                lastTrajectory: state.lastTrajectory,
+                lastThrowResult: state.lastTrajectory?.hit || null,
             },
             extra: {
                 levelIndex: state.levelIndex,
@@ -563,6 +630,17 @@ Current turn: ${state.turn === 'player' ? state.player1.name : state.player2.nam
                 pointsToWin: state.pointsToWin,
                 isVsAI: state.isVsAI,
                 message: state.message,
+                // Strategic hints for AI
+                hints: {
+                    distanceToTarget: hints.distance,
+                    heightDifference: hints.heightDiff,
+                    suggestedAngle: hints.suggestedAngle,
+                    suggestedVelocity: hints.suggestedVelocity,
+                    windCompensation: hints.windCompensation,
+                    tip: state.wind > 5 ? 'Strong wind - consider lower angle with more velocity' :
+                        state.wind < -5 ? 'Strong wind - wind will help carry the banana' :
+                            'Moderate conditions - standard trajectory should work',
+                },
             },
         };
     },
