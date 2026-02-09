@@ -23,6 +23,12 @@ interface CompletionData {
   score?: number;
   winner?: string;
   moves?: number;
+  // Sorting-specific data
+  level?: number;
+  comparisons?: number;
+  swaps?: number;
+  parComparisons?: number;
+  parSwaps?: number;
 }
 
 interface UserStatsData {
@@ -35,6 +41,9 @@ interface UserStatsData {
   canvasDrawCompleted: boolean;
   minesweeperWins: number;
   sokobanLevels: number;
+  // Sorting-specific stats
+  sortingLevelsCompleted: number;
+  sortingBeatPar: boolean;
 }
 
 // Achievement rules for game challenges
@@ -116,6 +125,46 @@ const achievementRules: AchievementRule[] = [
     id: "level-10",
     check: (_, stats) => stats.level >= 10,
   },
+  // Sorting achievements
+  {
+    id: "sorting-first",
+    check: (data) => data.challengeId === "sorting",
+  },
+  {
+    id: "sorting-bubble-master",
+    check: (data) =>
+      data.challengeId === "sorting" &&
+      data.level === 1 &&
+      (data.comparisons || 0) <= (data.parComparisons || 4) &&
+      (data.swaps || 0) <= (data.parSwaps || 3),
+  },
+  {
+    id: "sorting-quick-thinker",
+    check: (data) =>
+      data.challengeId === "sorting" &&
+      data.level === 6 &&
+      (data.comparisons || 0) <= (data.parComparisons || 120) &&
+      (data.swaps || 0) <= (data.parSwaps || 100),
+  },
+  {
+    id: "sorting-minimal-swapper",
+    check: (data) =>
+      data.challengeId === "sorting" &&
+      data.parSwaps !== undefined &&
+      (data.swaps || Infinity) < data.parSwaps,
+  },
+  {
+    id: "sorting-all-levels",
+    check: (_, stats) => stats.sortingLevelsCompleted >= 10,
+  },
+  {
+    id: "sorting-gauntlet",
+    check: (data) =>
+      data.challengeId === "sorting" &&
+      data.level === 10 &&
+      (data.comparisons || 0) <= (data.parComparisons || 840) &&
+      (data.swaps || 0) <= (data.parSwaps || 700),
+  },
 ];
 
 // Calculate level from points (Fibonacci-like progression)
@@ -153,6 +202,12 @@ export async function POST(request: Request, { params }: PageProps) {
     score?: number;
     winner?: string;
     moves?: number;
+    // Sorting-specific
+    level?: number;
+    comparisons?: number;
+    swaps?: number;
+    parComparisons?: number;
+    parSwaps?: number;
   };
 
   // Record the completion
@@ -251,6 +306,17 @@ export async function POST(request: Request, { params }: PageProps) {
       )
     );
 
+  // Sorting levels completed (count unique levels via score field as level index)
+  const sortingLevels = await db
+    .select({ count: sql<number>`count(distinct score)` })
+    .from(challengeCompletions)
+    .where(
+      and(
+        eq(challengeCompletions.userId, userId),
+        eq(challengeCompletions.challengeId, "sorting")
+      )
+    );
+
   const extendedStats: UserStatsData = {
     totalPoints: stats.totalPoints,
     level: stats.level,
@@ -261,6 +327,10 @@ export async function POST(request: Request, { params }: PageProps) {
     canvasDrawCompleted: Number(canvasDrawCompletion[0]?.count || 0) > 0,
     minesweeperWins: Number(minesweeperWins[0]?.count || 0),
     sokobanLevels: Number(sokobanLevels[0]?.count || 0),
+    sortingLevelsCompleted: Number(sortingLevels[0]?.count || 0),
+    sortingBeatPar: body.comparisons !== undefined && body.parComparisons !== undefined &&
+                    body.swaps !== undefined && body.parSwaps !== undefined &&
+                    body.comparisons <= body.parComparisons && body.swaps <= body.parSwaps,
   };
 
   const completionData: CompletionData = {
@@ -268,6 +338,12 @@ export async function POST(request: Request, { params }: PageProps) {
     score: body.score,
     winner: body.winner,
     moves: body.moves,
+    // Sorting-specific
+    level: body.level,
+    comparisons: body.comparisons,
+    swaps: body.swaps,
+    parComparisons: body.parComparisons,
+    parSwaps: body.parSwaps,
   };
 
   // Get user's existing achievements

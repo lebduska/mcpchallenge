@@ -7,6 +7,12 @@ export interface GameResult {
   score?: number;
   winner?: "player" | "ai" | "engine" | "computer" | "draw";
   moves?: number;
+  // Sorting-specific
+  level?: number;
+  comparisons?: number;
+  swaps?: number;
+  parComparisons?: number;
+  parSwaps?: number;
 }
 
 export interface CompletionResponse {
