@@ -5,4 +5,5 @@ export {
   BreadcrumbStructuredData,
   FAQStructuredData,
   SoftwareApplicationStructuredData,
+  VideoGameStructuredData,
 } from "./structured-data";

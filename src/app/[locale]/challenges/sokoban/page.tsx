@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SokobanClientPage } from "./sokoban-client";
+import { VideoGameStructuredData, BreadcrumbStructuredData } from "@/components/seo";
 
 export const runtime = "edge";
 
@@ -32,5 +33,23 @@ export const metadata: Metadata = {
 };
 
 export default function SokobanChallengePage() {
-  return <SokobanClientPage />;
+  return (
+    <>
+      <VideoGameStructuredData
+        name="Sokoban Challenge"
+        description="Classic box-pushing puzzle! Navigate the warehouse, push boxes onto goals, and solve increasingly complex levels."
+        url={`${BASE_URL}/challenges/sokoban`}
+        image={`${BASE_URL}/images/challenges/sokoban-cover.jpg`}
+        genre="Puzzle"
+      />
+      <BreadcrumbStructuredData
+        items={[
+          { name: "Home", url: BASE_URL },
+          { name: "Challenges", url: `${BASE_URL}/challenges` },
+          { name: "Sokoban", url: `${BASE_URL}/challenges/sokoban` },
+        ]}
+      />
+      <SokobanClientPage />
+    </>
+  );
 }

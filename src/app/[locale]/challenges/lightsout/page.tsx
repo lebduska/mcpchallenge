@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { LightsOutClientPage } from "./lightsout-client";
+import { VideoGameStructuredData, BreadcrumbStructuredData } from "@/components/seo";
 
 export const runtime = "edge";
 
@@ -32,5 +33,23 @@ export const metadata: Metadata = {
 };
 
 export default function LightsOutChallengePage() {
-  return <LightsOutClientPage />;
+  return (
+    <>
+      <VideoGameStructuredData
+        name="Lights Out Challenge"
+        description="Classic puzzle game! Toggle lights in a cross pattern to turn them all off. Uses XOR logic and linear algebra."
+        url={`${BASE_URL}/challenges/lightsout`}
+        image={`${BASE_URL}/images/challenges/lightsout-cover.jpg`}
+        genre="Puzzle"
+      />
+      <BreadcrumbStructuredData
+        items={[
+          { name: "Home", url: BASE_URL },
+          { name: "Challenges", url: `${BASE_URL}/challenges` },
+          { name: "Lights Out", url: `${BASE_URL}/challenges/lightsout` },
+        ]}
+      />
+      <LightsOutClientPage />
+    </>
+  );
 }

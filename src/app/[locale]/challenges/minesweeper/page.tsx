@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { MinesweeperClientPage } from "./minesweeper-client";
+import { VideoGameStructuredData, BreadcrumbStructuredData } from "@/components/seo";
 
 export const runtime = "edge";
 
@@ -32,5 +33,23 @@ export const metadata: Metadata = {
 };
 
 export default function MinesweeperChallengePage() {
-  return <MinesweeperClientPage />;
+  return (
+    <>
+      <VideoGameStructuredData
+        name="Minesweeper Challenge"
+        description="Classic Minesweeper! Reveal cells, use number clues to locate mines, and clear the board without hitting one."
+        url={`${BASE_URL}/challenges/minesweeper`}
+        image={`${BASE_URL}/images/challenges/minesweeper-cover.jpg`}
+        genre="Puzzle"
+      />
+      <BreadcrumbStructuredData
+        items={[
+          { name: "Home", url: BASE_URL },
+          { name: "Challenges", url: `${BASE_URL}/challenges` },
+          { name: "Minesweeper", url: `${BASE_URL}/challenges/minesweeper` },
+        ]}
+      />
+      <MinesweeperClientPage />
+    </>
+  );
 }

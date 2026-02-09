@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { GorillasClientPage } from "./gorillas-client";
+import { VideoGameStructuredData, BreadcrumbStructuredData } from "@/components/seo";
 
 export const runtime = "edge";
 
@@ -32,5 +33,23 @@ export const metadata: Metadata = {
 };
 
 export default function GorillasChallengePage() {
-  return <GorillasClientPage />;
+  return (
+    <>
+      <VideoGameStructuredData
+        name="Gorillas Challenge"
+        description="Classic artillery game! Calculate trajectory angles and velocities to hit your opponent with bananas."
+        url={`${BASE_URL}/challenges/gorillas`}
+        image={`${BASE_URL}/images/challenges/gorillas-cover.jpg`}
+        genre="Action"
+      />
+      <BreadcrumbStructuredData
+        items={[
+          { name: "Home", url: BASE_URL },
+          { name: "Challenges", url: `${BASE_URL}/challenges` },
+          { name: "Gorillas", url: `${BASE_URL}/challenges/gorillas` },
+        ]}
+      />
+      <GorillasClientPage />
+    </>
+  );
 }

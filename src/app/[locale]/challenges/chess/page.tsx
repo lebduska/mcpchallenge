@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ChessClientPage } from "./chess-client";
+import { VideoGameStructuredData, BreadcrumbStructuredData } from "@/components/seo";
 
 export const runtime = "edge";
 
@@ -32,5 +33,23 @@ export const metadata: Metadata = {
 };
 
 export default function ChessChallengePage() {
-  return <ChessClientPage />;
+  return (
+    <>
+      <VideoGameStructuredData
+        name="Chess Challenge"
+        description="Play chess against an engine using MCP tools. Make moves, analyze positions, and test your AI's strategic thinking."
+        url={`${BASE_URL}/challenges/chess`}
+        image={`${BASE_URL}/images/challenges/chess-cover.jpg`}
+        genre="Strategy"
+      />
+      <BreadcrumbStructuredData
+        items={[
+          { name: "Home", url: BASE_URL },
+          { name: "Challenges", url: `${BASE_URL}/challenges` },
+          { name: "Chess", url: `${BASE_URL}/challenges/chess` },
+        ]}
+      />
+      <ChessClientPage />
+    </>
+  );
 }

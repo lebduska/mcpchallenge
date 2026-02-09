@@ -176,6 +176,56 @@ export function FAQStructuredData({ items }: FAQStructuredDataProps) {
   );
 }
 
+interface VideoGameStructuredDataProps {
+  name: string;
+  description: string;
+  url: string;
+  image?: string;
+  genre?: string;
+  gamePlatform?: string;
+}
+
+export function VideoGameStructuredData({
+  name,
+  description,
+  url,
+  image,
+  genre = "Educational",
+  gamePlatform = "Web Browser",
+}: VideoGameStructuredDataProps) {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "VideoGame",
+    name,
+    description,
+    url,
+    image,
+    genre,
+    gamePlatform,
+    applicationCategory: "Game",
+    operatingSystem: "Any",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+      availability: "https://schema.org/InStock",
+    },
+    author: {
+      "@type": "Organization",
+      name: "MCP Challenge",
+      url: "https://mcpchallenge.org",
+    },
+  };
+
+  return (
+    <Script
+      id={`videogame-structured-data-${name.replace(/\s+/g, "-").toLowerCase()}`}
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+    />
+  );
+}
+
 interface SoftwareApplicationStructuredDataProps {
   name?: string;
   description?: string;

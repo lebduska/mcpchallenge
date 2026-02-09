@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { TicTacToeClientPage } from "./tictactoe-client";
+import { VideoGameStructuredData, BreadcrumbStructuredData } from "@/components/seo";
 
 export const runtime = "edge";
 
@@ -32,5 +33,23 @@ export const metadata: Metadata = {
 };
 
 export default function TicTacToeChallengePage() {
-  return <TicTacToeClientPage />;
+  return (
+    <>
+      <VideoGameStructuredData
+        name="Tic-Tac-Toe Challenge"
+        description="Classic Tic-Tac-Toe! Perfect for learning MCP basics. Make moves, track game state, and play against an AI opponent."
+        url={`${BASE_URL}/challenges/tic-tac-toe`}
+        image={`${BASE_URL}/images/challenges/tictactoe-cover.jpg`}
+        genre="Strategy"
+      />
+      <BreadcrumbStructuredData
+        items={[
+          { name: "Home", url: BASE_URL },
+          { name: "Challenges", url: `${BASE_URL}/challenges` },
+          { name: "Tic-Tac-Toe", url: `${BASE_URL}/challenges/tic-tac-toe` },
+        ]}
+      />
+      <TicTacToeClientPage />
+    </>
+  );
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SnakeClientPage } from "./snake-client";
+import { VideoGameStructuredData, BreadcrumbStructuredData } from "@/components/seo";
 
 export const runtime = "edge";
 
@@ -32,5 +33,23 @@ export const metadata: Metadata = {
 };
 
 export default function SnakeChallengePage() {
-  return <SnakeClientPage />;
+  return (
+    <>
+      <VideoGameStructuredData
+        name="Snake Challenge"
+        description="Control a snake using MCP tools. Navigate the grid, eat food, and grow without hitting walls or yourself."
+        url={`${BASE_URL}/challenges/snake`}
+        image={`${BASE_URL}/images/challenges/snake.jpg`}
+        genre="Arcade"
+      />
+      <BreadcrumbStructuredData
+        items={[
+          { name: "Home", url: BASE_URL },
+          { name: "Challenges", url: `${BASE_URL}/challenges` },
+          { name: "Snake", url: `${BASE_URL}/challenges/snake` },
+        ]}
+      />
+      <SnakeClientPage />
+    </>
+  );
 }

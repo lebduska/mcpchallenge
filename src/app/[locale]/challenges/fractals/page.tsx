@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { FractalsClientPage } from "./fractals-client";
+import { VideoGameStructuredData, BreadcrumbStructuredData } from "@/components/seo";
 
 export const runtime = "edge";
 
@@ -32,5 +33,23 @@ export const metadata: Metadata = {
 };
 
 export default function FractalsChallengePage() {
-  return <FractalsClientPage />;
+  return (
+    <>
+      <VideoGameStructuredData
+        name="L-System Fractals Challenge"
+        description="Create beautiful fractals using L-System rules. Define axioms, production rules, and render stunning mathematical art."
+        url={`${BASE_URL}/challenges/fractals`}
+        image={`${BASE_URL}/images/challenges/fractals-cover.jpg`}
+        genre="Creative"
+      />
+      <BreadcrumbStructuredData
+        items={[
+          { name: "Home", url: BASE_URL },
+          { name: "Challenges", url: `${BASE_URL}/challenges` },
+          { name: "Fractals", url: `${BASE_URL}/challenges/fractals` },
+        ]}
+      />
+      <FractalsClientPage />
+    </>
+  );
 }
