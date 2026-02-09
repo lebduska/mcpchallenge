@@ -2,7 +2,7 @@
 
 export const runtime = "edge";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -48,9 +48,23 @@ const mcpTools = [
   { name: "load_level", params: "N", description: "Load level N (1-10). Higher levels = larger arrays" },
 ];
 
+// Seeded pseudo-random number generator for deterministic demo bars
+function seededRandom(seed: number): () => number {
+  return () => {
+    seed = (seed * 9301 + 49297) % 233280;
+    return seed / 233280;
+  };
+}
+
 export function SortingClientPage() {
   const t = useTranslations("challenges.sorting");
   const [selectedLevel, setSelectedLevel] = useState(1);
+
+  // Pre-generate bar heights for demo visualization (deterministic based on level)
+  const demoBarHeights = useMemo(() => {
+    const random = seededRandom(selectedLevel * 1000);
+    return Array.from({ length: 15 }, () => random() * 0.8 + 0.2);
+  }, [selectedLevel]);
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
@@ -150,19 +164,16 @@ export function SortingClientPage() {
 
                   {/* Demo bars */}
                   <div className="flex items-end justify-center gap-2 h-40 mb-6">
-                    {Array.from({ length: Math.min(LEVELS[selectedLevel - 1].size, 15) }, (_, i) => {
-                      const height = Math.random() * 0.8 + 0.2;
-                      return (
-                        <div
-                          key={i}
-                          className="bg-purple-500 rounded-t transition-all"
-                          style={{
-                            width: Math.max(12, 200 / LEVELS[selectedLevel - 1].size),
-                            height: `${height * 100}%`,
-                          }}
-                        />
-                      );
-                    })}
+                    {Array.from({ length: Math.min(LEVELS[selectedLevel - 1].size, 15) }, (_, i) => (
+                      <div
+                        key={i}
+                        className="bg-purple-500 rounded-t transition-all"
+                        style={{
+                          width: Math.max(12, 200 / LEVELS[selectedLevel - 1].size),
+                          height: `${demoBarHeights[i] * 100}%`,
+                        }}
+                      />
+                    ))}
                     {LEVELS[selectedLevel - 1].size > 15 && (
                       <span className="text-zinc-400 text-sm ml-2">
                         +{LEVELS[selectedLevel - 1].size - 15} more
