@@ -88,6 +88,14 @@ export const challengeCovers: Record<string, ChallengeCover> = {
     dominantColor: "yellow",
     alt: "Retro electronic puzzle game with glowing LED buttons",
   },
+  pathfinding: {
+    image: "/images/challenges/pathfinding-cover.jpg",
+    unsplashFallback: "https://images.unsplash.com/photo-1523961131990-5ea7c61b2107?w=1200&h=800&fit=crop&q=80",
+    unsplashCredit: "AI Generated",
+    overlayGradient: "from-teal-950/90 via-cyan-950/70 to-transparent",
+    dominantColor: "teal",
+    alt: "Grid maze with pathfinding visualization in 3D clay style",
+  },
 };
 
 /**

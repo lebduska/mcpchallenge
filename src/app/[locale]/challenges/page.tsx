@@ -18,6 +18,7 @@ import {
   Banana,
   TreePine,
   Lightbulb,
+  Route,
   // Construction, // Poly Bridge hidden
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -149,6 +150,19 @@ const challengeData = [
     icon: Lightbulb,
     gradient: "from-yellow-400/20 via-amber-500/10 to-orange-500/20",
     accentColor: "yellow",
+  },
+  {
+    id: "pathfinding",
+    key: "pathfinding",
+    difficulty: "intermediate",
+    points: 150,
+    type: "game",
+    completions: 0,
+    featured: true,
+    transport: "N/A",
+    icon: Route,
+    gradient: "from-teal-500/20 via-cyan-500/10 to-emerald-500/20",
+    accentColor: "teal",
   },
   // Poly Bridge - hidden until physics is fixed
   // {

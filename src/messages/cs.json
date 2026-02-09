@@ -195,6 +195,10 @@
       "polyBridge": {
         "title": "Poly Bridge",
         "description": "Stavte mosty z trámů a lan, pak otestujte zda vozidlo přejede! Fyzikální puzzle hra."
+      },
+      "pathfinding": {
+        "title": "Hledání cesty",
+        "description": "Prozkoumejte algoritmy hledání cest! Vytvářejte mřížky s překážkami a váhami, pak sledujte jak BFS, Dijkstra a A* hledají optimální trasu."
       }
     },
     "comingSoon": {

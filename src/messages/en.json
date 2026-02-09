@@ -226,6 +226,10 @@
       "polyBridge": {
         "title": "Poly Bridge",
         "description": "Build bridges with beams and cables, then test if vehicles can cross! Physics-based puzzle game."
+      },
+      "pathfinding": {
+        "title": "Pathfinding Playground",
+        "description": "Explore pathfinding algorithms! Build grids with walls and weights, then watch BFS, Dijkstra, and A* find the optimal route."
       }
     },
     "comingSoon": {
