@@ -19,6 +19,7 @@ import {
   TreePine,
   Lightbulb,
   Route,
+  BarChart3,
   // Construction, // Poly Bridge hidden
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -163,6 +164,19 @@ const challengeData = [
     icon: Route,
     gradient: "from-teal-500/20 via-cyan-500/10 to-emerald-500/20",
     accentColor: "teal",
+  },
+  {
+    id: "sorting",
+    key: "sorting",
+    difficulty: "intermediate",
+    points: 200,
+    type: "game",
+    completions: 0,
+    featured: true,
+    transport: "HTTP+SSE",
+    icon: BarChart3,
+    gradient: "from-violet-500/20 via-purple-500/10 to-indigo-500/20",
+    accentColor: "violet",
   },
   // Poly Bridge - hidden until physics is fixed
   // {

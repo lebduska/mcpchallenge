@@ -96,6 +96,14 @@ export const challengeCovers: Record<string, ChallengeCover> = {
     dominantColor: "teal",
     alt: "Grid maze with pathfinding visualization in 3D clay style",
   },
+  sorting: {
+    image: "/images/challenges/sorting-cover.jpg",
+    unsplashFallback: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=800&fit=crop&q=80",
+    unsplashCredit: "AI Generated",
+    overlayGradient: "from-violet-950/90 via-purple-950/70 to-transparent",
+    dominantColor: "violet",
+    alt: "Bar chart visualization showing sorting algorithm in 3D clay style",
+  },
 };
 
 /**
