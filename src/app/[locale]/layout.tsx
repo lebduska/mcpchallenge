@@ -4,7 +4,8 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Navbar } from "@/components/navbar";
 import { AuthProvider } from "@/components/auth/auth-provider";
-import { locales, localeNames, isRtlLocale, defaultLocale, type Locale } from "@/i18n/config";
+import { WelcomeModal } from "@/components/onboarding";
+import { locales, isRtlLocale, defaultLocale, type Locale } from "@/i18n/config";
 
 const BASE_URL = "https://mcpchallenge.org";
 
@@ -65,6 +66,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
         <AuthProvider>
           <Navbar />
           <main>{children}</main>
+          <WelcomeModal />
         </AuthProvider>
       </NextIntlClientProvider>
     </div>

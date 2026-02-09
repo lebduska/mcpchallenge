@@ -30,22 +30,23 @@ async function getSession() {
 }
 
 interface UpdateProgressBody {
-  challengeId: string;
-  levelId: string;
-  result: {
+  action?: "onboarding_complete";
+  challengeId?: string;
+  levelId?: string;
+  result?: {
     won?: boolean;
     moves?: number;
     pushes?: number;
     timeMs?: number;
     score?: number;
   };
-  moves: unknown[];
+  moves?: unknown[];
   seed?: string;
 }
 
 /**
  * POST /api/progress/update
- * Update progress after completing a level
+ * Update progress after completing a level or handle special actions
  */
 export async function POST(request: Request) {
   const { env } = getRequestContext();
@@ -59,9 +60,14 @@ export async function POST(request: Request) {
   const userId = session.user.id;
   const body = (await request.json()) as UpdateProgressBody;
 
-  if (!body.challengeId || !body.levelId || !body.moves) {
+  // Handle onboarding completion - grant first-login achievement
+  if (body.action === "onboarding_complete") {
+    return handleOnboardingComplete(db, userId);
+  }
+
+  if (!body.challengeId || !body.levelId || !body.moves || !body.result) {
     return NextResponse.json(
-      { error: "challengeId, levelId, and moves are required" },
+      { error: "challengeId, levelId, moves, and result are required" },
       { status: 400 }
     );
   }
@@ -329,5 +335,80 @@ export async function POST(request: Request) {
       level: newLevel,
       challengesCompleted: stats.challengesCompleted + 1,
     },
+  });
+}
+
+/**
+ * Handle onboarding completion - grant first-login achievement if not already granted
+ */
+async function handleOnboardingComplete(db: ReturnType<typeof createDb>, userId: string) {
+  // Check if user already has first-login achievement
+  const existing = await db.query.userAchievements.findFirst({
+    where: and(
+      eq(userAchievements.userId, userId),
+      eq(userAchievements.achievementId, "first-login")
+    ),
+  });
+
+  if (existing) {
+    return NextResponse.json({
+      success: true,
+      alreadyCompleted: true,
+    });
+  }
+
+  // Get the achievement
+  const achievement = await db.query.achievements.findFirst({
+    where: eq(achievements.id, "first-login"),
+  });
+
+  if (!achievement) {
+    return NextResponse.json({
+      success: false,
+      error: "Achievement not found",
+    });
+  }
+
+  // Grant the achievement
+  await db.insert(userAchievements).values({
+    userId,
+    achievementId: "first-login",
+    unlockedAt: new Date(),
+  });
+
+  // Get or create user stats
+  const stats = await db.query.userStats.findFirst({
+    where: eq(userStats.userId, userId),
+  });
+
+  if (!stats) {
+    await db.insert(userStats).values({
+      userId,
+      totalPoints: achievement.points,
+      level: 1,
+      challengesCompleted: 0,
+      achievementsUnlocked: 1,
+      currentStreak: 1,
+      longestStreak: 1,
+    });
+  } else {
+    const newTotal = stats.totalPoints + achievement.points;
+    const newLevel = calculateLevel(newTotal);
+    await db
+      .update(userStats)
+      .set({
+        totalPoints: newTotal,
+        level: newLevel,
+        achievementsUnlocked: stats.achievementsUnlocked + 1,
+        lastActiveAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .where(eq(userStats.userId, userId));
+  }
+
+  return NextResponse.json({
+    success: true,
+    achievementUnlocked: achievement,
+    pointsEarned: achievement.points,
   });
 }
