@@ -212,6 +212,25 @@ export const codeSnippets = sqliteTable("code_snippets", {
   updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 });
 
+// ==================== AI EXAMPLES ====================
+
+export const aiExamples = sqliteTable("ai_examples", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  challengeId: text("challenge_id").notNull(),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  strategy: text("strategy").notNull(), // "random" | "minimax" | "a-star" | "greedy" | "claude" | "openai" | "gemini"
+  difficulty: text("difficulty").notNull().default("intermediate"), // "beginner" | "intermediate" | "advanced"
+  language: text("language").notNull().default("typescript"),
+  code: text("code").notNull(),
+  aiProvider: text("ai_provider"), // "claude" | "openai" | "gemini" | null (for algorithmic)
+  estimatedTokens: integer("estimated_tokens"), // Approximate tokens per move for AI providers
+  sortOrder: integer("sort_order").notNull().default(0),
+  viewCount: integer("view_count").notNull().default(0),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
 // ==================== CHALLENGE COMMENTS ====================
 
 export const challengeComments = sqliteTable("challenge_comments", {
@@ -256,3 +275,5 @@ export type CodeSnippet = typeof codeSnippets.$inferSelect;
 export type NewCodeSnippet = typeof codeSnippets.$inferInsert;
 export type ChallengeComment = typeof challengeComments.$inferSelect;
 export type NewChallengeComment = typeof challengeComments.$inferInsert;
+export type AiExample = typeof aiExamples.$inferSelect;
+export type NewAiExample = typeof aiExamples.$inferInsert;
