@@ -39,7 +39,7 @@ import {
 } from "lucide-react";
 import { LiveGameBoard } from "@/components/mcp/live-game-board";
 import { cn } from "@/lib/utils";
-import { ChallengeHeader } from "@/components/challenges";
+import { ChallengeHeader, ChallengeSnippets } from "@/components/challenges";
 import { getChallengeConfig } from "@/lib/challenge-config";
 
 // Types
@@ -971,6 +971,9 @@ export function PathfindingClientPage() {
           <TabsContent value="mcp" className="mt-0 space-y-6">
             {/* Live Game Board */}
             <LiveGameBoard gameType="pathfinding" />
+
+            {/* Quick Start Code Snippets */}
+            <ChallengeSnippets challengeId="pathfinding" />
 
             {/* MCP Tools */}
             <Accordion type="single" collapsible className="w-full">

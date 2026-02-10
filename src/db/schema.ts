@@ -204,6 +204,9 @@ export const codeSnippets = sqliteTable("code_snippets", {
   code: text("code").notNull(),
   challengeId: text("challenge_id"),
   isPublic: integer("is_public", { mode: "boolean" }).notNull().default(true),
+  isCurated: integer("is_curated", { mode: "boolean" }).notNull().default(false), // Official snippets
+  clientType: text("client_type"), // "claude-code" | "cursor" | "windsurf" | "generic"
+  sortOrder: integer("sort_order").notNull().default(0),
   viewCount: integer("view_count").notNull().default(0),
   createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
   updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),

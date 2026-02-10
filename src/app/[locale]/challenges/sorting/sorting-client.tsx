@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/accordion";
 import { Terminal, Info, Cpu } from "lucide-react";
 import { LiveGameBoard } from "@/components/mcp/live-game-board";
-import { ChallengeHeader } from "@/components/challenges";
+import { ChallengeHeader, ChallengeSnippets } from "@/components/challenges";
 import { getChallengeConfig } from "@/lib/challenge-config";
 import { cn } from "@/lib/utils";
 
@@ -230,6 +230,9 @@ export function SortingClientPage() {
 
             {/* Live Game Board */}
             <LiveGameBoard gameType="sorting" />
+
+            {/* Quick Start Code Snippets */}
+            <ChallengeSnippets challengeId="sorting" />
 
             {/* MCP Tools */}
             <Accordion type="single" collapsible className="w-full">

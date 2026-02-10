@@ -12,7 +12,7 @@ import {
 import { Terminal, Info } from "lucide-react";
 import { PolyBridgeGame } from "@/components/games/poly-bridge";
 import { LiveGameBoard } from "@/components/mcp/live-game-board";
-import { ChallengeHeader } from "@/components/challenges";
+import { ChallengeHeader, ChallengeSnippets } from "@/components/challenges";
 import { getChallengeConfig } from "@/lib/challenge-config";
 
 // Get tools from central config
@@ -73,6 +73,9 @@ export default function PolyBridgeChallengePage() {
           <TabsContent value="mcp" className="mt-0 space-y-6">
             {/* Live Game Board */}
             <LiveGameBoard gameType="polybridge" />
+
+            {/* Quick Start Code Snippets */}
+            <ChallengeSnippets challengeId="poly-bridge" />
 
             {/* MCP Tools */}
             <Accordion type="single" collapsible className="w-full">

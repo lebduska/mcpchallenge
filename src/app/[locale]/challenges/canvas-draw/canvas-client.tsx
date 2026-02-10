@@ -10,7 +10,7 @@ import {
 import { Terminal, Info } from "lucide-react";
 import { PixelCanvas } from "@/components/canvas";
 import { LiveGameBoard } from "@/components/mcp/live-game-board";
-import { ChallengeHeader } from "@/components/challenges";
+import { ChallengeHeader, ChallengeSnippets } from "@/components/challenges";
 import { getChallengeConfig } from "@/lib/challenge-config";
 
 // Get tools from central config
@@ -60,6 +60,9 @@ export function CanvasClientPage() {
           <TabsContent value="mcp" className="mt-0 space-y-6">
             {/* Live Game Board */}
             <LiveGameBoard gameType="canvas" />
+
+            {/* Quick Start Code Snippets */}
+            <ChallengeSnippets challengeId="canvas-draw" />
 
             {/* MCP Tools */}
             <Accordion type="single" collapsible className="w-full">

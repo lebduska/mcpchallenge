@@ -12,7 +12,7 @@ import {
 import { Terminal, Info, Loader2, BookOpen, Cpu } from "lucide-react";
 import { useGameCompletion } from "@/hooks/use-game-completion";
 import { AchievementToast } from "@/components/achievements/achievement-toast";
-import { ChallengeHeader } from "@/components/challenges";
+import { ChallengeHeader, ChallengeSnippets } from "@/components/challenges";
 import { getChallengeConfig } from "@/lib/challenge-config";
 
 // Dynamic imports to avoid SSR issues with game engines
@@ -176,6 +176,9 @@ export function GorillasClientPage() {
           <TabsContent value="mcp" className="mt-0 space-y-6">
             {/* Live Game Board */}
             <LiveGameBoard gameType="gorillas" />
+
+            {/* Quick Start Code Snippets */}
+            <ChallengeSnippets challengeId="gorillas" />
 
             {/* MCP Tools */}
             <Accordion type="single" collapsible className="w-full">

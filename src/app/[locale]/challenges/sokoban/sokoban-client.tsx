@@ -13,7 +13,7 @@ import { SokobanGame } from "@/components/games/sokoban";
 import { LiveGameBoard } from "@/components/mcp/live-game-board";
 import { useGameCompletion } from "@/hooks/use-game-completion";
 import { AchievementToast } from "@/components/achievements/achievement-toast";
-import { ChallengeHeader } from "@/components/challenges";
+import { ChallengeHeader, ChallengeSnippets } from "@/components/challenges";
 import { getChallengeConfig } from "@/lib/challenge-config";
 
 interface Achievement {
@@ -152,6 +152,9 @@ export function SokobanClientPage() {
           <TabsContent value="mcp" className="mt-0 space-y-6">
             {/* Live Game Board */}
             <LiveGameBoard gameType="sokoban" />
+
+            {/* Quick Start Code Snippets */}
+            <ChallengeSnippets challengeId="sokoban" />
 
             {/* MCP Tools */}
             <Accordion type="single" collapsible className="w-full">

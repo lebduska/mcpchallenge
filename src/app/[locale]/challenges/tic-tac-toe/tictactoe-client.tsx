@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/accordion";
 import { Bug, Terminal, Info, BookOpen, Cpu } from "lucide-react";
 import { TicTacToe } from "@/components/games/tic-tac-toe";
-import { ChallengeHeader } from "@/components/challenges";
+import { ChallengeHeader, ChallengeSnippets } from "@/components/challenges";
 import { LiveGameBoard } from "@/components/mcp/live-game-board";
 import { MCPSessionDemo } from "@/components/mcp/mcp-session-demo";
 import { DebugDrawer } from "@/components/mcp/debug-drawer";
@@ -192,6 +192,9 @@ export function TicTacToeClientPage() {
           <TabsContent value="mcp" className="mt-0 space-y-6">
             {/* Live Game Board - Command Center */}
             <LiveGameBoard gameType="tictactoe" />
+
+            {/* Quick Start Code Snippets */}
+            <ChallengeSnippets challengeId="tic-tac-toe" />
 
             {/* Tools & Config - in accordion */}
             <Accordion type="single" collapsible className="w-full">

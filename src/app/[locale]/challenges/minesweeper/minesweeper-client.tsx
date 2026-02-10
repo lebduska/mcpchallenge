@@ -13,7 +13,7 @@ import { Minesweeper } from "@/components/games/minesweeper";
 import { LiveGameBoard } from "@/components/mcp/live-game-board";
 import { useGameCompletion } from "@/hooks/use-game-completion";
 import { AchievementToast } from "@/components/achievements/achievement-toast";
-import { ChallengeHeader } from "@/components/challenges";
+import { ChallengeHeader, ChallengeSnippets } from "@/components/challenges";
 import { getChallengeConfig } from "@/lib/challenge-config";
 
 interface Achievement {
@@ -152,6 +152,9 @@ export function MinesweeperClientPage() {
           <TabsContent value="mcp" className="mt-0 space-y-6">
             {/* Live Game Board */}
             <LiveGameBoard gameType="minesweeper" />
+
+            {/* Quick Start Code Snippets */}
+            <ChallengeSnippets challengeId="minesweeper" />
 
             {/* MCP Tools */}
             <Accordion type="single" collapsible className="w-full">
