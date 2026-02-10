@@ -88,6 +88,9 @@ export const userStats = sqliteTable("user_stats", {
   achievementsUnlocked: integer("achievements_unlocked").notNull().default(0),
   currentStreak: integer("current_streak").notNull().default(0),
   longestStreak: integer("longest_streak").notNull().default(0),
+  dailyStreak: integer("daily_streak").notNull().default(0),
+  longestDailyStreak: integer("longest_daily_streak").notNull().default(0),
+  lastDailyCompletedAt: integer("last_daily_completed_at", { mode: "timestamp" }),
   lastActiveAt: integer("last_active_at", { mode: "timestamp" }),
   updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 });
@@ -231,6 +234,27 @@ export const aiExamples = sqliteTable("ai_examples", {
   updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 });
 
+// ==================== DAILY CHALLENGE ====================
+
+export const dailyChallenges = sqliteTable("daily_challenges", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  date: text("date").notNull().unique(), // YYYY-MM-DD format, UTC
+  challengeId: text("challenge_id").notNull(),
+  seed: text("seed"), // Deterministic seed for level generation
+  difficulty: text("difficulty").notNull().default("normal"), // "easy" | "normal" | "hard"
+  bonusPoints: integer("bonus_points").notNull().default(50),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
+export const dailyChallengeCompletions = sqliteTable("daily_challenge_completions", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  dailyChallengeId: text("daily_challenge_id").notNull().references(() => dailyChallenges.id, { onDelete: "cascade" }),
+  score: integer("score").notNull().default(0),
+  timeSpentMs: integer("time_spent_ms"),
+  completedAt: integer("completed_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
 // ==================== CHALLENGE COMMENTS ====================
 
 export const challengeComments = sqliteTable("challenge_comments", {
@@ -277,3 +301,7 @@ export type ChallengeComment = typeof challengeComments.$inferSelect;
 export type NewChallengeComment = typeof challengeComments.$inferInsert;
 export type AiExample = typeof aiExamples.$inferSelect;
 export type NewAiExample = typeof aiExamples.$inferInsert;
+export type DailyChallenge = typeof dailyChallenges.$inferSelect;
+export type NewDailyChallenge = typeof dailyChallenges.$inferInsert;
+export type DailyChallengeCompletion = typeof dailyChallengeCompletions.$inferSelect;
+export type NewDailyChallengeCompletion = typeof dailyChallengeCompletions.$inferInsert;

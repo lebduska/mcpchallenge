@@ -210,6 +210,8 @@ export async function POST(request: Request) {
       achievementsUnlocked: 0,
       currentStreak: 0,
       longestStreak: 0,
+      dailyStreak: 0,
+      longestDailyStreak: 0,
     });
     stats = {
       userId,
@@ -219,6 +221,9 @@ export async function POST(request: Request) {
       achievementsUnlocked: 0,
       currentStreak: 0,
       longestStreak: 0,
+      dailyStreak: 0,
+      longestDailyStreak: 0,
+      lastDailyCompletedAt: null,
       lastActiveAt: null,
       updatedAt: new Date(),
     };

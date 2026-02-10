@@ -428,11 +428,14 @@ export async function POST(request: Request, { params }: PageProps) {
       achievementsUnlocked: 0,
       currentStreak: 0,
       longestStreak: 0,
+      dailyStreak: 0,
+      longestDailyStreak: 0,
     };
     await db.insert(userStats).values(newStats);
     stats = {
       ...newStats,
       lastActiveAt: null,
+      lastDailyCompletedAt: null,
       updatedAt: new Date(),
     };
   }
