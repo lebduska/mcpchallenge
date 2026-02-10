@@ -75,6 +75,13 @@ function getAuth() {
             achievementsUnlocked: 0,
             currentStreak: 0,
             longestStreak: 0,
+            dailyStreak: 0,
+            longestDailyStreak: 0,
+            pvpWins: 0,
+            pvpLosses: 0,
+            pvpRating: 1000,
+            pvpWinStreak: 0,
+            pvpBestWinStreak: 0,
           });
           // Store the new user ID for JWT
           user.id = userId;

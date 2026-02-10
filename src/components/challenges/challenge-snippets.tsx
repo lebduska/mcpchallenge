@@ -119,10 +119,25 @@ export function ChallengeSnippets({ challengeId, className }: ChallengeSnippetsP
     fetchSnippets();
   }, [challengeId]);
 
-  // Filter snippets by client type
-  const filteredSnippets = snippets.filter(
-    (s) => s.clientType === activeClient || s.clientType === null || s.clientType === "generic"
+  // Get snippets for a specific client type
+  const getSnippetsForClient = (clientId: string) => {
+    return snippets.filter(
+      (s) => s.clientType === clientId || s.clientType === null || s.clientType === "generic"
+    );
+  };
+
+  // Filter snippets by active client type
+  const filteredSnippets = getSnippetsForClient(activeClient);
+
+  // Only show tabs that have snippets
+  const availableClients = clientTypes.filter(
+    (client) => getSnippetsForClient(client.id).length > 0
   );
+
+  // Set active client to first available if current has no snippets
+  const effectiveClient = availableClients.find(c => c.id === activeClient)
+    ? activeClient
+    : availableClients[0]?.id || "claude-code";
 
   if (loading) {
     return (
@@ -164,9 +179,9 @@ export function ChallengeSnippets({ challengeId, className }: ChallengeSnippetsP
         </a>
       </div>
 
-      <Tabs value={activeClient} onValueChange={setActiveClient}>
+      <Tabs value={effectiveClient} onValueChange={setActiveClient}>
         <TabsList className="h-8 p-0.5 bg-zinc-100 dark:bg-zinc-900">
-          {clientTypes.map((client) => (
+          {availableClients.map((client) => (
             <TabsTrigger
               key={client.id}
               value={client.id}
@@ -177,17 +192,10 @@ export function ChallengeSnippets({ challengeId, className }: ChallengeSnippetsP
           ))}
         </TabsList>
 
-        <TabsContent value={activeClient} className="mt-4 space-y-4">
-          {filteredSnippets.length > 0 ? (
-            filteredSnippets.map((snippet) => (
-              <SnippetCard key={snippet.id} snippet={snippet} />
-            ))
-          ) : (
-            <Card className="p-4 text-center text-sm text-zinc-500">
-              No snippets available for {clientTypes.find(c => c.id === activeClient)?.label}.
-              Check other client tabs or use the Generic MCP tab.
-            </Card>
-          )}
+        <TabsContent value={effectiveClient} className="mt-4 space-y-4">
+          {getSnippetsForClient(effectiveClient).map((snippet) => (
+            <SnippetCard key={snippet.id} snippet={snippet} />
+          ))}
         </TabsContent>
       </Tabs>
     </div>
