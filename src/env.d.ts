@@ -5,6 +5,7 @@ declare global {
     DB: D1Database;
     R2_GALLERY: R2Bucket;
     RATE_LIMIT: KVNamespace;
+    GAME_ROOM: DurableObjectNamespace;
     ENVIRONMENT: string;
     AUTH_SECRET: string;
     GOOGLE_CLIENT_ID: string;

@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Trophy, Target, Star, User, Settings, Gamepad2, CheckCircle, Lock, Award, Image, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { ReferralCard } from "@/components/referral/referral-card";
 
 interface UserStats {
   totalPoints: number;
@@ -415,37 +416,8 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
 
-          {/* Getting Started */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <User className="h-5 w-5" />
-                Getting Started
-              </CardTitle>
-              <CardDescription>
-                Welcome to MCP Challenge!
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Complete challenges to earn points and unlock achievements.
-              </p>
-              <ul className="text-sm space-y-2">
-                <li className="flex items-center gap-2">
-                  <span className="text-green-500">1.</span>
-                  <Link href="/learn" className="hover:underline">Learn MCP basics</Link>
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-green-500">2.</span>
-                  <Link href="/learn/first-mcp-server" className="hover:underline">Build your first MCP server</Link>
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-green-500">3.</span>
-                  <Link href="/challenges" className="hover:underline">Try game challenges</Link>
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
+          {/* Referral Card */}
+          <ReferralCard />
         </div>
       </div>
     </div>

@@ -212,6 +212,11 @@ export async function POST(request: Request) {
       longestStreak: 0,
       dailyStreak: 0,
       longestDailyStreak: 0,
+      pvpWins: 0,
+      pvpLosses: 0,
+      pvpRating: 1000,
+      pvpWinStreak: 0,
+      pvpBestWinStreak: 0,
     });
     stats = {
       userId,
@@ -223,6 +228,11 @@ export async function POST(request: Request) {
       longestStreak: 0,
       dailyStreak: 0,
       longestDailyStreak: 0,
+      pvpWins: 0,
+      pvpLosses: 0,
+      pvpRating: 1000,
+      pvpWinStreak: 0,
+      pvpBestWinStreak: 0,
       lastDailyCompletedAt: null,
       lastActiveAt: null,
       updatedAt: new Date(),

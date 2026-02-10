@@ -6,6 +6,7 @@ import {
   userStats,
   userAchievements,
   achievements,
+  referrals,
 } from "@/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 import NextAuth from "next-auth";
@@ -430,6 +431,11 @@ export async function POST(request: Request, { params }: PageProps) {
       longestStreak: 0,
       dailyStreak: 0,
       longestDailyStreak: 0,
+      pvpWins: 0,
+      pvpLosses: 0,
+      pvpRating: 1000,
+      pvpWinStreak: 0,
+      pvpBestWinStreak: 0,
     };
     await db.insert(userStats).values(newStats);
     stats = {
@@ -698,6 +704,116 @@ export async function POST(request: Request, { params }: PageProps) {
       return achievement;
     })
   );
+
+  // Qualify pending referral if this is user's first challenge
+  if (stats.challengesCompleted === 0) {
+    // This is the first challenge completion
+    const [pendingReferral] = await db
+      .select()
+      .from(referrals)
+      .where(and(
+        eq(referrals.refereeId, userId),
+        eq(referrals.status, "pending")
+      ))
+      .limit(1);
+
+    if (pendingReferral) {
+      // Qualify the referral
+      await db
+        .update(referrals)
+        .set({
+          status: "qualified",
+          qualifiedAt: new Date(),
+        })
+        .where(eq(referrals.id, pendingReferral.id));
+
+      const referrerId = pendingReferral.referrerId;
+
+      // Count qualified referrals for the referrer
+      const qualifiedCount = await db
+        .select({ count: sql<number>`count(*)` })
+        .from(referrals)
+        .where(and(
+          eq(referrals.referrerId, referrerId),
+          sql`${referrals.status} IN ('qualified', 'rewarded')`
+        ));
+
+      const totalQualified = Number(qualifiedCount[0]?.count || 0);
+
+      // Check and grant achievements to referrer
+      const referrerAchievementsToGrant: string[] = [];
+
+      // First referral achievement
+      if (totalQualified >= 1) {
+        const [existing] = await db
+          .select()
+          .from(userAchievements)
+          .where(and(
+            eq(userAchievements.userId, referrerId),
+            eq(userAchievements.achievementId, "referral-first")
+          ))
+          .limit(1);
+
+        if (!existing) {
+          referrerAchievementsToGrant.push("referral-first");
+        }
+      }
+
+      // 5 referrals achievement
+      if (totalQualified >= 5) {
+        const [existing] = await db
+          .select()
+          .from(userAchievements)
+          .where(and(
+            eq(userAchievements.userId, referrerId),
+            eq(userAchievements.achievementId, "referral-5")
+          ))
+          .limit(1);
+
+        if (!existing) {
+          referrerAchievementsToGrant.push("referral-5");
+        }
+      }
+
+      // Grant referrer achievements
+      let referrerPointsEarned = 0;
+      for (const achievementId of referrerAchievementsToGrant) {
+        const [achievement] = await db
+          .select()
+          .from(achievements)
+          .where(eq(achievements.id, achievementId))
+          .limit(1);
+
+        if (achievement) {
+          await db.insert(userAchievements).values({
+            userId: referrerId,
+            achievementId,
+          });
+          referrerPointsEarned += achievement.points;
+        }
+      }
+
+      // Update referrer's stats if achievements were granted
+      if (referrerPointsEarned > 0) {
+        const [referrerStats] = await db
+          .select()
+          .from(userStats)
+          .where(eq(userStats.userId, referrerId))
+          .limit(1);
+
+        if (referrerStats) {
+          await db
+            .update(userStats)
+            .set({
+              totalPoints: sql`${userStats.totalPoints} + ${referrerPointsEarned}`,
+              achievementsUnlocked: sql`${userStats.achievementsUnlocked} + ${referrerAchievementsToGrant.length}`,
+              updatedAt: new Date(),
+            })
+            .where(eq(userStats.userId, referrerId));
+        }
+      }
+    }
+  }
 
   return NextResponse.json(
     {

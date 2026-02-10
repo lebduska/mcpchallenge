@@ -11,6 +11,7 @@ export const users = sqliteTable("users", {
   image: text("image"),
   bio: text("bio"),
   passwordHash: text("password_hash"), // For credentials auth
+  referredBy: text("referred_by"), // Referral code used at signup
   createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
   updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 });
@@ -91,6 +92,12 @@ export const userStats = sqliteTable("user_stats", {
   dailyStreak: integer("daily_streak").notNull().default(0),
   longestDailyStreak: integer("longest_daily_streak").notNull().default(0),
   lastDailyCompletedAt: integer("last_daily_completed_at", { mode: "timestamp" }),
+  // PvP stats
+  pvpWins: integer("pvp_wins").notNull().default(0),
+  pvpLosses: integer("pvp_losses").notNull().default(0),
+  pvpRating: integer("pvp_rating").notNull().default(1000), // ELO-style rating, starting at 1000
+  pvpWinStreak: integer("pvp_win_streak").notNull().default(0),
+  pvpBestWinStreak: integer("pvp_best_win_streak").notNull().default(0),
   lastActiveAt: integer("last_active_at", { mode: "timestamp" }),
   updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 });
@@ -255,6 +262,62 @@ export const dailyChallengeCompletions = sqliteTable("daily_challenge_completion
   completedAt: integer("completed_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 });
 
+// ==================== REFERRAL SYSTEM ====================
+
+export const referralCodes = sqliteTable("referral_codes", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  code: text("code").notNull().unique(), // Short unique code (e.g., "ABC123")
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  usageCount: integer("usage_count").notNull().default(0),
+  maxUses: integer("max_uses"), // null = unlimited
+  expiresAt: integer("expires_at", { mode: "timestamp" }),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
+export const referrals = sqliteTable("referrals", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  referrerId: text("referrer_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  refereeId: text("referee_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  codeUsed: text("code_used").notNull(),
+  status: text("status").notNull().default("pending"), // "pending" | "qualified" | "rewarded"
+  qualifiedAt: integer("qualified_at", { mode: "timestamp" }), // When referee completed first challenge
+  rewardedAt: integer("rewarded_at", { mode: "timestamp" }), // When both got rewards
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
+// ==================== PVP MULTIPLAYER ====================
+
+export const pvpMatches = sqliteTable("pvp_matches", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  roomId: text("room_id").notNull(), // Durable Object room ID
+  gameType: text("game_type").notNull(), // "chess" | "tic-tac-toe"
+  whiteUserId: text("white_user_id").references(() => users.id, { onDelete: "set null" }),
+  blackUserId: text("black_user_id").references(() => users.id, { onDelete: "set null" }),
+  winnerId: text("winner_id").references(() => users.id, { onDelete: "set null" }),
+  result: text("result").notNull().default("pending"), // "pending" | "white_wins" | "black_wins" | "draw" | "abandoned"
+  whiteRatingBefore: integer("white_rating_before"),
+  blackRatingBefore: integer("black_rating_before"),
+  whiteRatingChange: integer("white_rating_change"),
+  blackRatingChange: integer("black_rating_change"),
+  movesJson: text("moves_json"), // JSON array of moves
+  totalMoves: integer("total_moves").notNull().default(0),
+  durationMs: integer("duration_ms"), // Match duration in milliseconds
+  startedAt: integer("started_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  endedAt: integer("ended_at", { mode: "timestamp" }),
+});
+
+export const matchmakingQueue = sqliteTable("matchmaking_queue", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  gameType: text("game_type").notNull(), // "chess" | "tic-tac-toe"
+  rating: integer("rating").notNull().default(1000),
+  status: text("status").notNull().default("waiting"), // "waiting" | "matched" | "cancelled"
+  matchedWithUserId: text("matched_with_user_id").references(() => users.id, { onDelete: "set null" }),
+  matchedRoomId: text("matched_room_id"),
+  joinedAt: integer("joined_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  matchedAt: integer("matched_at", { mode: "timestamp" }),
+});
+
 // ==================== CHALLENGE COMMENTS ====================
 
 export const challengeComments = sqliteTable("challenge_comments", {
@@ -305,3 +368,11 @@ export type DailyChallenge = typeof dailyChallenges.$inferSelect;
 export type NewDailyChallenge = typeof dailyChallenges.$inferInsert;
 export type DailyChallengeCompletion = typeof dailyChallengeCompletions.$inferSelect;
 export type NewDailyChallengeCompletion = typeof dailyChallengeCompletions.$inferInsert;
+export type ReferralCode = typeof referralCodes.$inferSelect;
+export type NewReferralCode = typeof referralCodes.$inferInsert;
+export type Referral = typeof referrals.$inferSelect;
+export type NewReferral = typeof referrals.$inferInsert;
+export type PvpMatch = typeof pvpMatches.$inferSelect;
+export type NewPvpMatch = typeof pvpMatches.$inferInsert;
+export type MatchmakingQueueEntry = typeof matchmakingQueue.$inferSelect;
+export type NewMatchmakingQueueEntry = typeof matchmakingQueue.$inferInsert;
